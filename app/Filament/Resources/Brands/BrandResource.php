@@ -23,9 +23,7 @@ class BrandResource extends Resource
     protected static ?string $modelLabel = 'Бренд';
 
     protected static ?string $pluralModelLabel = 'Бренды';
-
-    protected static ?string $navigationGroup = 'Каталог';
-
+    
     protected static ?int $navigationSort = 1;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

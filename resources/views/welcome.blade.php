@@ -15,25 +15,22 @@
         body {
             min-height: 100vh;
             overflow: hidden;
-            font-family: Arial, sans-serif;
             background: #111;
+            font-family: Arial, sans-serif;
         }
 
         .background {
             position: fixed;
             inset: 0;
 
-            background:
-                linear-gradient(
-                    rgba(0,0,0,.55),
-                    rgba(0,0,0,.55)
-                ),
-                url('/images/preprod-splash.png');
-
+            background-image: url('/images/preprod-splash.png');
             background-size: cover;
             background-position: center;
-            filter: blur(8px);
+
+            filter: blur(12px);
             transform: scale(1.1);
+
+            opacity: 0.6;
         }
 
         .content {
@@ -43,87 +40,52 @@
             min-height: 100vh;
 
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
 
             padding: 20px;
         }
 
         .card {
-            max-width: 900px;
+            position: relative;
+
+            max-width: 820px;
             width: 100%;
-
-            background: rgba(20,20,20,.75);
-            backdrop-filter: blur(12px);
-
-            border-radius: 24px;
-
-            padding: 40px;
-
-            text-align: center;
-
-            box-shadow: 0 0 50px rgba(0,0,0,.4);
         }
 
         .card img {
-            max-width: 100%;
-            border-radius: 16px;
-            margin-bottom: 30px;
+            width: 100%;
+            display: block;
+            border-radius: 20px;
+
+            box-shadow: 0 0 60px rgba(0,0,0,.5);
         }
 
-        h1 {
-            color: white;
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
+        /*
+         * Кликабельная область поверх кнопки
+         * "Пустите! Я Айтишник!"
+         */
 
-        p {
-            color: #d5d5d5;
-            font-size: 20px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
+        .admin-link {
+            position: absolute;
 
-        .btn {
-            display: inline-block;
+            left: 34%;
+            bottom: 11%;
 
-            background: #f59e0b;
-            color: #111;
+            width: 32%;
+            height: 7%;
 
-            padding: 16px 32px;
+            display: block;
 
             border-radius: 12px;
-
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-
-            transition: .2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            background: #ffb11b;
-        }
-
-        .footer {
-            margin-top: 25px;
-            color: #999;
-            font-size: 14px;
         }
 
         @media (max-width: 768px) {
-
-            .card {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 28px;
-            }
-
-            p {
-                font-size: 16px;
+            .admin-link {
+                left: 29%;
+                width: 42%;
+                bottom: 10%;
+                height: 8%;
             }
         }
     </style>
@@ -138,21 +100,7 @@
 
         <img src="/images/preprod-splash.png" alt="Никтрейд">
 
-        <h1>Сайт в разработке</h1>
-
-        <p>
-            Вы кто такие?<br>
-            Я вас не звал.<br>
-            Идите лесом.
-        </p>
-
-        <a href="/admin" class="btn">
-            Пустите! Я Айтишник!
-        </a>
-
-        <div class="footer">
-            Предрелизная версия сайта Никтрейд
-        </div>
+        <a href="/admin" class="admin-link" title="Вход в админку"></a>
 
     </div>
 

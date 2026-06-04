@@ -28,8 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('Никтрейд')
-            ->brandLogo(asset('images/logo-icon.png'))
-            ->brandLogoHeight('2rem')
+            //->brandLogo(asset('images/logo-icon.png'))
+            //->brandLogoHeight('2rem')
             ->login()
             ->colors([
                 'primary' => Color::Sky,
@@ -42,7 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                
             ])
             ->middleware([
                 EncryptCookies::class,

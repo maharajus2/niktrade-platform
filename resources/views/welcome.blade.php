@@ -84,7 +84,7 @@
             .admin-link {
                 left: 29%;
                 width: 42%;
-                bottom: 10%;
+                bottom: 20%;
                 height: 8%;
             }
         }

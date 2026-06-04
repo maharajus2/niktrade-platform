@@ -23,7 +23,7 @@
             position: fixed;
             inset: 0;
 
-            background-image: url('/images/preprod-splash.png');
+            background-image: url('/images/preprod-splash-v2.png');
             background-size: cover;
             background-position: center;
 
@@ -98,7 +98,7 @@
 
     <div class="card">
 
-        <img src="/images/preprod-splash.png" alt="Никтрейд">
+        <img src="/images/preprod-splash-v2.png" alt="Никтрейд">
 
         <a href="/admin" class="admin-link" title="Вход в админку"></a>
 

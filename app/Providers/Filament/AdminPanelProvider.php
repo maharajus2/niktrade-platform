@@ -27,10 +27,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandLogo(fn () => view('filament.brand'))
-            //->brandName('Никтрейд')
-            //->brandLogo(asset('images/logo-icon.png'))
-            //->brandLogoHeight('2rem')
+            //->brandLogo(fn () => view('filament.brand'))
+            ->brandName('Никтрейд')
+            ->brandLogo(asset('images/logo-icon.png'))
+            ->brandLogoHeight('2rem')
             ->login()
             ->colors([
                 'primary' => Color::Sky,

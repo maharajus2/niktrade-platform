@@ -23,7 +23,7 @@
             position: fixed;
             inset: 0;
 
-            background-image: url('/images/preprod.png');
+            background-image: url('/images/preprod-splash.png');
             background-size: cover;
             background-position: center;
 

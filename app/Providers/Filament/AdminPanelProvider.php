@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             //->brandLogo(fn () => view('filament.brand'))
             ->brandName('Никтрейд')
             ->brandLogo(asset('images/logont.png'))
-            ->brandLogoHeight('9rem')
+            ->brandLogoHeight('3rem')
             ->login()
             ->colors([
                 'primary' => Color::Sky,

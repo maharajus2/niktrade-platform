@@ -70,7 +70,7 @@
             position: absolute;
 
             left: 34%;
-            bottom: 11%;
+            bottom: 15%;
 
             width: 32%;
             height: 7%;

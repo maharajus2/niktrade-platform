@@ -27,7 +27,7 @@
             background-size: cover;
             background-position: center;
 
-            filter: blur(8px);
+            filter: blur(3px);
             transform: scale(1.1);
 
             opacity: 0.6;

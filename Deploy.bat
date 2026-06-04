@@ -26,7 +26,7 @@ echo CONNECTING TO SERVER
 echo ==========================
 echo.
 
-ssh root@ТВОЙ_IP "cd /opt/niktrade-platform && git pull && php artisan optimize:clear"
+ssh root@2.26.104.37 "cd /opt/niktrade-platform && git pull && php artisan optimize:clear"
 
 echo.
 echo ==========================

@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('Никтрейд')
             ->brandLogo(asset('images/logont.png'))
-            ->brandLogoHeight('3rem')
+            ->brandLogoHeight('9rem')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

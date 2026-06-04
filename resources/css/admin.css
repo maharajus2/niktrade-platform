@@ -1,7 +1,4 @@
-.fi-main {
-    max-width: none !important;
-}
-
 .fi-main-content {
+    max-width: 100% !important;
     padding-left: 1rem !important;
 }

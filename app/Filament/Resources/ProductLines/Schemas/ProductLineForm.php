@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ProductLines\Schemas;
 
-use App\Models\Brand;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -19,6 +18,7 @@ class ProductLineForm
                     ->label('Бренд')
                     ->relationship('brand', 'name')
                     ->searchable()
+                    ->preload()
                     ->required(),
 
                 TextInput::make('name')

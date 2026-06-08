@@ -1,25 +1,56 @@
 <?php
 
-namespace App\Filament\Resources\ProductTypes\Schemas;
+namespace App\Filament\Resources\ProductTypes;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use App\Filament\Resources\ProductTypes\Pages\CreateProductType;
+use App\Filament\Resources\ProductTypes\Pages\EditProductType;
+use App\Filament\Resources\ProductTypes\Pages\ListProductTypes;
+use App\Filament\Resources\ProductTypes\Schemas\ProductTypeForm;
+use App\Filament\Resources\ProductTypes\Tables\ProductTypesTable;
+use App\Models\ProductType;
+use BackedEnum;
+use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
 
-class ProductTypeForm
+class ProductTypeResource extends Resource
 {
-    public static function configure(Schema $schema): Schema
-    {
-        return $schema
-            ->components([
-                TextInput::make('name')
-                    ->label('Название')
-                    ->required()
-                    ->maxLength(255),
+    protected static ?string $model = ProductType::class;
 
-                Toggle::make('is_active')
-                    ->label('Активен')
-                    ->default(true),
-            ]);
+    protected static ?string $navigationLabel = 'Типы продуктов';
+
+    protected static ?string $modelLabel = 'Тип продукта';
+
+    protected static ?string $pluralModelLabel = 'Типы продуктов';
+
+    protected static ?int $navigationSort = 4;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function form(Schema $schema): Schema
+    {
+        return ProductTypeForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ProductTypesTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListProductTypes::route('/'),
+            'create' => CreateProductType::route('/create'),
+            'edit' => EditProductType::route('/{record}/edit'),
+        ];
     }
 }

@@ -18,6 +18,14 @@ class ProductTypeResource extends Resource
 {
     protected static ?string $model = ProductType::class;
 
+    protected static ?string $navigationLabel = 'Типы продуктов';
+
+    protected static ?string $modelLabel = 'Тип продукта';
+
+    protected static ?string $pluralModelLabel = 'Типы продуктов';
+
+    protected static ?int $navigationSort = 4;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema

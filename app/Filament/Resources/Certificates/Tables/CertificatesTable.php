@@ -58,17 +58,12 @@ class CertificatesTable
                     ->sortable(),
 
                 /*
-                 * Статус срока действия.
-                 *
-                 * Логика:
-                 * - даты нет: срок не указан;
-                 * - дата меньше сегодняшней: истёк;
-                 * - дата в ближайшие 30 дней: скоро истекает;
-                 * - иначе: действует.
+                 * Статус сертификата.
                  */
                 TextColumn::make('certificate_status')
                     ->label('Статус')
                     ->state(function ($record): string {
+
                         if (! $record->expires_at) {
                             return 'Срок не указан';
                         }
@@ -85,6 +80,7 @@ class CertificatesTable
                     })
                     ->badge()
                     ->color(function ($record): string {
+
                         if (! $record->expires_at) {
                             return 'gray';
                         }
@@ -94,6 +90,55 @@ class CertificatesTable
                         }
 
                         if ($record->expires_at->lte(now()->addDays(30))) {
+                            return 'warning';
+                        }
+
+                        return 'success';
+                    }),
+
+                /*
+                 * Сколько осталось до окончания сертификата.
+                 */
+                TextColumn::make('days_left')
+                    ->label('Осталось')
+                    ->state(function ($record): string {
+
+                        if (! $record->expires_at) {
+                            return '—';
+                        }
+
+                        $days = now()->startOfDay()->diffInDays(
+                            $record->expires_at->startOfDay(),
+                            false
+                        );
+
+                        if ($days < 0) {
+                            return 'Просрочен на ' . abs($days) . ' дн.';
+                        }
+
+                        if ($days === 0) {
+                            return 'Истекает сегодня';
+                        }
+
+                        return $days . ' дн.';
+                    })
+                    ->badge()
+                    ->color(function ($record): string {
+
+                        if (! $record->expires_at) {
+                            return 'gray';
+                        }
+
+                        $days = now()->startOfDay()->diffInDays(
+                            $record->expires_at->startOfDay(),
+                            false
+                        );
+
+                        if ($days < 0) {
+                            return 'danger';
+                        }
+
+                        if ($days <= 30) {
                             return 'warning';
                         }
 
@@ -116,6 +161,7 @@ class CertificatesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
             ->filters([
 
                 /*
@@ -125,7 +171,7 @@ class CertificatesTable
                     ->label('Активен'),
 
                 /*
-                 * Сертификаты, у которых дата окончания уже прошла.
+                 * Только просроченные сертификаты.
                  */
                 Filter::make('expired')
                     ->label('Истёкшие')
@@ -134,7 +180,7 @@ class CertificatesTable
                         ->whereDate('expires_at', '<', now())),
 
                 /*
-                 * Сертификаты, которые истекают в ближайшие 30 дней.
+                 * Истекают в течение ближайших 30 дней.
                  */
                 Filter::make('expires_soon')
                     ->label('Истекают в ближайшие 30 дней')
@@ -143,9 +189,11 @@ class CertificatesTable
                         ->whereDate('expires_at', '>=', now())
                         ->whereDate('expires_at', '<=', now()->addDays(30))),
             ])
+
             ->recordActions([
                 EditAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

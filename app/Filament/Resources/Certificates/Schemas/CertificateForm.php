@@ -47,9 +47,12 @@ class CertificateForm
                     ->maxLength(255),
 
                 /*
-                 * Поле загрузки PDF всегда видно.
-                 * До сохранения пользователь может удалить выбранный файл крестиком.
-                 * После сохранения файл можно заменить.
+                 * Поле загрузки PDF.
+                 *
+                 * Видно всегда:
+                 * - до сохранения можно выбрать файл;
+                 * - если файл выбран ошибочно, его можно удалить крестиком;
+                 * - после сохранения файл можно заменить.
                  */
                 FileUpload::make('file_path')
                     ->label('PDF-файл')
@@ -69,8 +72,24 @@ class CertificateForm
                     ),
 
                 /*
-                 * Карточку показываем только для уже сохранённого файла.
-                 * Временный файл Livewire лежит в tmp/ и по прямой ссылке нормально не открывается.
+                 * Живой предпросмотр ДО сохранения.
+                 *
+                 * Работает через браузер:
+                 * URL.createObjectURL(file)
+                 *
+                 * Не использует /storage/tmp, поэтому не ловит 404.
+                 */
+                ViewField::make('file_live_preview')
+                    ->label('Предпросмотр выбранного PDF')
+                    ->view('filament.forms.components.pdf-live-preview')
+                    ->visible(fn ($get) => filled($get('file_path')) && str_starts_with($get('file_path'), 'tmp/'))
+                    ->columnSpanFull(),
+
+                /*
+                 * Красивая карточка документа.
+                 *
+                 * Показывается только после сохранения,
+                 * когда файл уже лежит в storage/app/public/certificates.
                  */
                 ViewField::make('file_card')
                     ->label('')
@@ -79,7 +98,7 @@ class CertificateForm
                     ->columnSpanFull(),
 
                 /*
-                 * PDF-предпросмотр тоже показываем только после сохранения.
+                 * Предпросмотр PDF ПОСЛЕ сохранения.
                  */
                 ViewField::make('file_preview')
                     ->label('Предпросмотр PDF')

@@ -74,6 +74,13 @@ class CertificateForm
                     ->acceptedFileTypes([
                         'application/pdf',
                     ]),
+                    ->maxSize(10240)
+                    ->downloadable()
+                    ->openable()
+                    ->previewable(false)
+                    ->deletable()
+                    ->helperText('Загрузите PDF-файл сертификата. Максимальный размер: 10 МБ.')
+                    ->columnSpanFull(),
 
                 /*
                  * Предпросмотр PDF.

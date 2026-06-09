@@ -81,13 +81,10 @@ class CertificateForm
                  * Живой предпросмотр ДО сохранения.
                  */
                 ViewField::make('file_live_preview')
-                    ->label('')
-                    ->view('filament.forms.components.pdf-live-preview')
-                    ->visible(
-                        fn ($get) => blank($get('file_path')) || ! str_starts_with($get('file_path'), 'certificates/'))
-                            && ! str_starts_with($get('file_path'), 'certificates/')
-                    )
-                    ->columnSpanFull(),
+                ->label('')
+                ->view('filament.forms.components.pdf-live-preview')
+                ->visible(fn ($get) => blank($get('file_path')) || ! str_starts_with($get('file_path'), 'certificates/'))
+                ->columnSpanFull(),
 
                 /*
                  * Красивая карточка документа ПОСЛЕ сохранения.

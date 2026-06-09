@@ -84,7 +84,7 @@ class CertificateForm
                     ->label('')
                     ->view('filament.forms.components.pdf-live-preview')
                     ->visible(
-                        fn ($get) => filled($get('file_path'))
+                        fn ($get) => blank($get('file_path')) || ! str_starts_with($get('file_path'), 'certificates/'))
                             && ! str_starts_with($get('file_path'), 'certificates/')
                     )
                     ->columnSpanFull(),

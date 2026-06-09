@@ -3,27 +3,16 @@
         previewUrl: null,
 
         init() {
-            const updatePreview = () => {
-                const filePondRoot = document.querySelector('.filepond--root');
+            document.addEventListener('change', (event) => {
+                const input = event.target;
 
-                if (!filePondRoot || !filePondRoot._pond) {
-                    setTimeout(updatePreview, 500);
+                if (! input.matches('input[type=file]')) {
                     return;
                 }
 
-                const files = filePondRoot._pond.getFiles();
+                const file = input.files?.[0];
 
-                if (!files.length) {
-                    this.previewUrl = null;
-                    setTimeout(updatePreview, 500);
-                    return;
-                }
-
-                const file = files[0].file;
-
-                if (!file || file.type !== 'application/pdf') {
-                    this.previewUrl = null;
-                    setTimeout(updatePreview, 500);
+                if (! file || file.type !== 'application/pdf') {
                     return;
                 }
 
@@ -32,13 +21,7 @@
                 }
 
                 this.previewUrl = URL.createObjectURL(file);
-
-                filePondRoot._pond.on('removefile', () => {
-                    this.previewUrl = null;
-                });
-            };
-
-            setTimeout(updatePreview, 500);
+            }, true);
         }
     }"
 >

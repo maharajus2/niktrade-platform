@@ -67,7 +67,10 @@ class CertificateForm
                 /*
                  * Поле загрузки PDF.
                  *
-                 * Показываем только пока файл не загружен.
+                 * Теперь оно видно всегда:
+                 * - до сохранения можно выбрать файл;
+                 * - если файл выбран ошибочно, его можно удалить крестиком;
+                 * - после сохранения файл можно заменить.
                  */
                 FileUpload::make('file_path')
                     ->label('PDF-файл')
@@ -76,17 +79,21 @@ class CertificateForm
                     ->acceptedFileTypes([
                         'application/pdf',
                     ])
-                    ->maxSize(10240)
+                    ->maxSize(20480)
                     ->openable()
                     ->downloadable()
                     ->deletable()
-                    ->visible(fn ($get) => blank($get('file_path')))
-                    ->columnSpanFull(),
+                    ->previewable(false)
+                    ->columnSpanFull()
+                    ->helperText(
+                        'Загрузите PDF-файл сертификата. Максимальный размер файла — 20 МБ.'
+                    ),
 
                 /*
                  * Красивая карточка документа.
                  *
-                 * Показывается после загрузки файла.
+                 * Показывается сразу после выбора файла
+                 * и после сохранения записи.
                  */
                 ViewField::make('file_card')
                     ->label('')
@@ -96,6 +103,9 @@ class CertificateForm
 
                 /*
                  * Предпросмотр PDF.
+                 *
+                 * Показывается сразу после выбора файла
+                 * и после сохранения записи.
                  */
                 ViewField::make('file_preview')
                     ->label('Предпросмотр PDF')

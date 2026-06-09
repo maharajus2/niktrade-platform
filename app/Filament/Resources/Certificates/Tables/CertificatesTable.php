@@ -7,7 +7,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CertificatesTable
 {
@@ -18,8 +21,6 @@ class CertificatesTable
 
                 /*
                  * Название сертификата.
-                 *
-                 * Главная колонка списка.
                  */
                 TextColumn::make('name')
                     ->label('Название')
@@ -28,9 +29,6 @@ class CertificatesTable
 
                 /*
                  * Тип сертификата.
-                 *
-                 * Показываем не техническое значение,
-                 * а понятную русскую подпись.
                  */
                 TextColumn::make('certificate_type')
                     ->label('Тип')
@@ -60,6 +58,49 @@ class CertificatesTable
                     ->sortable(),
 
                 /*
+                 * Статус срока действия.
+                 *
+                 * Логика:
+                 * - даты нет: срок не указан;
+                 * - дата меньше сегодняшней: истёк;
+                 * - дата в ближайшие 30 дней: скоро истекает;
+                 * - иначе: действует.
+                 */
+                TextColumn::make('certificate_status')
+                    ->label('Статус')
+                    ->state(function ($record): string {
+                        if (! $record->expires_at) {
+                            return 'Срок не указан';
+                        }
+
+                        if ($record->expires_at->isPast()) {
+                            return 'Истёк';
+                        }
+
+                        if ($record->expires_at->lte(now()->addDays(30))) {
+                            return 'Скоро истекает';
+                        }
+
+                        return 'Действует';
+                    })
+                    ->badge()
+                    ->color(function ($record): string {
+                        if (! $record->expires_at) {
+                            return 'gray';
+                        }
+
+                        if ($record->expires_at->isPast()) {
+                            return 'danger';
+                        }
+
+                        if ($record->expires_at->lte(now()->addDays(30))) {
+                            return 'warning';
+                        }
+
+                        return 'success';
+                    }),
+
+                /*
                  * Активен ли сертификат.
                  */
                 IconColumn::make('is_active')
@@ -67,7 +108,7 @@ class CertificatesTable
                     ->boolean(),
 
                 /*
-                 * Дата создания записи в админке.
+                 * Дата создания записи.
                  */
                 TextColumn::make('created_at')
                     ->label('Создан')
@@ -76,7 +117,31 @@ class CertificatesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
+                /*
+                 * Фильтр по активности.
+                 */
+                TernaryFilter::make('is_active')
+                    ->label('Активен'),
+
+                /*
+                 * Сертификаты, у которых дата окончания уже прошла.
+                 */
+                Filter::make('expired')
+                    ->label('Истёкшие')
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereNotNull('expires_at')
+                        ->whereDate('expires_at', '<', now())),
+
+                /*
+                 * Сертификаты, которые истекают в ближайшие 30 дней.
+                 */
+                Filter::make('expires_soon')
+                    ->label('Истекают в ближайшие 30 дней')
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereNotNull('expires_at')
+                        ->whereDate('expires_at', '>=', now())
+                        ->whereDate('expires_at', '<=', now()->addDays(30))),
             ])
             ->recordActions([
                 EditAction::make(),

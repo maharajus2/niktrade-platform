@@ -16,20 +16,66 @@ use Filament\Tables\Table;
 
 class CertificateResource extends Resource
 {
+    /*
+     * Модель, с которой работает этот ресурс.
+     *
+     * Filament понимает:
+     * этот раздел админки управляет таблицей certificates
+     * через модель App\Models\Certificate.
+     */
     protected static ?string $model = Certificate::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    /*
+     * Название пункта в левом меню админки.
+     */
+    protected static ?string $navigationLabel = 'Сертификаты';
 
+    /*
+     * Название одной записи.
+     *
+     * Используется на страницах создания/редактирования.
+     */
+    protected static ?string $modelLabel = 'Сертификат';
+
+    /*
+     * Название нескольких записей.
+     */
+    protected static ?string $pluralModelLabel = 'Сертификаты';
+
+    /*
+     * Порядок пункта меню.
+     *
+     * Чем меньше число — тем выше пункт в меню.
+     */
+    protected static ?int $navigationSort = 5;
+
+    /*
+     * Иконка в меню Filament.
+     */
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+
+    /*
+     * Форма создания и редактирования сертификата.
+     */
     public static function form(Schema $schema): Schema
     {
         return CertificateForm::configure($schema);
     }
 
+    /*
+     * Таблица списка сертификатов.
+     */
     public static function table(Table $table): Table
     {
         return CertificatesTable::configure($table);
     }
 
+    /*
+     * Связанные сущности.
+     *
+     * Пока не используем.
+     * Позже сюда можно будет добавить связь с товарами.
+     */
     public static function getRelations(): array
     {
         return [
@@ -37,6 +83,10 @@ class CertificateResource extends Resource
         ];
     }
 
+    /*
+     * Страницы ресурса:
+     * список, создание, редактирование.
+     */
     public static function getPages(): array
     {
         return [

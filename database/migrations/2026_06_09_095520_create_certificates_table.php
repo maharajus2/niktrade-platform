@@ -13,6 +13,30 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
+
+            $table->string('name');
+
+            $table->string('certificate_type')
+                ->nullable();
+
+            $table->string('number')
+                ->nullable();
+
+            $table->date('issued_at')
+                ->nullable();
+
+            $table->date('expires_at')
+                ->nullable();
+
+            $table->string('issuer')
+                ->nullable();
+
+            $table->string('file_path')
+                ->nullable();
+
+            $table->boolean('is_active')
+                ->default(true);
+
             $table->timestamps();
         });
     }

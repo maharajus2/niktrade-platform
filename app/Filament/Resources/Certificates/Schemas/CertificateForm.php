@@ -48,11 +48,6 @@ class CertificateForm
 
                 /*
                  * Поле загрузки PDF.
-                 *
-                 * Видно всегда:
-                 * - до сохранения можно выбрать файл;
-                 * - если файл выбран ошибочно, его можно удалить крестиком;
-                 * - после сохранения файл можно заменить.
                  */
                 FileUpload::make('file_path')
                     ->label('PDF-файл')
@@ -74,27 +69,24 @@ class CertificateForm
                 /*
                  * Живой предпросмотр ДО сохранения.
                  *
-                 * Работает через браузер:
-                 * URL.createObjectURL(file)
-                 *
-                 * Не использует /storage/tmp, поэтому не ловит 404.
+                 * Этот компонент не использует /storage/tmp.
+                 * Он читает выбранный файл прямо в браузере.
                  */
                 ViewField::make('file_live_preview')
-                    ->label('Предпросмотр выбранного PDF')
+                    ->label('')
                     ->view('filament.forms.components.pdf-live-preview')
-                    ->visible(fn ($get) => filled($get('file_path')) && str_starts_with($get('file_path'), 'tmp/'))
                     ->columnSpanFull(),
 
                 /*
                  * Красивая карточка документа.
                  *
-                 * Показывается только после сохранения,
-                 * когда файл уже лежит в storage/app/public/certificates.
+                 * Показываем только после сохранения,
+                 * когда путь начинается с certificates/.
                  */
                 ViewField::make('file_card')
                     ->label('')
                     ->view('filament.forms.components.pdf-card')
-                    ->visible(fn ($get) => filled($get('file_path')) && ! str_starts_with($get('file_path'), 'tmp/'))
+                    ->visible(fn ($get) => filled($get('file_path')) && str_starts_with($get('file_path'), 'certificates/'))
                     ->columnSpanFull(),
 
                 /*
@@ -103,7 +95,7 @@ class CertificateForm
                 ViewField::make('file_preview')
                     ->label('Предпросмотр PDF')
                     ->view('filament.forms.components.pdf-preview')
-                    ->visible(fn ($get) => filled($get('file_path')) && ! str_starts_with($get('file_path'), 'tmp/'))
+                    ->visible(fn ($get) => filled($get('file_path')) && str_starts_with($get('file_path'), 'certificates/'))
                     ->columnSpanFull(),
 
                 Toggle::make('is_active')

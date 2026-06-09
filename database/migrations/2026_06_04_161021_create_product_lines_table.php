@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('product_lines', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('brand_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->string('name');
+
+            $table->string('slug')
+                ->nullable();
+
+            $table->text('description')
+                ->nullable();
+
+            $table->boolean('is_active')
+                ->default(true);
+
             $table->timestamps();
         });
     }

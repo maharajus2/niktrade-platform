@@ -7,6 +7,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Schema;
 
 class CertificateForm
@@ -18,11 +19,6 @@ class CertificateForm
 
                 /*
                  * Название сертификата.
-                 *
-                 * Например:
-                 * Декларация соответствия ЕАС
-                 * ISO 9001
-                 * СГР
                  */
                 TextInput::make('name')
                     ->label('Название')
@@ -31,10 +27,6 @@ class CertificateForm
 
                 /*
                  * Тип сертификата.
-                 *
-                 * Здесь сразу делаем список,
-                 * чтобы сотрудники не вводили
-                 * одно и то же разными способами.
                  */
                 Select::make('certificate_type')
                     ->label('Тип сертификата')
@@ -48,9 +40,6 @@ class CertificateForm
 
                 /*
                  * Номер сертификата.
-                 *
-                 * Например:
-                 * ЕАЭС N RU Д-RU.РА01.В.12345/26
                  */
                 TextInput::make('number')
                     ->label('Номер')
@@ -69,11 +58,7 @@ class CertificateForm
                     ->label('Действует до'),
 
                 /*
-                 * Кто выдал сертификат.
-                 *
-                 * Например:
-                 * РосТест
-                 * Тест-С.-Петербург
+                 * Орган, который выдал сертификат.
                  */
                 TextInput::make('issuer')
                     ->label('Орган сертификации')
@@ -81,20 +66,28 @@ class CertificateForm
 
                 /*
                  * Загрузка PDF-файла сертификата.
-                 *
-                 * Позже товар сможет ссылаться
-                 * на этот документ.
                  */
                 FileUpload::make('file_path')
                     ->label('PDF-файл')
+                    ->disk('public')
                     ->directory('certificates')
                     ->acceptedFileTypes([
                         'application/pdf',
                     ]),
 
                 /*
-                 * Показывать сертификат
-                 * в системе или скрыть.
+                 * Предпросмотр PDF.
+                 *
+                 * Показывается только после того,
+                 * как у записи уже есть загруженный файл.
+                 */
+                ViewField::make('file_preview')
+                    ->label('Предпросмотр PDF')
+                    ->view('filament.forms.components.pdf-preview')
+                    ->visible(fn ($get) => filled($get('file_path'))),
+
+                /*
+                 * Активен ли сертификат.
                  */
                 Toggle::make('is_active')
                     ->label('Активен')

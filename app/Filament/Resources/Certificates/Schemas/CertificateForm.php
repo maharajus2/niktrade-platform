@@ -58,14 +58,16 @@ class CertificateForm
                     ->label('Действует до'),
 
                 /*
-                 * Орган, который выдал сертификат.
+                 * Орган сертификации.
                  */
                 TextInput::make('issuer')
                     ->label('Орган сертификации')
                     ->maxLength(255),
 
                 /*
-                 * Загрузка PDF-файла сертификата.
+                 * Поле загрузки PDF.
+                 *
+                 * Показываем только пока файл не загружен.
                  */
                 FileUpload::make('file_path')
                     ->label('PDF-файл')
@@ -73,25 +75,33 @@ class CertificateForm
                     ->directory('certificates')
                     ->acceptedFileTypes([
                         'application/pdf',
-                    ]),
+                    ])
                     ->maxSize(10240)
-                    ->downloadable()
                     ->openable()
-                    ->previewable(false)
+                    ->downloadable()
                     ->deletable()
-                    ->helperText('Загрузите PDF-файл сертификата. Максимальный размер: 10 МБ.')
+                    ->visible(fn ($get) => blank($get('file_path')))
+                    ->columnSpanFull(),
+
+                /*
+                 * Красивая карточка документа.
+                 *
+                 * Показывается после загрузки файла.
+                 */
+                ViewField::make('file_card')
+                    ->label('')
+                    ->view('filament.forms.components.pdf-card')
+                    ->visible(fn ($get) => filled($get('file_path')))
                     ->columnSpanFull(),
 
                 /*
                  * Предпросмотр PDF.
-                 *
-                 * Показывается только после того,
-                 * как у записи уже есть загруженный файл.
                  */
                 ViewField::make('file_preview')
                     ->label('Предпросмотр PDF')
                     ->view('filament.forms.components.pdf-preview')
-                    ->visible(fn ($get) => filled($get('file_path'))),
+                    ->visible(fn ($get) => filled($get('file_path')))
+                    ->columnSpanFull(),
 
                 /*
                  * Активен ли сертификат.

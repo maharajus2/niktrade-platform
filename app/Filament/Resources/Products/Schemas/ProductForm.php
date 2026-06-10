@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Models\Certificate;
+use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -56,6 +58,24 @@ class ProductForm
                     ->searchable()
                     ->preload()
                     ->required(),
+
+                MultiSelect::make('certificate_ids')
+                    ->label('Сертификаты')
+                    ->relationship('certificates', 'name')
+                    ->options(function () {
+                        return Certificate::query()
+                            ->where('is_active', true)
+                            ->where(function ($query) {
+                                $query->whereNull('expires_at')
+                                    ->orWhereDate('expires_at', '>=', now());
+                            })
+                            ->get()
+                            ->mapWithKeys(fn ($certificate) => [
+                                $certificate->id => trim($certificate->name . ' ' . ($certificate->number ? "({$certificate->number})" : '')),
+                            ]);
+                    })
+                    ->searchable()
+                    ->preload(),
 
                 Repeater::make('images')
                     ->label('Галерея')

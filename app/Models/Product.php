@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Brand;
+use App\Models\Certificate;
 use App\Models\ProductImage;
 use App\Models\ProductLine;
 use App\Models\ProductType;
@@ -67,5 +69,11 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    public function certificates(): BelongsToMany
+    {
+        return $this->belongsToMany(Certificate::class)
+            ->withTimestamps();
     }
 }

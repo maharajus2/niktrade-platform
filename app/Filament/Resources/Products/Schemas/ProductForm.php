@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -54,6 +56,37 @@ class ProductForm
                     ->searchable()
                     ->preload()
                     ->required(),
+
+                Repeater::make('images')
+                    ->label('Галерея')
+                    ->relationship('images')
+                    ->orderable('sort_order')
+                    ->createItemButtonLabel('Добавить изображение')
+                    ->schema([
+                        FileUpload::make('file_path')
+                            ->label('Файл изображения')
+                            ->required()
+                            ->image()
+                            ->disk('public')
+                            ->directory('products')
+                            ->previewable()
+                            ->imagePreviewHeight('250')
+                            ->columnSpanFull(),
+
+                        TextInput::make('alt')
+                            ->label('Alt текст')
+                            ->maxLength(255),
+
+                        TextInput::make('sort_order')
+                            ->label('Порядок')
+                            ->numeric()
+                            ->default(0),
+
+                        Toggle::make('is_main')
+                            ->label('Главное изображение')
+                            ->default(false),
+                    ])
+                    ->columnSpanFull(),
 
                 Textarea::make('short_description')
                     ->label('Краткое описание')

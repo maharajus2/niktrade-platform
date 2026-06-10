@@ -64,13 +64,6 @@ class ProductForm
                     ->relationship('certificates', 'name')
                     ->options(function () {
                         return Certificate::query()
-                            ->where(function ($query) {
-                                $query->where('is_active', true)
-                                    ->orWhere(function ($query) {
-                                        $query->whereNotNull('expires_at')
-                                            ->whereDate('expires_at', '<', now());
-                                    });
-                            })
                             ->get()
                             ->mapWithKeys(fn ($certificate) => [
                                 $certificate->id => trim(
@@ -81,13 +74,6 @@ class ProductForm
                                         : '')
                                 ),
                             ]);
-                    })
-                    ->disableItems(function () {
-                        return Certificate::query()
-                            ->whereNotNull('expires_at')
-                            ->whereDate('expires_at', '<', now())
-                            ->pluck('id')
-                            ->toArray();
                     })
                     ->searchable()
                     ->preload(),

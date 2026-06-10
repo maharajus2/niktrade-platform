@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use App\Models\Certificate;
-use Filament\Forms\Components\MultiSelect;
+use App\Rules\NoExpiredCertificates;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -59,22 +59,40 @@ class ProductForm
                     ->preload()
                     ->required(),
 
-                MultiSelect::make('certificate_ids')
+                Select::make('certificate_ids')
                     ->label('Сертификаты')
+                    ->multiple()
                     ->relationship('certificates', 'name')
                     ->options(function () {
                         return Certificate::query()
+                            ->orderBy('name')
                             ->get()
                             ->mapWithKeys(fn ($certificate) => [
-                                $certificate->id => trim(
-                                    $certificate->name
-                                    . ($certificate->number ? " ({$certificate->number})" : '')
-                                    . ($certificate->expires_at && $certificate->expires_at->isPast()
-                                        ? ' (просрочен)'
-                                        : '')
+                                $certificate->id => sprintf(
+                                    '%s %s%s — %s',
+                                    $certificate->expires_at && $certificate->expires_at->isPast()
+                                        ? '🔴'
+                                        : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                            ? '🟡'
+                                            : '🟢'),
+                                    $certificate->name,
+                                    $certificate->number ? " №{$certificate->number}" : '',
+                                    $certificate->expires_at && $certificate->expires_at->isPast()
+                                        ? 'просрочен'
+                                        : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                            ? 'скоро истекает'
+                                            : 'действует')
                                 ),
                             ]);
                     })
+                    ->disableItems(function () {
+                        return Certificate::query()
+                            ->whereNotNull('expires_at')
+                            ->whereDate('expires_at', '<', now())
+                            ->pluck('id')
+                            ->toArray();
+                    })
+                    ->rules([new NoExpiredCertificates()])
                     ->searchable()
                     ->preload(),
 

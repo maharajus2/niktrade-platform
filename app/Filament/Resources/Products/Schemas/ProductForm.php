@@ -85,13 +85,6 @@ class ProductForm
                                 ),
                             ]);
                     })
-                    ->disableItems(function () {
-                        return Certificate::query()
-                            ->whereNotNull('expires_at')
-                            ->whereDate('expires_at', '<', now())
-                            ->pluck('id')
-                            ->toArray();
-                    })
                     ->rules([new NoExpiredCertificates()])
                     ->searchable()
                     ->preload(),

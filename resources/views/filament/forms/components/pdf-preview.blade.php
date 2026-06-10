@@ -8,14 +8,16 @@
     $filePath = $get('file_path');
 
     /*
-     * Формируем публичную ссылку.
-     *
-     * Например:
-     * storage/certificates/test.pdf
+     * Формируем публичную ссылку только для файлов
+     * из ожидаемой директории и если файл реально существует.
      */
-    $fileUrl = $filePath
-        ? Storage::disk('public')->url($filePath)
-        : null;
+    $fileUrl = null;
+
+    if ($filePath
+        && str_starts_with($filePath, 'certificates/')
+        && Storage::disk('public')->exists($filePath)) {
+        $fileUrl = Storage::disk('public')->url($filePath);
+    }
 @endphp
 
 @if ($fileUrl)
@@ -46,6 +48,7 @@
         <a
             href="{{ $fileUrl }}"
             target="_blank"
+            rel="noopener noreferrer"
             style="
                 color: #2563eb;
                 text-decoration: none;

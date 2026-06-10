@@ -3,9 +3,13 @@
 
     $filePath = $get('file_path');
 
-    $fileUrl = $filePath
-        ? Storage::disk('public')->url($filePath)
-        : null;
+    $fileUrl = null;
+
+    if ($filePath
+        && str_starts_with($filePath, 'certificates/')
+        && Storage::disk('public')->exists($filePath)) {
+        $fileUrl = Storage::disk('public')->url($filePath);
+    }
 
     $fileName = $filePath
         ? basename($filePath)
@@ -84,6 +88,7 @@
                     <a
                         href="{{ $fileUrl }}"
                         target="_blank"
+                        rel="noopener noreferrer"
                         style="
                             padding: 8px 12px;
                             border-radius: 10px;

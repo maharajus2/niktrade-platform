@@ -32,7 +32,8 @@ class EditCertificate extends EditRecord
                 ->requiresConfirmation()
                 ->visible(fn (): bool => filled($this->record->file_path))
                 ->action(function (): void {
-                    if ($this->record->file_path) {
+                    if ($this->record->file_path
+                        && str_starts_with($this->record->file_path, 'certificates/')) {
                         Storage::disk('public')->delete($this->record->file_path);
 
                         $this->record->update([

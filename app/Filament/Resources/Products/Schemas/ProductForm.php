@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use App\Models\Certificate;
 use App\Rules\NoExpiredCertificates;
-use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -96,7 +95,7 @@ class ProductForm
                     ->step(0.01)
                     ->minValue(0)
                     ->reactive()
-                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                    ->afterStateUpdated(function ($state, $set, $get): void {
                         if (! is_numeric($state)) {
                             return;
                         }
@@ -121,7 +120,7 @@ class ProductForm
                     ->minValue(0)
                     ->maxValue(100)
                     ->reactive()
-                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                    ->afterStateUpdated(function ($state, $set, $get): void {
                         if (! is_numeric($state)) {
                             return;
                         }
@@ -145,7 +144,7 @@ class ProductForm
                     ->step(0.01)
                     ->minValue(0)
                     ->reactive()
-                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                    ->afterStateUpdated(function ($state, $set, $get): void {
                         if (! is_numeric($state)) {
                             return;
                         }

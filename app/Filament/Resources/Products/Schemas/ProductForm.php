@@ -42,8 +42,7 @@ class ProductForm
                     ->label('Линейка продуктов')
                     ->relationship('productLine', 'name')
                     ->searchable()
-                    ->preload()
-                    ->required(),
+                    ->preload(),
 
                 Select::make('product_type_id')
                     ->label('Тип продукта')
@@ -59,8 +58,43 @@ class ProductForm
                     ->preload()
                     ->required(),
 
+                TextInput::make('volume_value')
+                    ->label('Объем (число)')
+                    ->numeric()
+                    ->minValue(0),
+
+                Select::make('volume_unit')
+                    ->label('Единица объема')
+                    ->options([
+                        'ml' => 'мл',
+                        'l' => 'л',
+                        'g' => 'г',
+                        'kg' => 'кг',
+                    ])
+                    ->searchable(),
+
+                TextInput::make('price')
+                    ->label('Цена')
+                    ->numeric()
+                    ->step(0.01)
+                    ->minValue(0),
+
+                TextInput::make('discount_percent')
+                    ->label('Скидка (%)')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100),
+
+                Select::make('direction')
+                    ->label('Назначение')
+                    ->options([
+                        'home' => 'Для дома',
+                        'professional' => 'Профессиональное',
+                    ])
+                    ->searchable(),
+
                 Select::make('certificate_ids')
-                    ->label('Сертификаты')
+                    ->label('Документация')
                     ->multiple()
                     ->relationship('certificates', 'name')
                     ->options(function () {
@@ -145,6 +179,20 @@ class ProductForm
                     ->rows(3)
                     ->columnSpanFull(),
 
+                FileUpload::make('instruction_file_path')
+                    ->label('Инструкция (PDF)')
+                    ->disk('public')
+                    ->directory('product-instructions')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->openable()
+                    ->downloadable()
+                    ->columnSpanFull(),
+
+                TextInput::make('barcode')
+                    ->label('Штрихкод')
+                    ->maxLength(255)
+                    ->helperText('Введите цифры штрихкода. Изображение штрихкода будет генерироваться автоматически.'),
+
                 TextInput::make('shelf_life_value')
                     ->label('Срок годности (число)')
                     ->numeric()
@@ -164,7 +212,7 @@ class ProductForm
                     ->default(true),
 
                 Toggle::make('is_featured')
-                    ->label('Популярный'),
+                    ->label('Выгодно'),
 
                 Toggle::make('is_new')
                     ->label('Новинка'),

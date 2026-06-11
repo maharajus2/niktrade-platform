@@ -28,19 +28,19 @@ class CertificateResource extends Resource
     /*
      * Название пункта в левом меню админки.
      */
-    protected static ?string $navigationLabel = 'Сертификаты';
+    protected static ?string $navigationLabel = 'Документация';
 
     /*
      * Название одной записи.
      *
      * Используется на страницах создания/редактирования.
      */
-    protected static ?string $modelLabel = 'Сертификат';
+    protected static ?string $modelLabel = 'Документ';
 
     /*
      * Название нескольких записей.
      */
-    protected static ?string $pluralModelLabel = 'Сертификаты';
+    protected static ?string $pluralModelLabel = 'Документация';
 
     /*
      * Порядок пункта меню.

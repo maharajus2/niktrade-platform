@@ -30,6 +30,13 @@ class Product extends Model
         'storage_conditions',
         'shelf_life_value',
         'shelf_life_unit',
+        'volume_value',
+        'volume_unit',
+        'price',
+        'discount_percent',
+        'direction',
+        'instruction_file_path',
+        'barcode',
         'is_active',
         'is_featured',
         'is_new',
@@ -39,6 +46,9 @@ class Product extends Model
 
     protected $casts = [
         'shelf_life_value' => 'integer',
+        'volume_value' => 'integer',
+        'discount_percent' => 'integer',
+        'price' => 'decimal:2',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
         'is_new' => 'boolean',

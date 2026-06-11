@@ -46,12 +46,42 @@ class ProductsTable
                     ->searchable()
                     ->toggleable(),
 
+                TextColumn::make('price')
+                    ->label('Цена')
+                    ->money('RUB')
+                    ->toggleable(),
+
+                TextColumn::make('discount_percent')
+                    ->label('Скидка (%)')
+                    ->toggleable(),
+
+                TextColumn::make('direction')
+                    ->label('Назначение')
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'home' => 'Для дома',
+                        'professional' => 'Профессиональное',
+                        default => '—',
+                    })
+                    ->toggleable(),
+
+                TextColumn::make('volume_value')
+                    ->label('Объем')
+                    ->formatStateUsing(fn ($record): string => filled($record->volume_value)
+                        ? "{$record->volume_value} {$record->volume_unit}"
+                        : '—'
+                    )
+                    ->toggleable(),
+
+                TextColumn::make('barcode')
+                    ->label('Штрихкод')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 IconColumn::make('is_active')
                     ->label('Активен')
                     ->boolean(),
 
                 IconColumn::make('is_featured')
-                    ->label('Популярный')
+                    ->label('Выгодно')
                     ->boolean(),
 
                 IconColumn::make('is_new')

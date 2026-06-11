@@ -10,6 +10,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -97,8 +98,17 @@ class ProductForm
                 TextInput::make('discount_percent')
                     ->label('Скидка (%)')
                     ->numeric()
+                    ->step(0.1)
                     ->minValue(0)
                     ->maxValue(100),
+
+                TextInput::make('discounted_price')
+                    ->label('Цена со скидкой')
+                    ->numeric()
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->rules(['lte:price'])
+                    ->helperText('Оставьте пустым, чтобы рассчитать автоматически.'),
 
                 // ===== ОПИСАНИЕ ТОВАРА =====
                 Textarea::make('short_description')
@@ -143,7 +153,7 @@ class ProductForm
 
                 // ===== ДОКУМЕНТАЦИЯ =====
                 Select::make('certificate_ids')
-                    ->label('Сертификаты')
+                    ->label('Документация')
                     ->multiple()
                     ->relationship('certificates', 'name')
                     ->options(function () {
@@ -153,18 +163,22 @@ class ProductForm
                             ->mapWithKeys(fn ($certificate) => [
                                 $certificate->id => sprintf(
                                     '%s %s%s — %s',
-                                    $certificate->expires_at && $certificate->expires_at->isPast()
-                                        ? '🔴'
-                                        : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                            ? '🟡'
-                                            : '🟢'),
+                                    $certificate->is_permanent
+                                        ? '🔵'
+                                        : ($certificate->expires_at && $certificate->expires_at->isPast()
+                                            ? '🔴'
+                                            : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                                ? '🟡'
+                                                : '🟢')),
                                     $certificate->name,
                                     $certificate->number ? " №{$certificate->number}" : '',
-                                    $certificate->expires_at && $certificate->expires_at->isPast()
-                                        ? 'просрочен'
-                                        : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                            ? 'скоро истекает'
-                                            : 'действует')
+                                    $certificate->is_permanent
+                                        ? 'бессрочно'
+                                        : ($certificate->expires_at && $certificate->expires_at->isPast()
+                                            ? 'просрочен'
+                                            : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                                ? 'скоро истекает'
+                                                : 'действует'))
                                 ),
                             ]);
                     })
@@ -180,6 +194,12 @@ class ProductForm
                     ->acceptedFileTypes(['application/pdf'])
                     ->openable()
                     ->downloadable()
+                    ->columnSpanFull(),
+
+                ViewField::make('instruction_file_preview')
+                    ->label('Предпросмотр инструкции')
+                    ->view('filament.forms.components.product-instruction-pdf-preview')
+                    ->visible(fn ($get) => filled($get('instruction_file_path')) && str_starts_with($get('instruction_file_path'), 'product-instructions/'))
                     ->columnSpanFull(),
 
                 // ===== ГАЛЕРЕЯ =====

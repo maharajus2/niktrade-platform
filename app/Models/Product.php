@@ -34,6 +34,7 @@ class Product extends Model
         'volume_unit',
         'price',
         'discount_percent',
+        'discounted_price',
         'direction',
         'instruction_file_path',
         'barcode',
@@ -47,14 +48,36 @@ class Product extends Model
     protected $casts = [
         'shelf_life_value' => 'integer',
         'volume_value' => 'integer',
-        'discount_percent' => 'integer',
+        'discount_percent' => 'float',
         'price' => 'decimal:2',
+        'discounted_price' => 'decimal:2',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
         'is_new' => 'boolean',
         'is_best_seller' => 'boolean',
         'sort_order' => 'integer',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Product $product) {
+            if ($product->price !== null) {
+                if ($product->discount_percent !== null && $product->discounted_price === null) {
+                    $product->discounted_price = round(
+                        $product->price - ($product->price * $product->discount_percent / 100),
+                        2
+                    );
+                }
+
+                if ($product->discounted_price !== null && $product->discount_percent === null && $product->price > 0) {
+                    $product->discount_percent = round(
+                        (($product->price - $product->discounted_price) / $product->price) * 100,
+                        1
+                    );
+                }
+            }
+        });
+    }
 
     public function brand(): BelongsTo
     {

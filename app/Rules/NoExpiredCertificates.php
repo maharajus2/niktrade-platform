@@ -19,6 +19,7 @@ class NoExpiredCertificates implements Rule
 
         return ! Certificate::query()
             ->whereIn('id', $value)
+            ->where('is_permanent', false)
             ->whereNotNull('expires_at')
             ->whereDate('expires_at', '<', now())
             ->exists();

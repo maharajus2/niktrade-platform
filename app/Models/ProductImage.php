@@ -21,6 +21,25 @@ class ProductImage extends Model
         'is_main' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::saved(function (ProductImage $image) {
+            $mainImage = ProductImage::query()
+                ->where('product_id', $image->product_id)
+                ->where('is_main', true)
+                ->orderBy('id')
+                ->first();
+
+            if ($mainImage) {
+                ProductImage::query()
+                    ->where('product_id', $image->product_id)
+                    ->where('id', '!=', $mainImage->id)
+                    ->where('is_main', true)
+                    ->update(['is_main' => false]);
+            }
+        });
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

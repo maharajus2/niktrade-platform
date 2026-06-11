@@ -55,6 +55,29 @@ class ProductsTable
                     ->label('Скидка (%)')
                     ->toggleable(),
 
+                TextColumn::make('discount_label')
+                    ->label('Метка')
+                    ->state(function ($record): string {
+                        if ($record->discount_percent > 0) {
+                            return 'Скидка ' . round($record->discount_percent, 1) . '%';
+                        }
+
+                        if (\filled($record->discounted_price) && $record->price > 0 && $record->discounted_price < $record->price) {
+                            return 'Акция';
+                        }
+
+                        return '—';
+                    })
+                    ->badge()
+                    ->color(function ($record): string {
+                        if ($record->discount_percent > 0 || (\filled($record->discounted_price) && $record->price > 0 && $record->discounted_price < $record->price)) {
+                            return 'warning';
+                        }
+
+                        return 'gray';
+                    })
+                    ->toggleable(),
+
                 TextColumn::make('direction')
                     ->label('Направление')
                     ->formatStateUsing(fn (?string $state): string => match ($state) {

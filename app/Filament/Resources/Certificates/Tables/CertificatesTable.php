@@ -64,6 +64,10 @@ class CertificatesTable
                     ->label('Статус')
                     ->state(function ($record): string {
 
+                        if ($record->is_permanent) {
+                            return 'Бессрочно';
+                        }
+
                         if (! $record->expires_at) {
                             return 'Срок не указан';
                         }
@@ -80,6 +84,10 @@ class CertificatesTable
                     })
                     ->badge()
                     ->color(function ($record): string {
+
+                        if ($record->is_permanent) {
+                            return 'primary';
+                        }
 
                         if (! $record->expires_at) {
                             return 'gray';
@@ -102,6 +110,9 @@ class CertificatesTable
                 TextColumn::make('days_left')
                     ->label('Осталось')
                     ->state(function ($record): string {
+                        if ($record->is_permanent) {
+                            return 'Бессрочно';
+                        }
 
                         if (! $record->expires_at) {
                             return '—';
@@ -124,6 +135,9 @@ class CertificatesTable
                     })
                     ->badge()
                     ->color(function ($record): string {
+                        if ($record->is_permanent) {
+                            return 'primary';
+                        }
 
                         if (! $record->expires_at) {
                             return 'gray';

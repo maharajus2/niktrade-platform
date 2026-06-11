@@ -20,6 +20,7 @@ class Certificate extends Model
         'number',            // Номер сертификата
         'issued_at',         // Дата выдачи
         'expires_at',        // Дата окончания действия
+        'is_permanent',      // Бессрочно
         'issuer',            // Орган сертификации
         'file_path',         // Путь к PDF-файлу
         'is_active',         // Активен ли сертификат
@@ -34,8 +35,18 @@ class Certificate extends Model
     protected $casts = [
         'issued_at' => 'date',
         'expires_at' => 'date',
+        'is_permanent' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Certificate $certificate) {
+            if ($certificate->is_permanent) {
+                $certificate->expires_at = null;
+            }
+        });
+    }
 
     public function products(): BelongsToMany
     {

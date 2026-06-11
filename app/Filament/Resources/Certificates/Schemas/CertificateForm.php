@@ -39,8 +39,13 @@ class CertificateForm
                 DatePicker::make('issued_at')
                     ->label('Дата выдачи'),
 
+                Toggle::make('is_permanent')
+                    ->label('Бессрочно')
+                    ->reactive(),
+
                 DatePicker::make('expires_at')
-                    ->label('Действует до'),
+                    ->label('Действует до')
+                    ->visible(fn ($get) => ! $get('is_permanent')),
 
                 TextInput::make('issuer')
                     ->label('Орган сертификации')

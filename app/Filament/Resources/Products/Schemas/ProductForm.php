@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use App\Models\Certificate;
 use App\Rules\NoExpiredCertificates;
+use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -93,21 +94,91 @@ class ProductForm
                     ->label('Цена')
                     ->numeric()
                     ->step(0.01)
-                    ->minValue(0),
+                    ->minValue(0)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                        if (! is_numeric($state)) {
+                            return;
+                        }
+
+                        $discountPercent = $get('discount_percent');
+
+                        if (! is_numeric($discountPercent)) {
+                            return;
+                        }
+
+                        $discountedPrice = round($state - ($state * $discountPercent / 100), 2);
+
+                        if ($get('discounted_price') !== $discountedPrice) {
+                            $set('discounted_price', $discountedPrice);
+                        }
+                    }),
 
                 TextInput::make('discount_percent')
                     ->label('Скидка (%)')
                     ->numeric()
                     ->step(0.1)
                     ->minValue(0)
-                    ->maxValue(100),
+                    ->maxValue(100)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                        if (! is_numeric($state)) {
+                            return;
+                        }
+
+                        $price = $get('price');
+
+                        if (! is_numeric($price)) {
+                            return;
+                        }
+
+                        $discountedPrice = round($price - ($price * $state / 100), 2);
+
+                        if ($get('discounted_price') !== $discountedPrice) {
+                            $set('discounted_price', $discountedPrice);
+                        }
+                    }),
 
                 TextInput::make('discounted_price')
                     ->label('Цена со скидкой')
                     ->numeric()
                     ->step(0.01)
                     ->minValue(0)
-                    ->rules(['lte:price'])
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, Closure $set, callable $get): void {
+                        if (! is_numeric($state)) {
+                            return;
+                        }
+
+                        $price = $get('price');
+
+                        if (! is_numeric($price) || $price <= 0) {
+                            return;
+                        }
+
+                        $discountPercent = round((($price - $state) / $price) * 100, 1);
+
+                        if ($get('discount_percent') !== $discountPercent) {
+                            $set('discount_percent', $discountPercent);
+                        }
+                    })
+                    ->rules(function (callable $get) {
+                        return [
+                            'numeric',
+                            'min:0',
+                            function ($attribute, $value, $fail) use ($get) {
+                                $price = $get('price');
+
+                                if (! is_numeric($price) || ! is_numeric($value)) {
+                                    return;
+                                }
+
+                                if ($value > $price) {
+                                    $fail('Цена со скидкой не может быть больше обычной цены.');
+                                }
+                            },
+                        ];
+                    })
                     ->helperText('Оставьте пустым, чтобы рассчитать автоматически.'),
 
                 // ===== ОПИСАНИЕ ТОВАРА =====

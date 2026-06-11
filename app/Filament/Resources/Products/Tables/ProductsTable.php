@@ -56,10 +56,10 @@ class ProductsTable
                     ->toggleable(),
 
                 TextColumn::make('direction')
-                    ->label('Назначение')
+                    ->label('Направление')
                     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        'home' => 'Для дома',
-                        'professional' => 'Профессиональное',
+                        'home' => 'Home',
+                        'professional' => 'Professional',
                         default => '—',
                     })
                     ->toggleable(),

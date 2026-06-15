@@ -6,7 +6,6 @@ use App\Models\Certificate;
 use App\Rules\NoExpiredCertificates;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -282,43 +281,6 @@ class ProductForm
                     ->label('SEO Description')
                     ->rows(3)
                     ->helperText('Описание для поисковых систем')
-                    ->columnSpanFull(),
-
-                // ===== ГАЛЕРЕЯ =====
-                Repeater::make('images')
-                    ->label('Галерея')
-                    ->relationship('images')
-                    ->orderable('sort_order')
-                    ->createItemButtonLabel('Добавить изображение')
-                    ->schema([
-                        FileUpload::make('file_path')
-                            ->label('Файл изображения')
-                            ->required()
-                            ->image()
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(5120)
-                            ->disk('public')
-                            ->directory('products')
-                            ->visibility('public')
-                            ->storeFiles(true)
-                            ->previewable(true)
-                            ->imagePreviewHeight('160')
-                            ->panelLayout('integrated')
-                            ->columnSpanFull(),
-
-                        TextInput::make('alt')
-                            ->label('Alt текст')
-                            ->maxLength(255),
-
-                        TextInput::make('sort_order')
-                            ->label('Порядок')
-                            ->numeric()
-                            ->default(0),
-
-                        Toggle::make('is_main')
-                            ->label('Главное изображение')
-                            ->default(false),
-                    ])
                     ->columnSpanFull(),
 
                 // ===== ПУБЛИКАЦИЯ И МЕТКИ =====

@@ -7,7 +7,7 @@ use Filament\Widgets\Widget;
 
 class RussianTimeWidget extends Widget
 {
-    protected static string $view = 'filament.widgets.russian-time-widget';
+    protected string $view = 'filament.widgets.russian-time-widget';
 
     protected int|string|array $columnSpan = [
         'default' => 'full',

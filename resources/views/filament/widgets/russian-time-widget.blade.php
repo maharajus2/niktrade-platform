@@ -8,7 +8,6 @@
                 hourAngle: 0,
                 minuteAngle: 0,
                 secondAngle: 0,
-                timer: null,
 
                 init() {
                     const city = localStorage.getItem('niktrade-dashboard-time-city');
@@ -19,7 +18,7 @@
                     }
 
                     this.tick();
-                    this.timer = setInterval(() => this.tick(), 1000);
+                    setInterval(() => this.tick(), 1000);
                 },
 
                 tick() {
@@ -51,28 +50,40 @@
         >
             <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-5">
-                    <div class="relative h-28 w-28 shrink-0 rounded-full border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
-                        <div class="absolute left-1/2 top-2 h-2 w-px -translate-x-1/2 rounded-full bg-gray-400 dark:bg-gray-500"></div>
-                        <div class="absolute bottom-2 left-1/2 h-2 w-px -translate-x-1/2 rounded-full bg-gray-400 dark:bg-gray-500"></div>
-                        <div class="absolute left-2 top-1/2 h-px w-2 -translate-y-1/2 rounded-full bg-gray-400 dark:bg-gray-500"></div>
-                        <div class="absolute right-2 top-1/2 h-px w-2 -translate-y-1/2 rounded-full bg-gray-400 dark:bg-gray-500"></div>
+                    <div
+                        aria-label="Аналоговые часы"
+                        style="
+                            position: relative;
+                            width: 112px;
+                            height: 112px;
+                            flex: 0 0 112px;
+                            border-radius: 9999px;
+                            border: 1px solid rgb(209 213 219);
+                            background: radial-gradient(circle at center, #ffffff 0%, #f9fafb 100%);
+                            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+                        "
+                    >
+                        <span style="position: absolute; left: 50%; top: 8px; width: 2px; height: 8px; transform: translateX(-50%); border-radius: 9999px; background: #6b7280;"></span>
+                        <span style="position: absolute; left: 50%; bottom: 8px; width: 2px; height: 8px; transform: translateX(-50%); border-radius: 9999px; background: #6b7280;"></span>
+                        <span style="position: absolute; left: 8px; top: 50%; width: 8px; height: 2px; transform: translateY(-50%); border-radius: 9999px; background: #6b7280;"></span>
+                        <span style="position: absolute; right: 8px; top: 50%; width: 8px; height: 2px; transform: translateY(-50%); border-radius: 9999px; background: #6b7280;"></span>
 
-                        <div
-                            class="absolute left-1/2 top-1/2 h-8 w-1 origin-bottom -translate-x-1/2 -translate-y-full rounded-full bg-gray-950 dark:bg-white"
-                            x-bind:style="`transform: translate(-50%, -100%) rotate(${hourAngle}deg);`"
-                        ></div>
+                        <span
+                            style="position: absolute; left: 50%; top: 50%; width: 4px; height: 32px; border-radius: 9999px; background: #111827; transform-origin: 50% 100%; transform: translate(-50%, -100%) rotate(0deg);"
+                            x-bind:style="{ transform: `translate(-50%, -100%) rotate(${hourAngle}deg)` }"
+                        ></span>
 
-                        <div
-                            class="absolute left-1/2 top-1/2 h-10 w-0.5 origin-bottom -translate-x-1/2 -translate-y-full rounded-full bg-gray-700 dark:bg-gray-200"
-                            x-bind:style="`transform: translate(-50%, -100%) rotate(${minuteAngle}deg);`"
-                        ></div>
+                        <span
+                            style="position: absolute; left: 50%; top: 50%; width: 3px; height: 42px; border-radius: 9999px; background: #374151; transform-origin: 50% 100%; transform: translate(-50%, -100%) rotate(0deg);"
+                            x-bind:style="{ transform: `translate(-50%, -100%) rotate(${minuteAngle}deg)` }"
+                        ></span>
 
-                        <div
-                            class="absolute left-1/2 top-1/2 h-11 w-px origin-bottom -translate-x-1/2 -translate-y-full rounded-full bg-danger-500"
-                            x-bind:style="`transform: translate(-50%, -100%) rotate(${secondAngle}deg);`"
-                        ></div>
+                        <span
+                            style="position: absolute; left: 50%; top: 50%; width: 1px; height: 46px; border-radius: 9999px; background: #dc2626; transform-origin: 50% 100%; transform: translate(-50%, -100%) rotate(0deg);"
+                            x-bind:style="{ transform: `translate(-50%, -100%) rotate(${secondAngle}deg)` }"
+                        ></span>
 
-                        <div class="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-danger-500 ring-2 ring-white dark:ring-gray-900"></div>
+                        <span style="position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; transform: translate(-50%, -50%); border-radius: 9999px; background: #dc2626; border: 2px solid #ffffff;"></span>
                     </div>
 
                     <div>

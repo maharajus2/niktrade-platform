@@ -2,6 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\AnalyticsPlaceholderWidget;
+use App\Filament\Widgets\ProductStatsWidget;
+use App\Filament\Widgets\RussianTimeWidget;
+use App\Filament\Widgets\SalesStatsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -9,4 +13,22 @@ class Dashboard extends BaseDashboard
     protected static ?string $title = 'Главная';
 
     protected static ?string $navigationLabel = 'Главная';
+
+    public function getColumns(): int|string|array
+    {
+        return [
+            'default' => 1,
+            'md' => 2,
+        ];
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            ProductStatsWidget::class,
+            SalesStatsWidget::class,
+            RussianTimeWidget::class,
+            AnalyticsPlaceholderWidget::class,
+        ];
+    }
 }

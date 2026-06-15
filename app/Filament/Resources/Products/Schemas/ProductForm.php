@@ -295,10 +295,14 @@ class ProductForm
                             ->label('Файл изображения')
                             ->required()
                             ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->maxSize(5120)
                             ->disk('public')
                             ->directory('products')
-                            ->previewable()
-                            ->imagePreviewHeight('250')
+                            ->visibility('public')
+                            ->multiple(false)
+                            ->previewable(true)
+                            ->imagePreviewHeight('250px')
                             ->columnSpanFull(),
 
                         TextInput::make('alt')

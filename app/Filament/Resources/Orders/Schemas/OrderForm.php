@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Models\Order;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -136,54 +135,6 @@ class OrderForm
                             ->columnSpanFull(),
                     ])
                     ->columns(3)
-                    ->columnSpanFull(),
-
-                Section::make('Состав заказа')
-                    ->schema([
-                        Repeater::make('items')
-                            ->label('')
-                            ->relationship('items')
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->schema([
-                                TextInput::make('product_name')
-                                    ->label('Товар')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('product_article')
-                                    ->label('Артикул')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('quantity')
-                                    ->label('Кол-во')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('unit_price')
-                                    ->label('Цена')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('discount_percent')
-                                    ->label('Скидка, %')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('discounted_unit_price')
-                                    ->label('Цена со скидкой')
-                                    ->disabled()
-                                    ->dehydrated(false),
-
-                                TextInput::make('line_total')
-                                    ->label('Сумма')
-                                    ->disabled()
-                                    ->dehydrated(false),
-                            ])
-                            ->columns(4)
-                            ->columnSpanFull(),
-                    ])
                     ->columnSpanFull(),
 
                 Section::make('Итоги')

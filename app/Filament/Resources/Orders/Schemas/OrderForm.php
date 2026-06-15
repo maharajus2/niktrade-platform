@@ -14,7 +14,38 @@ class OrderForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(2)
             ->components([
+                Section::make('Покупатель')
+                    ->schema([
+                        TextInput::make('order_number')
+                            ->label('Номер заказа')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        TextInput::make('customer_first_name')
+                            ->label('Имя')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        TextInput::make('customer_last_name')
+                            ->label('Фамилия')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        TextInput::make('phone')
+                            ->label('Телефон')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->disabled()
+                            ->dehydrated(false),
+                    ])
+                    ->columns(2)
+                    ->columnSpan(1),
+
                 Section::make('Статусы')
                     ->schema([
                         Select::make('status')
@@ -46,36 +77,8 @@ class OrderForm
                             ])
                             ->required(),
                     ])
-                    ->columns(3),
-
-                Section::make('Покупатель')
-                    ->schema([
-                        TextInput::make('order_number')
-                            ->label('Номер заказа')
-                            ->disabled()
-                            ->dehydrated(false),
-
-                        TextInput::make('customer_first_name')
-                            ->label('Имя')
-                            ->disabled()
-                            ->dehydrated(false),
-
-                        TextInput::make('customer_last_name')
-                            ->label('Фамилия')
-                            ->disabled()
-                            ->dehydrated(false),
-
-                        TextInput::make('phone')
-                            ->label('Телефон')
-                            ->disabled()
-                            ->dehydrated(false),
-
-                        TextInput::make('email')
-                            ->label('Email')
-                            ->disabled()
-                            ->dehydrated(false),
-                    ])
-                    ->columns(2),
+                    ->columns(1)
+                    ->columnSpan(1),
 
                 Section::make('Адрес доставки')
                     ->schema([
@@ -131,7 +134,8 @@ class OrderForm
                             ->rows(3)
                             ->columnSpanFull(),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Section::make('Итоги')
                     ->schema([
@@ -155,7 +159,8 @@ class OrderForm
                             ->disabled()
                             ->dehydrated(false),
                     ])
-                    ->columns(4),
+                    ->columns(4)
+                    ->columnSpanFull(),
 
                 Section::make('Комментарий')
                     ->schema([
@@ -163,7 +168,8 @@ class OrderForm
                             ->label('Комментарий')
                             ->rows(4)
                             ->columnSpanFull(),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 }

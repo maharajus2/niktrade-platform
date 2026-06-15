@@ -272,6 +272,18 @@ class ProductForm
                     ->visible(fn ($get) => filled($get('instruction_file_path')) && str_starts_with($get('instruction_file_path'), 'product-instructions/'))
                     ->columnSpanFull(),
 
+                // ===== SEO =====
+                TextInput::make('seo_title')
+                    ->label('SEO Title')
+                    ->maxLength(255)
+                    ->helperText('Заголовок для поисковых систем'),
+
+                Textarea::make('seo_description')
+                    ->label('SEO Description')
+                    ->rows(3)
+                    ->helperText('Описание для поисковых систем')
+                    ->columnSpanFull(),
+
                 // ===== ГАЛЕРЕЯ =====
                 Repeater::make('images')
                     ->label('Галерея')

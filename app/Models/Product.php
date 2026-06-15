@@ -43,6 +43,8 @@ class Product extends Model
         'is_new',
         'is_best_seller',
         'sort_order',
+        'seo_title',
+        'seo_description',
     ];
 
     protected $casts = [

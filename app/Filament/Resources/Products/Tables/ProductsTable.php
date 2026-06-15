@@ -99,6 +99,11 @@ class ProductsTable
                     ->label('Штрихкод')
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('seo_title')
+                    ->label('SEO Title')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 IconColumn::make('is_active')
                     ->label('Активен')
                     ->boolean(),

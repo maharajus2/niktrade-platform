@@ -34,11 +34,14 @@ class ProductImagesRelationManager extends RelationManager
                     ->visibility('public')
                     ->storeFiles(true)
                     ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(2048)
                     ->previewable(true)
                     ->imagePreviewHeight('160')
                     ->openable()
                     ->downloadable()
-                    ->required(),
+                    ->required()
+                    ->helperText('Загрузите изображение товара размером 640 × 980 px. Допустимые форматы: JPG, PNG, WebP. Максимальный размер файла — 2 МБ.'),
 
                 TextInput::make('alt')
                     ->label('Alt текст')

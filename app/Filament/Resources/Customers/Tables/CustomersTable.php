@@ -45,6 +45,11 @@ class CustomersTable
                     ->label('Маркетинг')
                     ->boolean(),
 
+                IconColumn::make('is_quick_registered')
+                    ->label('Быстрая регистрация')
+                    ->boolean()
+                    ->toggleable(),
+
                 TextColumn::make('created_at')
                     ->label('Создан')
                     ->dateTime('d.m.Y H:i')

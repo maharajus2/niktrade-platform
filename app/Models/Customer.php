@@ -15,6 +15,7 @@ class Customer extends Model
         'birthday',
         'is_active',
         'accepts_marketing',
+        'is_quick_registered',
         'comment',
     ];
 
@@ -22,6 +23,7 @@ class Customer extends Model
         'birthday' => 'date',
         'is_active' => 'boolean',
         'accepts_marketing' => 'boolean',
+        'is_quick_registered' => 'boolean',
     ];
 
     public function addresses(): HasMany

@@ -51,6 +51,11 @@ class CustomerForm
                             ->label('Согласен на маркетинг')
                             ->default(false),
 
+                        Toggle::make('is_quick_registered')
+                            ->label('Быстрая регистрация')
+                            ->helperText('Покупатель был автоматически создан при оформлении заказа без регистрации.')
+                            ->default(false),
+
                         Textarea::make('comment')
                             ->label('Комментарий')
                             ->rows(4)

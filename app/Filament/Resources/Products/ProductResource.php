@@ -25,9 +25,11 @@ class ProductResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Товары';
 
-    protected static ?int $navigationSort = 3;
+    protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?int $navigationSort = 1;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
 
     public static function form(Schema $schema): Schema
     {

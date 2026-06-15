@@ -23,10 +23,12 @@ class BrandResource extends Resource
     protected static ?string $modelLabel = 'Бренд';
 
     protected static ?string $pluralModelLabel = 'Бренды';
-    
-    protected static ?int $navigationSort = 1;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
+    
+    protected static ?int $navigationSort = 3;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
     public static function form(Schema $schema): Schema
     {

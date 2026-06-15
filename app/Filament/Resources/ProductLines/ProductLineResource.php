@@ -18,13 +18,17 @@ class ProductLineResource extends Resource
 {
     protected static ?string $model = ProductLine::class;
 
-    protected static ?string $navigationLabel = 'Линейки продуктов';
+    protected static ?string $navigationLabel = 'Линейки';
 
     protected static ?string $modelLabel = 'Линейка продуктов';
 
     protected static ?string $pluralModelLabel = 'Линейки продуктов';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
+
+    protected static ?int $navigationSort = 4;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
     public static function form(Schema $schema): Schema
     {

@@ -27,7 +27,9 @@ class CustomerResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Продажи';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?int $navigationSort = 2;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     public static function form(Schema $schema): Schema
     {

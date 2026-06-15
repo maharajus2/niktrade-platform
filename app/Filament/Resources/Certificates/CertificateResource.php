@@ -42,12 +42,14 @@ class CertificateResource extends Resource
      */
     protected static ?string $pluralModelLabel = 'Документация';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
+
     /*
      * Порядок пункта меню.
      *
      * Чем меньше число — тем выше пункт в меню.
      */
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     /*
      * Иконка в меню Filament.

@@ -300,9 +300,10 @@ class ProductForm
                             ->disk('public')
                             ->directory('products')
                             ->visibility('public')
-                            ->multiple(false)
+                            ->storeFiles(true)
                             ->previewable(true)
-                            ->imagePreviewHeight('250px')
+                            ->imagePreviewHeight('160')
+                            ->panelLayout('integrated')
                             ->columnSpanFull(),
 
                         TextInput::make('alt')

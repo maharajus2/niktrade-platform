@@ -24,6 +24,9 @@ class OrderItemsRelationManager extends RelationManager
                     ->label('Артикул')
                     ->toggleable(),
 
+                TextColumn::make('quantity')
+                    ->label('Кол-во'),
+
                 TextColumn::make('unit_price')
                     ->label('Цена')
                     ->money('RUB'),
@@ -34,9 +37,6 @@ class OrderItemsRelationManager extends RelationManager
                 TextColumn::make('discounted_unit_price')
                     ->label('Цена со скидкой')
                     ->money('RUB'),
-
-                TextColumn::make('quantity')
-                    ->label('Кол-во'),
 
                 TextColumn::make('line_total')
                     ->label('Сумма')

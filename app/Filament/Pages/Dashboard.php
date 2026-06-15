@@ -14,7 +14,7 @@ class Dashboard extends BaseDashboard
 
     protected static ?string $navigationLabel = 'Главная';
 
-    public function getColumns(): int|string|array
+    public function getColumns(): array|int
     {
         return [
             'default' => 1,

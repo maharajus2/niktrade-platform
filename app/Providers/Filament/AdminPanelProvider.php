@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->sidebarWidth('12rem')
+            ->sidebarWidth('16rem')
             //->brandLogo(fn () => view('filament.brand'))
             ->brandName('Никтрейд')
             ->brandLogo(asset('images/logont.png'))

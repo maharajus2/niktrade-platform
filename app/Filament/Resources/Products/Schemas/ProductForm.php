@@ -4,12 +4,13 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use App\Models\Certificate;
 use App\Rules\NoExpiredCertificates;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -18,289 +19,308 @@ class ProductForm
     {
         return $schema
             ->components([
-                // ===== ОСНОВНАЯ ИНФОРМАЦИЯ =====
-                TextInput::make('name')
-                    ->label('Название')
-                    ->required()
-                    ->maxLength(255),
+                Section::make('Основная информация')
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Название')
+                            ->required()
+                            ->maxLength(255),
 
-                TextInput::make('slug')
-                    ->label('Slug')
-                    ->maxLength(255),
+                        TextInput::make('article')
+                            ->label('Артикул')
+                            ->maxLength(255),
 
-                TextInput::make('article')
-                    ->label('Артикул')
-                    ->maxLength(255),
+                        TextInput::make('barcode')
+                            ->label('Штрихкод')
+                            ->maxLength(255)
+                            ->helperText('Введите цифры штрихкода. Изображение штрихкода будет генерироваться автоматически.'),
 
-                TextInput::make('barcode')
-                    ->label('Штрихкод')
-                    ->maxLength(255)
-                    ->helperText('Введите цифры штрихкода. Изображение штрихкода будет генерироваться автоматически.'),
-
-                Select::make('brand_id')
-                    ->label('Бренд')
-                    ->relationship('brand', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Select::make('product_line_id')
-                    ->label('Линейка продуктов')
-                    ->relationship('productLine', 'name')
-                    ->searchable()
-                    ->preload(),
-
-                Select::make('product_type_id')
-                    ->label('Тип продукта')
-                    ->relationship('productType', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Select::make('category_id')
-                    ->label('Категория')
-                    ->relationship('category', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Select::make('direction')
-                    ->label('Направление')
-                    ->options([
-                        'home' => 'Home',
-                        'professional' => 'Professional',
+                        TextInput::make('slug')
+                            ->label('Slug')
+                            ->maxLength(255),
                     ])
-                    ->searchable(),
+                    ->columns(2),
 
-                // ===== КОММЕРЦИЯ =====
-                TextInput::make('volume_value')
-                    ->label('Объем (число)')
-                    ->numeric()
-                    ->minValue(0),
+                Section::make('Классификация')
+                    ->schema([
+                        Select::make('brand_id')
+                            ->label('Бренд')
+                            ->relationship('brand', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
 
-                Select::make('volume_unit')
-                    ->label('Единица объема')
-                    ->options([
-                        'ml' => 'мл',
-                        'l' => 'л',
-                        'g' => 'г',
-                        'kg' => 'кг',
+                        Select::make('category_id')
+                            ->label('Категория')
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+
+                        Select::make('product_type_id')
+                            ->label('Тип продукта')
+                            ->relationship('productType', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+
+                        Select::make('product_line_id')
+                            ->label('Линейка продуктов')
+                            ->relationship('productLine', 'name')
+                            ->searchable()
+                            ->preload(),
+
+                        Select::make('direction')
+                            ->label('Направление')
+                            ->options([
+                                'home' => 'Home',
+                                'professional' => 'Professional',
+                            ])
+                            ->searchable(),
                     ])
-                    ->searchable(),
+                    ->columns(2),
 
-                TextInput::make('price')
-                    ->label('Цена')
-                    ->numeric()
-                    ->step(0.01)
-                    ->minValue(0)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set, $get): void {
-                        if (! is_numeric($state)) {
-                            return;
-                        }
-
-                        $discountPercent = $get('discount_percent');
-
-                        if (! is_numeric($discountPercent)) {
-                            return;
-                        }
-
-                        $discountedPrice = round($state - ($state * $discountPercent / 100), 2);
-
-                        if ($get('discounted_price') !== $discountedPrice) {
-                            $set('discounted_price', $discountedPrice);
-                        }
-                    }),
-
-                TextInput::make('discount_percent')
-                    ->label('Скидка (%)')
-                    ->numeric()
-                    ->step(0.1)
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set, $get): void {
-                        if (! is_numeric($state)) {
-                            return;
-                        }
-
-                        $price = $get('price');
-
-                        if (! is_numeric($price)) {
-                            return;
-                        }
-
-                        $discountedPrice = round($price - ($price * $state / 100), 2);
-
-                        if ($get('discounted_price') !== $discountedPrice) {
-                            $set('discounted_price', $discountedPrice);
-                        }
-                    }),
-
-                TextInput::make('discounted_price')
-                    ->label('Цена со скидкой')
-                    ->numeric()
-                    ->step(0.01)
-                    ->minValue(0)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set, $get): void {
-                        if (! is_numeric($state)) {
-                            return;
-                        }
-
-                        $price = $get('price');
-
-                        if (! is_numeric($price) || $price <= 0) {
-                            return;
-                        }
-
-                        $discountPercent = round((($price - $state) / $price) * 100, 1);
-
-                        if ($get('discount_percent') !== $discountPercent) {
-                            $set('discount_percent', $discountPercent);
-                        }
-                    })
-                    ->rules(function (callable $get) {
-                        return [
-                            'numeric',
-                            'min:0',
-                            function ($attribute, $value, $fail) use ($get) {
-                                $price = $get('price');
-
-                                if (! is_numeric($price) || ! is_numeric($value)) {
+                Section::make('Цена и продажи')
+                    ->schema([
+                        TextInput::make('price')
+                            ->label('Цена')
+                            ->numeric()
+                            ->step(0.01)
+                            ->minValue(0)
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set, $get): void {
+                                if (! is_numeric($state)) {
                                     return;
                                 }
 
-                                if ($value > $price) {
-                                    $fail('Цена со скидкой не может быть больше обычной цены.');
+                                $discountPercent = $get('discount_percent');
+
+                                if (! is_numeric($discountPercent)) {
+                                    return;
                                 }
-                            },
-                        ];
-                    })
-                    ->helperText('Оставьте пустым, чтобы рассчитать автоматически.'),
 
-                // ===== ОПИСАНИЕ ТОВАРА =====
-                Textarea::make('short_description')
-                    ->label('Краткое описание')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                                $discountedPrice = round($state - ($state * $discountPercent / 100), 2);
 
-                Textarea::make('description')
-                    ->label('Описание')
-                    ->rows(5)
-                    ->columnSpanFull(),
+                                if ($get('discounted_price') !== $discountedPrice) {
+                                    $set('discounted_price', $discountedPrice);
+                                }
+                            }),
 
-                Textarea::make('composition')
-                    ->label('Состав')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                        TextInput::make('discount_percent')
+                            ->label('Скидка (%)')
+                            ->numeric()
+                            ->step(0.1)
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set, $get): void {
+                                if (! is_numeric($state)) {
+                                    return;
+                                }
 
-                Textarea::make('usage_method')
-                    ->label('Способ применения')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                                $price = $get('price');
 
-                Textarea::make('storage_conditions')
-                    ->label('Условия хранения')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                                if (! is_numeric($price)) {
+                                    return;
+                                }
 
-                // ===== СРОК ГОДНОСТИ =====
-                TextInput::make('shelf_life_value')
-                    ->label('Срок годности (число)')
-                    ->numeric()
-                    ->minValue(0),
+                                $discountedPrice = round($price - ($price * $state / 100), 2);
 
-                Select::make('shelf_life_unit')
-                    ->label('Единица срока годности')
-                    ->options([
-                        'days' => 'Дней',
-                        'months' => 'Месяцев',
-                        'years' => 'Лет',
+                                if ($get('discounted_price') !== $discountedPrice) {
+                                    $set('discounted_price', $discountedPrice);
+                                }
+                            }),
+
+                        TextInput::make('discounted_price')
+                            ->label('Цена со скидкой')
+                            ->numeric()
+                            ->step(0.01)
+                            ->minValue(0)
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set, $get): void {
+                                if (! is_numeric($state)) {
+                                    return;
+                                }
+
+                                $price = $get('price');
+
+                                if (! is_numeric($price) || $price <= 0) {
+                                    return;
+                                }
+
+                                $discountPercent = round((($price - $state) / $price) * 100, 1);
+
+                                if ($get('discount_percent') !== $discountPercent) {
+                                    $set('discount_percent', $discountPercent);
+                                }
+                            })
+                            ->rules(function (callable $get) {
+                                return [
+                                    'numeric',
+                                    'min:0',
+                                    function ($attribute, $value, $fail) use ($get) {
+                                        $price = $get('price');
+
+                                        if (! is_numeric($price) || ! is_numeric($value)) {
+                                            return;
+                                        }
+
+                                        if ($value > $price) {
+                                            $fail('Цена со скидкой не может быть больше обычной цены.');
+                                        }
+                                    },
+                                ];
+                            })
+                            ->helperText('Оставьте пустым, чтобы рассчитать автоматически.'),
+
+                        Toggle::make('is_featured')
+                            ->label('Выгодно'),
+
+                        Toggle::make('is_best_seller')
+                            ->label('Хит продаж'),
+
+                        Toggle::make('is_new')
+                            ->label('Новинка'),
+
+                        Toggle::make('is_active')
+                            ->label('Активен')
+                            ->default(true),
+
+                        TextInput::make('sort_order')
+                            ->label('Порядок сортировки')
+                            ->numeric()
+                            ->default(0),
                     ])
-                    ->searchable(),
+                    ->columns(3),
 
-                // ===== ДОКУМЕНТАЦИЯ =====
-                Select::make('certificate_ids')
-                    ->label('Документация')
-                    ->multiple()
-                    ->relationship('certificates', 'name')
-                    ->options(function () {
-                        return Certificate::query()
-                            ->orderBy('name')
-                            ->get()
-                            ->mapWithKeys(fn ($certificate) => [
-                                $certificate->id => sprintf(
-                                    '%s %s%s — %s',
-                                    $certificate->is_permanent
-                                        ? '🔵'
-                                        : ($certificate->expires_at && $certificate->expires_at->isPast()
-                                            ? '🔴'
-                                            : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                                ? '🟡'
-                                                : '🟢')),
-                                    $certificate->name,
-                                    $certificate->number ? " №{$certificate->number}" : '',
-                                    $certificate->is_permanent
-                                        ? 'бессрочно'
-                                        : ($certificate->expires_at && $certificate->expires_at->isPast()
-                                            ? 'просрочен'
-                                            : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                                ? 'скоро истекает'
-                                                : 'действует'))
-                                ),
-                            ]);
-                    })
-                    ->rules([new NoExpiredCertificates()])
-                    ->searchable()
-                    ->preload()
-                    ->columnSpanFull(),
+                Section::make('Характеристики')
+                    ->schema([
+                        TextInput::make('volume_value')
+                            ->label('Объем (число)')
+                            ->numeric()
+                            ->minValue(0),
 
-                FileUpload::make('instruction_file_path')
-                    ->label('Инструкция (PDF)')
-                    ->disk('public')
-                    ->directory('product-instructions')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->openable()
-                    ->downloadable()
-                    ->columnSpanFull(),
+                        Select::make('volume_unit')
+                            ->label('Единица объема')
+                            ->options([
+                                'ml' => 'мл',
+                                'l' => 'л',
+                                'g' => 'г',
+                                'kg' => 'кг',
+                            ])
+                            ->searchable(),
 
-                ViewField::make('instruction_file_preview')
-                    ->label('Предпросмотр инструкции')
-                    ->view('filament.forms.components.product-instruction-pdf-preview')
-                    ->visible(fn ($get) => filled($get('instruction_file_path')) && str_starts_with($get('instruction_file_path'), 'product-instructions/'))
-                    ->columnSpanFull(),
+                        TextInput::make('shelf_life_value')
+                            ->label('Срок годности (число)')
+                            ->numeric()
+                            ->minValue(0),
 
-                // ===== SEO =====
-                TextInput::make('seo_title')
-                    ->label('SEO Title')
-                    ->maxLength(255)
-                    ->helperText('Заголовок для поисковых систем'),
+                        Select::make('shelf_life_unit')
+                            ->label('Единица срока годности')
+                            ->options([
+                                'days' => 'Дней',
+                                'months' => 'Месяцев',
+                                'years' => 'Лет',
+                            ])
+                            ->searchable(),
+                    ])
+                    ->columns(2),
 
-                Textarea::make('seo_description')
-                    ->label('SEO Description')
-                    ->rows(3)
-                    ->helperText('Описание для поисковых систем')
-                    ->columnSpanFull(),
+                Section::make('Описание')
+                    ->schema([
+                        Textarea::make('short_description')
+                            ->label('Краткое описание')
+                            ->rows(3)
+                            ->columnSpanFull(),
 
-                // ===== ПУБЛИКАЦИЯ И МЕТКИ =====
-                Toggle::make('is_active')
-                    ->label('Активен')
-                    ->default(true),
+                        Textarea::make('description')
+                            ->label('Описание')
+                            ->rows(5)
+                            ->columnSpanFull(),
 
-                Toggle::make('is_featured')
-                    ->label('Выгодно'),
+                        Textarea::make('composition')
+                            ->label('Состав')
+                            ->rows(3)
+                            ->columnSpanFull(),
 
-                Toggle::make('is_new')
-                    ->label('Новинка'),
+                        Textarea::make('usage_method')
+                            ->label('Способ применения')
+                            ->rows(3)
+                            ->columnSpanFull(),
 
-                Toggle::make('is_best_seller')
-                    ->label('Хит продаж'),
+                        Textarea::make('storage_conditions')
+                            ->label('Условия хранения')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ]),
 
-                TextInput::make('sort_order')
-                    ->label('Порядок сортировки')
-                    ->numeric()
-                    ->default(0),
+                Section::make('Документация')
+                    ->schema([
+                        Select::make('certificate_ids')
+                            ->label('Документация')
+                            ->multiple()
+                            ->relationship('certificates', 'name')
+                            ->options(function () {
+                                return Certificate::query()
+                                    ->orderBy('name')
+                                    ->get()
+                                    ->mapWithKeys(fn ($certificate) => [
+                                        $certificate->id => sprintf(
+                                            '%s %s%s — %s',
+                                            $certificate->is_permanent
+                                                ? 'бессрочно'
+                                                : ($certificate->expires_at && $certificate->expires_at->isPast()
+                                                    ? 'просрочен'
+                                                    : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                                        ? 'скоро истекает'
+                                                        : 'действует')),
+                                            $certificate->name,
+                                            $certificate->number ? " №{$certificate->number}" : '',
+                                            $certificate->is_permanent
+                                                ? 'бессрочно'
+                                                : ($certificate->expires_at && $certificate->expires_at->isPast()
+                                                    ? 'просрочен'
+                                                    : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
+                                                        ? 'скоро истекает'
+                                                        : 'действует'))
+                                        ),
+                                    ]);
+                            })
+                            ->rules([new NoExpiredCertificates()])
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull(),
+
+                        FileUpload::make('instruction_file_path')
+                            ->label('Инструкция (PDF)')
+                            ->disk('public')
+                            ->directory('product-instructions')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->openable()
+                            ->downloadable()
+                            ->columnSpanFull(),
+
+                        ViewField::make('instruction_file_preview')
+                            ->label('Предпросмотр инструкции')
+                            ->view('filament.forms.components.product-instruction-pdf-preview')
+                            ->visible(fn ($get) => filled($get('instruction_file_path')) && str_starts_with($get('instruction_file_path'), 'product-instructions/'))
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('SEO')
+                    ->schema([
+                        TextInput::make('seo_title')
+                            ->label('SEO Title')
+                            ->maxLength(255)
+                            ->helperText('Заголовок для поисковых систем'),
+
+                        Textarea::make('seo_description')
+                            ->label('SEO Description')
+                            ->rows(3)
+                            ->helperText('Описание для поисковых систем')
+                            ->columnSpanFull(),
+                    ]),
+
             ]);
     }
 }

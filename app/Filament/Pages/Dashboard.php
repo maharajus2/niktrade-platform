@@ -25,9 +25,9 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            RussianTimeWidget::class,
             ProductStatsWidget::class,
             SalesStatsWidget::class,
-            RussianTimeWidget::class,
             AnalyticsPlaceholderWidget::class,
         ];
     }

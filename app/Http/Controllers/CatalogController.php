@@ -58,4 +58,42 @@ class CatalogController extends Controller
             ],
         ]);
     }
+
+    public function show(string $product): View
+    {
+        $product = Product::query()
+            ->where('is_active', true)
+            ->where(function ($query) use ($product) {
+                $query->where('slug', $product);
+
+                if (ctype_digit($product)) {
+                    $query->orWhere('id', (int) $product);
+                }
+            })
+            ->with([
+                'brand',
+                'category',
+                'productType',
+                'productLine',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_main')
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+                'certificates' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('expires_at')
+                    ->orderBy('name'),
+            ])
+            ->firstOrFail();
+
+        return view('catalog.show', [
+            'product' => $product,
+            'mainImage' => $product->images->first(),
+            'galleryImages' => $product->images,
+            'directions' => [
+                'home' => 'Домашний уход',
+                'professional' => 'Профессиональный уход',
+            ],
+        ]);
+    }
 }

@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');

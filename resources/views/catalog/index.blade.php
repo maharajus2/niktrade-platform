@@ -283,7 +283,7 @@
                     @endphp
 
                     <article class="card">
-                        <div class="image">
+                        <a class="image" href="{{ route('catalog.show', $product->slug ?: $product->id) }}">
                             @if ($mainImage)
                                 <img
                                     src="{{ Storage::disk('public')->url($mainImage->file_path) }}"
@@ -293,10 +293,12 @@
                             @else
                                 <span class="placeholder">Нет изображения</span>
                             @endif
-                        </div>
+                        </a>
 
                         <div class="card-body">
-                            <h2 class="name">{{ $product->name }}</h2>
+                            <h2 class="name">
+                                <a href="{{ route('catalog.show', $product->slug ?: $product->id) }}">{{ $product->name }}</a>
+                            </h2>
 
                             @if ($product->article)
                                 <div class="meta">Артикул: {{ $product->article }}</div>

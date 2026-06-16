@@ -10,8 +10,6 @@ class EditProduct extends EditRecord
 {
     protected static string $resource = ProductResource::class;
 
-    protected string $view = 'filament.resources.products.pages.edit-product';
-
     protected function getHeaderActions(): array
     {
         return [

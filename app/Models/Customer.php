@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'phone',
+        'password',
         'birthday',
         'is_active',
         'accepts_marketing',
@@ -19,8 +20,15 @@ class Customer extends Model
         'comment',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected $casts = [
         'birthday' => 'date',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
         'is_active' => 'boolean',
         'accepts_marketing' => 'boolean',
         'is_quick_registered' => 'boolean',

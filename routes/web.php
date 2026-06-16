@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,3 +19,14 @@ Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroyItem'])-
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+Route::middleware('guest:customer')->group(function () {
+    Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
+    Route::post('/register', [CustomerAuthController::class, 'register'])->name('customer.register.store');
+    Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
+    Route::post('/login', [CustomerAuthController::class, 'login'])->name('customer.login.store');
+});
+
+Route::middleware('auth:customer')->group(function () {
+    Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
+});

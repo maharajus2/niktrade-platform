@@ -68,7 +68,8 @@
         }
 
         .public-header__link,
-        .public-header__cart {
+        .public-header__cart,
+        .public-header__logout {
             border-radius: 8px;
             padding: 9px 12px;
             text-decoration: none;
@@ -76,6 +77,15 @@
 
         .public-header__link {
             color: #374151;
+            font-weight: 700;
+        }
+
+        .public-header__logout {
+            border: 0;
+            background: transparent;
+            color: #374151;
+            cursor: pointer;
+            font: inherit;
             font-weight: 700;
         }
 
@@ -106,6 +116,18 @@
 
             <nav class="public-header__nav" aria-label="Основная навигация">
                 <a class="public-header__link" href="{{ route('catalog.index') }}">Каталог</a>
+
+                @if (\Illuminate\Support\Facades\Auth::guard('customer')->check())
+                    <form method="POST" action="{{ route('customer.logout') }}">
+                        @csrf
+
+                        <button class="public-header__logout" type="submit">Выйти</button>
+                    </form>
+                @else
+                    <a class="public-header__link" href="{{ route('customer.login') }}">Войти</a>
+                    <a class="public-header__link" href="{{ route('customer.register') }}">Регистрация</a>
+                @endif
+
                 <a class="public-header__cart" href="{{ route('cart.index') }}">🛒 Корзина ({{ $cartQuantity }})</a>
             </nav>
         </div>

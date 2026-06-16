@@ -129,7 +129,7 @@
         .button,
         .link-button,
         .danger-button,
-        .disabled-button {
+        .checkout-button {
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -160,11 +160,10 @@
             cursor: pointer;
         }
 
-        .disabled-button {
+        .checkout-button {
             width: 100%;
-            background: #d1d5db;
-            color: #4b5563;
-            cursor: not-allowed;
+            background: #166534;
+            color: #ffffff;
         }
 
         .totals {
@@ -338,7 +337,7 @@
                         <strong>{{ number_format((float) $cart->total, 2, ',', ' ') }} ₽</strong>
                     </div>
 
-                    <button class="disabled-button" type="button" disabled>Оформить заказ</button>
+                    <a class="checkout-button" href="{{ route('checkout.index') }}">Оформить заказ</a>
                 </aside>
             </div>
         @endif

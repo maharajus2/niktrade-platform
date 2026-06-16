@@ -1,5 +1,28 @@
 <x-filament-widgets::widget>
     <x-filament::section>
+        <style>
+            .niktrade-time-widget-layout {
+                display: grid;
+                gap: 1.5rem;
+            }
+
+            .niktrade-time-widget-clock-column {
+                display: flex;
+                justify-content: center;
+            }
+
+            @media (min-width: 520px) {
+                .niktrade-time-widget-layout {
+                    grid-template-columns: minmax(0, 1fr) 160px;
+                    align-items: center;
+                }
+
+                .niktrade-time-widget-clock-column {
+                    justify-content: flex-end;
+                }
+            }
+        </style>
+
         <div
             class="space-y-4"
             x-data="{
@@ -48,7 +71,7 @@
             }"
             wire:poll.30s
         >
-            <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_160px] md:items-center">
+            <div class="niktrade-time-widget-layout">
                 <div class="space-y-4">
                     <div>
                         <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -81,7 +104,7 @@
                     </label>
                 </div>
 
-                <div class="flex justify-center md:justify-end">
+                <div class="niktrade-time-widget-clock-column">
                     <div
                         aria-label="Аналоговые часы"
                         style="

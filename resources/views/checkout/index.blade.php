@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформление заказа</title>
+@extends('layouts.public')
 
+@section('title', 'Оформление заказа')
+
+@push('styles')
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #111827;
-            font-family: Inter, Arial, sans-serif;
-        }
-
-        a {
-            color: inherit;
-        }
-
         .page {
             width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
@@ -206,8 +189,9 @@
             }
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <main class="page">
         <header class="header">
             <h1 class="title">Оформление заказа</h1>
@@ -260,6 +244,22 @@
                     <h2 class="section-title">Доставка</h2>
 
                     <div class="fields">
+                        <label class="field">
+                            <span class="label">Индекс</span>
+                            <input class="input" type="text" name="postal_code" value="{{ old('postal_code') }}">
+                            @error('postal_code')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label class="field">
+                            <span class="label">Регион</span>
+                            <input class="input" type="text" name="region" value="{{ old('region') }}">
+                            @error('region')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
                         <label class="field">
                             <span class="label">Город</span>
                             <input class="input" type="text" name="city" value="{{ old('city') }}" required>
@@ -357,5 +357,4 @@
             </aside>
         </div>
     </main>
-</body>
-</html>
+@endsection

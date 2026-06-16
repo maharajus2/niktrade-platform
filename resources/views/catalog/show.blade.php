@@ -1,30 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $product->seo_title ?: $product->name }}</title>
+@extends('layouts.public')
 
-    @if ($product->seo_description ?: $product->short_description)
-        <meta name="description" content="{{ $product->seo_description ?: $product->short_description }}">
-    @endif
+@section('title', $product->seo_title ?: $product->name)
 
+@if ($product->seo_description ?: $product->short_description)
+    @section('meta_description', $product->seo_description ?: $product->short_description)
+@endif
+
+@push('styles')
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #111827;
-            font-family: Inter, Arial, sans-serif;
-        }
-
-        a {
-            color: inherit;
-        }
-
         .page {
             width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
@@ -139,16 +122,41 @@
             font-weight: 800;
         }
 
-        .button {
+        .cart-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .button,
+        .cart-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             width: fit-content;
             border: 0;
             border-radius: 8px;
-            background: #166534;
-            color: #ffffff;
             font: inherit;
             font-weight: 800;
             padding: 12px 18px;
+            text-decoration: none;
+        }
+
+        .button {
+            background: #166534;
+            color: #ffffff;
             cursor: pointer;
+        }
+
+        .cart-link {
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .cart-state {
+            color: #166534;
+            font-weight: 800;
         }
 
         .alert {
@@ -264,8 +272,9 @@
             }
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <main class="page">
         <a class="back" href="{{ route('catalog.index') }}">← Вернуться в каталог</a>
 
@@ -274,6 +283,7 @@
                 && $product->price !== null
                 && $product->discounted_price < $product->price;
 
+            $hasDiscountPercent = (float) ($product->discount_percent ?? 0) > 0;
             $directionLabel = $directions[$product->direction] ?? $product->direction;
         @endphp
 
@@ -332,7 +342,7 @@
                         <span class="current-price">{{ number_format((float) $product->price, 2, ',', ' ') }} ₽</span>
                     @endif
 
-                    @if ($product->discount_percent)
+                    @if ($hasDiscountPercent)
                         <span class="discount">Скидка {{ number_format((float) $product->discount_percent, 2, ',', ' ') }}%</span>
                     @endif
                 </div>
@@ -341,11 +351,23 @@
                     <div class="alert">{{ session('success') }}</div>
                 @endif
 
-                <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
-                    @csrf
+                @if ($cartProductQuantity > 0)
+                    <div class="cart-state">В корзине: {{ $cartProductQuantity }} шт.</div>
+                @endif
 
-                    <button class="button" type="submit">Добавить в корзину</button>
-                </form>
+                <div class="cart-actions">
+                    <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                        @csrf
+
+                        <button class="button" type="submit">
+                            {{ $cartProductQuantity > 0 ? 'Товар в корзине' : 'Добавить в корзину' }}
+                        </button>
+                    </form>
+
+                    @if ($cartProductQuantity > 0)
+                        <a class="cart-link" href="{{ route('cart.index') }}">Перейти в корзину</a>
+                    @endif
+                </div>
 
                 <div class="specs">
                     @if ($product->brand)
@@ -485,5 +507,4 @@
             @endif
         </div>
     </main>
-</body>
-</html>
+@endsection

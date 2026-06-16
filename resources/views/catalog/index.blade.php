@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог товаров</title>
+@extends('layouts.public')
 
+@section('title', 'Каталог товаров')
+
+@push('styles')
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #111827;
-            font-family: Inter, Arial, sans-serif;
-        }
-
-        a {
-            color: inherit;
-        }
-
         .page {
             width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
@@ -208,8 +191,9 @@
             }
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <main class="page">
         <header class="header">
             <div>
@@ -279,7 +263,9 @@
                 @foreach ($products as $product)
                     @php
                         $mainImage = $product->images->first();
-                        $hasDiscount = $product->discounted_price !== null && $product->price !== null && $product->discounted_price < $product->price;
+                        $hasDiscount = $product->discounted_price !== null
+                            && $product->price !== null
+                            && $product->discounted_price < $product->price;
                     @endphp
 
                     <article class="card">
@@ -330,5 +316,4 @@
             <div class="empty">По выбранным условиям товары не найдены.</div>
         @endif
     </main>
-</body>
-</html>
+@endsection

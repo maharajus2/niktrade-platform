@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class CatalogController extends Controller
         ]);
     }
 
-    public function show(string $product): View
+    public function show(Request $request, string $product): View
     {
         $product = Product::query()
             ->where('is_active', true)
@@ -90,10 +91,21 @@ class CatalogController extends Controller
             'product' => $product,
             'mainImage' => $product->images->first(),
             'galleryImages' => $product->images,
+            'cartProductQuantity' => $this->getCartProductQuantity($request, $product),
             'directions' => [
                 'home' => 'Домашний уход',
                 'professional' => 'Профессиональный уход',
             ],
         ]);
+    }
+
+    private function getCartProductQuantity(Request $request, Product $product): int
+    {
+        return (int) CartItem::query()
+            ->where('product_id', $product->id)
+            ->whereHas('cart', fn ($query) => $query
+                ->where('session_id', $request->session()->getId())
+                ->where('status', 'active'))
+            ->sum('quantity');
     }
 }

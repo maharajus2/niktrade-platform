@@ -38,6 +38,8 @@ class CheckoutController extends Controller
             'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'string', 'max:255'],
+            'region' => ['nullable', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
             'street' => ['required', 'string', 'max:255'],
             'house' => ['required', 'string', 'max:255'],

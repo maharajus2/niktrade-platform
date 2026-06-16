@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корзина</title>
+@extends('layouts.public')
 
+@section('title', 'Корзина')
+
+@push('styles')
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #f8fafc;
-            color: #111827;
-            font-family: Inter, Arial, sans-serif;
-        }
-
-        a {
-            color: inherit;
-        }
-
         .page {
             width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
@@ -235,8 +218,9 @@
             }
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <main class="page">
         <header class="header">
             <h1 class="title">Корзина</h1>
@@ -259,6 +243,7 @@
                         @php
                             $product = $item->product;
                             $image = $product?->images->first();
+                            $hasDiscount = (float) ($item->discount_snapshot ?? 0) > 0;
                         @endphp
 
                         <article class="item">
@@ -290,7 +275,11 @@
 
                             <div class="prices">
                                 <div>Цена: {{ number_format((float) $item->price_snapshot, 2, ',', ' ') }} ₽</div>
-                                <div>Скидка: {{ number_format((float) $item->discount_snapshot, 2, ',', ' ') }}%</div>
+
+                                @if ($hasDiscount)
+                                    <div>Скидка: {{ number_format((float) $item->discount_snapshot, 2, ',', ' ') }}%</div>
+                                @endif
+
                                 <div class="line-total">Итого: {{ number_format((float) $item->line_total, 2, ',', ' ') }} ₽</div>
                             </div>
 
@@ -342,5 +331,4 @@
             </div>
         @endif
     </main>
-</body>
-</html>
+@endsection

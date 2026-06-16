@@ -1,30 +1,15 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заказ оформлен</title>
+@extends('layouts.public')
 
+@section('title', 'Заказ оформлен')
+
+@push('styles')
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: #f8fafc;
-            color: #111827;
-            font-family: Inter, Arial, sans-serif;
-        }
-
         .page {
             width: min(720px, calc(100% - 32px));
             margin: 0 auto;
-            min-height: 100vh;
             display: grid;
             place-items: center;
-            padding: 32px 0;
+            padding: 48px 0;
         }
 
         .card {
@@ -70,8 +55,9 @@
             text-decoration: none;
         }
     </style>
-</head>
-<body>
+@endpush
+
+@section('content')
     <main class="page">
         <section class="card">
             <h1 class="title">Спасибо за заказ!</h1>
@@ -81,5 +67,4 @@
             <a class="button" href="{{ route('catalog.index') }}">Вернуться в каталог</a>
         </section>
     </main>
-</body>
-</html>
+@endsection

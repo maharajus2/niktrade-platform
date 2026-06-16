@@ -143,12 +143,21 @@
             width: fit-content;
             border: 0;
             border-radius: 8px;
-            background: #d1d5db;
-            color: #4b5563;
+            background: #166534;
+            color: #ffffff;
             font: inherit;
             font-weight: 800;
             padding: 12px 18px;
-            cursor: not-allowed;
+            cursor: pointer;
+        }
+
+        .alert {
+            width: fit-content;
+            border-radius: 8px;
+            background: #ecfdf5;
+            color: #166534;
+            font-weight: 700;
+            padding: 10px 14px;
         }
 
         .specs,
@@ -328,7 +337,15 @@
                     @endif
                 </div>
 
-                <button class="button" type="button" disabled>Скоро можно будет добавить в корзину</button>
+                @if (session('success'))
+                    <div class="alert">{{ session('success') }}</div>
+                @endif
+
+                <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                    @csrf
+
+                    <button class="button" type="submit">Добавить в корзину</button>
+                </form>
 
                 <div class="specs">
                     @if ($product->brand)

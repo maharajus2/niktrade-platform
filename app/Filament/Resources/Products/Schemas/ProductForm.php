@@ -256,36 +256,15 @@ class ProductForm
 
                 Section::make('Документация')
                     ->schema([
-                        Select::make('certificate_ids')
+                        Select::make('certificates')
                             ->label('Документация')
                             ->multiple()
-                            ->relationship('certificates', 'name')
-                            ->options(function () {
-                                return Certificate::query()
-                                    ->orderBy('name')
-                                    ->get()
-                                    ->mapWithKeys(fn ($certificate) => [
-                                        $certificate->id => sprintf(
-                                            '%s %s%s — %s',
-                                            $certificate->is_permanent
-                                                ? 'бессрочно'
-                                                : ($certificate->expires_at && $certificate->expires_at->isPast()
-                                                    ? 'просрочен'
-                                                    : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                                        ? 'скоро истекает'
-                                                        : 'действует')),
-                                            $certificate->name,
-                                            $certificate->number ? " №{$certificate->number}" : '',
-                                            $certificate->is_permanent
-                                                ? 'бессрочно'
-                                                : ($certificate->expires_at && $certificate->expires_at->isPast()
-                                                    ? 'просрочен'
-                                                    : ($certificate->expires_at && $certificate->expires_at->lte(now()->addDays(30))
-                                                        ? 'скоро истекает'
-                                                        : 'действует'))
-                                        ),
-                                    ]);
-                            })
+                            ->relationship(
+                                name: 'certificates',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn ($query) => $query->orderBy('name'),
+                            )
+                            ->getOptionLabelFromRecordUsing(fn (Certificate $record): string => self::formatCertificateOptionLabel($record))
                             ->rules([new NoExpiredCertificates()])
                             ->searchable()
                             ->preload()
@@ -322,5 +301,34 @@ class ProductForm
                     ]),
 
             ]);
+    }
+
+    private static function formatCertificateOptionLabel(Certificate $certificate): string
+    {
+        $number = $certificate->number ? " №{$certificate->number}" : '';
+
+        return sprintf(
+            '%s %s%s',
+            self::getCertificateStatusLabel($certificate),
+            $certificate->name,
+            $number,
+        );
+    }
+
+    private static function getCertificateStatusLabel(Certificate $certificate): string
+    {
+        if ($certificate->is_permanent) {
+            return '🔵 бессрочно';
+        }
+
+        if ($certificate->expires_at?->isPast()) {
+            return '🔴 просрочен';
+        }
+
+        if ($certificate->expires_at?->lte(now()->addDays(30))) {
+            return '🟡 скоро истекает';
+        }
+
+        return '🟢 действует';
     }
 }

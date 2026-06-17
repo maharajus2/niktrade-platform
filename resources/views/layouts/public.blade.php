@@ -118,6 +118,8 @@
                 <a class="public-header__link" href="{{ route('catalog.index') }}">Каталог</a>
 
                 @if (\Illuminate\Support\Facades\Auth::guard('customer')->check())
+                    <a class="public-header__link" href="{{ route('customer.account') }}">Кабинет</a>
+
                     <form method="POST" action="{{ route('customer.logout') }}">
                         @csrf
 

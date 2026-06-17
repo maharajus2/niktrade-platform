@@ -3,6 +3,8 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CustomerAccountController;
+use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use Illuminate\Support\Facades\Route;
@@ -31,5 +33,12 @@ Route::middleware('guest:customer')->group(function () {
 
 Route::middleware('auth:customer')->group(function () {
     Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
+    Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('customer.account');
+    Route::get('/account/orders', [CustomerOrderController::class, 'index'])->name('customer.account.orders');
+    Route::get('/account/orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.account.orders.show');
+    Route::get('/account/addresses', [CustomerAddressController::class, 'index'])->name('customer.account.addresses');
+    Route::post('/account/addresses', [CustomerAddressController::class, 'store'])->name('customer.account.addresses.store');
+    Route::patch('/account/addresses/{address}', [CustomerAddressController::class, 'update'])->name('customer.account.addresses.update');
+    Route::delete('/account/addresses/{address}', [CustomerAddressController::class, 'destroy'])->name('customer.account.addresses.destroy');
     Route::post('/account/orders/{order}/cancel', [CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
 });

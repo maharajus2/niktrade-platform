@@ -14,6 +14,8 @@ class OrderItem extends Model
         'product_article',
         'product_slug',
         'product_image_path',
+        'weight_snapshot_value',
+        'weight_snapshot_unit',
         'unit_price',
         'discount_percent',
         'discounted_unit_price',
@@ -25,6 +27,7 @@ class OrderItem extends Model
         'unit_price' => 'decimal:2',
         'discount_percent' => 'decimal:2',
         'discounted_unit_price' => 'decimal:2',
+        'weight_snapshot_value' => 'decimal:3',
         'quantity' => 'integer',
         'line_total' => 'decimal:2',
     ];
@@ -45,5 +48,30 @@ class OrderItem extends Model
         $quantity = max(1, (int) $this->quantity);
 
         return round($unitPrice * $quantity, 2);
+    }
+
+    public function getUnitWeightGrams(): ?int
+    {
+        if ($this->weight_snapshot_value === null) {
+            return null;
+        }
+
+        $weight = (float) $this->weight_snapshot_value;
+
+        return match ($this->weight_snapshot_unit) {
+            'kg' => (int) round($weight * 1000),
+            default => (int) round($weight),
+        };
+    }
+
+    public function getLineWeightGrams(): ?int
+    {
+        $unitWeightGrams = $this->getUnitWeightGrams();
+
+        if ($unitWeightGrams === null) {
+            return null;
+        }
+
+        return $unitWeightGrams * max(1, (int) $this->quantity);
     }
 }

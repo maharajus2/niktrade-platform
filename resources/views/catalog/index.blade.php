@@ -284,6 +284,13 @@
                         ];
                         $availabilityStatus = $product->availability_status ?? 'in_stock';
                         $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
+                        $weightUnitLabels = [
+                            'g' => 'г',
+                            'kg' => 'кг',
+                        ];
+                        $productWeight = $product->weight_value !== null
+                            ? rtrim(rtrim(number_format((float) $product->weight_value, 3, ',', ' '), '0'), ',') . ' ' . ($weightUnitLabels[$product->weight_unit] ?? 'г')
+                            : null;
                     @endphp
 
                     <article class="card">
@@ -312,6 +319,10 @@
                                 <div class="meta">
                                     Объем: {{ trim($product->volume_value . ' ' . $product->volume_unit) }}
                                 </div>
+                            @endif
+
+                            @if ($productWeight)
+                                <div class="meta">Вес: {{ $productWeight }}</div>
                             @endif
 
                             <div class="availability-badge">{{ $availabilityLabel }}</div>

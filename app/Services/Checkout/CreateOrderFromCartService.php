@@ -51,6 +51,8 @@ class CreateOrderFromCartService
                 $this->createOrderItem($order, $item);
             }
 
+            $order->recalculateTotals()->save();
+
             $cart->update([
                 'status' => 'converted',
                 'converted_at' => now(),
@@ -94,6 +96,8 @@ class CreateOrderFromCartService
             'product_article' => $product?->article,
             'product_slug' => $product?->slug,
             'product_image_path' => $this->getProductImagePath($item),
+            'weight_snapshot_value' => $product?->weight_value,
+            'weight_snapshot_unit' => $product?->weight_unit,
             'unit_price' => $unitPrice,
             'discount_percent' => $discountPercent,
             'discounted_unit_price' => $discountedUnitPrice,

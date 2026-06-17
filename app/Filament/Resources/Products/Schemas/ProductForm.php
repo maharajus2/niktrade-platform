@@ -210,6 +210,21 @@ class ProductForm
                             ])
                             ->searchable(),
 
+                        TextInput::make('weight_value')
+                            ->label('Вес')
+                            ->numeric()
+                            ->step(0.001)
+                            ->minValue(0),
+
+                        Select::make('weight_unit')
+                            ->label('Единица веса')
+                            ->options([
+                                'g' => 'г',
+                                'kg' => 'кг',
+                            ])
+                            ->default('g')
+                            ->searchable(),
+
                         TextInput::make('shelf_life_value')
                             ->label('Срок годности (число)')
                             ->numeric()

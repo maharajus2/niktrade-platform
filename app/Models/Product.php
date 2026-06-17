@@ -35,6 +35,8 @@ class Product extends Model
         'shelf_life_unit',
         'volume_value',
         'volume_unit',
+        'weight_value',
+        'weight_unit',
         'price',
         'discount_percent',
         'discounted_price',
@@ -53,6 +55,7 @@ class Product extends Model
     protected $casts = [
         'shelf_life_value' => 'integer',
         'volume_value' => 'integer',
+        'weight_value' => 'decimal:3',
         'discount_percent' => 'float',
         'price' => 'decimal:2',
         'discounted_price' => 'decimal:2',

@@ -307,6 +307,13 @@
             $availabilityStatus = $product->availability_status ?? 'in_stock';
             $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
             $canAddToCart = $availabilityStatus === 'in_stock';
+            $weightUnitLabels = [
+                'g' => 'г',
+                'kg' => 'кг',
+            ];
+            $productWeight = $product->weight_value !== null
+                ? rtrim(rtrim(number_format((float) $product->weight_value, 3, ',', ' '), '0'), ',') . ' ' . ($weightUnitLabels[$product->weight_unit] ?? 'г')
+                : null;
         @endphp
 
         <section class="product">
@@ -437,6 +444,13 @@
                         <div>
                             <div class="spec-label">Объем</div>
                             <div class="spec-value">{{ trim($product->volume_value . ' ' . $product->volume_unit) }}</div>
+                        </div>
+                    @endif
+
+                    @if ($productWeight)
+                        <div>
+                            <div class="spec-label">Вес</div>
+                            <div class="spec-value">{{ $productWeight }}</div>
                         </div>
                     @endif
 

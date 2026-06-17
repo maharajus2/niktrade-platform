@@ -158,8 +158,13 @@ class OrderForm
                             ->label('Итого')
                             ->disabled()
                             ->dehydrated(false),
+
+                        TextInput::make('total_weight_grams')
+                            ->label('Общий вес заказа, г')
+                            ->disabled()
+                            ->dehydrated(false),
                     ])
-                    ->columns(4)
+                    ->columns(5)
                     ->columnSpanFull(),
 
                 Section::make('Комментарий')

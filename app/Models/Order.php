@@ -47,6 +47,7 @@ class Order extends Model
         'discount_total',
         'delivery_total',
         'total',
+        'total_weight_grams',
         'comment',
     ];
 
@@ -55,6 +56,7 @@ class Order extends Model
         'discount_total' => 'decimal:2',
         'delivery_total' => 'decimal:2',
         'total' => 'decimal:2',
+        'total_weight_grams' => 'integer',
     ];
 
     public function customer(): BelongsTo
@@ -80,11 +82,13 @@ class Order extends Model
 
         $subtotal = $items->sum(fn (OrderItem $item): float => (float) $item->unit_price * $item->quantity);
         $itemsTotal = $items->sum(fn (OrderItem $item): float => (float) $item->line_total);
+        $totalWeightGrams = $items->sum(fn (OrderItem $item): int => $item->getLineWeightGrams() ?? 0);
         $deliveryTotal = (float) $this->delivery_total;
 
         $this->subtotal = round($subtotal, 2);
         $this->discount_total = round($subtotal - $itemsTotal, 2);
         $this->total = round($itemsTotal + $deliveryTotal, 2);
+        $this->total_weight_grams = $totalWeightGrams > 0 ? $totalWeightGrams : null;
 
         return $this;
     }

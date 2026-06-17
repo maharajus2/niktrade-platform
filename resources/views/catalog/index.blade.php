@@ -284,12 +284,8 @@
                         ];
                         $availabilityStatus = $product->availability_status ?? 'in_stock';
                         $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
-                        $weightUnitLabels = [
-                            'g' => 'г',
-                            'kg' => 'кг',
-                        ];
                         $productWeight = $product->weight_value !== null
-                            ? rtrim(rtrim(number_format((float) $product->weight_value, 3, ',', ' '), '0'), ',') . ' ' . ($weightUnitLabels[$product->weight_unit] ?? 'г')
+                            ? \App\Support\WeightFormatter::formatValueUnit($product->weight_value, $product->weight_unit)
                             : null;
                     @endphp
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Models\Order;
+use App\Support\WeightFormatter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -161,6 +162,7 @@ class OrderForm
 
                         TextInput::make('total_weight_grams')
                             ->label('Общий вес заказа, г')
+                            ->formatStateUsing(fn (?int $state): string => WeightFormatter::formatGrams($state))
                             ->disabled()
                             ->dehydrated(false),
                     ])

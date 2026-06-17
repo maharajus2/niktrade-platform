@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\RelationManagers;
 
 use App\Models\OrderItem;
+use App\Support\WeightFormatter;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,12 +31,17 @@ class OrderItemsRelationManager extends RelationManager
 
                 TextColumn::make('weight_snapshot_value')
                     ->label('Вес товара')
-                    ->formatStateUsing(fn ($state, OrderItem $record): string => self::formatItemWeight($record)),
+                    ->formatStateUsing(
+                        fn ($state, OrderItem $record): string => WeightFormatter::formatValueUnit(
+                            $record->weight_snapshot_value,
+                            $record->weight_snapshot_unit
+                        )
+                    ),
 
                 TextColumn::make('line_weight_grams')
                     ->label('Вес позиции')
                     ->state(fn (OrderItem $record): ?int => $record->getLineWeightGrams())
-                    ->formatStateUsing(fn (?int $state): string => $state !== null ? $state . ' г' : '—'),
+                    ->formatStateUsing(fn (?int $state): string => WeightFormatter::formatGrams($state)),
 
                 TextColumn::make('unit_price')
                     ->label('Цена')
@@ -52,20 +58,5 @@ class OrderItemsRelationManager extends RelationManager
                     ->label('Сумма')
                     ->money('RUB'),
             ]);
-    }
-
-    private static function formatItemWeight(OrderItem $record): string
-    {
-        if ($record->weight_snapshot_value === null) {
-            return '—';
-        }
-
-        $value = rtrim(rtrim(number_format((float) $record->weight_snapshot_value, 3, ',', ' '), '0'), ',');
-        $unit = match ($record->weight_snapshot_unit) {
-            'kg' => 'кг',
-            default => 'г',
-        };
-
-        return $value . ' ' . $unit;
     }
 }

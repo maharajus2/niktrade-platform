@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     public const STATUS_NEW = 'new';
-    public const STATUS_PROCESSING = 'processing';
-    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_ASSEMBLING = 'assembling';
+    public const STATUS_ASSEMBLED = 'assembled';
+    public const STATUS_HANDED_TO_DELIVERY = 'handed_to_delivery';
+    public const STATUS_DELIVERED = 'delivered';
     public const STATUS_CANCELLED = 'cancelled';
+
+    public const LEGACY_STATUS_PROCESSING = 'processing';
 
     public const PAYMENT_STATUS_PENDING = 'pending';
     public const PAYMENT_STATUS_PAID = 'paid';
@@ -91,5 +95,64 @@ class Order extends Model
         $this->total_weight_grams = $totalWeightGrams > 0 ? $totalWeightGrams : null;
 
         return $this;
+    }
+
+    public static function statusOptions(): array
+    {
+        return [
+            self::STATUS_NEW => 'Новый',
+            self::STATUS_ASSEMBLING => 'Собирается',
+            self::STATUS_ASSEMBLED => 'Собран',
+            self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
+            self::STATUS_DELIVERED => 'Доставлен',
+            self::STATUS_CANCELLED => 'Отменён',
+        ];
+    }
+
+    public static function statusLabel(?string $status): string
+    {
+        return match ($status) {
+            self::STATUS_NEW => 'Новый',
+            self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'Собирается',
+            self::STATUS_ASSEMBLED => 'Собран',
+            self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
+            self::STATUS_DELIVERED => 'Доставлен',
+            self::STATUS_CANCELLED => 'Отменён',
+            default => $status ?? '—',
+        };
+    }
+
+    public static function statusColor(?string $status): string
+    {
+        return match ($status) {
+            self::STATUS_NEW => 'gray',
+            self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'warning',
+            self::STATUS_ASSEMBLED => 'info',
+            self::STATUS_HANDED_TO_DELIVERY => 'primary',
+            self::STATUS_DELIVERED => 'success',
+            self::STATUS_CANCELLED => 'danger',
+            default => 'gray',
+        };
+    }
+
+    public function canBeCancelledByCustomer(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_NEW,
+            self::STATUS_ASSEMBLING,
+            self::STATUS_ASSEMBLED,
+            self::LEGACY_STATUS_PROCESSING,
+        ], true);
+    }
+
+    public function cancelByCustomer(): void
+    {
+        if (! $this->canBeCancelledByCustomer()) {
+            return;
+        }
+
+        $this->update([
+            'status' => self::STATUS_CANCELLED,
+        ]);
     }
 }

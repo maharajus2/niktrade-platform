@@ -42,13 +42,8 @@ class OrdersTable
                 TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
-                    ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        Order::STATUS_NEW => 'Новый',
-                        Order::STATUS_PROCESSING => 'В обработке',
-                        Order::STATUS_COMPLETED => 'Завершен',
-                        Order::STATUS_CANCELLED => 'Отменен',
-                        default => $state ?? '—',
-                    }),
+                    ->formatStateUsing(fn (?string $state): string => Order::statusLabel($state))
+                    ->color(fn (?string $state): string => Order::statusColor($state)),
 
                 TextColumn::make('payment_status')
                     ->label('Оплата')
@@ -84,12 +79,7 @@ class OrdersTable
             ->filters([
                 SelectFilter::make('status')
                     ->label('Статус')
-                    ->options([
-                        Order::STATUS_NEW => 'Новый',
-                        Order::STATUS_PROCESSING => 'В обработке',
-                        Order::STATUS_COMPLETED => 'Завершен',
-                        Order::STATUS_CANCELLED => 'Отменен',
-                    ]),
+                    ->options(Order::statusOptions()),
 
                 SelectFilter::make('payment_status')
                     ->label('Оплата')

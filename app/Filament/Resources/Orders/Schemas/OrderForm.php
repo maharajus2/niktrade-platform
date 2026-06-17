@@ -51,12 +51,7 @@ class OrderForm
                     ->schema([
                         Select::make('status')
                             ->label('Статус')
-                            ->options([
-                                Order::STATUS_NEW => 'Новый',
-                                Order::STATUS_PROCESSING => 'В обработке',
-                                Order::STATUS_COMPLETED => 'Завершен',
-                                Order::STATUS_CANCELLED => 'Отменен',
-                            ])
+                            ->options(Order::statusOptions())
                             ->required(),
 
                         Select::make('payment_status')

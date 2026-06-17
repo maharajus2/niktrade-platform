@@ -223,6 +223,16 @@ class ProductForm
                                 'years' => 'Лет',
                             ])
                             ->searchable(),
+
+                        Select::make('availability_status')
+                            ->label('Статус наличия')
+                            ->options([
+                                'in_stock' => 'В наличии',
+                                'out_of_stock' => 'Временно отсутствует',
+                                'discontinued' => 'Снят с производства',
+                            ])
+                            ->default('in_stock')
+                            ->required(),
                     ])
                     ->columns(2),
 
@@ -250,6 +260,16 @@ class ProductForm
 
                         Textarea::make('storage_conditions')
                             ->label('Условия хранения')
+                            ->rows(3)
+                            ->columnSpanFull(),
+
+                        Textarea::make('precautions')
+                            ->label('Меры предосторожности')
+                            ->rows(3)
+                            ->columnSpanFull(),
+
+                        Textarea::make('disposal_method')
+                            ->label('Утилизация')
                             ->rows(3)
                             ->columnSpanFull(),
                     ]),

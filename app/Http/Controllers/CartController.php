@@ -44,6 +44,12 @@ class CartController extends Controller
             })
             ->firstOrFail();
 
+        if (($product->availability_status ?? 'in_stock') !== 'in_stock') {
+            return back()->withErrors([
+                'cart' => 'Этот товар сейчас недоступен для заказа.',
+            ]);
+        }
+
         DB::transaction(function () use ($request, $product) {
             $cart = Cart::query()->firstOrCreate(
                 [

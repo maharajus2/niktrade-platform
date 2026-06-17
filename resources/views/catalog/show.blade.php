@@ -98,6 +98,15 @@
             font-weight: 700;
         }
 
+        .availability-badge {
+            width: fit-content;
+            border-radius: 999px;
+            background: #f9fafb;
+            color: #111827;
+            padding: 6px 10px;
+            font-weight: 800;
+        }
+
         .price {
             display: flex;
             flex-wrap: wrap;
@@ -147,6 +156,11 @@
             background: #166534;
             color: #ffffff;
             cursor: pointer;
+        }
+
+        .button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
 
         .cart-link {
@@ -285,6 +299,14 @@
 
             $hasDiscountPercent = (float) ($product->discount_percent ?? 0) > 0;
             $directionLabel = $directions[$product->direction] ?? $product->direction;
+            $availabilityLabels = [
+                'in_stock' => '🟢 В наличии',
+                'out_of_stock' => '🟡 Временно отсутствует',
+                'discontinued' => '🔴 Снят с производства',
+            ];
+            $availabilityStatus = $product->availability_status ?? 'in_stock';
+            $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
+            $canAddToCart = $availabilityStatus === 'in_stock';
         @endphp
 
         <section class="product">
@@ -334,6 +356,8 @@
                     <div><span class="badge">{{ $directionLabel }}</span></div>
                 @endif
 
+                <div><span class="availability-badge">{{ $availabilityLabel }}</span></div>
+
                 <div class="price">
                     @if ($hasDiscount)
                         <span class="current-price">{{ number_format((float) $product->discounted_price, 2, ',', ' ') }} ₽</span>
@@ -356,13 +380,19 @@
                 @endif
 
                 <div class="cart-actions">
-                    <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
-                        @csrf
+                    @if ($canAddToCart)
+                        <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                            @csrf
 
-                        <button class="button" type="submit">
-                            {{ $cartProductQuantity > 0 ? 'Товар в корзине' : 'Добавить в корзину' }}
+                            <button class="button" type="submit">
+                                {{ $cartProductQuantity > 0 ? 'Товар в корзине' : 'Добавить в корзину' }}
+                            </button>
+                        </form>
+                    @else
+                        <button class="button" type="button" disabled>
+                            {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}
                         </button>
-                    </form>
+                    @endif
 
                     @if ($cartProductQuantity > 0)
                         <a class="cart-link" href="{{ route('cart.index') }}">Перейти в корзину</a>
@@ -370,6 +400,11 @@
                 </div>
 
                 <div class="specs">
+                    <div>
+                        <div class="spec-label">Статус наличия</div>
+                        <div class="spec-value">{{ $availabilityLabel }}</div>
+                    </div>
+
                     @if ($product->brand)
                         <div>
                             <div class="spec-label">Бренд</div>
@@ -448,6 +483,20 @@
                 <section class="section">
                     <h2>Условия хранения</h2>
                     <p>{{ $product->storage_conditions }}</p>
+                </section>
+            @endif
+
+            @if ($product->precautions)
+                <section class="section">
+                    <h2>Меры предосторожности</h2>
+                    <p>{{ $product->precautions }}</p>
+                </section>
+            @endif
+
+            @if ($product->disposal_method)
+                <section class="section">
+                    <h2>Утилизация</h2>
+                    <p>{{ $product->disposal_method }}</p>
                 </section>
             @endif
 

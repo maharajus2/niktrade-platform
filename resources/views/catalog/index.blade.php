@@ -133,6 +133,16 @@
             font-size: 0.9rem;
         }
 
+        .availability-badge {
+            width: fit-content;
+            border-radius: 999px;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 5px 9px;
+        }
+
         .price {
             display: flex;
             flex-wrap: wrap;
@@ -266,6 +276,14 @@
                         $hasDiscount = $product->discounted_price !== null
                             && $product->price !== null
                             && $product->discounted_price < $product->price;
+
+                        $availabilityLabels = [
+                            'in_stock' => '🟢 В наличии',
+                            'out_of_stock' => '🟡 Временно отсутствует',
+                            'discontinued' => '🔴 Снят с производства',
+                        ];
+                        $availabilityStatus = $product->availability_status ?? 'in_stock';
+                        $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
                     @endphp
 
                     <article class="card">
@@ -295,6 +313,8 @@
                                     Объем: {{ trim($product->volume_value . ' ' . $product->volume_unit) }}
                                 </div>
                             @endif
+
+                            <div class="availability-badge">{{ $availabilityLabel }}</div>
 
                             <div class="price">
                                 @if ($hasDiscount)

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Models\Order;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -110,6 +111,10 @@ class OrdersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make()
+                    ->label('Удалить заказ')
+                    ->requiresConfirmation()
+                    ->modalDescription('Вы уверены, что хотите удалить этот заказ? Это действие нельзя отменить.'),
             ]);
     }
 }

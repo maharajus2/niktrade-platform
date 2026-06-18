@@ -96,6 +96,19 @@
             font-size: 0.85rem;
         }
 
+        .hint {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .checkbox {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: #374151;
+            font-weight: 700;
+        }
+
         .button,
         .link-button {
             display: inline-flex;
@@ -192,6 +205,26 @@
 @endpush
 
 @section('content')
+    @php
+        $selectedAddressId = old('customer_address_id', $defaultAddress?->id);
+        $deliverySource = $addresses->firstWhere('id', (int) $selectedAddressId) ?? $defaultAddress;
+        $addressPayload = $addresses
+            ->map(fn ($address): array => [
+                'id' => $address->id,
+                'postal_code' => $address->postal_code,
+                'region' => $address->region,
+                'city' => $address->city,
+                'street' => $address->street,
+                'house' => $address->house,
+                'building' => $address->building,
+                'apartment' => $address->apartment,
+                'entrance' => $address->entrance,
+                'floor' => $address->floor,
+                'delivery_comment' => $address->comment,
+            ])
+            ->values();
+    @endphp
+
     <main class="page">
         <header class="header">
             <h1 class="title">Оформление заказа</h1>
@@ -208,7 +241,7 @@
                     <div class="fields">
                         <label class="field">
                             <span class="label">Имя</span>
-                            <input class="input" type="text" name="first_name" value="{{ old('first_name') }}" required>
+                            <input class="input" type="text" name="first_name" value="{{ old('first_name', $customer?->first_name) }}" required>
                             @error('first_name')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -216,7 +249,7 @@
 
                         <label class="field">
                             <span class="label">Фамилия</span>
-                            <input class="input" type="text" name="last_name" value="{{ old('last_name') }}">
+                            <input class="input" type="text" name="last_name" value="{{ old('last_name', $customer?->last_name) }}">
                             @error('last_name')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -224,7 +257,7 @@
 
                         <label class="field">
                             <span class="label">Email</span>
-                            <input class="input" type="email" name="email" value="{{ old('email') }}" required>
+                            <input class="input" type="email" name="email" value="{{ old('email', $customer?->email) }}" required>
                             @error('email')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -232,7 +265,7 @@
 
                         <label class="field">
                             <span class="label">Телефон</span>
-                            <input class="input" type="tel" name="phone" value="{{ old('phone') }}" required>
+                            <input class="input" type="tel" name="phone" value="{{ old('phone', $customer?->phone) }}" required>
                             @error('phone')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -243,10 +276,31 @@
                 <section class="section">
                     <h2 class="section-title">Доставка</h2>
 
+                    @if ($customer && $addresses->isNotEmpty())
+                        <label class="field full">
+                            <span class="label">Адрес доставки</span>
+                            <select class="input" name="customer_address_id" id="customer-address-select">
+                                <option value="">Новый адрес</option>
+                                @foreach ($addresses as $address)
+                                    <option value="{{ $address->id }}" @selected((int) $selectedAddressId === $address->id)>
+                                        {{ $address->title ?: trim($address->city . ', ' . $address->street . ', ' . $address->house) }}
+                                        @if ($address->is_default)
+                                            — по умолчанию
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span class="hint">Можно выбрать сохранённый адрес или изменить поля ниже для этого заказа.</span>
+                            @error('customer_address_id')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    @endif
+
                     <div class="fields">
                         <label class="field">
                             <span class="label">Индекс</span>
-                            <input class="input" type="text" name="postal_code" value="{{ old('postal_code') }}">
+                            <input class="input" type="text" name="postal_code" value="{{ old('postal_code', $deliverySource?->postal_code) }}" data-address-field="postal_code">
                             @error('postal_code')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -254,7 +308,7 @@
 
                         <label class="field">
                             <span class="label">Регион</span>
-                            <input class="input" type="text" name="region" value="{{ old('region') }}">
+                            <input class="input" type="text" name="region" value="{{ old('region', $deliverySource?->region) }}" data-address-field="region">
                             @error('region')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -262,7 +316,7 @@
 
                         <label class="field">
                             <span class="label">Город</span>
-                            <input class="input" type="text" name="city" value="{{ old('city') }}" required>
+                            <input class="input" type="text" name="city" value="{{ old('city', $deliverySource?->city) }}" data-address-field="city" required>
                             @error('city')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -270,7 +324,7 @@
 
                         <label class="field">
                             <span class="label">Улица</span>
-                            <input class="input" type="text" name="street" value="{{ old('street') }}" required>
+                            <input class="input" type="text" name="street" value="{{ old('street', $deliverySource?->street) }}" data-address-field="street" required>
                             @error('street')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -278,15 +332,23 @@
 
                         <label class="field">
                             <span class="label">Дом</span>
-                            <input class="input" type="text" name="house" value="{{ old('house') }}" required>
+                            <input class="input" type="text" name="house" value="{{ old('house', $deliverySource?->house) }}" data-address-field="house" required>
                             @error('house')
                                 <span class="error">{{ $message }}</span>
                             @enderror
                         </label>
 
                         <label class="field">
+                            <span class="label">Корпус</span>
+                            <input class="input" type="text" name="building" value="{{ old('building', $deliverySource?->building) }}" data-address-field="building">
+                            @error('building')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label class="field">
                             <span class="label">Квартира</span>
-                            <input class="input" type="text" name="apartment" value="{{ old('apartment') }}">
+                            <input class="input" type="text" name="apartment" value="{{ old('apartment', $deliverySource?->apartment) }}" data-address-field="apartment">
                             @error('apartment')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -294,7 +356,7 @@
 
                         <label class="field">
                             <span class="label">Подъезд</span>
-                            <input class="input" type="text" name="entrance" value="{{ old('entrance') }}">
+                            <input class="input" type="text" name="entrance" value="{{ old('entrance', $deliverySource?->entrance) }}" data-address-field="entrance">
                             @error('entrance')
                                 <span class="error">{{ $message }}</span>
                             @enderror
@@ -302,12 +364,27 @@
 
                         <label class="field">
                             <span class="label">Этаж</span>
-                            <input class="input" type="text" name="floor" value="{{ old('floor') }}">
+                            <input class="input" type="text" name="floor" value="{{ old('floor', $deliverySource?->floor) }}" data-address-field="floor">
                             @error('floor')
                                 <span class="error">{{ $message }}</span>
                             @enderror
                         </label>
+
+                        <label class="field full">
+                            <span class="label">Комментарий к доставке</span>
+                            <textarea class="textarea" name="delivery_comment" data-address-field="delivery_comment">{{ old('delivery_comment', $deliverySource?->comment) }}</textarea>
+                            @error('delivery_comment')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                        </label>
                     </div>
+
+                    @if ($customer && $addresses->isEmpty())
+                        <label class="checkbox">
+                            <input type="checkbox" name="save_address" value="1" @checked(old('save_address'))>
+                            <span>Сохранить адрес в личном кабинете</span>
+                        </label>
+                    @endif
                 </section>
 
                 <section class="section">
@@ -357,4 +434,33 @@
             </aside>
         </div>
     </main>
+
+    @if ($customer && $addresses->isNotEmpty())
+        <script>
+            (() => {
+                const addresses = @json($addressPayload);
+                const select = document.getElementById('customer-address-select');
+
+                if (!select) {
+                    return;
+                }
+
+                select.addEventListener('change', () => {
+                    const address = addresses.find((item) => String(item.id) === select.value);
+
+                    if (!address) {
+                        return;
+                    }
+
+                    Object.entries(address).forEach(([field, value]) => {
+                        const input = document.querySelector(`[data-address-field="${field}"]`);
+
+                        if (input) {
+                            input.value = value ?? '';
+                        }
+                    });
+                });
+            })();
+        </script>
+    @endif
 @endsection

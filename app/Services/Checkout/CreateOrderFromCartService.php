@@ -64,6 +64,14 @@ class CreateOrderFromCartService
 
     protected function resolveCustomer(array $data): Customer
     {
+        if (isset($data['customer']) && $data['customer'] instanceof Customer) {
+            return $data['customer'];
+        }
+
+        if (isset($data['customer_id'])) {
+            return Customer::query()->findOrFail($data['customer_id']);
+        }
+
         $customer = Customer::query()
             ->where('email', $data['email'])
             ->orWhere('phone', $data['phone'])

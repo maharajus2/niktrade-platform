@@ -26,12 +26,17 @@
 
         .layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 320px;
+            grid-template-columns: minmax(0, 1fr) 340px;
             gap: 24px;
             align-items: start;
         }
 
-        .items,
+        .items {
+            display: grid;
+            gap: 14px;
+        }
+
+        .item,
         .totals,
         .empty {
             border: 1px solid #e5e7eb;
@@ -41,15 +46,9 @@
 
         .item {
             display: grid;
-            grid-template-columns: 96px minmax(0, 1fr) 160px 130px;
+            grid-template-columns: 96px minmax(0, 1fr);
             gap: 16px;
-            align-items: center;
             padding: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .item:first-child {
-            border-top: 0;
         }
 
         .image {
@@ -57,11 +56,12 @@
             place-items: center;
             overflow: hidden;
             width: 96px;
-            aspect-ratio: 1;
-            border-radius: 8px;
+            height: 96px;
+            border-radius: 10px;
             background: #f3f4f6;
             color: #9ca3af;
             font-size: 0.8rem;
+            text-align: center;
         }
 
         .image img {
@@ -70,65 +70,107 @@
             object-fit: cover;
         }
 
+        .item-main {
+            display: grid;
+            gap: 10px;
+            min-width: 0;
+        }
+
         .name {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.05rem;
             line-height: 1.35;
         }
 
+        .name a {
+            color: #111827;
+            text-decoration: none;
+        }
+
         .meta {
-            margin-top: 6px;
+            margin-top: 5px;
             color: #6b7280;
             font-size: 0.9rem;
         }
 
-        .prices {
+        .item-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .item-prices {
             display: grid;
             gap: 4px;
             color: #374151;
-            font-size: 0.92rem;
+            text-align: right;
         }
 
         .line-total {
             color: #166534;
+            font-size: 1.1rem;
             font-weight: 900;
         }
 
-        .quantity-form {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .quantity {
-            width: 74px;
-            min-height: 40px;
+        .quantity-control {
+            display: inline-grid;
+            grid-template-columns: 38px minmax(42px, auto) 38px;
+            overflow: hidden;
+            width: fit-content;
             border: 1px solid #d1d5db;
             border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .quantity-form {
+            display: contents;
+        }
+
+        .quantity-button,
+        .quantity-value {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 38px;
+        }
+
+        .quantity-button {
+            border: 0;
+            background: #f9fafb;
+            color: #166534;
             font: inherit;
-            padding: 8px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .quantity-value {
+            border-inline: 1px solid #d1d5db;
+            color: #111827;
+            font-weight: 800;
+            padding: 0 10px;
         }
 
         .button,
         .link-button,
-        .danger-button,
         .checkout-button {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            min-height: 40px;
+            min-height: 42px;
             border: 0;
             border-radius: 8px;
             font: inherit;
             font-weight: 800;
-            padding: 8px 14px;
+            padding: 9px 14px;
             text-decoration: none;
         }
 
-        .button {
+        .button,
+        .checkout-button {
             background: #166534;
             color: #ffffff;
-            cursor: pointer;
         }
 
         .link-button {
@@ -136,23 +178,28 @@
             color: #166534;
         }
 
-        .danger-button {
-            margin-top: 8px;
-            background: #fee2e2;
+        .remove-button {
+            border: 0;
+            background: transparent;
             color: #b91c1c;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 0;
             cursor: pointer;
         }
 
-        .checkout-button {
-            width: 100%;
-            background: #166534;
-            color: #ffffff;
-        }
-
         .totals {
+            position: sticky;
+            top: 18px;
             display: grid;
             gap: 14px;
             padding: 18px;
+        }
+
+        .totals-title {
+            margin: 0;
+            font-size: 1.15rem;
         }
 
         .total-row {
@@ -162,12 +209,21 @@
             color: #374151;
         }
 
+        .total-row strong {
+            text-align: right;
+        }
+
         .total-row.final {
             border-top: 1px solid #e5e7eb;
             color: #111827;
             font-size: 1.25rem;
             font-weight: 900;
             padding-top: 14px;
+        }
+
+        .checkout-button {
+            width: 100%;
+            font-size: 1rem;
         }
 
         .alert {
@@ -194,8 +250,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .item {
-                grid-template-columns: 96px minmax(0, 1fr);
+            .totals {
+                position: static;
             }
         }
 
@@ -210,11 +266,33 @@
             }
 
             .item {
+                grid-template-columns: 80px minmax(0, 1fr);
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .item-footer {
+                display: grid;
+            }
+
+            .item-prices {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .item {
                 grid-template-columns: 1fr;
             }
 
             .image {
-                width: 100%;
+                width: 96px;
+                height: 96px;
             }
         }
     </style>
@@ -243,7 +321,7 @@
                         @php
                             $product = $item->product;
                             $image = $product?->images->first();
-                            $hasDiscount = (float) ($item->discount_snapshot ?? 0) > 0;
+                            $unitPrice = (float) $item->line_total / max(1, (int) $item->quantity);
                         @endphp
 
                         <article class="item">
@@ -259,67 +337,91 @@
                                 @endif
                             </div>
 
-                            <div>
-                                <h2 class="name">
-                                    @if ($product)
-                                        <a href="{{ route('catalog.show', $product->slug ?: $product->id) }}">{{ $product->name }}</a>
-                                    @else
-                                        Товар удален
+                            <div class="item-main">
+                                <div>
+                                    <h2 class="name">
+                                        @if ($product)
+                                            <a href="{{ route('catalog.show', $product->slug ?: $product->id) }}">{{ $product->name }}</a>
+                                        @else
+                                            Товар удален
+                                        @endif
+                                    </h2>
+
+                                    @if ($product?->article)
+                                        <div class="meta">Артикул: {{ $product->article }}</div>
                                     @endif
-                                </h2>
+                                </div>
 
-                                @if ($product?->article)
-                                    <div class="meta">Артикул: {{ $product->article }}</div>
-                                @endif
-                            </div>
+                                <div class="item-footer">
+                                    <div>
+                                        <div class="quantity-control" aria-label="Количество товара">
+                                            @if ($item->quantity > 1)
+                                                <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $item) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="quantity" value="{{ $item->quantity - 1 }}">
+                                                    <button class="quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
+                                                </form>
+                                            @else
+                                                <form class="quantity-form" method="POST" action="{{ route('cart.items.destroy', $item) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
+                                                </form>
+                                            @endif
 
-                            <div class="prices">
-                                <div>Цена: {{ number_format((float) $item->price_snapshot, 2, ',', ' ') }} ₽</div>
+                                            <span class="quantity-value">{{ $item->quantity }}</span>
 
-                                @if ($hasDiscount)
-                                    <div>Скидка: {{ number_format((float) $item->discount_snapshot, 2, ',', ' ') }}%</div>
-                                @endif
+                                            <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $item) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="quantity" value="{{ $item->quantity + 1 }}">
+                                                <button class="quantity-button" type="submit" aria-label="Увеличить количество">+</button>
+                                            </form>
+                                        </div>
 
-                                <div class="line-total">Итого: {{ number_format((float) $item->line_total, 2, ',', ' ') }} ₽</div>
-                            </div>
+                                        <form method="POST" action="{{ route('cart.items.destroy', $item) }}">
+                                            @csrf
+                                            @method('DELETE')
 
-                            <div>
-                                <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $item) }}">
-                                    @csrf
-                                    @method('PATCH')
+                                            <button class="remove-button" type="submit">Удалить</button>
+                                        </form>
+                                    </div>
 
-                                    <input
-                                        class="quantity"
-                                        type="number"
-                                        name="quantity"
-                                        value="{{ $item->quantity }}"
-                                        min="1"
-                                    >
-
-                                    <button class="button" type="submit">Обновить</button>
-                                </form>
-
-                                <form method="POST" action="{{ route('cart.items.destroy', $item) }}">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button class="danger-button" type="submit">Удалить</button>
-                                </form>
+                                    <div class="item-prices">
+                                        <div>{{ number_format($unitPrice, 2, ',', ' ') }} ₽ × {{ $item->quantity }}</div>
+                                        <div class="line-total">{{ number_format((float) $item->line_total, 2, ',', ' ') }} ₽</div>
+                                    </div>
+                                </div>
                             </div>
                         </article>
                     @endforeach
                 </section>
 
                 <aside class="totals" aria-label="Итоги корзины">
+                    <h2 class="totals-title">Итого</h2>
+
+                    <div class="total-row">
+                        <span>Количество товаров</span>
+                        <strong>{{ $itemsQuantity }}</strong>
+                    </div>
+
+                    <div class="total-row">
+                        <span>Общий вес</span>
+                        <strong>{{ $totalWeight }}</strong>
+                    </div>
+
                     <div class="total-row">
                         <span>Сумма товаров</span>
                         <strong>{{ number_format((float) $cart->subtotal, 2, ',', ' ') }} ₽</strong>
                     </div>
 
-                    <div class="total-row">
-                        <span>Скидка</span>
-                        <strong>{{ number_format((float) $cart->discount_total, 2, ',', ' ') }} ₽</strong>
-                    </div>
+                    @if ((float) $cart->discount_total > 0)
+                        <div class="total-row">
+                            <span>Скидка</span>
+                            <strong>{{ number_format((float) $cart->discount_total, 2, ',', ' ') }} ₽</strong>
+                        </div>
+                    @endif
 
                     <div class="total-row final">
                         <span>Итого</span>

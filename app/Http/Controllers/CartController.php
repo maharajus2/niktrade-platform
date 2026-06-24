@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Support\WeightFormatter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,8 @@ class CartController extends Controller
         return view('cart.index', [
             'cart' => $cart,
             'items' => $cart?->items ?? collect(),
+            'itemsQuantity' => (int) ($cart?->items?->sum('quantity') ?? 0),
+            'totalWeight' => WeightFormatter::formatGrams($this->calculateCartTotalWeightGrams($cart)),
         ]);
     }
 
@@ -171,6 +174,34 @@ class CartController extends Controller
             ->where('session_id', $request->session()->getId())
             ->where('status', 'active')
             ->first();
+    }
+
+    private function calculateCartTotalWeightGrams(?Cart $cart): ?int
+    {
+        if (! $cart) {
+            return null;
+        }
+
+        $items = $cart->relationLoaded('items')
+            ? $cart->items
+            : $cart->items()->with('product')->get();
+
+        $grams = $items->sum(function (CartItem $item): int {
+            $weight = $item->product?->weight_value;
+
+            if ($weight === null) {
+                return 0;
+            }
+
+            $unitWeight = match ($item->product?->weight_unit) {
+                'kg' => (int) round((float) $weight * 1000),
+                default => (int) round((float) $weight),
+            };
+
+            return $unitWeight * max(1, (int) $item->quantity);
+        });
+
+        return $grams > 0 ? $grams : null;
     }
 
     private function ensureCartItemBelongsToSession(Request $request, CartItem $cartItem): void

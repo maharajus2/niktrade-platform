@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,11 @@ class CustomerAccountController extends Controller
             'customer' => $customer,
             'ordersCount' => $customer->orders()->count(),
             'addressesCount' => $customer->addresses()->count(),
+            'totalSpent' => $customer->orders()
+                ->where('status', Order::STATUS_DELIVERED)
+                ->sum('total'),
+            'totalOrderedWeightGrams' => $customer->orders()
+                ->sum('total_weight_grams'),
         ]);
     }
 }

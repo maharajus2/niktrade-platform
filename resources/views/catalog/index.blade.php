@@ -284,9 +284,8 @@
                         ];
                         $availabilityStatus = $product->availability_status ?? 'in_stock';
                         $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
-                        $productWeight = $product->weight_value !== null
-                            ? \App\Support\WeightFormatter::formatValueUnit($product->weight_value, $product->weight_unit)
-                            : null;
+                        $productVolume = \App\Support\ProductDisplayFormatter::formatVolume($product->volume_value, $product->volume_unit);
+                        $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
                     @endphp
 
                     <article class="card">
@@ -311,9 +310,9 @@
                                 <div class="meta">Артикул: {{ $product->article }}</div>
                             @endif
 
-                            @if ($product->volume_value || $product->volume_unit)
+                            @if ($productVolume)
                                 <div class="meta">
-                                    Объем: {{ trim($product->volume_value . ' ' . $product->volume_unit) }}
+                                    Объем: {{ $productVolume }}
                                 </div>
                             @endif
 

@@ -98,6 +98,26 @@
             font-weight: 700;
         }
 
+        .barcode-block {
+            display: grid;
+            gap: 6px;
+            width: min(260px, 100%);
+        }
+
+        .barcode-svg {
+            width: 100%;
+            height: 72px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .barcode-value {
+            color: #6b7280;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+        }
+
         .availability-badge {
             width: fit-content;
             border-radius: 999px;
@@ -307,9 +327,10 @@
             $availabilityStatus = $product->availability_status ?? 'in_stock';
             $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
             $canAddToCart = $availabilityStatus === 'in_stock';
-            $productWeight = $product->weight_value !== null
-                ? \App\Support\WeightFormatter::formatValueUnit($product->weight_value, $product->weight_unit)
-                : null;
+            $productVolume = \App\Support\ProductDisplayFormatter::formatVolume($product->volume_value, $product->volume_unit);
+            $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
+            $productShelfLife = \App\Support\ProductDisplayFormatter::formatShelfLife($product->shelf_life_value, $product->shelf_life_unit);
+            $barcodeSvg = \App\Support\ProductDisplayFormatter::formatBarcodeSvg($product->barcode);
         @endphp
 
         <section class="product">
@@ -348,12 +369,15 @@
                         @if ($product->article)
                             <span>Артикул: {{ $product->article }}</span>
                         @endif
-
-                        @if ($product->barcode)
-                            <span>Штрихкод: {{ $product->barcode }}</span>
-                        @endif
                     </div>
                 </div>
+
+                @if ($barcodeSvg)
+                    <div class="barcode-block">
+                        {!! $barcodeSvg !!}
+                        <div class="barcode-value">{{ $product->barcode }}</div>
+                    </div>
+                @endif
 
                 @if ($directionLabel)
                     <div><span class="badge">{{ $directionLabel }}</span></div>
@@ -436,10 +460,10 @@
                         </div>
                     @endif
 
-                    @if ($product->volume_value || $product->volume_unit)
+                    @if ($productVolume)
                         <div>
                             <div class="spec-label">Объем</div>
-                            <div class="spec-value">{{ trim($product->volume_value . ' ' . $product->volume_unit) }}</div>
+                            <div class="spec-value">{{ $productVolume }}</div>
                         </div>
                     @endif
 
@@ -450,10 +474,10 @@
                         </div>
                     @endif
 
-                    @if ($product->shelf_life_value || $product->shelf_life_unit)
+                    @if ($productShelfLife)
                         <div>
                             <div class="spec-label">Срок годности</div>
-                            <div class="spec-value">{{ trim($product->shelf_life_value . ' ' . $product->shelf_life_unit) }}</div>
+                            <div class="spec-value">{{ $productShelfLife }}</div>
                         </div>
                     @endif
                 </div>

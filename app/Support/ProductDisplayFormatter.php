@@ -30,6 +30,7 @@ class ProductDisplayFormatter
             'ml' => 'мл',
             'g' => 'г',
             'kg' => 'кг',
+            'pcs' => 'шт.',
         ]);
     }
 

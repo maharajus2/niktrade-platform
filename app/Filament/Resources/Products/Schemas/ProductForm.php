@@ -207,6 +207,7 @@ class ProductForm
                                 'l' => 'л',
                                 'g' => 'г',
                                 'kg' => 'кг',
+                                'pcs' => 'шт.',
                             ])
                             ->searchable(),
 

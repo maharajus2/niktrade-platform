@@ -10,12 +10,33 @@
             padding: 32px 0 48px;
         }
 
-        .account-nav,
-        .actions {
+        .account-nav {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 22px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .title-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
         }
 
         .account-nav__link,
@@ -48,14 +69,28 @@
         }
 
         .title {
-            margin: 0 0 18px;
+            margin: 0;
             font-size: 2rem;
+        }
+
+        .status-badge {
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #166534;
+            font-weight: 900;
+            padding: 7px 11px;
+        }
+
+        .status-badge--danger {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
+            margin-bottom: 16px;
         }
 
         .card {
@@ -63,10 +98,6 @@
             border-radius: 12px;
             background: #ffffff;
             padding: 18px;
-        }
-
-        .card.full {
-            grid-column: 1 / -1;
         }
 
         .card-title {
@@ -98,35 +129,24 @@
 
         .items {
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
 
         .item {
             display: grid;
-            grid-template-columns: minmax(220px, 1.6fr) repeat(4, minmax(0, 1fr));
-            gap: 10px;
-            border-top: 1px solid #f3f4f6;
-            padding-top: 10px;
-        }
-
-        .item:first-child {
-            border-top: 0;
-            padding-top: 0;
-        }
-
-        .product-cell {
-            display: grid;
-            grid-template-columns: 64px minmax(0, 1fr);
-            gap: 10px;
-            align-items: center;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 14px;
+            border: 1px solid #f3f4f6;
+            border-radius: 10px;
+            padding: 12px;
         }
 
         .product-thumb {
             display: grid;
             place-items: center;
             overflow: hidden;
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             background: #f9fafb;
@@ -141,9 +161,37 @@
             object-fit: cover;
         }
 
+        .item-body {
+            display: grid;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        .item-name {
+            color: #111827;
+            font-weight: 900;
+            overflow-wrap: anywhere;
+        }
+
         .product-link {
             color: #166534;
             text-decoration: none;
+        }
+
+        .item-meta {
+            color: #6b7280;
+            font-size: 0.92rem;
+        }
+
+        .item-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            align-items: baseline;
+        }
+
+        .line-total {
+            font-weight: 900;
         }
 
         .message {
@@ -160,22 +208,24 @@
                 width: min(100% - 24px, 1080px);
             }
 
-            .grid,
-            .item {
+            .page-header,
+            .grid {
                 grid-template-columns: 1fr;
+                display: grid;
+            }
+
+            .actions {
+                justify-content: flex-start;
             }
 
             .value {
                 text-align: left;
             }
+        }
 
-            .product-cell {
-                grid-template-columns: 56px minmax(0, 1fr);
-            }
-
-            .product-thumb {
-                width: 56px;
-                height: 56px;
+        @media (max-width: 420px) {
+            .item {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -185,7 +235,26 @@
     <main class="account-page">
         @include('customer-account.partials.nav')
 
-        <h1 class="title">Заказ {{ $order->order_number }}</h1>
+        <div class="page-header">
+            <div class="title-row">
+                <h1 class="title">Заказ {{ $order->order_number }}</h1>
+                <span class="status-badge {{ $order->status === \App\Models\Order::STATUS_CANCELLED ? 'status-badge--danger' : '' }}">
+                    {{ \App\Models\Order::statusLabel($order->status) }}
+                </span>
+            </div>
+
+            <div class="actions">
+                <a class="button" href="{{ route('customer.account.orders') }}">К списку заказов</a>
+
+                @if ($order->canBeCancelledByCustomer())
+                    <form method="POST" action="{{ route('customer.orders.cancel', $order) }}" onsubmit="return confirm('Вы уверены, что хотите отменить заказ?')">
+                        @csrf
+
+                        <button class="danger-button" type="submit">Отменить заказ</button>
+                    </form>
+                @endif
+            </div>
+        </div>
 
         @if (session('success'))
             <div class="message">{{ session('success') }}</div>
@@ -195,35 +264,7 @@
             <div class="message">{{ $message }}</div>
         @enderror
 
-        <div class="actions">
-            <a class="button" href="{{ route('customer.account.orders') }}">К списку заказов</a>
-
-            @if ($order->canBeCancelledByCustomer())
-                <form method="POST" action="{{ route('customer.orders.cancel', $order) }}" onsubmit="return confirm('Вы уверены, что хотите отменить заказ?')">
-                    @csrf
-
-                    <button class="danger-button" type="submit">Отменить заказ</button>
-                </form>
-            @endif
-        </div>
-
         <div class="grid">
-            <section class="card">
-                <h2 class="card-title">Статусы</h2>
-                <div class="row">
-                    <span class="label">Заказ</span>
-                    <span class="value">{{ \App\Models\Order::statusLabel($order->status) }}</span>
-                </div>
-                <div class="row">
-                    <span class="label">Оплата</span>
-                    <span class="value">{{ \App\Models\Order::paymentStatusLabel($order->payment_status) }}</span>
-                </div>
-                <div class="row">
-                    <span class="label">Доставка</span>
-                    <span class="value">{{ \App\Models\Order::deliveryStatusLabel($order->delivery_status) }}</span>
-                </div>
-            </section>
-
             <section class="card">
                 <h2 class="card-title">Покупатель</h2>
                 <div class="row">
@@ -240,7 +281,7 @@
                 </div>
             </section>
 
-            <section class="card full">
+            <section class="card">
                 <h2 class="card-title">Адрес доставки</h2>
                 <div class="row">
                     <span class="label">Адрес</span>
@@ -260,75 +301,34 @@
                 @endif
             </section>
 
-            <section class="card full">
-                <h2 class="card-title">Состав заказа</h2>
-                <div class="items">
-                    @foreach ($order->items as $item)
-                        @php
-                            $product = $item->product;
-                            $productImagePath = $item->product_image_path
-                                ?: $product?->images?->first()?->file_path;
-                            $productUrl = $product?->is_active
-                                ? route('catalog.show', $product->slug ?: $product->id)
-                                : null;
-                        @endphp
-
-                        <div class="item">
-                            <div class="product-cell">
-                                <div class="product-thumb">
-                                    @if ($productImagePath)
-                                        <img
-                                            src="{{ Storage::disk('public')->url($productImagePath) }}"
-                                            alt="{{ $item->product_name }}"
-                                            loading="lazy"
-                                        >
-                                    @else
-                                        Нет изображения
-                                    @endif
-                                </div>
-
-                                <div>
-                                    <div class="label">Товар</div>
-                                    <div class="value">
-                                        @if ($productUrl)
-                                            <a class="product-link" href="{{ $productUrl }}">{{ $item->product_name }}</a>
-                                        @else
-                                            {{ $item->product_name }}
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="label">Артикул</div>
-                                <div class="value">{{ $item->product_article ?: '—' }}</div>
-                            </div>
-                            <div>
-                                <div class="label">Кол-во</div>
-                                <div class="value">{{ $item->quantity }}</div>
-                            </div>
-                            <div>
-                                <div class="label">Цена</div>
-                                <div class="value">{{ number_format((float) $item->discounted_unit_price, 2, ',', ' ') }} ₽</div>
-                            </div>
-                            <div>
-                                <div class="label">Сумма</div>
-                                <div class="value">{{ number_format((float) $item->line_total, 2, ',', ' ') }} ₽</div>
-                            </div>
-                        </div>
-                    @endforeach
+            <section class="card">
+                <h2 class="card-title">Статусы</h2>
+                <div class="row">
+                    <span class="label">Заказ</span>
+                    <span class="value">{{ \App\Models\Order::statusLabel($order->status) }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Оплата</span>
+                    <span class="value">{{ \App\Models\Order::paymentStatusLabel($order->payment_status) }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Доставка</span>
+                    <span class="value">{{ \App\Models\Order::deliveryStatusLabel($order->delivery_status) }}</span>
                 </div>
             </section>
 
-            <section class="card full">
+            <section class="card">
                 <h2 class="card-title">Итоги</h2>
                 <div class="row">
                     <span class="label">Сумма товаров</span>
                     <span class="value">{{ number_format((float) $order->subtotal, 2, ',', ' ') }} ₽</span>
                 </div>
-                <div class="row">
-                    <span class="label">Скидка</span>
-                    <span class="value">{{ number_format((float) $order->discount_total, 2, ',', ' ') }} ₽</span>
-                </div>
+                @if ((float) $order->discount_total > 0)
+                    <div class="row">
+                        <span class="label">Скидка</span>
+                        <span class="value">{{ number_format((float) $order->discount_total, 2, ',', ' ') }} ₽</span>
+                    </div>
+                @endif
                 <div class="row">
                     <span class="label">Доставка</span>
                     <span class="value">{{ number_format((float) $order->delivery_total, 2, ',', ' ') }} ₽</span>
@@ -345,5 +345,51 @@
                 @endif
             </section>
         </div>
+
+        <section class="card">
+            <h2 class="card-title">Состав заказа</h2>
+            <div class="items">
+                @foreach ($order->items as $item)
+                    @php
+                        $product = $item->product;
+                        $productImagePath = $item->product_image_path
+                            ?: $product?->images?->first()?->file_path;
+                        $productUrl = $product?->is_active
+                            ? route('catalog.show', $product->slug ?: $product->id)
+                            : null;
+                    @endphp
+
+                    <article class="item">
+                        <div class="product-thumb">
+                            @if ($productImagePath)
+                                <img
+                                    src="{{ Storage::disk('public')->url($productImagePath) }}"
+                                    alt="{{ $item->product_name }}"
+                                    loading="lazy"
+                                >
+                            @else
+                                Нет фото
+                            @endif
+                        </div>
+
+                        <div class="item-body">
+                            <div>
+                                @if ($productUrl)
+                                    <a class="product-link item-name" href="{{ $productUrl }}">{{ $item->product_name }}</a>
+                                @else
+                                    <div class="item-name">{{ $item->product_name }}</div>
+                                @endif
+                                <div class="item-meta">Артикул: {{ $item->product_article ?: '—' }}</div>
+                            </div>
+
+                            <div class="item-summary">
+                                <span>{{ $item->quantity }} × {{ number_format((float) $item->discounted_unit_price, 2, ',', ' ') }} ₽</span>
+                                <span class="line-total">Сумма: {{ number_format((float) $item->line_total, 2, ',', ' ') }} ₽</span>
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </section>
     </main>
 @endsection

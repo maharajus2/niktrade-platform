@@ -24,7 +24,12 @@ class CustomerOrderController extends Controller
     {
         abort_unless($order->customer_id === $request->user('customer')?->id, 403);
 
-        $order->load('items');
+        $order->load([
+            'items.product.images' => fn ($query) => $query
+                ->orderByDesc('is_main')
+                ->orderBy('sort_order')
+                ->orderBy('id'),
+        ]);
 
         return view('customer-account.orders.show', [
             'order' => $order,

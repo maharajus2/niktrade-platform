@@ -122,6 +122,27 @@ class Order extends Model
         };
     }
 
+    public static function paymentStatusLabel(?string $status): string
+    {
+        return match ($status) {
+            self::PAYMENT_STATUS_PENDING => 'Ожидает оплаты',
+            self::PAYMENT_STATUS_PAID => 'Оплачен',
+            self::PAYMENT_STATUS_FAILED => 'Ошибка оплаты',
+            self::PAYMENT_STATUS_REFUNDED => 'Возвращён',
+            default => $status ?? '—',
+        };
+    }
+
+    public static function deliveryStatusLabel(?string $status): string
+    {
+        return match ($status) {
+            self::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
+            self::DELIVERY_STATUS_SHIPPED => 'Отправлен',
+            self::DELIVERY_STATUS_DELIVERED => 'Доставлен',
+            default => $status ?? '—',
+        };
+    }
+
     public static function statusColor(?string $status): string
     {
         return match ($status) {

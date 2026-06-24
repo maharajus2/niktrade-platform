@@ -103,7 +103,7 @@
 
         .item {
             display: grid;
-            grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr));
+            grid-template-columns: minmax(220px, 1.6fr) repeat(4, minmax(0, 1fr));
             gap: 10px;
             border-top: 1px solid #f3f4f6;
             padding-top: 10px;
@@ -112,6 +112,38 @@
         .item:first-child {
             border-top: 0;
             padding-top: 0;
+        }
+
+        .product-cell {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+        }
+
+        .product-thumb {
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            width: 64px;
+            height: 64px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            color: #9ca3af;
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        .product-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-link {
+            color: #166534;
+            text-decoration: none;
         }
 
         .message {
@@ -135,6 +167,15 @@
 
             .value {
                 text-align: left;
+            }
+
+            .product-cell {
+                grid-template-columns: 56px minmax(0, 1fr);
+            }
+
+            .product-thumb {
+                width: 56px;
+                height: 56px;
             }
         }
     </style>
@@ -175,11 +216,11 @@
                 </div>
                 <div class="row">
                     <span class="label">Оплата</span>
-                    <span class="value">{{ $order->payment_status }}</span>
+                    <span class="value">{{ \App\Models\Order::paymentStatusLabel($order->payment_status) }}</span>
                 </div>
                 <div class="row">
                     <span class="label">Доставка</span>
-                    <span class="value">{{ $order->delivery_status }}</span>
+                    <span class="value">{{ \App\Models\Order::deliveryStatusLabel($order->delivery_status) }}</span>
                 </div>
             </section>
 
@@ -209,7 +250,7 @@
                 </div>
                 <div class="row">
                     <span class="label">Подъезд / этаж</span>
-                    <span class="value">{{ collect([$order->entrance, $order->floor])->filter()->implode(', ') ?: '—' }}</span>
+                    <span class="value">{{ collect([$order->entrance, $order->floor])->filter()->implode(' / ') ?: '—' }}</span>
                 </div>
                 @if ($order->delivery_comment)
                     <div class="row">
@@ -223,10 +264,39 @@
                 <h2 class="card-title">Состав заказа</h2>
                 <div class="items">
                     @foreach ($order->items as $item)
+                        @php
+                            $product = $item->product;
+                            $productImagePath = $item->product_image_path
+                                ?: $product?->images?->first()?->file_path;
+                            $productUrl = $product?->is_active
+                                ? route('catalog.show', $product->slug ?: $product->id)
+                                : null;
+                        @endphp
+
                         <div class="item">
-                            <div>
-                                <div class="label">Товар</div>
-                                <div class="value">{{ $item->product_name }}</div>
+                            <div class="product-cell">
+                                <div class="product-thumb">
+                                    @if ($productImagePath)
+                                        <img
+                                            src="{{ Storage::disk('public')->url($productImagePath) }}"
+                                            alt="{{ $item->product_name }}"
+                                            loading="lazy"
+                                        >
+                                    @else
+                                        Нет изображения
+                                    @endif
+                                </div>
+
+                                <div>
+                                    <div class="label">Товар</div>
+                                    <div class="value">
+                                        @if ($productUrl)
+                                            <a class="product-link" href="{{ $productUrl }}">{{ $item->product_name }}</a>
+                                        @else
+                                            {{ $item->product_name }}
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <div class="label">Артикул</div>

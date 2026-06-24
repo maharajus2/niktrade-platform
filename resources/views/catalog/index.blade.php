@@ -96,6 +96,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             background: #ffffff;
+            scroll-margin-top: 16px;
         }
 
         .image {
@@ -372,7 +373,7 @@
                         $cartProductQuantity = (int) ($cartProductItem?->quantity ?? 0);
                     @endphp
 
-                    <article class="card">
+                    <article class="card" id="product-{{ $product->id }}">
                         <a class="image" href="{{ route('catalog.show', $product->slug ?: $product->id) }}">
                             @if ($mainImage)
                                 <img
@@ -425,12 +426,14 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
+                                                        <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
                                                         <button class="quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
                                                     </form>
                                                 @else
                                                     <form class="quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
                                                         @csrf
                                                         @method('DELETE')
+                                                        <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
                                                         <button class="quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
                                                     </form>
                                                 @endif
@@ -441,6 +444,7 @@
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
+                                                    <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
                                                     <button class="quantity-button" type="submit" aria-label="Увеличить количество">+</button>
                                                 </form>
                                             </div>
@@ -450,6 +454,7 @@
                                     @else
                                         <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
                                             @csrf
+                                            <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
 
                                             <button class="cart-button" type="submit">Добавить в корзину</button>
                                         </form>

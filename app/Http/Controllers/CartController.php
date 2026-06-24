@@ -93,7 +93,8 @@ class CartController extends Controller
             $cart->recalculateTotals()->save();
         });
 
-        return back()->with('success', 'Товар добавлен в корзину');
+        return $this->redirectBackWithOptionalAnchor($request)
+            ->with('success', 'Товар добавлен в корзину');
     }
 
     public function updateItem(Request $request, CartItem $cartItem): RedirectResponse
@@ -115,7 +116,8 @@ class CartController extends Controller
             return $cartItem->quantity;
         });
 
-        return back()->with('success', $this->formatCartProductQuantityMessage($quantity));
+        return $this->redirectBackWithOptionalAnchor($request)
+            ->with('success', $this->formatCartProductQuantityMessage($quantity));
     }
 
     public function destroyItem(Request $request, CartItem $cartItem): RedirectResponse
@@ -128,7 +130,21 @@ class CartController extends Controller
             $cart->recalculateTotals()->save();
         });
 
-        return back()->with('success', 'Товар удалён из корзины');
+        return $this->redirectBackWithOptionalAnchor($request)
+            ->with('success', 'Товар удалён из корзины');
+    }
+
+    private function redirectBackWithOptionalAnchor(Request $request): RedirectResponse
+    {
+        $anchor = $request->string('redirect_anchor')->toString();
+
+        if (! preg_match('/^[A-Za-z0-9_-]+$/', $anchor)) {
+            return back();
+        }
+
+        $url = preg_replace('/#.*$/', '', url()->previous());
+
+        return redirect()->to($url . '#' . $anchor);
     }
 
     private function formatCartProductQuantityMessage(int $quantity): string

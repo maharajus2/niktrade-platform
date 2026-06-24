@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -16,6 +17,12 @@ class CustomersTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar_path')
+                    ->label('Аватар')
+                    ->disk('public')
+                    ->height(48)
+                    ->circular(),
+
                 TextColumn::make('first_name')
                     ->label('ФИО')
                     ->formatStateUsing(fn ($record): string => trim("{$record->first_name} {$record->last_name}"))

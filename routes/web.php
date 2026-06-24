@@ -34,6 +34,8 @@ Route::middleware('guest:customer')->group(function () {
 Route::middleware('auth:customer')->group(function () {
     Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
     Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('customer.account');
+    Route::post('/account/avatar', [CustomerAccountController::class, 'updateAvatar'])->name('customer.account.avatar.update');
+    Route::delete('/account/avatar', [CustomerAccountController::class, 'destroyAvatar'])->name('customer.account.avatar.destroy');
     Route::get('/account/orders', [CustomerOrderController::class, 'index'])->name('customer.account.orders');
     Route::get('/account/orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.account.orders.show');
     Route::get('/account/addresses', [CustomerAddressController::class, 'index'])->name('customer.account.addresses');

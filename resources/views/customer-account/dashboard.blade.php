@@ -63,6 +63,7 @@
         }
 
         .avatar {
+            overflow: hidden;
             display: grid;
             place-items: center;
             width: 72px;
@@ -72,6 +73,12 @@
             color: #ffffff;
             font-size: 2rem;
             font-weight: 900;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .card-title {
@@ -124,6 +131,47 @@
             color: #ffffff;
         }
 
+        .avatar-form {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .avatar-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .file-input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 9px 10px;
+        }
+
+        .danger-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            border: 0;
+            border-radius: 8px;
+            background: #fee2e2;
+            color: #991b1b;
+            font: inherit;
+            font-weight: 800;
+            padding: 9px 12px;
+            cursor: pointer;
+        }
+
+        .error {
+            color: #b91c1c;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
         @media (max-width: 820px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -157,7 +205,13 @@
 
         <div class="dashboard-grid">
             <section class="card profile-card">
-                <div class="avatar">{{ $avatarLetter }}</div>
+                <div class="avatar">
+                    @if ($customer->avatar_path)
+                        <img src="{{ Storage::disk('public')->url($customer->avatar_path) }}" alt="{{ $fullName }}">
+                    @else
+                        {{ $avatarLetter }}
+                    @endif
+                </div>
 
                 <div>
                     <h2 class="card-title">{{ $fullName }}</h2>
@@ -178,6 +232,32 @@
                             <div class="value">{{ $customer->created_at?->format('d.m.Y') ?: '—' }}</div>
                         </div>
                     </div>
+
+                    <form class="avatar-form" method="POST" action="{{ route('customer.account.avatar.update') }}" enctype="multipart/form-data">
+                        @csrf
+
+                        <label>
+                            <span class="label">Аватар</span>
+                            <input class="file-input" type="file" name="avatar" accept="image/jpeg,image/png,image/webp" required>
+                        </label>
+
+                        @error('avatar')
+                            <div class="error">{{ $message }}</div>
+                        @enderror
+
+                        <div class="avatar-actions">
+                            <button class="action-link primary" type="submit">Загрузить аватар</button>
+                        </div>
+                    </form>
+
+                    @if ($customer->avatar_path)
+                        <form class="avatar-form" method="POST" action="{{ route('customer.account.avatar.destroy') }}">
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="danger-button" type="submit">Удалить аватар</button>
+                        </form>
+                    @endif
                 </div>
             </section>
 

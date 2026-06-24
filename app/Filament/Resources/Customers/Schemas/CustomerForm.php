@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Customers\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -38,6 +39,20 @@ class CustomerForm
 
                         DatePicker::make('birthday')
                             ->label('Дата рождения'),
+
+                        FileUpload::make('avatar_path')
+                            ->label('Аватар')
+                            ->disk('public')
+                            ->directory('customer-avatars')
+                            ->visibility('public')
+                            ->storeFiles(true)
+                            ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->maxSize(2048)
+                            ->previewable(true)
+                            ->imagePreviewHeight('120')
+                            ->openable()
+                            ->downloadable(),
                     ])
                     ->columns(2),
 

@@ -17,9 +17,18 @@
             margin-bottom: 22px;
         }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
         .account-nav__link,
         .account-nav__button,
         .button,
+        .neutral-button,
         .danger-button {
             display: inline-flex;
             align-items: center;
@@ -35,9 +44,11 @@
         }
 
         .account-nav__link,
-        .account-nav__button {
+        .account-nav__button,
+        .neutral-button {
             background: #ffffff;
-            color: #166534;
+            color: #374151;
+            border: 1px solid #d1d5db;
         }
 
         .button {
@@ -51,15 +62,8 @@
         }
 
         .title {
-            margin: 0 0 18px;
+            margin: 0;
             font-size: 2rem;
-        }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 380px minmax(0, 1fr);
-            gap: 18px;
-            align-items: start;
         }
 
         .card,
@@ -68,6 +72,11 @@
             border-radius: 12px;
             background: #ffffff;
             padding: 18px;
+        }
+
+        .address.is-default {
+            border-color: #86efac;
+            background: #f0fdf4;
         }
 
         .card-title {
@@ -138,16 +147,37 @@
         }
 
         .address-title {
+            color: #111827;
             font-weight: 900;
         }
 
         .badge {
+            width: fit-content;
             border-radius: 999px;
-            background: #ecfdf5;
+            background: #dcfce7;
             color: #166534;
             font-size: 0.85rem;
             font-weight: 800;
             padding: 5px 9px;
+            white-space: nowrap;
+        }
+
+        .address-lines {
+            display: grid;
+            gap: 5px;
+            color: #374151;
+            margin: 12px 0;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .empty-state {
+            display: grid;
+            gap: 14px;
+            justify-items: start;
+            color: #4b5563;
         }
 
         .message {
@@ -170,15 +200,18 @@
             gap: 10px;
         }
 
-        @media (max-width: 900px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
+        .create-card {
+            margin-top: 16px;
         }
 
         @media (max-width: 640px) {
             .account-page {
                 width: min(100% - 24px, 1080px);
+            }
+
+            .page-header {
+                display: grid;
+                gap: 12px;
             }
 
             .fields {
@@ -192,38 +225,37 @@
     <main class="account-page">
         @include('customer-account.partials.nav')
 
-        <h1 class="title">Адреса доставки</h1>
+        @php
+            $isCreating = request()->boolean('create');
+            $editingAddress = $addresses->firstWhere('id', (int) request('edit'));
+        @endphp
+
+        <div class="page-header">
+            <h1 class="title">Адреса доставки</h1>
+
+            @if (! $isCreating)
+                <a class="button" href="{{ route('customer.account.addresses', ['create' => 1]) }}">
+                    {{ $addresses->isEmpty() ? 'Добавить адрес' : 'Добавить новый адрес' }}
+                </a>
+            @endif
+        </div>
 
         @if (session('success'))
             <div class="message">{{ session('success') }}</div>
         @endif
 
-        <div class="layout">
-            <section class="card">
-                <h2 class="card-title">Новый адрес</h2>
+        <section class="addresses" aria-label="Список адресов доставки">
+            @forelse ($addresses as $address)
+                <article class="address {{ $address->is_default ? 'is-default' : '' }}">
+                    <div class="address-header">
+                        <div class="address-title">{{ $address->title ?: 'Адрес доставки' }}</div>
 
-                <form class="form" method="POST" action="{{ route('customer.account.addresses.store') }}">
-                    @csrf
+                        @if ($address->is_default)
+                            <span class="badge">По умолчанию</span>
+                        @endif
+                    </div>
 
-                    @include('customer-account.addresses.partials.form-fields', [
-                        'address' => null,
-                    ])
-
-                    <button class="button" type="submit">Сохранить адрес</button>
-                </form>
-            </section>
-
-            <section class="addresses" aria-label="Список адресов доставки">
-                @forelse ($addresses as $address)
-                    <article class="address">
-                        <div class="address-header">
-                            <div class="address-title">{{ $address->title ?: 'Адрес доставки' }}</div>
-
-                            @if ($address->is_default)
-                                <span class="badge">По умолчанию</span>
-                            @endif
-                        </div>
-
+                    @if ($editingAddress?->id === $address->id)
                         <form class="form" method="POST" action="{{ route('customer.account.addresses.update', $address) }}">
                             @csrf
                             @method('PATCH')
@@ -233,21 +265,100 @@
                             ])
 
                             <div class="actions">
-                                <button class="button" type="submit">Обновить</button>
+                                <button class="button" type="submit">Сохранить</button>
+                                <a class="neutral-button" href="{{ route('customer.account.addresses') }}">Отмена</a>
                             </div>
                         </form>
+                    @else
+                        <div class="address-lines">
+                            <div>
+                                {{ collect([$address->postal_code, $address->region, $address->city])->filter()->implode(', ') ?: '—' }}
+                            </div>
+                            <div>
+                                {{ collect([
+                                    $address->street,
+                                    $address->house,
+                                    $address->building ? 'корп. ' . $address->building : null,
+                                    $address->apartment ? 'кв. ' . $address->apartment : null,
+                                ])->filter()->implode(', ') }}
+                            </div>
 
-                        <form class="actions" method="POST" action="{{ route('customer.account.addresses.destroy', $address) }}" onsubmit="return confirm('Удалить этот адрес?')">
-                            @csrf
-                            @method('DELETE')
+                            @if ($address->entrance || $address->floor)
+                                <div>
+                                    {{ collect([
+                                        $address->entrance ? 'Подъезд ' . $address->entrance : null,
+                                        $address->floor ? 'этаж ' . $address->floor : null,
+                                    ])->filter()->implode(' / ') }}
+                                </div>
+                            @endif
 
-                            <button class="danger-button" type="submit">Удалить</button>
-                        </form>
-                    </article>
-                @empty
-                    <div class="card">У вас пока нет сохранённых адресов.</div>
-                @endforelse
+                            @if ($address->comment)
+                                <div class="muted">{{ $address->comment }}</div>
+                            @endif
+                        </div>
+
+                        <div class="actions">
+                            <a class="neutral-button" href="{{ route('customer.account.addresses', ['edit' => $address->id]) }}">Изменить</a>
+
+                            @if (! $address->is_default)
+                                <form method="POST" action="{{ route('customer.account.addresses.update', $address) }}">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <input type="hidden" name="title" value="{{ $address->title }}">
+                                    <input type="hidden" name="postal_code" value="{{ $address->postal_code }}">
+                                    <input type="hidden" name="region" value="{{ $address->region }}">
+                                    <input type="hidden" name="city" value="{{ $address->city }}">
+                                    <input type="hidden" name="street" value="{{ $address->street }}">
+                                    <input type="hidden" name="house" value="{{ $address->house }}">
+                                    <input type="hidden" name="building" value="{{ $address->building }}">
+                                    <input type="hidden" name="apartment" value="{{ $address->apartment }}">
+                                    <input type="hidden" name="entrance" value="{{ $address->entrance }}">
+                                    <input type="hidden" name="floor" value="{{ $address->floor }}">
+                                    <input type="hidden" name="comment" value="{{ $address->comment }}">
+                                    <input type="hidden" name="is_default" value="1">
+
+                                    <button class="button" type="submit">Сделать основным</button>
+                                </form>
+                            @endif
+
+                            <form method="POST" action="{{ route('customer.account.addresses.destroy', $address) }}" onsubmit="return confirm('Удалить этот адрес?')">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="danger-button" type="submit">Удалить</button>
+                            </form>
+                        </div>
+                    @endif
+                </article>
+            @empty
+                <div class="card empty-state">
+                    <div>У вас пока нет адресов доставки.</div>
+
+                    @if (! $isCreating)
+                        <a class="button" href="{{ route('customer.account.addresses', ['create' => 1]) }}">Добавить адрес</a>
+                    @endif
+                </div>
+            @endforelse
+        </section>
+
+        @if ($isCreating)
+            <section class="card create-card">
+                <h2 class="card-title">Новый адрес</h2>
+
+                <form class="form" method="POST" action="{{ route('customer.account.addresses.store') }}">
+                    @csrf
+
+                    @include('customer-account.addresses.partials.form-fields', [
+                        'address' => null,
+                    ])
+
+                    <div class="actions">
+                        <button class="button" type="submit">Сохранить адрес</button>
+                        <a class="neutral-button" href="{{ route('customer.account.addresses') }}">Отмена</a>
+                    </div>
+                </form>
             </section>
-        </div>
+        @endif
     </main>
 @endsection

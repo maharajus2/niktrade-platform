@@ -99,7 +99,7 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:1'],
         ]);
 
-        DB::transaction(function () use ($request, $cartItem, $data) {
+        $quantity = DB::transaction(function () use ($request, $cartItem, $data): int {
             $this->ensureCartItemBelongsToSession($request, $cartItem);
 
             $unitTotal = $this->getCartItemUnitTotal($cartItem);
@@ -108,9 +108,11 @@ class CartController extends Controller
             $cartItem->save();
 
             $cartItem->cart->recalculateTotals()->save();
+
+            return $cartItem->quantity;
         });
 
-        return back()->with('success', 'Количество товара обновлено');
+        return back()->with('success', $this->formatCartProductQuantityMessage($quantity));
     }
 
     public function destroyItem(Request $request, CartItem $cartItem): RedirectResponse
@@ -123,7 +125,32 @@ class CartController extends Controller
             $cart->recalculateTotals()->save();
         });
 
-        return back()->with('success', 'Товар удален из корзины');
+        return back()->with('success', 'Товар удалён из корзины');
+    }
+
+    private function formatCartProductQuantityMessage(int $quantity): string
+    {
+        return 'В корзине ' . $quantity . ' ' . $this->pluralizeRu($quantity, ['товар', 'товара', 'товаров']);
+    }
+
+    /**
+     * @param array{0: string, 1: string, 2: string} $forms
+     */
+    private function pluralizeRu(int $number, array $forms): string
+    {
+        $absolute = abs($number);
+        $lastTwo = $absolute % 100;
+        $last = $absolute % 10;
+
+        if ($lastTwo >= 11 && $lastTwo <= 14) {
+            return $forms[2];
+        }
+
+        return match ($last) {
+            1 => $forms[0],
+            2, 3, 4 => $forms[1],
+            default => $forms[2],
+        };
     }
 
     private function getDiscountedUnitPrice(Product $product): float

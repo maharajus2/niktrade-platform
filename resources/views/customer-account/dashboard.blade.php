@@ -57,21 +57,35 @@
 
         .profile-card {
             display: grid;
-            grid-template-columns: 72px minmax(0, 1fr);
-            gap: 16px;
+            grid-template-columns: 132px minmax(0, 1fr);
+            gap: 20px;
             align-items: start;
+        }
+
+        .avatar-block {
+            display: grid;
+            gap: 10px;
+            justify-items: center;
+        }
+
+        .avatar-upload {
+            position: relative;
+            display: block;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
         }
 
         .avatar {
             overflow: hidden;
             display: grid;
             place-items: center;
-            width: 72px;
-            height: 72px;
+            width: 120px;
+            height: 120px;
             border-radius: 999px;
             background: #166534;
             color: #ffffff;
-            font-size: 2rem;
+            font-size: 2.8rem;
             font-weight: 900;
         }
 
@@ -79,6 +93,22 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .avatar-edit {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border: 2px solid #ffffff;
+            border-radius: 999px;
+            background: #166534;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 900;
         }
 
         .card-title {
@@ -131,38 +161,22 @@
             color: #ffffff;
         }
 
-        .avatar-form {
-            display: grid;
-            gap: 10px;
-            margin-top: 16px;
+        .avatar-input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .avatar-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .file-input {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: #ffffff;
-            padding: 9px 10px;
-        }
-
-        .danger-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 40px;
+        .avatar-delete {
             border: 0;
-            border-radius: 8px;
-            background: #fee2e2;
-            color: #991b1b;
+            background: transparent;
+            color: #6b7280;
             font: inherit;
+            font-size: 0.9rem;
             font-weight: 800;
-            padding: 9px 12px;
+            padding: 0;
             cursor: pointer;
         }
 
@@ -188,6 +202,10 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .avatar-block {
+                justify-items: start;
+            }
         }
     </style>
 @endpush
@@ -205,11 +223,40 @@
 
         <div class="dashboard-grid">
             <section class="card profile-card">
-                <div class="avatar">
+                <div class="avatar-block">
+                    <form method="POST" action="{{ route('customer.account.avatar.update') }}" enctype="multipart/form-data">
+                        @csrf
+
+                        <label class="avatar-upload" aria-label="Загрузить аватар">
+                            <span class="avatar">
+                                @if ($customer->avatar_path)
+                                    <img src="{{ Storage::disk('public')->url($customer->avatar_path) }}" alt="{{ $fullName }}">
+                                @else
+                                    {{ $avatarLetter }}
+                                @endif
+                            </span>
+                            <span class="avatar-edit" aria-hidden="true">📷</span>
+                            <input
+                                class="avatar-input"
+                                type="file"
+                                name="avatar"
+                                accept="image/jpeg,image/png,image/webp"
+                                onchange="this.form.submit()"
+                            >
+                        </label>
+
+                        @error('avatar')
+                            <div class="error">{{ $message }}</div>
+                        @enderror
+                    </form>
+
                     @if ($customer->avatar_path)
-                        <img src="{{ Storage::disk('public')->url($customer->avatar_path) }}" alt="{{ $fullName }}">
-                    @else
-                        {{ $avatarLetter }}
+                        <form method="POST" action="{{ route('customer.account.avatar.destroy') }}">
+                            @csrf
+                            @method('DELETE')
+
+                            <button class="avatar-delete" type="submit">Удалить фото</button>
+                        </form>
                     @endif
                 </div>
 
@@ -232,32 +279,6 @@
                             <div class="value">{{ $customer->created_at?->format('d.m.Y') ?: '—' }}</div>
                         </div>
                     </div>
-
-                    <form class="avatar-form" method="POST" action="{{ route('customer.account.avatar.update') }}" enctype="multipart/form-data">
-                        @csrf
-
-                        <label>
-                            <span class="label">Аватар</span>
-                            <input class="file-input" type="file" name="avatar" accept="image/jpeg,image/png,image/webp" required>
-                        </label>
-
-                        @error('avatar')
-                            <div class="error">{{ $message }}</div>
-                        @enderror
-
-                        <div class="avatar-actions">
-                            <button class="action-link primary" type="submit">Загрузить аватар</button>
-                        </div>
-                    </form>
-
-                    @if ($customer->avatar_path)
-                        <form class="avatar-form" method="POST" action="{{ route('customer.account.avatar.destroy') }}">
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="danger-button" type="submit">Удалить аватар</button>
-                        </form>
-                    @endif
                 </div>
             </section>
 

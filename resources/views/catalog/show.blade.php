@@ -513,13 +513,6 @@
                 </section>
             @endif
 
-            @if ($product->storage_conditions)
-                <section class="section">
-                    <h2>Условия хранения</h2>
-                    <p>{{ $product->storage_conditions }}</p>
-                </section>
-            @endif
-
             @if ($product->precautions)
                 <section class="section">
                     <h2>Меры предосторожности</h2>
@@ -531,6 +524,13 @@
                 <section class="section">
                     <h2>Утилизация</h2>
                     <p>{{ $product->disposal_method }}</p>
+                </section>
+            @endif
+
+            @if ($product->storage_conditions)
+                <section class="section">
+                    <h2>Условия хранения</h2>
+                    <p>{{ $product->storage_conditions }}</p>
                 </section>
             @endif
 

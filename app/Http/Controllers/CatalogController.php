@@ -47,8 +47,8 @@ class CatalogController extends Controller
             'brands' => Brand::query()->orderBy('name')->get(),
             'categories' => Category::query()->orderBy('name')->get(),
             'directions' => [
-                'home' => 'Домашний уход',
-                'professional' => 'Профессиональный уход',
+                'home' => 'Home',
+                'professional' => 'Professional',
             ],
             'products' => $products,
             'filters' => [
@@ -93,8 +93,8 @@ class CatalogController extends Controller
             'galleryImages' => $product->images,
             'cartProductQuantity' => $this->getCartProductQuantity($request, $product),
             'directions' => [
-                'home' => 'Домашний уход',
-                'professional' => 'Профессиональный уход',
+                'home' => 'Home',
+                'professional' => 'Professional',
             ],
         ]);
     }

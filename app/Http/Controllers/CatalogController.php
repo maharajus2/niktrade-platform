@@ -91,7 +91,8 @@ class CatalogController extends Controller
             'product' => $product,
             'mainImage' => $product->images->first(),
             'galleryImages' => $product->images,
-            'cartProductQuantity' => $this->getCartProductQuantity($request, $product),
+            'cartProductItem' => $cartProductItem = $this->getCartProductItem($request, $product),
+            'cartProductQuantity' => (int) ($cartProductItem?->quantity ?? 0),
             'directions' => [
                 'home' => 'Home',
                 'professional' => 'Professional',
@@ -99,13 +100,13 @@ class CatalogController extends Controller
         ]);
     }
 
-    private function getCartProductQuantity(Request $request, Product $product): int
+    private function getCartProductItem(Request $request, Product $product): ?CartItem
     {
-        return (int) CartItem::query()
+        return CartItem::query()
             ->where('product_id', $product->id)
             ->whereHas('cart', fn ($query) => $query
                 ->where('session_id', $request->session()->getId())
                 ->where('status', 'active'))
-            ->sum('quantity');
+            ->first();
     }
 }

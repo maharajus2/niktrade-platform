@@ -158,6 +158,44 @@
             align-items: center;
         }
 
+        .quantity-control {
+            display: inline-grid;
+            grid-template-columns: 42px minmax(44px, auto) 42px;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .quantity-form {
+            display: contents;
+        }
+
+        .quantity-button,
+        .quantity-value {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 42px;
+        }
+
+        .quantity-button {
+            border: 0;
+            background: #f9fafb;
+            color: #166534;
+            font: inherit;
+            font-size: 1.2rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .quantity-value {
+            border-inline: 1px solid #d1d5db;
+            color: #111827;
+            font-weight: 800;
+            padding: 0 12px;
+        }
+
         .button,
         .cart-link {
             display: inline-flex;
@@ -186,11 +224,6 @@
         .cart-link {
             background: #ecfdf5;
             color: #166534;
-        }
-
-        .cart-state {
-            color: #166534;
-            font-weight: 800;
         }
 
         .alert {
@@ -402,19 +435,41 @@
                     <div class="alert">{{ session('success') }}</div>
                 @endif
 
-                @if ($cartProductQuantity > 0)
-                    <div class="cart-state">В корзине: {{ $cartProductQuantity }} шт.</div>
-                @endif
-
                 <div class="cart-actions">
                     @if ($canAddToCart)
-                        <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
-                            @csrf
+                        @if ($cartProductItem)
+                            <div class="quantity-control" aria-label="Количество товара в корзине">
+                                @if ($cartProductQuantity > 1)
+                                    <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
+                                        <button class="quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
+                                    </form>
+                                @else
+                                    <form class="quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
+                                    </form>
+                                @endif
 
-                            <button class="button" type="submit">
-                                {{ $cartProductQuantity > 0 ? 'Товар в корзине' : 'Добавить в корзину' }}
-                            </button>
-                        </form>
+                                <span class="quantity-value">{{ $cartProductQuantity }}</span>
+
+                                <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
+                                    <button class="quantity-button" type="submit" aria-label="Увеличить количество">+</button>
+                                </form>
+                            </div>
+                        @else
+                            <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                                @csrf
+
+                                <button class="button" type="submit">Добавить в корзину</button>
+                            </form>
+                        @endif
                     @else
                         <button class="button" type="button" disabled>
                             {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}

@@ -122,6 +122,88 @@
             padding: 14px;
         }
 
+        .card-actions {
+            display: grid;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cart-button,
+        .cart-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 38px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 8px 10px;
+            text-decoration: none;
+        }
+
+        .cart-button {
+            width: 100%;
+            background: #166534;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .cart-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .cart-link {
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .quantity-control {
+            display: inline-grid;
+            grid-template-columns: 36px minmax(38px, auto) 36px;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .quantity-form {
+            display: contents;
+        }
+
+        .quantity-button,
+        .quantity-value {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 38px;
+        }
+
+        .quantity-button {
+            border: 0;
+            background: #f9fafb;
+            color: #166534;
+            font: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .quantity-value {
+            border-inline: 1px solid #d1d5db;
+            color: #111827;
+            font-weight: 800;
+            padding: 0 10px;
+        }
+
         .name {
             margin: 0;
             font-size: 1rem;
@@ -286,6 +368,8 @@
                         $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
                         $productVolume = \App\Support\ProductDisplayFormatter::formatVolume($product->volume_value, $product->volume_unit);
                         $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
+                        $cartProductItem = $cartProductItems->get($product->id);
+                        $cartProductQuantity = (int) ($cartProductItem?->quantity ?? 0);
                     @endphp
 
                     <article class="card">
@@ -328,6 +412,52 @@
                                     <span class="old-price">{{ number_format((float) $product->price, 2, ',', ' ') }} ₽</span>
                                 @elseif ($product->price !== null)
                                     <span class="current-price">{{ number_format((float) $product->price, 2, ',', ' ') }} ₽</span>
+                                @endif
+                            </div>
+
+                            <div class="card-actions">
+                                @if ($availabilityStatus === 'in_stock')
+                                    @if ($cartProductItem)
+                                        <div class="action-row">
+                                            <div class="quantity-control" aria-label="Количество товара в корзине">
+                                                @if ($cartProductQuantity > 1)
+                                                    <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
+                                                        <button class="quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
+                                                    </form>
+                                                @else
+                                                    <form class="quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
+                                                    </form>
+                                                @endif
+
+                                                <span class="quantity-value">{{ $cartProductQuantity }}</span>
+
+                                                <form class="quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
+                                                    <button class="quantity-button" type="submit" aria-label="Увеличить количество">+</button>
+                                                </form>
+                                            </div>
+
+                                            <a class="cart-link" href="{{ route('cart.index') }}">В корзину</a>
+                                        </div>
+                                    @else
+                                        <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                                            @csrf
+
+                                            <button class="cart-button" type="submit">Добавить в корзину</button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <button class="cart-button" type="button" disabled>
+                                        {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}
+                                    </button>
                                 @endif
                             </div>
                         </div>

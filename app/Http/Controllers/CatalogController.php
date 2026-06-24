@@ -43,6 +43,8 @@ class CatalogController extends Controller
             ->paginate(24)
             ->withQueryString();
 
+        $cartProductItems = $this->getCartProductItems($request, $products->getCollection()->pluck('id')->all());
+
         return view('catalog.index', [
             'brands' => Brand::query()->orderBy('name')->get(),
             'categories' => Category::query()->orderBy('name')->get(),
@@ -51,6 +53,7 @@ class CatalogController extends Controller
                 'professional' => 'Professional',
             ],
             'products' => $products,
+            'cartProductItems' => $cartProductItems,
             'filters' => [
                 'brand' => $brandId,
                 'category' => $categoryId,
@@ -108,5 +111,20 @@ class CatalogController extends Controller
                 ->where('session_id', $request->session()->getId())
                 ->where('status', 'active'))
             ->first();
+    }
+
+    private function getCartProductItems(Request $request, array $productIds)
+    {
+        if ($productIds === []) {
+            return collect();
+        }
+
+        return CartItem::query()
+            ->whereIn('product_id', $productIds)
+            ->whereHas('cart', fn ($query) => $query
+                ->where('session_id', $request->session()->getId())
+                ->where('status', 'active'))
+            ->get()
+            ->keyBy('product_id');
     }
 }

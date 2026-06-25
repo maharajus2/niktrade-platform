@@ -36,11 +36,23 @@ class OrdersTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('fulfillment_method')
+                    ->label('Тип')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => $state === Order::FULFILLMENT_PICKUP ? 'Самовывоз' : 'Доставка')
+                    ->color(fn (?string $state): string => $state === Order::FULFILLMENT_PICKUP ? 'purple' : 'info'),
+
                 TextColumn::make('city')
                     ->label('Город')
+                    ->getStateUsing(fn (Order $record): string => $record->fulfillment_method === Order::FULFILLMENT_PICKUP ? '—' : ($record->city ?: '—'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+
+                TextColumn::make('warehouse_name_snapshot')
+                    ->label('Склад')
+                    ->getStateUsing(fn (Order $record): string => $record->fulfillment_method === Order::FULFILLMENT_PICKUP ? ($record->warehouse_name_snapshot ?: '—') : '—')
+                    ->searchable(),
 
                 TextColumn::make('status')
                     ->label('Статус заказа')
@@ -102,6 +114,13 @@ class OrdersTable
                         Order::PAYMENT_STATUS_PAID => 'Оплачен',
                         Order::PAYMENT_STATUS_FAILED => 'Ошибка оплаты',
                         Order::PAYMENT_STATUS_REFUNDED => 'Возврат',
+                    ]),
+
+                SelectFilter::make('fulfillment_method')
+                    ->label('Тип получения')
+                    ->options([
+                        Order::FULFILLMENT_DELIVERY => 'Доставка',
+                        Order::FULFILLMENT_PICKUP => 'Самовывоз',
                     ]),
 
                 SelectFilter::make('fulfillment_status')

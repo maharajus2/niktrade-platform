@@ -274,6 +274,10 @@
                 padding-top: 24px;
             }
 
+            .card {
+                scroll-margin-top: 24px;
+            }
+
             .header {
                 display: grid;
             }
@@ -371,9 +375,10 @@
                         $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
                         $cartProductItem = $cartProductItems->get($product->id);
                         $cartProductQuantity = (int) ($cartProductItem?->quantity ?? 0);
+                        $catalogAnchor = 'product-' . $product->id;
                     @endphp
 
-                    <article class="card" id="product-{{ $product->id }}">
+                    <article class="card" id="{{ $catalogAnchor }}">
                         <a class="image" href="{{ route('catalog.show', $product->slug ?: $product->id) }}">
                             @if ($mainImage)
                                 <img
@@ -426,14 +431,14 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
-                                                        <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
+                                                        <input type="hidden" name="redirect_anchor" value="{{ $catalogAnchor }}">
                                                         <button class="quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
                                                     </form>
                                                 @else
                                                     <form class="quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
+                                                        <input type="hidden" name="redirect_anchor" value="{{ $catalogAnchor }}">
                                                         <button class="quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
                                                     </form>
                                                 @endif
@@ -444,7 +449,7 @@
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
-                                                    <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
+                                                    <input type="hidden" name="redirect_anchor" value="{{ $catalogAnchor }}">
                                                     <button class="quantity-button" type="submit" aria-label="Увеличить количество">+</button>
                                                 </form>
                                             </div>
@@ -454,7 +459,7 @@
                                     @else
                                         <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
                                             @csrf
-                                            <input type="hidden" name="redirect_anchor" value="product-{{ $product->id }}">
+                                            <input type="hidden" name="redirect_anchor" value="{{ $catalogAnchor }}">
 
                                             <button class="cart-button" type="submit">Добавить в корзину</button>
                                         </form>
@@ -478,3 +483,26 @@
         @endif
     </main>
 @endsection
+
+@push('scripts')
+    <script>
+        (() => {
+            const scrollToHash = () => {
+                if (! window.location.hash) {
+                    return;
+                }
+
+                const target = document.getElementById(window.location.hash.slice(1));
+
+                if (target) {
+                    target.scrollIntoView({ block: 'start' });
+                }
+            };
+
+            window.addEventListener('load', () => {
+                scrollToHash();
+                window.setTimeout(scrollToHash, 100);
+            });
+        })();
+    </script>
+@endpush

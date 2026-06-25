@@ -6,7 +6,9 @@ use App\Models\Order;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class CustomerAccountController extends Controller
 {
@@ -33,6 +35,35 @@ class CustomerAccountController extends Controller
             'totalOrderedWeightGrams' => $customer->orders()
                 ->sum('total_weight_grams'),
         ]);
+    }
+
+    public function editProfile(): View
+    {
+        return view('customer-account.profile-edit', [
+            'customer' => Auth::guard('customer')->user(),
+        ]);
+    }
+
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $customer = Auth::guard('customer')->user();
+
+        $data = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('customers')->ignore($customer->id)],
+            'phone' => ['required', 'string', 'max:50', Rule::unique('customers')->ignore($customer->id)],
+            'birthday' => ['nullable', 'date'],
+            'accepts_marketing' => ['boolean'],
+        ]);
+
+        $data['accepts_marketing'] = $request->boolean('accepts_marketing');
+
+        $customer->update($data);
+
+        return redirect()
+            ->route('customer.account')
+            ->with('success', 'Профиль обновлён.');
     }
 
     public function updateAvatar(Request $request): RedirectResponse

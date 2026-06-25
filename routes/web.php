@@ -35,6 +35,8 @@ Route::middleware('guest:customer')->group(function () {
 Route::middleware('auth:customer')->group(function () {
     Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
     Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('customer.account');
+    Route::get('/account/profile/edit', [CustomerAccountController::class, 'editProfile'])->name('customer.account.profile.edit');
+    Route::patch('/account/profile', [CustomerAccountController::class, 'updateProfile'])->name('customer.account.profile.update');
     Route::post('/account/avatar', [CustomerAccountController::class, 'updateAvatar'])->name('customer.account.avatar.update');
     Route::delete('/account/avatar', [CustomerAccountController::class, 'destroyAvatar'])->name('customer.account.avatar.destroy');
     Route::post('/account/telegram/verify', [CustomerTelegramController::class, 'verify'])->name('customer.account.telegram.verify');

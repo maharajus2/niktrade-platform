@@ -406,6 +406,7 @@
             <h2 class="card-title">Быстрые действия</h2>
 
             <div class="quick-actions">
+                <a class="action-link primary" href="{{ route('customer.account.profile.edit') }}">Редактировать профиль</a>
                 <a class="action-link primary" href="{{ route('customer.account.orders') }}">Мои заказы</a>
                 <a class="action-link" href="{{ route('customer.account.addresses') }}">Адреса доставки</a>
                 <a class="action-link" href="{{ route('catalog.index') }}">Перейти в каталог</a>

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Warehouses\Pages;
 use App\Filament\Resources\Warehouses\WarehouseResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Alignment;
 
 class EditWarehouse extends EditRecord
 {
@@ -12,8 +13,20 @@ class EditWarehouse extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        return [];
+    }
+
+    protected function getFormActions(): array
+    {
         return [
             DeleteAction::make(),
+            $this->getCancelFormAction(),
+            $this->getSaveFormAction(),
         ];
+    }
+
+    protected function getFormActionsAlignment(): string|Alignment
+    {
+        return Alignment::End;
     }
 }

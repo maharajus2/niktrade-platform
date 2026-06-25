@@ -18,9 +18,10 @@ class WarehouseForm
                 Section::make('Основная информация')
                     ->schema([
                         TextInput::make('name')
-                            ->label('Название')
+                            ->label('Название склада')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->columnSpanFull(),
 
                         Toggle::make('is_active')
                             ->label('Активен')
@@ -31,7 +32,7 @@ class WarehouseForm
                             ->numeric()
                             ->default(0),
                     ])
-                    ->columns(3),
+                    ->columns(2),
 
                 Section::make('Адрес')
                     ->schema([
@@ -64,9 +65,6 @@ class WarehouseForm
                             ->label('Помещение / офис / склад')
                             ->maxLength(255),
 
-                        TextInput::make('address')
-                            ->label('Адрес, legacy')
-                            ->maxLength(255),
                     ])
                     ->columns(2),
 
@@ -83,7 +81,7 @@ class WarehouseForm
                                 'sat' => 'Сб',
                                 'sun' => 'Вс',
                             ])
-                            ->columns(7)
+                            ->columns(4)
                             ->columnSpanFull(),
 
                         TextInput::make('working_time_from')
@@ -98,14 +96,10 @@ class WarehouseForm
                     ])
                     ->columns(2),
 
-                Section::make('Контакты и комментарий')
+                Section::make('Контактная информация')
                     ->schema([
                         TextInput::make('phone')
                             ->label('Телефон')
-                            ->maxLength(255),
-
-                        TextInput::make('working_hours')
-                            ->label('Режим работы, legacy')
                             ->maxLength(255),
 
                         Textarea::make('comment')

@@ -25,7 +25,7 @@ class EditWarehouse extends EditRecord
         ];
     }
 
-    protected function getFormActionsAlignment(): string|Alignment
+    public function getFormActionsAlignment(): string|Alignment
     {
         return Alignment::End;
     }

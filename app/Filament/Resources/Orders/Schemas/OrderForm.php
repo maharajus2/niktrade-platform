@@ -71,6 +71,8 @@ class OrderForm
                                 Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
                                 Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
                                 Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
+                                Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+                                Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
                             ])
                             ->required(),
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Models\Order;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -65,6 +66,8 @@ class OrdersTable
                         Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
                         Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
                         Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
+                        Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+                        Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
                         default => $state ?? '—',
                     }),
 
@@ -111,6 +114,8 @@ class OrdersTable
                         Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
                         Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
                         Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
+                        Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+                        Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
                     ]),
 
                 SelectFilter::make('sla')
@@ -121,6 +126,7 @@ class OrdersTable
                         Order::SLA_STATE_OK => 'В срок',
                         Order::SLA_STATE_COMPLETED => 'Завершённые',
                         Order::SLA_STATE_NONE => 'Отменённые',
+                        Order::SLA_STATE_ARCHIVED => 'Архив',
                     ])
                     ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
                         ? Order::applySlaFilter($query, $data['value'])
@@ -130,12 +136,25 @@ class OrdersTable
                 Order::SLA_STATE_OVERDUE => '!bg-red-50',
                 Order::SLA_STATE_WARNING => '!bg-yellow-50',
                 Order::SLA_STATE_COMPLETED,
-                Order::SLA_STATE_NONE => '!bg-gray-50',
+                Order::SLA_STATE_NONE,
+                Order::SLA_STATE_ARCHIVED => '!bg-gray-50',
                 default => '',
             })
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('archive')
+                    ->label('Отправить в архив')
+                    ->requiresConfirmation()
+                    ->modalDescription('Отправить заказ в архив?')
+                    ->visible(fn (Order $record): bool => $record->canBeArchived())
+                    ->action(fn (Order $record): bool => $record->update(['archived_at' => now()])),
+                Action::make('unarchive')
+                    ->label('Вернуть из архива')
+                    ->requiresConfirmation()
+                    ->modalDescription('Вернуть заказ из архива?')
+                    ->visible(fn (Order $record): bool => $record->isArchived())
+                    ->action(fn (Order $record): bool => $record->update(['archived_at' => null])),
                 DeleteAction::make()
                     ->label('Удалить заказ')
                     ->requiresConfirmation()

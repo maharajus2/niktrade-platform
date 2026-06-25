@@ -19,7 +19,11 @@ class CustomerAccountController extends Controller
             'ordersCount' => $customer->orders()->count(),
             'addressesCount' => $customer->addresses()->count(),
             'totalSpent' => $customer->orders()
-                ->where('status', Order::STATUS_DELIVERED)
+                ->where('payment_status', Order::PAYMENT_STATUS_PAID)
+                ->whereIn('delivery_status', [
+                    Order::DELIVERY_STATUS_DELIVERED,
+                    Order::DELIVERY_STATUS_PICKED_UP,
+                ])
                 ->sum('total'),
             'totalOrderedWeightGrams' => $customer->orders()
                 ->sum('total_weight_grams'),

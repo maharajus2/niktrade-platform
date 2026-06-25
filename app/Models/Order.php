@@ -15,6 +15,7 @@ class Order extends Model
     public const SLA_STATE_OVERDUE = 'overdue';
     public const SLA_STATE_COMPLETED = 'completed';
     public const SLA_STATE_NONE = 'none';
+    public const SLA_STATE_ARCHIVED = 'archived';
 
     public const STATUS_NEW = 'new';
     public const STATUS_ASSEMBLING = 'assembling';
@@ -33,6 +34,8 @@ class Order extends Model
     public const DELIVERY_STATUS_NOT_SHIPPED = 'not_shipped';
     public const DELIVERY_STATUS_SHIPPED = 'shipped';
     public const DELIVERY_STATUS_DELIVERED = 'delivered';
+    public const DELIVERY_STATUS_READY_FOR_PICKUP = 'ready_for_pickup';
+    public const DELIVERY_STATUS_PICKED_UP = 'picked_up';
 
     protected $fillable = [
         'order_number',
@@ -44,6 +47,7 @@ class Order extends Model
         'handed_to_delivery_at',
         'delivered_at',
         'cancelled_at',
+        'archived_at',
         'payment_status',
         'delivery_status',
         'customer_first_name',
@@ -79,6 +83,7 @@ class Order extends Model
         'handed_to_delivery_at' => 'datetime',
         'delivered_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -144,7 +149,6 @@ class Order extends Model
             self::STATUS_ASSEMBLING => 'Собирается',
             self::STATUS_ASSEMBLED => 'Собран',
             self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
-            self::STATUS_DELIVERED => 'Доставлен',
             self::STATUS_CANCELLED => 'Отменён',
         ];
     }
@@ -156,7 +160,7 @@ class Order extends Model
             self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'Собирается',
             self::STATUS_ASSEMBLED => 'Собран',
             self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
-            self::STATUS_DELIVERED => 'Доставлен',
+            self::STATUS_DELIVERED => 'Передан в доставку',
             self::STATUS_CANCELLED => 'Отменён',
             default => $status ?? '—',
         };
@@ -179,6 +183,8 @@ class Order extends Model
             self::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
             self::DELIVERY_STATUS_SHIPPED => 'Отправлен',
             self::DELIVERY_STATUS_DELIVERED => 'Доставлен',
+            self::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+            self::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
             default => $status ?? '—',
         };
     }
@@ -200,6 +206,10 @@ class Order extends Model
 
     public function getSlaState(): string
     {
+        if ($this->isArchived()) {
+            return self::SLA_STATE_ARCHIVED;
+        }
+
         if (in_array($this->status, [self::STATUS_HANDED_TO_DELIVERY, self::STATUS_DELIVERED], true)) {
             return self::SLA_STATE_COMPLETED;
         }
@@ -227,6 +237,10 @@ class Order extends Model
 
     public function getSlaLabel(): string
     {
+        if ($this->isArchived()) {
+            return 'Архив';
+        }
+
         if ($this->status === self::STATUS_CANCELLED) {
             return 'Отменён';
         }
@@ -236,6 +250,7 @@ class Order extends Model
             self::SLA_STATE_WARNING => 'Скоро',
             self::SLA_STATE_OVERDUE => 'Просрочен',
             self::SLA_STATE_COMPLETED => 'Завершён',
+            self::SLA_STATE_ARCHIVED => 'Архив',
             default => 'Не требуется',
         };
     }
@@ -318,6 +333,7 @@ class Order extends Model
             self::SLA_STATE_WARNING => 'warning',
             self::SLA_STATE_OVERDUE => 'danger',
             self::SLA_STATE_COMPLETED => 'gray',
+            self::SLA_STATE_ARCHIVED => 'gray',
             default => 'gray',
         };
     }
@@ -330,7 +346,7 @@ class Order extends Model
         $okAfter = now()->subHours(21);
 
         return match ($state) {
-            self::SLA_STATE_OVERDUE => $query->where(function (Builder $query) use ($overdueBefore): void {
+            self::SLA_STATE_OVERDUE => $query->whereNull('archived_at')->where(function (Builder $query) use ($overdueBefore): void {
                 $query
                     ->where(fn (Builder $query) => $query
                         ->where('status', self::STATUS_NEW)
@@ -342,7 +358,7 @@ class Order extends Model
                         ->where('status', self::STATUS_ASSEMBLED)
                         ->where('assembled_at', '<', $overdueBefore));
             }),
-            self::SLA_STATE_WARNING => $query->where(function (Builder $query) use ($warningStart, $warningEnd): void {
+            self::SLA_STATE_WARNING => $query->whereNull('archived_at')->where(function (Builder $query) use ($warningStart, $warningEnd): void {
                 $query
                     ->where(fn (Builder $query) => $query
                         ->where('status', self::STATUS_NEW)
@@ -354,7 +370,7 @@ class Order extends Model
                         ->where('status', self::STATUS_ASSEMBLED)
                         ->whereBetween('assembled_at', [$warningStart, $warningEnd]));
             }),
-            self::SLA_STATE_OK => $query->where(function (Builder $query) use ($okAfter): void {
+            self::SLA_STATE_OK => $query->whereNull('archived_at')->where(function (Builder $query) use ($okAfter): void {
                 $query
                     ->where(fn (Builder $query) => $query
                         ->where('status', self::STATUS_NEW)
@@ -369,8 +385,9 @@ class Order extends Model
             self::SLA_STATE_COMPLETED => $query->whereIn('status', [
                 self::STATUS_HANDED_TO_DELIVERY,
                 self::STATUS_DELIVERED,
-            ]),
-            self::SLA_STATE_NONE => $query->where('status', self::STATUS_CANCELLED),
+            ])->whereNull('archived_at'),
+            self::SLA_STATE_NONE => $query->where('status', self::STATUS_CANCELLED)->whereNull('archived_at'),
+            self::SLA_STATE_ARCHIVED => $query->whereNotNull('archived_at'),
             default => $query,
         };
     }
@@ -385,6 +402,7 @@ class Order extends Model
             ->orderByRaw(
                 <<<SQL
 CASE
+    WHEN archived_at IS NOT NULL THEN 6
     WHEN (
         (status = ? AND created_at < ?)
         OR (status = ? AND assembling_at < ?)
@@ -467,11 +485,32 @@ SQL,
             self::STATUS_NEW => 'gray',
             self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'warning',
             self::STATUS_ASSEMBLED => 'info',
-            self::STATUS_HANDED_TO_DELIVERY => 'primary',
-            self::STATUS_DELIVERED => 'success',
+            self::STATUS_HANDED_TO_DELIVERY,
+            self::STATUS_DELIVERED => 'primary',
             self::STATUS_CANCELLED => 'danger',
             default => 'gray',
         };
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived_at !== null;
+    }
+
+    public function canBeArchived(): bool
+    {
+        if ($this->isArchived()) {
+            return false;
+        }
+
+        return $this->status === self::STATUS_CANCELLED
+            || (
+                $this->payment_status === self::PAYMENT_STATUS_PAID
+                && in_array($this->delivery_status, [
+                    self::DELIVERY_STATUS_DELIVERED,
+                    self::DELIVERY_STATUS_PICKED_UP,
+                ], true)
+            );
     }
 
     public function canBeCancelledByCustomer(): bool

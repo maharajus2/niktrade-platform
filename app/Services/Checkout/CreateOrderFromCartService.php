@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductImage;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 
 class CreateOrderFromCartService
@@ -18,11 +19,22 @@ class CreateOrderFromCartService
             $cart->loadMissing(['items.product.images']);
 
             $customer = $this->resolveCustomer($data);
+            $fulfillmentMethod = $data['fulfillment_method'] ?? Order::FULFILLMENT_DELIVERY;
+            $isPickup = $fulfillmentMethod === Order::FULFILLMENT_PICKUP;
+            $warehouse = $isPickup
+                ? Warehouse::query()->where('is_active', true)->findOrFail($data['warehouse_id'])
+                : null;
 
             $order = Order::query()->create([
                 'order_number' => $this->generateOrderNumber(),
                 'customer_id' => $customer->id,
-                'customer_address_id' => $data['customer_address_id'] ?? null,
+                'customer_address_id' => $isPickup ? null : ($data['customer_address_id'] ?? null),
+                'fulfillment_method' => $fulfillmentMethod,
+                'warehouse_id' => $warehouse?->id,
+                'warehouse_name_snapshot' => $warehouse?->name,
+                'warehouse_address_snapshot' => $warehouse?->address,
+                'warehouse_phone_snapshot' => $warehouse?->phone,
+                'warehouse_working_hours_snapshot' => $warehouse?->working_hours,
                 'status' => Order::STATUS_NEW,
                 'payment_status' => Order::PAYMENT_STATUS_PENDING,
                 'delivery_status' => Order::DELIVERY_STATUS_NOT_SHIPPED,
@@ -30,16 +42,16 @@ class CreateOrderFromCartService
                 'customer_last_name' => $data['last_name'] ?? null,
                 'email' => $data['email'],
                 'phone' => $data['phone'],
-                'postal_code' => $data['postal_code'] ?? null,
-                'region' => $data['region'] ?? null,
-                'city' => $data['city'] ?? null,
-                'street' => $data['street'] ?? null,
-                'house' => $data['house'] ?? null,
-                'building' => $data['building'] ?? null,
-                'apartment' => $data['apartment'] ?? null,
-                'entrance' => $data['entrance'] ?? null,
-                'floor' => $data['floor'] ?? null,
-                'delivery_comment' => $data['delivery_comment'] ?? null,
+                'postal_code' => $isPickup ? null : ($data['postal_code'] ?? null),
+                'region' => $isPickup ? null : ($data['region'] ?? null),
+                'city' => $isPickup ? null : ($data['city'] ?? null),
+                'street' => $isPickup ? null : ($data['street'] ?? null),
+                'house' => $isPickup ? null : ($data['house'] ?? null),
+                'building' => $isPickup ? null : ($data['building'] ?? null),
+                'apartment' => $isPickup ? null : ($data['apartment'] ?? null),
+                'entrance' => $isPickup ? null : ($data['entrance'] ?? null),
+                'floor' => $isPickup ? null : ($data['floor'] ?? null),
+                'delivery_comment' => $isPickup ? null : ($data['delivery_comment'] ?? null),
                 'subtotal' => $cart->subtotal,
                 'discount_total' => $cart->discount_total,
                 'delivery_total' => $data['delivery_total'] ?? 0,

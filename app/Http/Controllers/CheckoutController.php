@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CustomerAddress;
 use App\Models\Order;
+use App\Models\Warehouse;
 use App\Services\Checkout\CreateOrderFromCartService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -38,6 +39,11 @@ class CheckoutController extends Controller
             'customer' => $customer,
             'addresses' => $addresses,
             'defaultAddress' => $defaultAddress,
+            'warehouses' => Warehouse::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -59,6 +65,19 @@ class CheckoutController extends Controller
             'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
+            'fulfillment_method' => [
+                'required',
+                Rule::in([
+                    Order::FULFILLMENT_DELIVERY,
+                    Order::FULFILLMENT_PICKUP,
+                ]),
+            ],
+            'warehouse_id' => [
+                'nullable',
+                'required_if:fulfillment_method,' . Order::FULFILLMENT_PICKUP,
+                'integer',
+                Rule::exists('warehouses', 'id')->where('is_active', true),
+            ],
             'customer_address_id' => [
                 'nullable',
                 'integer',
@@ -66,9 +85,9 @@ class CheckoutController extends Controller
             ],
             'postal_code' => ['nullable', 'string', 'max:255'],
             'region' => ['nullable', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'street' => ['required', 'string', 'max:255'],
-            'house' => ['required', 'string', 'max:255'],
+            'city' => ['nullable', 'required_if:fulfillment_method,' . Order::FULFILLMENT_DELIVERY, 'string', 'max:255'],
+            'street' => ['nullable', 'required_if:fulfillment_method,' . Order::FULFILLMENT_DELIVERY, 'string', 'max:255'],
+            'house' => ['nullable', 'required_if:fulfillment_method,' . Order::FULFILLMENT_DELIVERY, 'string', 'max:255'],
             'building' => ['nullable', 'string', 'max:255'],
             'apartment' => ['nullable', 'string', 'max:255'],
             'entrance' => ['nullable', 'string', 'max:255'],
@@ -82,7 +101,13 @@ class CheckoutController extends Controller
             $data['customer_id'] = $customer->id;
         }
 
-        if ($customer && filled($data['customer_address_id'] ?? null)) {
+        $fulfillmentMethod = $data['fulfillment_method'] ?? Order::FULFILLMENT_DELIVERY;
+
+        if ($fulfillmentMethod === Order::FULFILLMENT_PICKUP) {
+            $data['customer_address_id'] = null;
+        }
+
+        if ($fulfillmentMethod === Order::FULFILLMENT_DELIVERY && $customer && filled($data['customer_address_id'] ?? null)) {
             $address = $customer->addresses()
                 ->whereKey($data['customer_address_id'])
                 ->firstOrFail();
@@ -90,7 +115,10 @@ class CheckoutController extends Controller
             $data = array_merge($data, $this->deliveryDataFromAddress($address, $data));
         }
 
-        if ($customer && empty($data['customer_address_id']) && $request->boolean('save_address')) {
+        if ($fulfillmentMethod === Order::FULFILLMENT_DELIVERY
+            && $customer
+            && empty($data['customer_address_id'])
+            && $request->boolean('save_address')) {
             $address = $customer->addresses()->create([
                 'title' => $data['city'] . ', ' . $data['street'],
                 'postal_code' => $data['postal_code'] ?? null,

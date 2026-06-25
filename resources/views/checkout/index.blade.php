@@ -109,6 +109,41 @@
             font-weight: 700;
         }
 
+        .fulfillment-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .fulfillment-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            padding: 12px;
+        }
+
+        .fulfillment-panel[hidden] {
+            display: none;
+        }
+
+        .warehouse-info {
+            display: grid;
+            gap: 8px;
+            border: 1px solid #d1fae5;
+            border-radius: 8px;
+            background: #f0fdf4;
+            color: #166534;
+            padding: 12px;
+        }
+
+        .warehouse-info[hidden] {
+            display: none;
+        }
+
         .button,
         .link-button {
             display: inline-flex;
@@ -200,13 +235,19 @@
             .fields {
                 grid-template-columns: 1fr;
             }
+
+            .fulfillment-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 @endpush
 
 @section('content')
     @php
+        $fulfillmentMethod = old('fulfillment_method', \App\Models\Order::FULFILLMENT_DELIVERY);
         $selectedAddressId = old('customer_address_id', $defaultAddress?->id);
+        $selectedWarehouseId = old('warehouse_id');
         $deliverySource = $addresses->firstWhere('id', (int) $selectedAddressId) ?? $defaultAddress;
         $addressPayload = $addresses
             ->map(fn ($address): array => [
@@ -221,6 +262,14 @@
                 'entrance' => $address->entrance,
                 'floor' => $address->floor,
                 'delivery_comment' => $address->comment,
+            ])
+            ->values();
+        $warehousePayload = $warehouses
+            ->map(fn ($warehouse): array => [
+                'id' => $warehouse->id,
+                'address' => $warehouse->address,
+                'phone' => $warehouse->phone,
+                'working_hours' => $warehouse->working_hours,
             ])
             ->values();
     @endphp
@@ -274,117 +323,154 @@
                 </section>
 
                 <section class="section">
-                    <h2 class="section-title">Доставка</h2>
+                    <h2 class="section-title">Получение</h2>
 
-                    @if ($customer && $addresses->isNotEmpty())
-                        <label class="field full">
-                            <span class="label">Адрес доставки</span>
-                            <select class="input" name="customer_address_id" id="customer-address-select">
-                                <option value="">Новый адрес</option>
-                                @foreach ($addresses as $address)
-                                    <option value="{{ $address->id }}" @selected((int) $selectedAddressId === $address->id)>
-                                        {{ $address->title ?: trim($address->city . ', ' . $address->street . ', ' . $address->house) }}
-                                        @if ($address->is_default)
-                                            — по умолчанию
-                                        @endif
-                                    </option>
-                                @endforeach
-                            </select>
-                            <span class="hint">Можно выбрать сохранённый адрес или изменить поля ниже для этого заказа.</span>
-                            @error('customer_address_id')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-                    @endif
-
-                    <div class="fields">
-                        <label class="field">
-                            <span class="label">Индекс</span>
-                            <input class="input" type="text" name="postal_code" value="{{ old('postal_code', $deliverySource?->postal_code) }}" data-address-field="postal_code">
-                            @error('postal_code')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
+                    <div class="fulfillment-options">
+                        <label class="fulfillment-option">
+                            <input type="radio" name="fulfillment_method" value="{{ \App\Models\Order::FULFILLMENT_DELIVERY }}" @checked($fulfillmentMethod === \App\Models\Order::FULFILLMENT_DELIVERY)>
+                            <span>Доставка</span>
                         </label>
 
-                        <label class="field">
-                            <span class="label">Регион</span>
-                            <input class="input" type="text" name="region" value="{{ old('region', $deliverySource?->region) }}" data-address-field="region">
-                            @error('region')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Город</span>
-                            <input class="input" type="text" name="city" value="{{ old('city', $deliverySource?->city) }}" data-address-field="city" required>
-                            @error('city')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Улица</span>
-                            <input class="input" type="text" name="street" value="{{ old('street', $deliverySource?->street) }}" data-address-field="street" required>
-                            @error('street')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Дом</span>
-                            <input class="input" type="text" name="house" value="{{ old('house', $deliverySource?->house) }}" data-address-field="house" required>
-                            @error('house')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Корпус</span>
-                            <input class="input" type="text" name="building" value="{{ old('building', $deliverySource?->building) }}" data-address-field="building">
-                            @error('building')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Квартира</span>
-                            <input class="input" type="text" name="apartment" value="{{ old('apartment', $deliverySource?->apartment) }}" data-address-field="apartment">
-                            @error('apartment')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Подъезд</span>
-                            <input class="input" type="text" name="entrance" value="{{ old('entrance', $deliverySource?->entrance) }}" data-address-field="entrance">
-                            @error('entrance')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field">
-                            <span class="label">Этаж</span>
-                            <input class="input" type="text" name="floor" value="{{ old('floor', $deliverySource?->floor) }}" data-address-field="floor">
-                            @error('floor')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label class="field full">
-                            <span class="label">Комментарий к доставке</span>
-                            <textarea class="textarea" name="delivery_comment" data-address-field="delivery_comment">{{ old('delivery_comment', $deliverySource?->comment) }}</textarea>
-                            @error('delivery_comment')
-                                <span class="error">{{ $message }}</span>
-                            @enderror
+                        <label class="fulfillment-option">
+                            <input type="radio" name="fulfillment_method" value="{{ \App\Models\Order::FULFILLMENT_PICKUP }}" @checked($fulfillmentMethod === \App\Models\Order::FULFILLMENT_PICKUP)>
+                            <span>Самовывоз</span>
                         </label>
                     </div>
 
-                    @if ($customer && $addresses->isEmpty())
-                        <label class="checkbox">
-                            <input type="checkbox" name="save_address" value="1" @checked(old('save_address'))>
-                            <span>Сохранить адрес в личном кабинете</span>
+                    @error('fulfillment_method')
+                        <span class="error">{{ $message }}</span>
+                    @enderror
+
+                    <div class="fulfillment-panel" data-fulfillment-panel="delivery">
+                        @if ($customer && $addresses->isNotEmpty())
+                            <label class="field full">
+                                <span class="label">Адрес доставки</span>
+                                <select class="input" name="customer_address_id" id="customer-address-select">
+                                    <option value="">Новый адрес</option>
+                                    @foreach ($addresses as $address)
+                                        <option value="{{ $address->id }}" @selected((int) $selectedAddressId === $address->id)>
+                                            {{ $address->title ?: trim($address->city . ', ' . $address->street . ', ' . $address->house) }}
+                                            @if ($address->is_default)
+                                                — по умолчанию
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="hint">Можно выбрать сохранённый адрес или изменить поля ниже для этого заказа.</span>
+                                @error('customer_address_id')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+                        @endif
+
+                        <div class="fields">
+                            <label class="field">
+                                <span class="label">Индекс</span>
+                                <input class="input" type="text" name="postal_code" value="{{ old('postal_code', $deliverySource?->postal_code) }}" data-address-field="postal_code">
+                                @error('postal_code')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Регион</span>
+                                <input class="input" type="text" name="region" value="{{ old('region', $deliverySource?->region) }}" data-address-field="region">
+                                @error('region')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Город</span>
+                                <input class="input" type="text" name="city" value="{{ old('city', $deliverySource?->city) }}" data-address-field="city" data-delivery-required>
+                                @error('city')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Улица</span>
+                                <input class="input" type="text" name="street" value="{{ old('street', $deliverySource?->street) }}" data-address-field="street" data-delivery-required>
+                                @error('street')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Дом</span>
+                                <input class="input" type="text" name="house" value="{{ old('house', $deliverySource?->house) }}" data-address-field="house" data-delivery-required>
+                                @error('house')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Корпус</span>
+                                <input class="input" type="text" name="building" value="{{ old('building', $deliverySource?->building) }}" data-address-field="building">
+                                @error('building')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Квартира</span>
+                                <input class="input" type="text" name="apartment" value="{{ old('apartment', $deliverySource?->apartment) }}" data-address-field="apartment">
+                                @error('apartment')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Подъезд</span>
+                                <input class="input" type="text" name="entrance" value="{{ old('entrance', $deliverySource?->entrance) }}" data-address-field="entrance">
+                                @error('entrance')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field">
+                                <span class="label">Этаж</span>
+                                <input class="input" type="text" name="floor" value="{{ old('floor', $deliverySource?->floor) }}" data-address-field="floor">
+                                @error('floor')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label class="field full">
+                                <span class="label">Комментарий к доставке</span>
+                                <textarea class="textarea" name="delivery_comment" data-address-field="delivery_comment">{{ old('delivery_comment', $deliverySource?->comment) }}</textarea>
+                                @error('delivery_comment')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
+                            </label>
+                        </div>
+
+                        @if ($customer && $addresses->isEmpty())
+                            <label class="checkbox" data-save-address-block>
+                                <input type="checkbox" name="save_address" value="1" @checked(old('save_address'))>
+                                <span>Сохранить адрес в личном кабинете</span>
+                            </label>
+                        @endif
+                    </div>
+
+                    <div class="fulfillment-panel" data-fulfillment-panel="pickup">
+                        <label class="field full">
+                            <span class="label">Пункт самовывоза</span>
+                            <select class="input" name="warehouse_id" id="warehouse-select">
+                                <option value="">Выберите пункт самовывоза</option>
+                                @foreach ($warehouses as $warehouse)
+                                    <option value="{{ $warehouse->id }}" @selected((int) $selectedWarehouseId === $warehouse->id)>
+                                        {{ $warehouse->name }} — {{ $warehouse->city }}, {{ $warehouse->address }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('warehouse_id')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
                         </label>
-                    @endif
+
+                        <div class="warehouse-info" id="warehouse-info" hidden></div>
+                    </div>
                 </section>
 
                 <section class="section">
@@ -435,18 +521,78 @@
         </div>
     </main>
 
-    @if ($customer && $addresses->isNotEmpty())
-        <script>
-            (() => {
-                const addresses = @json($addressPayload);
-                const select = document.getElementById('customer-address-select');
+    <script>
+        (() => {
+            const addresses = @json($addressPayload);
+            const warehouses = @json($warehousePayload);
+            const addressSelect = document.getElementById('customer-address-select');
+            const warehouseSelect = document.getElementById('warehouse-select');
+            const warehouseInfo = document.getElementById('warehouse-info');
+            const fulfillmentInputs = [...document.querySelectorAll('input[name="fulfillment_method"]')];
+            const panels = [...document.querySelectorAll('[data-fulfillment-panel]')];
+            const deliveryRequiredFields = [...document.querySelectorAll('[data-delivery-required]')];
 
-                if (!select) {
+            const selectedFulfillmentMethod = () => {
+                return fulfillmentInputs.find((input) => input.checked)?.value ?? @json(\App\Models\Order::FULFILLMENT_DELIVERY);
+            };
+
+            const renderWarehouseInfo = () => {
+                if (!warehouseSelect || !warehouseInfo) {
                     return;
                 }
 
-                select.addEventListener('change', () => {
-                    const address = addresses.find((item) => String(item.id) === select.value);
+                const warehouse = warehouses.find((item) => String(item.id) === warehouseSelect.value);
+
+                if (!warehouse) {
+                    warehouseInfo.hidden = true;
+                    warehouseInfo.innerHTML = '';
+                    return;
+                }
+
+                warehouseInfo.replaceChildren();
+
+                [
+                    ['Адрес:', warehouse.address],
+                    ['Телефон:', warehouse.phone],
+                    ['Часы работы:', warehouse.working_hours],
+                ].forEach(([label, value]) => {
+                    if (!value) {
+                        return;
+                    }
+
+                    const row = document.createElement('div');
+                    const labelElement = document.createElement('strong');
+
+                    labelElement.textContent = label;
+                    row.append(labelElement, ` ${value}`);
+                    warehouseInfo.append(row);
+                });
+
+                warehouseInfo.hidden = warehouseInfo.children.length === 0;
+            };
+
+            const syncFulfillmentPanels = () => {
+                const method = selectedFulfillmentMethod();
+                const isDelivery = method === @json(\App\Models\Order::FULFILLMENT_DELIVERY);
+
+                panels.forEach((panel) => {
+                    panel.hidden = panel.dataset.fulfillmentPanel !== method;
+                });
+
+                deliveryRequiredFields.forEach((field) => {
+                    field.required = isDelivery;
+                });
+
+                if (warehouseSelect) {
+                    warehouseSelect.required = !isDelivery;
+                }
+
+                renderWarehouseInfo();
+            };
+
+            if (addressSelect) {
+                addressSelect.addEventListener('change', () => {
+                    const address = addresses.find((item) => String(item.id) === addressSelect.value);
 
                     if (!address) {
                         return;
@@ -460,7 +606,17 @@
                         }
                     });
                 });
-            })();
-        </script>
-    @endif
+            }
+
+            if (warehouseSelect) {
+                warehouseSelect.addEventListener('change', renderWarehouseInfo);
+            }
+
+            fulfillmentInputs.forEach((input) => {
+                input.addEventListener('change', syncFulfillmentPanels);
+            });
+
+            syncFulfillmentPanels();
+        })();
+    </script>
 @endsection

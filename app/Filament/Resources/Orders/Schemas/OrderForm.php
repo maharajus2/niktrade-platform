@@ -89,11 +89,16 @@ class OrderForm
                         Placeholder::make('sla_timing')
                             ->label('Время до просрочки')
                             ->content(fn (?Order $record): string => $record?->getSlaTimingLabel() ?? 'Не требуется'),
+
+                        Placeholder::make('fulfillment_method')
+                            ->label('Получение')
+                            ->content(fn (?Order $record): string => $record?->getFulfillmentMethodLabel() ?? 'Доставка'),
                     ])
                     ->columns(1)
                     ->columnSpan(1),
 
                 Section::make('Адрес доставки')
+                    ->visible(fn (?Order $record): bool => ($record?->fulfillment_method ?? Order::FULFILLMENT_DELIVERY) !== Order::FULFILLMENT_PICKUP)
                     ->schema([
                         TextInput::make('postal_code')
                             ->label('Индекс')
@@ -148,6 +153,28 @@ class OrderForm
                             ->columnSpanFull(),
                     ])
                     ->columns(3)
+                    ->columnSpanFull(),
+
+                Section::make('Пункт самовывоза')
+                    ->visible(fn (?Order $record): bool => ($record?->fulfillment_method ?? Order::FULFILLMENT_DELIVERY) === Order::FULFILLMENT_PICKUP)
+                    ->schema([
+                        Placeholder::make('warehouse_name_snapshot')
+                            ->label('Пункт')
+                            ->content(fn (?Order $record): string => $record?->warehouse_name_snapshot ?: '—'),
+
+                        Placeholder::make('warehouse_address_snapshot')
+                            ->label('Адрес')
+                            ->content(fn (?Order $record): string => $record?->warehouse_address_snapshot ?: '—'),
+
+                        Placeholder::make('warehouse_phone_snapshot')
+                            ->label('Телефон')
+                            ->content(fn (?Order $record): string => $record?->warehouse_phone_snapshot ?: '—'),
+
+                        Placeholder::make('warehouse_working_hours_snapshot')
+                            ->label('Часы работы')
+                            ->content(fn (?Order $record): string => $record?->warehouse_working_hours_snapshot ?: '—'),
+                    ])
+                    ->columns(2)
                     ->columnSpanFull(),
 
                 Section::make('Итоги')

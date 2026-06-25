@@ -281,25 +281,51 @@
                 </div>
             </section>
 
-            <section class="card">
-                <h2 class="card-title">Адрес доставки</h2>
-                <div class="row">
-                    <span class="label">Адрес</span>
-                    <span class="value">
-                        {{ collect([$order->postal_code, $order->region, $order->city, $order->street, $order->house, $order->building, $order->apartment])->filter()->implode(', ') ?: '—' }}
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="label">Подъезд / этаж</span>
-                    <span class="value">{{ collect([$order->entrance, $order->floor])->filter()->implode(' / ') ?: '—' }}</span>
-                </div>
-                @if ($order->delivery_comment)
+            @if (($order->fulfillment_method ?? \App\Models\Order::FULFILLMENT_DELIVERY) === \App\Models\Order::FULFILLMENT_PICKUP)
+                <section class="card">
+                    <h2 class="card-title">Пункт самовывоза</h2>
                     <div class="row">
-                        <span class="label">Комментарий</span>
-                        <span class="value">{{ $order->delivery_comment }}</span>
+                        <span class="label">Пункт</span>
+                        <span class="value">{{ $order->warehouse_name_snapshot ?: '—' }}</span>
                     </div>
-                @endif
-            </section>
+                    <div class="row">
+                        <span class="label">Адрес</span>
+                        <span class="value">{{ $order->warehouse_address_snapshot ?: '—' }}</span>
+                    </div>
+                    @if ($order->warehouse_phone_snapshot)
+                        <div class="row">
+                            <span class="label">Телефон</span>
+                            <span class="value">{{ $order->warehouse_phone_snapshot }}</span>
+                        </div>
+                    @endif
+                    @if ($order->warehouse_working_hours_snapshot)
+                        <div class="row">
+                            <span class="label">Часы работы</span>
+                            <span class="value">{{ $order->warehouse_working_hours_snapshot }}</span>
+                        </div>
+                    @endif
+                </section>
+            @else
+                <section class="card">
+                    <h2 class="card-title">Адрес доставки</h2>
+                    <div class="row">
+                        <span class="label">Адрес</span>
+                        <span class="value">
+                            {{ collect([$order->postal_code, $order->region, $order->city, $order->street, $order->house, $order->building, $order->apartment])->filter()->implode(', ') ?: '—' }}
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Подъезд / этаж</span>
+                        <span class="value">{{ collect([$order->entrance, $order->floor])->filter()->implode(' / ') ?: '—' }}</span>
+                    </div>
+                    @if ($order->delivery_comment)
+                        <div class="row">
+                            <span class="label">Комментарий</span>
+                            <span class="value">{{ $order->delivery_comment }}</span>
+                        </div>
+                    @endif
+                </section>
+            @endif
 
             <section class="card">
                 <h2 class="card-title">Статусы</h2>

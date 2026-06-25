@@ -186,6 +186,45 @@
             font-weight: 700;
         }
 
+        .telegram-box {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .telegram-status {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            min-height: 32px;
+            border-radius: 999px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 0.9rem;
+            font-weight: 900;
+            padding: 6px 10px;
+        }
+
+        .telegram-muted {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .telegram-delete {
+            width: fit-content;
+            border: 0;
+            background: transparent;
+            color: #6b7280;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 0;
+            cursor: pointer;
+        }
+
         @media (max-width: 820px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -217,6 +256,7 @@
         @php
             $fullName = trim($customer->first_name . ' ' . $customer->last_name) ?: 'Покупатель';
             $avatarLetter = mb_strtoupper(mb_substr($fullName, 0, 1));
+            $telegramBotUsername = ltrim((string) config('services.telegram.bot_username'), '@');
         @endphp
 
         <h1 class="title">Личный кабинет</h1>
@@ -278,6 +318,63 @@
                             <div class="label">Регистрация</div>
                             <div class="value">{{ $customer->created_at?->format('d.m.Y') ?: '—' }}</div>
                         </div>
+                    </div>
+
+                    <div class="telegram-box">
+                        <div class="label">Telegram</div>
+
+                        @if ($customer->hasVerifiedTelegram())
+                            <div class="telegram-status">Telegram подтверждён</div>
+
+                            @if ($customer->telegram_display_name)
+                                <div class="telegram-muted">{{ $customer->telegram_display_name }}</div>
+                            @endif
+
+                            <form method="POST" action="{{ route('customer.account.telegram.destroy') }}">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="telegram-delete" type="submit">Отвязать Telegram</button>
+                            </form>
+                        @elseif ($telegramBotUsername)
+                            <div class="telegram-muted">Подтвердите владение Telegram-аккаунтом.</div>
+
+                            <form id="telegram-verify-form" method="POST" action="{{ route('customer.account.telegram.verify') }}" hidden>
+                                @csrf
+                            </form>
+
+                            <script>
+                                window.verifyTelegramAccount = function (user) {
+                                    const form = document.getElementById('telegram-verify-form');
+
+                                    Object.entries(user).forEach(([key, value]) => {
+                                        const input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = key;
+                                        input.value = value;
+                                        form.appendChild(input);
+                                    });
+
+                                    form.submit();
+                                };
+                            </script>
+
+                            <script
+                                async
+                                src="https://telegram.org/js/telegram-widget.js?22"
+                                data-telegram-login="{{ $telegramBotUsername }}"
+                                data-size="medium"
+                                data-radius="8"
+                                data-userpic="false"
+                                data-onauth="verifyTelegramAccount(user)"
+                            ></script>
+                        @else
+                            <div class="telegram-muted">Telegram-подтверждение пока не настроено.</div>
+                        @endif
+
+                        @error('telegram')
+                            <div class="error">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>

@@ -13,6 +13,11 @@ class Customer extends Authenticatable
         'email',
         'phone',
         'avatar_path',
+        'telegram_id',
+        'telegram_username',
+        'telegram_first_name',
+        'telegram_last_name',
+        'telegram_verified_at',
         'password',
         'birthday',
         'is_active',
@@ -29,6 +34,7 @@ class Customer extends Authenticatable
     protected $casts = [
         'birthday' => 'date',
         'email_verified_at' => 'datetime',
+        'telegram_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
         'accepts_marketing' => 'boolean',
@@ -48,5 +54,19 @@ class Customer extends Authenticatable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function hasVerifiedTelegram(): bool
+    {
+        return $this->telegram_id !== null && $this->telegram_verified_at !== null;
+    }
+
+    public function getTelegramDisplayNameAttribute(): string
+    {
+        if ($this->telegram_username) {
+            return '@' . $this->telegram_username;
+        }
+
+        return trim($this->telegram_first_name . ' ' . $this->telegram_last_name);
     }
 }

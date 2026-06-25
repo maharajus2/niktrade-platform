@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\CustomerTelegramController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,6 +37,8 @@ Route::middleware('auth:customer')->group(function () {
     Route::get('/account', [CustomerAccountController::class, 'dashboard'])->name('customer.account');
     Route::post('/account/avatar', [CustomerAccountController::class, 'updateAvatar'])->name('customer.account.avatar.update');
     Route::delete('/account/avatar', [CustomerAccountController::class, 'destroyAvatar'])->name('customer.account.avatar.destroy');
+    Route::post('/account/telegram/verify', [CustomerTelegramController::class, 'verify'])->name('customer.account.telegram.verify');
+    Route::delete('/account/telegram', [CustomerTelegramController::class, 'destroy'])->name('customer.account.telegram.destroy');
     Route::get('/account/orders', [CustomerOrderController::class, 'index'])->name('customer.account.orders');
     Route::get('/account/orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.account.orders.show');
     Route::get('/account/addresses', [CustomerAddressController::class, 'index'])->name('customer.account.addresses');

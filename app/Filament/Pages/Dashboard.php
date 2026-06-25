@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\AnalyticsPlaceholderWidget;
+use App\Filament\Widgets\OrderSlaStatsWidget;
 use App\Filament\Widgets\ProductStatsWidget;
 use App\Filament\Widgets\RussianTimeWidget;
 use App\Filament\Widgets\SalesStatsWidget;
@@ -26,6 +27,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             RussianTimeWidget::class,
+            OrderSlaStatsWidget::class,
             ProductStatsWidget::class,
             SalesStatsWidget::class,
             AnalyticsPlaceholderWidget::class,

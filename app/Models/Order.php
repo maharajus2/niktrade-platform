@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\HtmlString;
 
 class Order extends Model
 {
@@ -225,13 +227,88 @@ class Order extends Model
 
     public function getSlaLabel(): string
     {
+        if ($this->status === self::STATUS_CANCELLED) {
+            return 'Отменён';
+        }
+
         return match ($this->getSlaState()) {
             self::SLA_STATE_OK => 'В срок',
-            self::SLA_STATE_WARNING => 'Скоро просрочится',
+            self::SLA_STATE_WARNING => 'Скоро',
             self::SLA_STATE_OVERDUE => 'Просрочен',
             self::SLA_STATE_COMPLETED => 'Завершён',
             default => 'Не требуется',
         };
+    }
+
+    public function getSlaBadgeHtml(): HtmlString
+    {
+        $detail = $this->getSlaBadgeDetail();
+        $detailHtml = $detail
+            ? '<div class="text-xs font-normal opacity-80">' . e($detail) . '</div>'
+            : '';
+
+        return new HtmlString(
+            '<div class="text-left leading-tight"><div class="font-semibold">'
+            . e($this->getSlaLabel())
+            . '</div>'
+            . $detailHtml
+            . '</div>'
+        );
+    }
+
+    public function getSlaBadgeDetail(): ?string
+    {
+        $deadline = $this->getSlaDeadline();
+
+        if ($deadline === null) {
+            return null;
+        }
+
+        $minutes = now()->diffInMinutes($deadline, false);
+
+        return match ($this->getSlaState()) {
+            self::SLA_STATE_OK,
+            self::SLA_STATE_WARNING => 'Осталось ' . self::formatSlaDuration($minutes),
+            self::SLA_STATE_OVERDUE => self::formatSlaDuration(abs($minutes)),
+            default => null,
+        };
+    }
+
+    public function getSlaTimingLabel(): string
+    {
+        $deadline = $this->getSlaDeadline();
+
+        if ($deadline === null) {
+            return $this->getSlaLabel();
+        }
+
+        $minutes = now()->diffInMinutes($deadline, false);
+
+        return match ($this->getSlaState()) {
+            self::SLA_STATE_OK,
+            self::SLA_STATE_WARNING => 'Осталось ' . self::formatSlaDuration($minutes),
+            self::SLA_STATE_OVERDUE => 'Просрочен на ' . self::formatSlaDuration(abs($minutes)),
+            default => $this->getSlaLabel(),
+        };
+    }
+
+    public static function formatSlaDuration(int|float $minutes): string
+    {
+        $minutes = max(1, (int) ceil(abs($minutes)));
+
+        if ($minutes < 60) {
+            return $minutes . ' мин';
+        }
+
+        $hours = (int) ceil($minutes / 60);
+
+        if ($hours < 24) {
+            return $hours . ' ч';
+        }
+
+        $days = (int) ceil($hours / 24);
+
+        return $days . ' ' . self::pluralizeRussian($days, 'день', 'дня', 'дней');
     }
 
     public function getSlaColor(): string
@@ -242,6 +319,145 @@ class Order extends Model
             self::SLA_STATE_OVERDUE => 'danger',
             self::SLA_STATE_COMPLETED => 'gray',
             default => 'gray',
+        };
+    }
+
+    public static function applySlaFilter(Builder $query, string $state): Builder
+    {
+        $overdueBefore = now()->subDay();
+        $warningStart = now()->subDay();
+        $warningEnd = now()->subHours(21);
+        $okAfter = now()->subHours(21);
+
+        return match ($state) {
+            self::SLA_STATE_OVERDUE => $query->where(function (Builder $query) use ($overdueBefore): void {
+                $query
+                    ->where(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_NEW)
+                        ->where('created_at', '<', $overdueBefore))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLING)
+                        ->where('assembling_at', '<', $overdueBefore))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLED)
+                        ->where('assembled_at', '<', $overdueBefore));
+            }),
+            self::SLA_STATE_WARNING => $query->where(function (Builder $query) use ($warningStart, $warningEnd): void {
+                $query
+                    ->where(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_NEW)
+                        ->whereBetween('created_at', [$warningStart, $warningEnd]))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLING)
+                        ->whereBetween('assembling_at', [$warningStart, $warningEnd]))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLED)
+                        ->whereBetween('assembled_at', [$warningStart, $warningEnd]));
+            }),
+            self::SLA_STATE_OK => $query->where(function (Builder $query) use ($okAfter): void {
+                $query
+                    ->where(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_NEW)
+                        ->where('created_at', '>', $okAfter))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLING)
+                        ->where('assembling_at', '>', $okAfter))
+                    ->orWhere(fn (Builder $query) => $query
+                        ->where('status', self::STATUS_ASSEMBLED)
+                        ->where('assembled_at', '>', $okAfter));
+            }),
+            self::SLA_STATE_COMPLETED => $query->whereIn('status', [
+                self::STATUS_HANDED_TO_DELIVERY,
+                self::STATUS_DELIVERED,
+            ]),
+            self::SLA_STATE_NONE => $query->where('status', self::STATUS_CANCELLED),
+            default => $query,
+        };
+    }
+
+    public static function applySlaDefaultSort(Builder $query): Builder
+    {
+        $overdueBefore = now()->subDay();
+        $warningStart = now()->subDay();
+        $warningEnd = now()->subHours(21);
+
+        return $query
+            ->orderByRaw(
+                <<<SQL
+CASE
+    WHEN (
+        (status = ? AND created_at < ?)
+        OR (status = ? AND assembling_at < ?)
+        OR (status = ? AND assembled_at < ?)
+    ) THEN 1
+    WHEN (
+        (status = ? AND created_at BETWEEN ? AND ?)
+        OR (status = ? AND assembling_at BETWEEN ? AND ?)
+        OR (status = ? AND assembled_at BETWEEN ? AND ?)
+    ) THEN 2
+    WHEN status IN (?, ?) THEN 4
+    WHEN status = ? THEN 5
+    ELSE 3
+END ASC
+SQL,
+                [
+                    self::STATUS_NEW,
+                    $overdueBefore,
+                    self::STATUS_ASSEMBLING,
+                    $overdueBefore,
+                    self::STATUS_ASSEMBLED,
+                    $overdueBefore,
+                    self::STATUS_NEW,
+                    $warningStart,
+                    $warningEnd,
+                    self::STATUS_ASSEMBLING,
+                    $warningStart,
+                    $warningEnd,
+                    self::STATUS_ASSEMBLED,
+                    $warningStart,
+                    $warningEnd,
+                    self::STATUS_HANDED_TO_DELIVERY,
+                    self::STATUS_DELIVERED,
+                    self::STATUS_CANCELLED,
+                ],
+            )
+            ->orderByRaw(
+                <<<SQL
+CASE
+    WHEN status = ? THEN created_at
+    WHEN status = ? THEN COALESCE(assembling_at, created_at)
+    WHEN status = ? THEN COALESCE(assembled_at, created_at)
+    WHEN status = ? THEN COALESCE(handed_to_delivery_at, created_at)
+    WHEN status = ? THEN COALESCE(delivered_at, created_at)
+    WHEN status = ? THEN COALESCE(cancelled_at, created_at)
+    ELSE created_at
+END ASC
+SQL,
+                [
+                    self::STATUS_NEW,
+                    self::STATUS_ASSEMBLING,
+                    self::STATUS_ASSEMBLED,
+                    self::STATUS_HANDED_TO_DELIVERY,
+                    self::STATUS_DELIVERED,
+                    self::STATUS_CANCELLED,
+                ],
+            )
+            ->orderBy('created_at');
+    }
+
+    private static function pluralizeRussian(int $number, string $one, string $few, string $many): string
+    {
+        $mod100 = $number % 100;
+        $mod10 = $number % 10;
+
+        if ($mod100 >= 11 && $mod100 <= 14) {
+            return $many;
+        }
+
+        return match ($mod10) {
+            1 => $one,
+            2, 3, 4 => $few,
+            default => $many,
         };
     }
 

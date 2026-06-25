@@ -74,11 +74,19 @@ class OrderForm
                             ])
                             ->required(),
 
+                        Placeholder::make('sla_current')
+                            ->label('Текущий SLA')
+                            ->content(fn (?Order $record): string => $record?->getSlaLabel() ?? 'Не требуется'),
+
                         Placeholder::make('sla_deadline')
                             ->label('Срок обработки')
-                            ->content(fn (?Order $record): string => $record?->getSlaDeadline()
-                                ? $record->getSlaDeadline()->format('d.m.Y H:i')
+                            ->content(fn (?Order $record): string => ($deadline = $record?->getSlaDeadline())
+                                ? $deadline->format('d.m.Y H:i')
                                 : 'Не требуется'),
+
+                        Placeholder::make('sla_timing')
+                            ->label('Время до просрочки')
+                            ->content(fn (?Order $record): string => $record?->getSlaTimingLabel() ?? 'Не требуется'),
                     ])
                     ->columns(1)
                     ->columnSpan(1),

@@ -9,12 +9,14 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrdersTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort(fn (Builder $query): Builder => Order::applySlaDefaultSort($query))
             ->columns([
                 TextColumn::make('order_number')
                     ->label('Номер')
@@ -42,6 +44,7 @@ class OrdersTable
                 TextColumn::make('city')
                     ->label('Город')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('status')
@@ -74,7 +77,8 @@ class OrdersTable
                 TextColumn::make('sla')
                     ->label('Контроль срока')
                     ->badge()
-                    ->getStateUsing(fn (Order $record): string => $record->getSlaLabel())
+                    ->html()
+                    ->getStateUsing(fn (Order $record) => $record->getSlaBadgeHtml())
                     ->color(fn (Order $record): string => $record->getSlaColor()),
 
                 TextColumn::make('total')
@@ -108,7 +112,27 @@ class OrdersTable
                         Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
                         Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
                     ]),
+
+                SelectFilter::make('sla')
+                    ->label('Контроль срока')
+                    ->options([
+                        Order::SLA_STATE_OVERDUE => 'Просроченные',
+                        Order::SLA_STATE_WARNING => 'Скоро просрочатся',
+                        Order::SLA_STATE_OK => 'В срок',
+                        Order::SLA_STATE_COMPLETED => 'Завершённые',
+                        Order::SLA_STATE_NONE => 'Отменённые',
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
+                        ? Order::applySlaFilter($query, $data['value'])
+                        : $query),
             ])
+            ->recordClasses(fn (Order $record): string => match ($record->getSlaState()) {
+                Order::SLA_STATE_OVERDUE => '!bg-red-50',
+                Order::SLA_STATE_WARNING => '!bg-yellow-50',
+                Order::SLA_STATE_COMPLETED,
+                Order::SLA_STATE_NONE => '!bg-gray-50',
+                default => '',
+            })
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

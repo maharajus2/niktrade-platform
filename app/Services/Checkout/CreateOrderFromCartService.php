@@ -32,9 +32,9 @@ class CreateOrderFromCartService
                 'fulfillment_method' => $fulfillmentMethod,
                 'warehouse_id' => $warehouse?->id,
                 'warehouse_name_snapshot' => $warehouse?->name,
-                'warehouse_address_snapshot' => $warehouse?->address,
+                'warehouse_address_snapshot' => $warehouse?->full_address,
                 'warehouse_phone_snapshot' => $warehouse?->phone,
-                'warehouse_working_hours_snapshot' => $warehouse?->working_hours,
+                'warehouse_working_hours_snapshot' => $warehouse?->working_schedule_label,
                 'status' => Order::STATUS_NEW,
                 'payment_status' => Order::PAYMENT_STATUS_PENDING,
                 'fulfillment_status' => $isPickup

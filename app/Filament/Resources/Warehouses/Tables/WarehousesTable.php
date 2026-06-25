@@ -28,9 +28,15 @@ class WarehousesTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('address')
+                TextColumn::make('full_address')
                     ->label('Адрес')
-                    ->searchable(),
+                    ->getStateUsing(fn ($record): string => $record->full_address ?: '—')
+                    ->searchable(['address', 'postal_code', 'region', 'city', 'street', 'house', 'building', 'premises'])
+                    ->wrap(),
+
+                TextColumn::make('working_schedule_label')
+                    ->label('Режим работы')
+                    ->getStateUsing(fn ($record): string => $record->working_schedule_label ?: '—'),
 
                 TextColumn::make('phone')
                     ->label('Телефон')
@@ -44,10 +50,6 @@ class WarehousesTable
                     ->label('Сортировка')
                     ->sortable(),
 
-                TextColumn::make('created_at')
-                    ->label('Создан')
-                    ->dateTime('d.m.Y H:i')
-                    ->sortable(),
             ])
             ->filters([
                 TernaryFilter::make('is_active')

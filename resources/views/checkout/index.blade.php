@@ -267,9 +267,9 @@
         $warehousePayload = $warehouses
             ->map(fn ($warehouse): array => [
                 'id' => $warehouse->id,
-                'address' => $warehouse->address,
+                'address' => $warehouse->full_address,
                 'phone' => $warehouse->phone,
-                'working_hours' => $warehouse->working_hours,
+                'working_hours' => $warehouse->working_schedule_label,
             ])
             ->values();
     @endphp
@@ -460,7 +460,7 @@
                                 <option value="">Выберите пункт самовывоза</option>
                                 @foreach ($warehouses as $warehouse)
                                     <option value="{{ $warehouse->id }}" @selected((int) $selectedWarehouseId === $warehouse->id)>
-                                        {{ $warehouse->name }} — {{ $warehouse->city }}, {{ $warehouse->address }}
+                                        {{ $warehouse->name }} — {{ $warehouse->full_address ?: $warehouse->city }}
                                     </option>
                                 @endforeach
                             </select>

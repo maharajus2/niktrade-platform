@@ -18,28 +18,22 @@ class OrdersTable
         return $table
             ->defaultSort(fn (Builder $query): Builder => Order::applySlaDefaultSort($query))
             ->columns([
+                TextColumn::make('sla')
+                    ->label('Контроль срока')
+                    ->badge()
+                    ->html()
+                    ->getStateUsing(fn (Order $record) => $record->getSlaBadgeHtml())
+                    ->color(fn (Order $record): string => $record->getSlaColor()),
+
+                TextColumn::make('created_at')
+                    ->label('Создан')
+                    ->dateTime('d.m.Y H:i')
+                    ->sortable(),
+
                 TextColumn::make('order_number')
                     ->label('Номер')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('customer_first_name')
-                    ->label('Имя')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('customer_last_name')
-                    ->label('Фамилия')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('phone')
-                    ->label('Телефон')
-                    ->searchable(),
-
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable(),
 
                 TextColumn::make('city')
                     ->label('Город')
@@ -74,21 +68,27 @@ class OrdersTable
                         default => $state ?? '—',
                     }),
 
-                TextColumn::make('sla')
-                    ->label('Контроль срока')
-                    ->badge()
-                    ->html()
-                    ->getStateUsing(fn (Order $record) => $record->getSlaBadgeHtml())
-                    ->color(fn (Order $record): string => $record->getSlaColor()),
-
                 TextColumn::make('total')
                     ->label('Итого')
                     ->money('RUB')
                     ->sortable(),
 
-                TextColumn::make('created_at')
-                    ->label('Создан')
-                    ->dateTime('d.m.Y H:i')
+                TextColumn::make('phone')
+                    ->label('Телефон')
+                    ->searchable(),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable(),
+
+                TextColumn::make('customer_first_name')
+                    ->label('Имя')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('customer_last_name')
+                    ->label('Фамилия')
+                    ->searchable()
                     ->sortable(),
             ])
             ->filters([

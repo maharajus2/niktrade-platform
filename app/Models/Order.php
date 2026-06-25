@@ -10,6 +10,9 @@ use Illuminate\Support\HtmlString;
 
 class Order extends Model
 {
+    public const FULFILLMENT_DELIVERY = 'delivery';
+    public const FULFILLMENT_PICKUP = 'pickup';
+
     public const SLA_STATE_OK = 'ok';
     public const SLA_STATE_WARNING = 'warning';
     public const SLA_STATE_OVERDUE = 'overdue';
@@ -41,6 +44,12 @@ class Order extends Model
         'order_number',
         'customer_id',
         'customer_address_id',
+        'fulfillment_method',
+        'warehouse_id',
+        'warehouse_name_snapshot',
+        'warehouse_address_snapshot',
+        'warehouse_phone_snapshot',
+        'warehouse_working_hours_snapshot',
         'status',
         'assembling_at',
         'assembled_at',
@@ -78,6 +87,7 @@ class Order extends Model
         'delivery_total' => 'decimal:2',
         'total' => 'decimal:2',
         'total_weight_grams' => 'integer',
+        'warehouse_id' => 'integer',
         'assembling_at' => 'datetime',
         'assembled_at' => 'datetime',
         'handed_to_delivery_at' => 'datetime',
@@ -118,9 +128,22 @@ class Order extends Model
         return $this->belongsTo(CustomerAddress::class);
     }
 
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function getFulfillmentMethodLabel(): string
+    {
+        return match ($this->fulfillment_method) {
+            self::FULFILLMENT_PICKUP => 'Самовывоз',
+            default => 'Доставка',
+        };
     }
 
     public function recalculateTotals(): static

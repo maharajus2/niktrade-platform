@@ -12,6 +12,7 @@ class Customer extends Authenticatable
         'last_name',
         'email',
         'phone',
+        'phone_verified_at',
         'avatar_path',
         'telegram_id',
         'telegram_username',
@@ -34,6 +35,7 @@ class Customer extends Authenticatable
     protected $casts = [
         'birthday' => 'date',
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
         'telegram_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
@@ -54,6 +56,16 @@ class Customer extends Authenticatable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function phoneVerifications(): HasMany
+    {
+        return $this->hasMany(CustomerPhoneVerification::class);
+    }
+
+    public function hasVerifiedPhone(): bool
+    {
+        return $this->phone_verified_at !== null;
     }
 
     public function hasVerifiedTelegram(): bool

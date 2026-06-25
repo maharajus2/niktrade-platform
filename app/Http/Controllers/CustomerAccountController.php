@@ -59,6 +59,10 @@ class CustomerAccountController extends Controller
 
         $data['accepts_marketing'] = $request->boolean('accepts_marketing');
 
+        if ($customer->phone !== $data['phone']) {
+            $data['phone_verified_at'] = null;
+        }
+
         $customer->update($data);
 
         return redirect()

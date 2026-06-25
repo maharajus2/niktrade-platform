@@ -207,6 +207,11 @@
             padding: 6px 10px;
         }
 
+        .telegram-status.pending {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .telegram-muted {
             color: #6b7280;
             font-size: 0.9rem;
@@ -315,6 +320,15 @@
                         </div>
 
                         <div>
+                            <div class="label">Подтверждение телефона</div>
+                            @if ($customer->hasVerifiedPhone())
+                                <div class="telegram-status">Подтверждён</div>
+                            @else
+                                <div class="telegram-status pending">Не подтверждён</div>
+                            @endif
+                        </div>
+
+                        <div>
                             <div class="label">Регистрация</div>
                             <div class="value">{{ $customer->created_at?->format('d.m.Y') ?: '—' }}</div>
                         </div>
@@ -407,6 +421,7 @@
 
             <div class="quick-actions">
                 <a class="action-link primary" href="{{ route('customer.account.profile.edit') }}">Редактировать профиль</a>
+                <a class="action-link" href="{{ route('customer.account.phone-verification') }}">Подтвердить телефон через Telegram</a>
                 <a class="action-link primary" href="{{ route('customer.account.orders') }}">Мои заказы</a>
                 <a class="action-link" href="{{ route('customer.account.addresses') }}">Адреса доставки</a>
                 <a class="action-link" href="{{ route('catalog.index') }}">Перейти в каталог</a>

@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
+    public const SLA_STATE_OK = 'ok';
+    public const SLA_STATE_WARNING = 'warning';
+    public const SLA_STATE_OVERDUE = 'overdue';
+    public const SLA_STATE_COMPLETED = 'completed';
+    public const SLA_STATE_NONE = 'none';
+
     public const STATUS_NEW = 'new';
     public const STATUS_ASSEMBLING = 'assembling';
     public const STATUS_ASSEMBLED = 'assembled';
@@ -31,6 +37,11 @@ class Order extends Model
         'customer_id',
         'customer_address_id',
         'status',
+        'assembling_at',
+        'assembled_at',
+        'handed_to_delivery_at',
+        'delivered_at',
+        'cancelled_at',
         'payment_status',
         'delivery_status',
         'customer_first_name',
@@ -61,7 +72,34 @@ class Order extends Model
         'delivery_total' => 'decimal:2',
         'total' => 'decimal:2',
         'total_weight_grams' => 'integer',
+        'assembling_at' => 'datetime',
+        'assembled_at' => 'datetime',
+        'handed_to_delivery_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'cancelled_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Order $order): void {
+            if (! $order->isDirty('status')) {
+                return;
+            }
+
+            $timestampColumn = match ($order->status) {
+                self::STATUS_ASSEMBLING => 'assembling_at',
+                self::STATUS_ASSEMBLED => 'assembled_at',
+                self::STATUS_HANDED_TO_DELIVERY => 'handed_to_delivery_at',
+                self::STATUS_DELIVERED => 'delivered_at',
+                self::STATUS_CANCELLED => 'cancelled_at',
+                default => null,
+            };
+
+            if ($timestampColumn && $order->{$timestampColumn} === null) {
+                $order->{$timestampColumn} = now();
+            }
+        });
+    }
 
     public function customer(): BelongsTo
     {
@@ -140,6 +178,70 @@ class Order extends Model
             self::DELIVERY_STATUS_SHIPPED => 'Отправлен',
             self::DELIVERY_STATUS_DELIVERED => 'Доставлен',
             default => $status ?? '—',
+        };
+    }
+
+    public function getCurrentStatusStartedAt()
+    {
+        return match ($this->status) {
+            self::STATUS_NEW => $this->created_at,
+            self::STATUS_ASSEMBLING => $this->assembling_at,
+            self::STATUS_ASSEMBLED => $this->assembled_at,
+            default => null,
+        };
+    }
+
+    public function getSlaDeadline()
+    {
+        return $this->getCurrentStatusStartedAt()?->copy()->addDay();
+    }
+
+    public function getSlaState(): string
+    {
+        if (in_array($this->status, [self::STATUS_HANDED_TO_DELIVERY, self::STATUS_DELIVERED], true)) {
+            return self::SLA_STATE_COMPLETED;
+        }
+
+        if ($this->status === self::STATUS_CANCELLED) {
+            return self::SLA_STATE_NONE;
+        }
+
+        $deadline = $this->getSlaDeadline();
+
+        if ($deadline === null) {
+            return self::SLA_STATE_NONE;
+        }
+
+        if (now()->greaterThan($deadline)) {
+            return self::SLA_STATE_OVERDUE;
+        }
+
+        if (now()->greaterThanOrEqualTo($deadline->copy()->subHours(3))) {
+            return self::SLA_STATE_WARNING;
+        }
+
+        return self::SLA_STATE_OK;
+    }
+
+    public function getSlaLabel(): string
+    {
+        return match ($this->getSlaState()) {
+            self::SLA_STATE_OK => 'В срок',
+            self::SLA_STATE_WARNING => 'Скоро просрочится',
+            self::SLA_STATE_OVERDUE => 'Просрочен',
+            self::SLA_STATE_COMPLETED => 'Завершён',
+            default => 'Не требуется',
+        };
+    }
+
+    public function getSlaColor(): string
+    {
+        return match ($this->getSlaState()) {
+            self::SLA_STATE_OK => 'success',
+            self::SLA_STATE_WARNING => 'warning',
+            self::SLA_STATE_OVERDUE => 'danger',
+            self::SLA_STATE_COMPLETED => 'gray',
+            default => 'gray',
         };
     }
 

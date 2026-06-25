@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Models\Order;
 use App\Support\WeightFormatter;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -72,6 +73,12 @@ class OrderForm
                                 Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
                             ])
                             ->required(),
+
+                        Placeholder::make('sla_deadline')
+                            ->label('Срок обработки')
+                            ->content(fn (?Order $record): string => $record?->getSlaDeadline()
+                                ? $record->getSlaDeadline()->format('d.m.Y H:i')
+                                : 'Не требуется'),
                     ])
                     ->columns(1)
                     ->columnSpan(1),

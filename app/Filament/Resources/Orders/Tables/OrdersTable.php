@@ -39,6 +39,11 @@ class OrdersTable
                     ->label('Email')
                     ->searchable(),
 
+                TextColumn::make('city')
+                    ->label('Город')
+                    ->searchable()
+                    ->toggleable(),
+
                 TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
@@ -65,6 +70,12 @@ class OrdersTable
                         Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
                         default => $state ?? '—',
                     }),
+
+                TextColumn::make('sla')
+                    ->label('Контроль срока')
+                    ->badge()
+                    ->getStateUsing(fn (Order $record): string => $record->getSlaLabel())
+                    ->color(fn (Order $record): string => $record->getSlaColor()),
 
                 TextColumn::make('total')
                     ->label('Итого')

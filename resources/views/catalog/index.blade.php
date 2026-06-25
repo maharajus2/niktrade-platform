@@ -29,16 +29,53 @@
             font-size: 0.95rem;
         }
 
+        .filters-panel {
+            margin-bottom: 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .filters-toggle {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            min-height: 48px;
+            padding: 12px 16px;
+            color: #166534;
+            font-weight: 900;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .filters-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .filters-toggle::after {
+            content: '+';
+            color: #166534;
+            font-size: 1.2rem;
+        }
+
+        .filters-panel[open] .filters-toggle::after {
+            content: '-';
+        }
+
+        .filters-state {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
         .filters {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
             gap: 12px;
             align-items: end;
-            margin-bottom: 28px;
             padding: 16px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
         }
 
         .field {
@@ -82,6 +119,12 @@
             min-height: 42px;
             color: #4b5563;
             font-weight: 600;
+            text-decoration: none;
+        }
+
+        .filters-reset {
+            color: #166534;
+            font-weight: 800;
             text-decoration: none;
         }
 
@@ -286,6 +329,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .filters-toggle {
+                align-items: flex-start;
+            }
+
             .grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px;
@@ -359,7 +406,22 @@
             </div>
         </header>
 
-        <form class="filters" method="GET" action="{{ route('catalog.index') }}">
+        @php
+            $hasActiveFilters = $filters['brand'] || $filters['category'] || $filters['direction'] || $filters['search'];
+        @endphp
+
+        <details class="filters-panel" @if ($hasActiveFilters) open @endif>
+            <summary class="filters-toggle">
+                <span>{{ $hasActiveFilters ? 'Фильтры применены' : 'Показать фильтры' }}</span>
+
+                @if ($hasActiveFilters)
+                    <a class="filters-reset" href="{{ route('catalog.index') }}" onclick="event.stopPropagation()">Сбросить фильтры</a>
+                @else
+                    <span class="filters-state">поиск, бренд, категория, направление</span>
+                @endif
+            </summary>
+
+            <form class="filters" method="GET" action="{{ route('catalog.index') }}">
             <div class="field">
                 <label for="search">Поиск</label>
                 <input
@@ -410,10 +472,11 @@
 
             <button class="button" type="submit">Показать</button>
 
-            @if ($filters['brand'] || $filters['category'] || $filters['direction'] || $filters['search'])
+            @if ($hasActiveFilters)
                 <a class="reset" href="{{ route('catalog.index') }}">Сбросить</a>
             @endif
-        </form>
+            </form>
+        </details>
 
         @if ($products->isNotEmpty())
             <section class="grid" aria-label="Список товаров">

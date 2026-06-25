@@ -270,7 +270,7 @@
 
         @media (max-width: 640px) {
             .page {
-                width: min(100% - 24px, 1180px);
+                width: min(100% - 16px, 1180px);
                 padding-top: 24px;
             }
 
@@ -282,9 +282,69 @@
                 display: grid;
             }
 
-            .filters,
-            .grid {
+            .filters {
                 grid-template-columns: 1fr;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .card-body {
+                gap: 6px;
+                padding: 10px;
+            }
+
+            .name {
+                display: -webkit-box;
+                overflow: hidden;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                font-size: 0.9rem;
+            }
+
+            .meta {
+                font-size: 0.8rem;
+            }
+
+            .availability-badge {
+                font-size: 0.75rem;
+                padding: 4px 7px;
+            }
+
+            .current-price {
+                font-size: 1rem;
+            }
+
+            .old-price {
+                font-size: 0.85rem;
+            }
+
+            .cart-button,
+            .cart-link {
+                min-height: 34px;
+                font-size: 0.78rem;
+                padding: 7px 8px;
+            }
+
+            .action-row {
+                display: grid;
+                gap: 6px;
+            }
+
+            .quantity-control {
+                grid-template-columns: 34px minmax(34px, auto) 34px;
+                width: fit-content;
+            }
+
+            .quantity-button,
+            .quantity-value {
+                min-height: 34px;
+            }
+
+            .quantity-value {
+                padding: 0 8px;
             }
         }
     </style>

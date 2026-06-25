@@ -53,7 +53,8 @@ class CustomersTable
                     ->boolean(),
 
                 IconColumn::make('is_quick_registered')
-                    ->label('Быстрая регистрация')
+                    ->label('Полная регистрация')
+                    ->getStateUsing(fn ($record): bool => ! $record->is_quick_registered)
                     ->boolean()
                     ->toggleable(),
 

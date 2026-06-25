@@ -55,6 +55,14 @@ class Warehouse extends Model
 
     public function getWorkingScheduleLabelAttribute(): string
     {
+        $days = $this->formatWorkingDays();
+        $time = $this->formatWorkingTime();
+
+        return collect([$days, $time])->filter()->implode(' · ') ?: ($this->working_hours ?: '');
+    }
+
+    private function formatWorkingDays(): string
+    {
         $dayLabels = [
             'mon' => 'Пн',
             'tue' => 'Вт',
@@ -65,15 +73,66 @@ class Warehouse extends Model
             'sun' => 'Вс',
         ];
 
-        $days = collect($this->working_days ?? [])
-            ->map(fn (string $day): ?string => $dayLabels[$day] ?? null)
-            ->filter()
-            ->implode(', ');
+        $orderedDays = array_values(array_filter(
+            array_keys($dayLabels),
+            fn (string $day): bool => in_array($day, $this->working_days ?? [], true),
+        ));
 
-        $time = collect([$this->working_time_from, $this->working_time_to])
-            ->filter()
-            ->implode('–');
+        if (count($orderedDays) === count($dayLabels)) {
+            return 'Ежедневно';
+        }
 
-        return collect([$days, $time])->filter()->implode(' · ') ?: ($this->working_hours ?: '');
+        $ranges = [];
+        $rangeStart = null;
+        $previousIndex = null;
+        $dayIndexes = array_flip(array_keys($dayLabels));
+
+        foreach ($orderedDays as $day) {
+            $currentIndex = $dayIndexes[$day];
+
+            if ($rangeStart === null) {
+                $rangeStart = $day;
+                $previousIndex = $currentIndex;
+
+                continue;
+            }
+
+            if ($currentIndex === $previousIndex + 1) {
+                $previousIndex = $currentIndex;
+
+                continue;
+            }
+
+            $ranges[] = $this->formatDayRange($rangeStart, array_keys($dayLabels)[$previousIndex], $dayLabels);
+            $rangeStart = $day;
+            $previousIndex = $currentIndex;
+        }
+
+        if ($rangeStart !== null && $previousIndex !== null) {
+            $ranges[] = $this->formatDayRange($rangeStart, array_keys($dayLabels)[$previousIndex], $dayLabels);
+        }
+
+        return implode(', ', $ranges);
+    }
+
+    private function formatDayRange(string $start, string $end, array $dayLabels): string
+    {
+        if ($start === $end) {
+            return $dayLabels[$start];
+        }
+
+        return $dayLabels[$start] . '–' . $dayLabels[$end];
+    }
+
+    private function formatWorkingTime(): string
+    {
+        $from = trim((string) $this->working_time_from);
+        $to = trim((string) $this->working_time_to);
+
+        if ($from === '00:00' && $to === '23:59') {
+            return 'Круглосуточно';
+        }
+
+        return collect([$from, $to])->filter()->implode('–');
     }
 }

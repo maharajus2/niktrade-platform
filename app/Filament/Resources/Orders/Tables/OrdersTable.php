@@ -43,10 +43,18 @@ class OrdersTable
                     ->toggleable(),
 
                 TextColumn::make('status')
-                    ->label('Статус')
+                    ->label('Статус заказа')
                     ->badge()
                     ->formatStateUsing(fn (?string $state): string => Order::statusLabel($state))
                     ->color(fn (?string $state): string => Order::statusColor($state)),
+
+                TextColumn::make('fulfillment_status')
+                    ->label('Получение')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state, Order $record): string => Order::fulfillmentStatusLabel(
+                        $state,
+                        $record->fulfillment_method,
+                    )),
 
                 TextColumn::make('payment_status')
                     ->label('Оплата')
@@ -56,18 +64,6 @@ class OrdersTable
                         Order::PAYMENT_STATUS_PAID => 'Оплачен',
                         Order::PAYMENT_STATUS_FAILED => 'Ошибка оплаты',
                         Order::PAYMENT_STATUS_REFUNDED => 'Возврат',
-                        default => $state ?? '—',
-                    }),
-
-                TextColumn::make('delivery_status')
-                    ->label('Доставка')
-                    ->badge()
-                    ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
-                        Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
-                        Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
-                        Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
-                        Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
                         default => $state ?? '—',
                     }),
 
@@ -108,14 +104,15 @@ class OrdersTable
                         Order::PAYMENT_STATUS_REFUNDED => 'Возврат',
                     ]),
 
-                SelectFilter::make('delivery_status')
-                    ->label('Доставка')
+                SelectFilter::make('fulfillment_status')
+                    ->label('Получение')
                     ->options([
-                        Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
-                        Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
-                        Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
-                        Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
-                        Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
+                        Order::FULFILLMENT_STATUS_NOT_SENT => 'Не отправлен',
+                        Order::FULFILLMENT_STATUS_SHIPPED => 'Передан перевозчику',
+                        Order::FULFILLMENT_STATUS_DELIVERED => 'Доставлен',
+                        Order::FULFILLMENT_STATUS_NOT_READY => 'Не готов',
+                        Order::FULFILLMENT_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+                        Order::FULFILLMENT_STATUS_PICKED_UP => 'Выдан',
                     ]),
 
                 SelectFilter::make('sla')

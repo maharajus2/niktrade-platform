@@ -22,23 +22,32 @@ class Order extends Model
 
     public const STATUS_NEW = 'new';
     public const STATUS_ASSEMBLING = 'assembling';
-    public const STATUS_ASSEMBLED = 'assembled';
-    public const STATUS_HANDED_TO_DELIVERY = 'handed_to_delivery';
-    public const STATUS_DELIVERED = 'delivered';
+    public const STATUS_READY_FOR_DISPATCH = 'ready_for_dispatch';
+    public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
 
     public const LEGACY_STATUS_PROCESSING = 'processing';
+    public const LEGACY_STATUS_ASSEMBLED = 'assembled';
+    public const LEGACY_STATUS_HANDED_TO_DELIVERY = 'handed_to_delivery';
+    public const LEGACY_STATUS_DELIVERED = 'delivered';
 
     public const PAYMENT_STATUS_PENDING = 'pending';
     public const PAYMENT_STATUS_PAID = 'paid';
     public const PAYMENT_STATUS_FAILED = 'failed';
     public const PAYMENT_STATUS_REFUNDED = 'refunded';
 
-    public const DELIVERY_STATUS_NOT_SHIPPED = 'not_shipped';
-    public const DELIVERY_STATUS_SHIPPED = 'shipped';
-    public const DELIVERY_STATUS_DELIVERED = 'delivered';
-    public const DELIVERY_STATUS_READY_FOR_PICKUP = 'ready_for_pickup';
-    public const DELIVERY_STATUS_PICKED_UP = 'picked_up';
+    public const FULFILLMENT_STATUS_NOT_SENT = 'not_sent';
+    public const FULFILLMENT_STATUS_SHIPPED = 'shipped';
+    public const FULFILLMENT_STATUS_DELIVERED = 'delivered';
+    public const FULFILLMENT_STATUS_NOT_READY = 'not_ready';
+    public const FULFILLMENT_STATUS_READY_FOR_PICKUP = 'ready_for_pickup';
+    public const FULFILLMENT_STATUS_PICKED_UP = 'picked_up';
+
+    public const LEGACY_DELIVERY_STATUS_NOT_SHIPPED = 'not_shipped';
+    public const LEGACY_DELIVERY_STATUS_SHIPPED = 'shipped';
+    public const LEGACY_DELIVERY_STATUS_DELIVERED = 'delivered';
+    public const LEGACY_DELIVERY_STATUS_READY_FOR_PICKUP = 'ready_for_pickup';
+    public const LEGACY_DELIVERY_STATUS_PICKED_UP = 'picked_up';
 
     protected $fillable = [
         'order_number',
@@ -53,11 +62,13 @@ class Order extends Model
         'status',
         'assembling_at',
         'assembled_at',
+        'ready_for_dispatch_at',
         'handed_to_delivery_at',
         'delivered_at',
         'cancelled_at',
         'archived_at',
         'payment_status',
+        'fulfillment_status',
         'delivery_status',
         'customer_first_name',
         'customer_last_name',
@@ -90,6 +101,7 @@ class Order extends Model
         'warehouse_id' => 'integer',
         'assembling_at' => 'datetime',
         'assembled_at' => 'datetime',
+        'ready_for_dispatch_at' => 'datetime',
         'handed_to_delivery_at' => 'datetime',
         'delivered_at' => 'datetime',
         'cancelled_at' => 'datetime',
@@ -105,9 +117,8 @@ class Order extends Model
 
             $timestampColumn = match ($order->status) {
                 self::STATUS_ASSEMBLING => 'assembling_at',
-                self::STATUS_ASSEMBLED => 'assembled_at',
-                self::STATUS_HANDED_TO_DELIVERY => 'handed_to_delivery_at',
-                self::STATUS_DELIVERED => 'delivered_at',
+                self::STATUS_READY_FOR_DISPATCH => 'ready_for_dispatch_at',
+                self::STATUS_COMPLETED => 'delivered_at',
                 self::STATUS_CANCELLED => 'cancelled_at',
                 default => null,
             };
@@ -170,8 +181,8 @@ class Order extends Model
         return [
             self::STATUS_NEW => 'Новый',
             self::STATUS_ASSEMBLING => 'Собирается',
-            self::STATUS_ASSEMBLED => 'Собран',
-            self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
+            self::STATUS_READY_FOR_DISPATCH => 'Готов к отгрузке',
+            self::STATUS_COMPLETED => 'Завершён',
             self::STATUS_CANCELLED => 'Отменён',
         ];
     }
@@ -181,9 +192,11 @@ class Order extends Model
         return match ($status) {
             self::STATUS_NEW => 'Новый',
             self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'Собирается',
-            self::STATUS_ASSEMBLED => 'Собран',
-            self::STATUS_HANDED_TO_DELIVERY => 'Передан в доставку',
-            self::STATUS_DELIVERED => 'Передан в доставку',
+            self::STATUS_READY_FOR_DISPATCH,
+            self::LEGACY_STATUS_ASSEMBLED,
+            self::LEGACY_STATUS_HANDED_TO_DELIVERY => 'Готов к отгрузке',
+            self::STATUS_COMPLETED,
+            self::LEGACY_STATUS_DELIVERED => 'Завершён',
             self::STATUS_CANCELLED => 'Отменён',
             default => $status ?? '—',
         };
@@ -200,16 +213,45 @@ class Order extends Model
         };
     }
 
-    public static function deliveryStatusLabel(?string $status): string
+    public static function fulfillmentStatusOptions(?string $fulfillmentMethod = null): array
     {
+        return ($fulfillmentMethod ?? self::FULFILLMENT_DELIVERY) === self::FULFILLMENT_PICKUP
+            ? [
+                self::FULFILLMENT_STATUS_NOT_READY => 'Не готов',
+                self::FULFILLMENT_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+                self::FULFILLMENT_STATUS_PICKED_UP => 'Выдан',
+            ]
+            : [
+                self::FULFILLMENT_STATUS_NOT_SENT => 'Не отправлен',
+                self::FULFILLMENT_STATUS_SHIPPED => 'Передан перевозчику',
+                self::FULFILLMENT_STATUS_DELIVERED => 'Доставлен',
+            ];
+    }
+
+    public static function fulfillmentStatusLabel(?string $status, ?string $fulfillmentMethod = null): string
+    {
+        $method = $fulfillmentMethod ?? self::FULFILLMENT_DELIVERY;
+
+        if ($status === self::LEGACY_DELIVERY_STATUS_NOT_SHIPPED) {
+            $status = $method === self::FULFILLMENT_PICKUP
+                ? self::FULFILLMENT_STATUS_NOT_READY
+                : self::FULFILLMENT_STATUS_NOT_SENT;
+        }
+
         return match ($status) {
-            self::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
-            self::DELIVERY_STATUS_SHIPPED => 'Отправлен',
-            self::DELIVERY_STATUS_DELIVERED => 'Доставлен',
-            self::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
-            self::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
+            self::FULFILLMENT_STATUS_NOT_SENT => 'Не отправлен',
+            self::FULFILLMENT_STATUS_SHIPPED => $method === self::FULFILLMENT_PICKUP ? 'Не готов' : 'Передан перевозчику',
+            self::FULFILLMENT_STATUS_DELIVERED => $method === self::FULFILLMENT_PICKUP ? 'Выдан' : 'Доставлен',
+            self::FULFILLMENT_STATUS_NOT_READY => 'Не готов',
+            self::FULFILLMENT_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
+            self::FULFILLMENT_STATUS_PICKED_UP => 'Выдан',
             default => $status ?? '—',
         };
+    }
+
+    public static function deliveryStatusLabel(?string $status): string
+    {
+        return self::fulfillmentStatusLabel($status, self::FULFILLMENT_DELIVERY);
     }
 
     public function getCurrentStatusStartedAt()
@@ -217,7 +259,6 @@ class Order extends Model
         return match ($this->status) {
             self::STATUS_NEW => $this->created_at,
             self::STATUS_ASSEMBLING => $this->assembling_at,
-            self::STATUS_ASSEMBLED => $this->assembled_at,
             default => null,
         };
     }
@@ -233,7 +274,13 @@ class Order extends Model
             return self::SLA_STATE_ARCHIVED;
         }
 
-        if (in_array($this->status, [self::STATUS_HANDED_TO_DELIVERY, self::STATUS_DELIVERED], true)) {
+        if (in_array($this->status, [
+            self::STATUS_READY_FOR_DISPATCH,
+            self::STATUS_COMPLETED,
+            self::LEGACY_STATUS_ASSEMBLED,
+            self::LEGACY_STATUS_HANDED_TO_DELIVERY,
+            self::LEGACY_STATUS_DELIVERED,
+        ], true)) {
             return self::SLA_STATE_COMPLETED;
         }
 
@@ -376,10 +423,7 @@ class Order extends Model
                         ->where('created_at', '<', $overdueBefore))
                     ->orWhere(fn (Builder $query) => $query
                         ->where('status', self::STATUS_ASSEMBLING)
-                        ->where('assembling_at', '<', $overdueBefore))
-                    ->orWhere(fn (Builder $query) => $query
-                        ->where('status', self::STATUS_ASSEMBLED)
-                        ->where('assembled_at', '<', $overdueBefore));
+                        ->where('assembling_at', '<', $overdueBefore));
             }),
             self::SLA_STATE_WARNING => $query->whereNull('archived_at')->where(function (Builder $query) use ($warningStart, $warningEnd): void {
                 $query
@@ -388,10 +432,7 @@ class Order extends Model
                         ->whereBetween('created_at', [$warningStart, $warningEnd]))
                     ->orWhere(fn (Builder $query) => $query
                         ->where('status', self::STATUS_ASSEMBLING)
-                        ->whereBetween('assembling_at', [$warningStart, $warningEnd]))
-                    ->orWhere(fn (Builder $query) => $query
-                        ->where('status', self::STATUS_ASSEMBLED)
-                        ->whereBetween('assembled_at', [$warningStart, $warningEnd]));
+                        ->whereBetween('assembling_at', [$warningStart, $warningEnd]));
             }),
             self::SLA_STATE_OK => $query->whereNull('archived_at')->where(function (Builder $query) use ($okAfter): void {
                 $query
@@ -400,14 +441,14 @@ class Order extends Model
                         ->where('created_at', '>', $okAfter))
                     ->orWhere(fn (Builder $query) => $query
                         ->where('status', self::STATUS_ASSEMBLING)
-                        ->where('assembling_at', '>', $okAfter))
-                    ->orWhere(fn (Builder $query) => $query
-                        ->where('status', self::STATUS_ASSEMBLED)
-                        ->where('assembled_at', '>', $okAfter));
+                        ->where('assembling_at', '>', $okAfter));
             }),
             self::SLA_STATE_COMPLETED => $query->whereIn('status', [
-                self::STATUS_HANDED_TO_DELIVERY,
-                self::STATUS_DELIVERED,
+                self::STATUS_READY_FOR_DISPATCH,
+                self::STATUS_COMPLETED,
+                self::LEGACY_STATUS_ASSEMBLED,
+                self::LEGACY_STATUS_HANDED_TO_DELIVERY,
+                self::LEGACY_STATUS_DELIVERED,
             ])->whereNull('archived_at'),
             self::SLA_STATE_NONE => $query->where('status', self::STATUS_CANCELLED)->whereNull('archived_at'),
             self::SLA_STATE_ARCHIVED => $query->whereNotNull('archived_at'),
@@ -429,14 +470,12 @@ CASE
     WHEN (
         (status = ? AND created_at < ?)
         OR (status = ? AND assembling_at < ?)
-        OR (status = ? AND assembled_at < ?)
     ) THEN 1
     WHEN (
         (status = ? AND created_at BETWEEN ? AND ?)
         OR (status = ? AND assembling_at BETWEEN ? AND ?)
-        OR (status = ? AND assembled_at BETWEEN ? AND ?)
     ) THEN 2
-    WHEN status IN (?, ?) THEN 4
+    WHEN status IN (?, ?, ?, ?, ?) THEN 4
     WHEN status = ? THEN 5
     ELSE 3
 END ASC
@@ -446,19 +485,17 @@ SQL,
                     $overdueBefore,
                     self::STATUS_ASSEMBLING,
                     $overdueBefore,
-                    self::STATUS_ASSEMBLED,
-                    $overdueBefore,
                     self::STATUS_NEW,
                     $warningStart,
                     $warningEnd,
                     self::STATUS_ASSEMBLING,
                     $warningStart,
                     $warningEnd,
-                    self::STATUS_ASSEMBLED,
-                    $warningStart,
-                    $warningEnd,
-                    self::STATUS_HANDED_TO_DELIVERY,
-                    self::STATUS_DELIVERED,
+                    self::STATUS_READY_FOR_DISPATCH,
+                    self::STATUS_COMPLETED,
+                    self::LEGACY_STATUS_ASSEMBLED,
+                    self::LEGACY_STATUS_HANDED_TO_DELIVERY,
+                    self::LEGACY_STATUS_DELIVERED,
                     self::STATUS_CANCELLED,
                 ],
             )
@@ -467,9 +504,8 @@ SQL,
 CASE
     WHEN status = ? THEN created_at
     WHEN status = ? THEN COALESCE(assembling_at, created_at)
-    WHEN status = ? THEN COALESCE(assembled_at, created_at)
-    WHEN status = ? THEN COALESCE(handed_to_delivery_at, created_at)
-    WHEN status = ? THEN COALESCE(delivered_at, created_at)
+    WHEN status = ? THEN COALESCE(ready_for_dispatch_at, assembled_at, handed_to_delivery_at, created_at)
+    WHEN status = ? THEN COALESCE(delivered_at, ready_for_dispatch_at, assembled_at, handed_to_delivery_at, created_at)
     WHEN status = ? THEN COALESCE(cancelled_at, created_at)
     ELSE created_at
 END ASC
@@ -477,9 +513,8 @@ SQL,
                 [
                     self::STATUS_NEW,
                     self::STATUS_ASSEMBLING,
-                    self::STATUS_ASSEMBLED,
-                    self::STATUS_HANDED_TO_DELIVERY,
-                    self::STATUS_DELIVERED,
+                    self::STATUS_READY_FOR_DISPATCH,
+                    self::STATUS_COMPLETED,
                     self::STATUS_CANCELLED,
                 ],
             )
@@ -507,9 +542,11 @@ SQL,
         return match ($status) {
             self::STATUS_NEW => 'gray',
             self::STATUS_ASSEMBLING, self::LEGACY_STATUS_PROCESSING => 'warning',
-            self::STATUS_ASSEMBLED => 'info',
-            self::STATUS_HANDED_TO_DELIVERY,
-            self::STATUS_DELIVERED => 'primary',
+            self::STATUS_READY_FOR_DISPATCH,
+            self::LEGACY_STATUS_ASSEMBLED,
+            self::LEGACY_STATUS_HANDED_TO_DELIVERY => 'info',
+            self::STATUS_COMPLETED,
+            self::LEGACY_STATUS_DELIVERED => 'success',
             self::STATUS_CANCELLED => 'danger',
             default => 'gray',
         };
@@ -526,14 +563,17 @@ SQL,
             return false;
         }
 
-        return $this->status === self::STATUS_CANCELLED
-            || (
-                $this->payment_status === self::PAYMENT_STATUS_PAID
-                && in_array($this->delivery_status, [
-                    self::DELIVERY_STATUS_DELIVERED,
-                    self::DELIVERY_STATUS_PICKED_UP,
-                ], true)
-            );
+        if ($this->status === self::STATUS_CANCELLED) {
+            return true;
+        }
+
+        if ($this->status !== self::STATUS_COMPLETED) {
+            return false;
+        }
+
+        return $this->fulfillment_method === self::FULFILLMENT_PICKUP
+            ? $this->fulfillment_status === self::FULFILLMENT_STATUS_PICKED_UP
+            : $this->fulfillment_status === self::FULFILLMENT_STATUS_DELIVERED;
     }
 
     public function canBeCancelledByCustomer(): bool
@@ -541,7 +581,6 @@ SQL,
         return in_array($this->status, [
             self::STATUS_NEW,
             self::STATUS_ASSEMBLING,
-            self::STATUS_ASSEMBLED,
             self::LEGACY_STATUS_PROCESSING,
         ], true);
     }

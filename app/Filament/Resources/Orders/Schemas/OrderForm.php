@@ -65,15 +65,11 @@ class OrderForm
                             ])
                             ->required(),
 
-                        Select::make('delivery_status')
-                            ->label('Доставка')
-                            ->options([
-                                Order::DELIVERY_STATUS_NOT_SHIPPED => 'Не отправлен',
-                                Order::DELIVERY_STATUS_SHIPPED => 'Отправлен',
-                                Order::DELIVERY_STATUS_DELIVERED => 'Доставлен',
-                                Order::DELIVERY_STATUS_READY_FOR_PICKUP => 'Готов к выдаче',
-                                Order::DELIVERY_STATUS_PICKED_UP => 'Забран самовывозом',
-                            ])
+                        Select::make('fulfillment_status')
+                            ->label(fn (?Order $record): string => ($record?->fulfillment_method ?? Order::FULFILLMENT_DELIVERY) === Order::FULFILLMENT_PICKUP
+                                ? 'Самовывоз'
+                                : 'Получение')
+                            ->options(fn (?Order $record): array => Order::fulfillmentStatusOptions($record?->fulfillment_method))
                             ->required(),
 
                         Placeholder::make('sla_current')

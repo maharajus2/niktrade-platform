@@ -20,10 +20,15 @@ class CustomerAccountController extends Controller
             'addressesCount' => $customer->addresses()->count(),
             'totalSpent' => $customer->orders()
                 ->where('payment_status', Order::PAYMENT_STATUS_PAID)
-                ->whereIn('delivery_status', [
-                    Order::DELIVERY_STATUS_DELIVERED,
-                    Order::DELIVERY_STATUS_PICKED_UP,
-                ])
+                ->where(function ($query): void {
+                    $query
+                        ->where(fn ($query) => $query
+                            ->where('fulfillment_method', Order::FULFILLMENT_DELIVERY)
+                            ->where('fulfillment_status', Order::FULFILLMENT_STATUS_DELIVERED))
+                        ->orWhere(fn ($query) => $query
+                            ->where('fulfillment_method', Order::FULFILLMENT_PICKUP)
+                            ->where('fulfillment_status', Order::FULFILLMENT_STATUS_PICKED_UP));
+                })
                 ->sum('total'),
             'totalOrderedWeightGrams' => $customer->orders()
                 ->sum('total_weight_grams'),

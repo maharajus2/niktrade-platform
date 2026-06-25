@@ -338,8 +338,8 @@
                     <span class="value">{{ \App\Models\Order::paymentStatusLabel($order->payment_status) }}</span>
                 </div>
                 <div class="row">
-                    <span class="label">Доставка</span>
-                    <span class="value">{{ \App\Models\Order::deliveryStatusLabel($order->delivery_status) }}</span>
+                    <span class="label">{{ ($order->fulfillment_method ?? \App\Models\Order::FULFILLMENT_DELIVERY) === \App\Models\Order::FULFILLMENT_PICKUP ? 'Самовывоз' : 'Получение' }}</span>
+                    <span class="value">{{ \App\Models\Order::fulfillmentStatusLabel($order->fulfillment_status, $order->fulfillment_method) }}</span>
                 </div>
             </section>
 

@@ -37,7 +37,9 @@ class CreateOrderFromCartService
                 'warehouse_working_hours_snapshot' => $warehouse?->working_hours,
                 'status' => Order::STATUS_NEW,
                 'payment_status' => Order::PAYMENT_STATUS_PENDING,
-                'delivery_status' => Order::DELIVERY_STATUS_NOT_SHIPPED,
+                'fulfillment_status' => $isPickup
+                    ? Order::FULFILLMENT_STATUS_NOT_READY
+                    : Order::FULFILLMENT_STATUS_NOT_SENT,
                 'customer_first_name' => $data['first_name'] ?? null,
                 'customer_last_name' => $data['last_name'] ?? null,
                 'email' => $data['email'],

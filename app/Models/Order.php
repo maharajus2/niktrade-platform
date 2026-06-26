@@ -202,6 +202,11 @@ class Order extends Model
         };
     }
 
+    public function getStatusLabel(): string
+    {
+        return self::statusLabel($this->status);
+    }
+
     public static function paymentStatusLabel(?string $status): string
     {
         return match ($status) {
@@ -211,6 +216,11 @@ class Order extends Model
             self::PAYMENT_STATUS_REFUNDED => 'Возвращён',
             default => $status ?? '—',
         };
+    }
+
+    public function getPaymentStatusLabel(): string
+    {
+        return self::paymentStatusLabel($this->payment_status);
     }
 
     public static function fulfillmentStatusOptions(?string $fulfillmentMethod = null): array
@@ -247,6 +257,11 @@ class Order extends Model
             self::FULFILLMENT_STATUS_PICKED_UP => 'Выдан',
             default => $status ?? '—',
         };
+    }
+
+    public function getFulfillmentStatusLabel(): string
+    {
+        return self::fulfillmentStatusLabel($this->fulfillment_status, $this->fulfillment_method);
     }
 
     public static function deliveryStatusLabel(?string $status): string

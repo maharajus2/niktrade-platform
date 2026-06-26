@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Services\Telegram\TelegramBotService;
+use App\Services\Telegram\TelegramOrderMessageFactory;
 
 class OrderObserver
 {
@@ -24,67 +25,22 @@ class OrderObserver
         }
 
         $telegram = app(TelegramBotService::class);
+        $messages = app(TelegramOrderMessageFactory::class);
+        $options = [
+            'parse_mode' => 'HTML',
+            'reply_markup' => $messages->orderKeyboard($order),
+        ];
 
         if ($order->wasChanged('status')) {
-            $telegram->sendMessage($customer->telegram_id, $this->statusMessage($order));
+            $telegram->sendMessage($customer->telegram_id, $messages->statusChanged($order), $options);
         }
 
         if ($order->wasChanged('payment_status')) {
-            $telegram->sendMessage($customer->telegram_id, $this->paymentMessage($order));
+            $telegram->sendMessage($customer->telegram_id, $messages->paymentStatusChanged($order), $options);
         }
 
         if ($order->wasChanged('fulfillment_status')) {
-            $telegram->sendMessage($customer->telegram_id, $this->fulfillmentMessage($order));
+            $telegram->sendMessage($customer->telegram_id, $messages->fulfillmentStatusChanged($order), $options);
         }
-    }
-
-    private function statusMessage(Order $order): string
-    {
-        return "📦 Никтрейд\n\n"
-            . "Заказ {$order->order_number}\n\n"
-            . "Статус заказа изменён:\n"
-            . $order->getStatusLabel();
-    }
-
-    private function paymentMessage(Order $order): string
-    {
-        return "💳 Никтрейд\n\n"
-            . "Заказ {$order->order_number}\n\n"
-            . "Статус оплаты:\n"
-            . $order->getPaymentStatusLabel();
-    }
-
-    private function fulfillmentMessage(Order $order): string
-    {
-        if ($order->fulfillment_method === Order::FULFILLMENT_PICKUP) {
-            return match ($order->fulfillment_status) {
-                Order::FULFILLMENT_STATUS_READY_FOR_PICKUP => $this->pickupReadyMessage($order),
-                Order::FULFILLMENT_STATUS_PICKED_UP => "✅ Никтрейд\n\n"
-                    . "Заказ {$order->order_number}\n\n"
-                    . "Заказ выдан. Спасибо за покупку!",
-                default => "🏬 Никтрейд\n\n"
-                    . "Заказ {$order->order_number}\n\n"
-                    . "Самовывоз:\n"
-                    . $order->getFulfillmentStatusLabel(),
-            };
-        }
-
-        return "🚚 Никтрейд\n\n"
-            . "Заказ {$order->order_number}\n\n"
-            . "Получение:\n"
-            . $order->getFulfillmentStatusLabel();
-    }
-
-    private function pickupReadyMessage(Order $order): string
-    {
-        return "🏬 Никтрейд\n\n"
-            . "Ваш заказ готов к выдаче.\n\n"
-            . "Заказ {$order->order_number}\n\n"
-            . "Пункт самовывоза:\n"
-            . ($order->warehouse_name_snapshot ?: '—') . "\n\n"
-            . "Адрес:\n"
-            . ($order->warehouse_address_snapshot ?: '—') . "\n\n"
-            . "Режим работы:\n"
-            . ($order->warehouse_working_hours_snapshot ?: '—');
     }
 }

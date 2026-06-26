@@ -10,12 +10,14 @@ use App\Models\OrderItem;
 use App\Models\ProductImage;
 use App\Models\Warehouse;
 use App\Services\Telegram\TelegramBotService;
+use App\Services\Telegram\TelegramOrderMessageFactory;
 use Illuminate\Support\Facades\DB;
 
 class CreateOrderFromCartService
 {
     public function __construct(
         private readonly TelegramBotService $telegram,
+        private readonly TelegramOrderMessageFactory $telegramMessages,
     ) {}
 
     public function create(Cart $cart, array $data): Order
@@ -93,94 +95,10 @@ class CreateOrderFromCartService
             return;
         }
 
-        $this->telegram->sendMessage($customer->telegram_id, $this->orderCreatedMessage($order));
-    }
-
-    private function orderCreatedMessage(Order $order): string
-    {
-        return $order->fulfillment_method === Order::FULFILLMENT_PICKUP
-            ? $this->pickupOrderCreatedMessage($order)
-            : $this->deliveryOrderCreatedMessage($order);
-    }
-
-    private function deliveryOrderCreatedMessage(Order $order): string
-    {
-        $lines = [
-            "📦 Никтрейд",
-            "",
-            "Ваш заказ принят.",
-            "",
-            "Заказ: {$order->order_number}",
-            "Сумма: {$this->formatMoney($order->total)}",
-            "Способ получения: {$order->getFulfillmentMethodLabel()}",
-        ];
-
-        $address = $this->deliveryAddress($order);
-
-        if ($address !== '') {
-            $lines[] = "";
-            $lines[] = "Адрес:";
-            $lines[] = $address;
-        }
-
-        $lines[] = "";
-        $lines[] = "Мы сообщим, когда заказ начнут собирать.";
-
-        return implode("\n", $lines);
-    }
-
-    private function pickupOrderCreatedMessage(Order $order): string
-    {
-        $lines = [
-            "📦 Никтрейд",
-            "",
-            "Ваш заказ принят.",
-            "",
-            "Заказ: {$order->order_number}",
-            "Сумма: {$this->formatMoney($order->total)}",
-            "Способ получения: {$order->getFulfillmentMethodLabel()}",
-        ];
-
-        if ($order->warehouse_name_snapshot) {
-            $lines[] = "";
-            $lines[] = "Пункт самовывоза:";
-            $lines[] = $order->warehouse_name_snapshot;
-        }
-
-        if ($order->warehouse_address_snapshot) {
-            $lines[] = "";
-            $lines[] = "Адрес:";
-            $lines[] = $order->warehouse_address_snapshot;
-        }
-
-        if ($order->warehouse_working_hours_snapshot) {
-            $lines[] = "";
-            $lines[] = "Режим работы:";
-            $lines[] = $order->warehouse_working_hours_snapshot;
-        }
-
-        $lines[] = "";
-        $lines[] = "Мы сообщим, когда заказ будет готов к выдаче.";
-
-        return implode("\n", $lines);
-    }
-
-    private function deliveryAddress(Order $order): string
-    {
-        return collect([
-            $order->postal_code,
-            $order->region,
-            $order->city,
-            $order->street,
-            $order->house,
-            $order->building,
-            $order->apartment,
-        ])->filter()->implode(', ');
-    }
-
-    private function formatMoney(float|string|null $value): string
-    {
-        return number_format((float) $value, 2, ',', ' ') . ' ₽';
+        $this->telegram->sendMessage($customer->telegram_id, $this->telegramMessages->orderCreated($order), [
+            'parse_mode' => 'HTML',
+            'reply_markup' => $this->telegramMessages->orderKeyboard($order),
+        ]);
     }
 
     protected function resolveCustomer(array $data): Customer

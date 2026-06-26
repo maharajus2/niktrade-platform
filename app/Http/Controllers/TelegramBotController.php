@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Telegram\TelegramBotClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramBotController extends Controller
 {
@@ -24,11 +25,25 @@ class TelegramBotController extends Controller
 
         $text = trim((string) ($message['text'] ?? ''));
         $chatId = (string) ($message['chat']['id'] ?? '');
+        $from = $message['from'] ?? [];
+
+        Log::info('Telegram webhook message received', [
+            'update_id' => $request->input('update_id'),
+            'chat_id' => $chatId ?: null,
+            'telegram_user_id' => $from['id'] ?? null,
+            'username' => $from['username'] ?? null,
+        ]);
 
         if ($text === '/start' && $chatId !== '') {
             $telegram->sendMessage(
                 $chatId,
-                'Здравствуйте! Это бот Никтрейд. Здесь можно будет подтвердить телефон и получать уведомления о заказах.',
+                "Здравствуйте!\n\n"
+                    . "Добро пожаловать в Никтрейд.\n\n"
+                    . "В ближайшее время через этого бота можно будет:\n\n"
+                    . "• подтверждать телефон;\n"
+                    . "• получать уведомления о заказах;\n"
+                    . "• получать информацию о статусе заказа.\n\n"
+                    . "Пока бот находится в разработке.",
             );
         }
 

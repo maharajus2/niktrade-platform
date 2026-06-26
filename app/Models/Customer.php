@@ -63,6 +63,11 @@ class Customer extends Authenticatable
         return $this->hasMany(CustomerPhoneVerification::class);
     }
 
+    public function telegramLinkTokens(): HasMany
+    {
+        return $this->hasMany(CustomerTelegramLinkToken::class);
+    }
+
     public function hasVerifiedPhone(): bool
     {
         return $this->phone_verified_at !== null;

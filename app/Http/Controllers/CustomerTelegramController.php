@@ -2,52 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Services\Telegram\TelegramLoginVerifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CustomerTelegramController extends Controller
 {
-    public function verify(Request $request, TelegramLoginVerifier $verifier): RedirectResponse
+    public function link(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'id' => ['required', 'string'],
-            'username' => ['nullable', 'string', 'max:255'],
-            'first_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['nullable', 'string', 'max:255'],
-            'photo_url' => ['nullable', 'string', 'max:2048'],
-            'auth_date' => ['required', 'integer'],
-            'hash' => ['required', 'string'],
-        ]);
-
-        if (! $verifier->verify($data)) {
-            return back()->withErrors([
-                'telegram' => 'Не удалось подтвердить Telegram. Попробуйте ещё раз.',
-            ]);
-        }
-
         $customer = $request->user('customer');
-        $existingCustomer = Customer::query()
-            ->where('telegram_id', $data['id'])
-            ->where('id', '!=', $customer->id)
-            ->exists();
+        $botUsername = ltrim((string) config('services.telegram.bot_username'), '@');
 
-        if ($existingCustomer) {
+        if ($botUsername === '') {
             return back()->withErrors([
-                'telegram' => 'Этот Telegram уже привязан к другому аккаунту.',
+                'telegram' => 'Telegram-бот пока не настроен.',
             ]);
         }
 
-        $customer->update([
-            'telegram_id' => $data['id'],
-            'telegram_username' => $data['username'] ?? null,
-            'telegram_first_name' => $data['first_name'] ?? null,
-            'telegram_last_name' => $data['last_name'] ?? null,
-            'telegram_verified_at' => now(),
+        $customer->telegramLinkTokens()
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->update(['expires_at' => now()]);
+
+        $token = Str::random(48);
+
+        $customer->telegramLinkTokens()->create([
+            'token' => $token,
+            'expires_at' => now()->addMinutes(15),
         ]);
 
-        return back()->with('success', 'Telegram подтверждён.');
+        return redirect()->away("https://t.me/{$botUsername}?start={$token}");
     }
 
     public function destroy(Request $request): RedirectResponse

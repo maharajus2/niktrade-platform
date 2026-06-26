@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\CustomerTelegramLinkToken;
 use App\Services\Telegram\TelegramBotClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,7 +36,15 @@ class TelegramBotController extends Controller
             'username' => $from['username'] ?? null,
         ]);
 
-        if ($text === '/start' && $chatId !== '') {
+        if (str_starts_with($text, '/start') && $chatId !== '') {
+            $payload = trim(substr($text, strlen('/start')));
+
+            if ($payload !== '') {
+                $this->handleTelegramLink($payload, $from, $chatId, $telegram);
+
+                return response()->json(['ok' => true]);
+            }
+
             $telegram->sendMessage(
                 $chatId,
                 "Здравствуйте!\n\n"
@@ -48,5 +58,54 @@ class TelegramBotController extends Controller
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    private function handleTelegramLink(string $payload, array $from, string $chatId, TelegramBotClient $telegram): void
+    {
+        $token = CustomerTelegramLinkToken::query()
+            ->with('customer')
+            ->where('token', $payload)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (! $token) {
+            $telegram->sendMessage($chatId, 'Ссылка устарела. Вернитесь в личный кабинет и попробуйте снова.');
+
+            return;
+        }
+
+        $telegramUserId = (string) ($from['id'] ?? '');
+
+        if ($telegramUserId === '') {
+            $telegram->sendMessage($chatId, 'Ссылка устарела. Вернитесь в личный кабинет и попробуйте снова.');
+
+            return;
+        }
+
+        $alreadyLinked = Customer::query()
+            ->where('telegram_id', $telegramUserId)
+            ->where('id', '!=', $token->customer_id)
+            ->exists();
+
+        if ($alreadyLinked) {
+            $telegram->sendMessage($chatId, 'Этот Telegram уже привязан к другому аккаунту.');
+
+            return;
+        }
+
+        $token->customer->update([
+            'telegram_id' => $telegramUserId,
+            'telegram_username' => $from['username'] ?? null,
+            'telegram_first_name' => $from['first_name'] ?? null,
+            'telegram_last_name' => $from['last_name'] ?? null,
+            'telegram_verified_at' => now(),
+        ]);
+
+        $token->update([
+            'used_at' => now(),
+        ]);
+
+        $telegram->sendMessage($chatId, 'Telegram успешно подключён к вашему аккаунту Никтрейд.');
     }
 }

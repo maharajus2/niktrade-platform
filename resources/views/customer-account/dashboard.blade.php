@@ -338,10 +338,22 @@
                         <div class="label">Telegram</div>
 
                         @if ($customer->hasVerifiedTelegram())
-                            <div class="telegram-status">Telegram подтверждён</div>
+                            <div class="telegram-status">Telegram подключён</div>
 
                             @if ($customer->telegram_display_name)
                                 <div class="telegram-muted">{{ $customer->telegram_display_name }}</div>
+                            @endif
+
+                            @if ($customer->telegram_verified_at)
+                                <div class="telegram-muted">Подключён: {{ $customer->telegram_verified_at->format('d.m.Y H:i') }}</div>
+                            @endif
+
+                            @if ($telegramBotUsername)
+                                <form method="POST" action="{{ route('customer.telegram.link') }}">
+                                    @csrf
+
+                                    <button class="telegram-delete" type="submit">Переподключить Telegram</button>
+                                </form>
                             @endif
 
                             <form method="POST" action="{{ route('customer.account.telegram.destroy') }}">
@@ -351,37 +363,13 @@
                                 <button class="telegram-delete" type="submit">Отвязать Telegram</button>
                             </form>
                         @elseif ($telegramBotUsername)
-                            <div class="telegram-muted">Подтвердите владение Telegram-аккаунтом.</div>
+                            <div class="telegram-muted">Откройте бот, чтобы подключить Telegram к аккаунту.</div>
 
-                            <form id="telegram-verify-form" method="POST" action="{{ route('customer.account.telegram.verify') }}" hidden>
+                            <form method="POST" action="{{ route('customer.telegram.link') }}">
                                 @csrf
+
+                                <button class="action-link primary" type="submit">Подключить Telegram</button>
                             </form>
-
-                            <script>
-                                window.verifyTelegramAccount = function (user) {
-                                    const form = document.getElementById('telegram-verify-form');
-
-                                    Object.entries(user).forEach(([key, value]) => {
-                                        const input = document.createElement('input');
-                                        input.type = 'hidden';
-                                        input.name = key;
-                                        input.value = value;
-                                        form.appendChild(input);
-                                    });
-
-                                    form.submit();
-                                };
-                            </script>
-
-                            <script
-                                async
-                                src="https://telegram.org/js/telegram-widget.js?22"
-                                data-telegram-login="{{ $telegramBotUsername }}"
-                                data-size="medium"
-                                data-radius="8"
-                                data-userpic="false"
-                                data-onauth="verifyTelegramAccount(user)"
-                            ></script>
                         @else
                             <div class="telegram-muted">Telegram-подтверждение пока не настроено.</div>
                         @endif

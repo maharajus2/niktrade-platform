@@ -42,7 +42,7 @@ Route::middleware('auth:customer')->group(function () {
     Route::patch('/account/profile', [CustomerAccountController::class, 'updateProfile'])->name('customer.account.profile.update');
     Route::post('/account/avatar', [CustomerAccountController::class, 'updateAvatar'])->name('customer.account.avatar.update');
     Route::delete('/account/avatar', [CustomerAccountController::class, 'destroyAvatar'])->name('customer.account.avatar.destroy');
-    Route::post('/account/telegram/verify', [CustomerTelegramController::class, 'verify'])->name('customer.account.telegram.verify');
+    Route::post('/account/telegram/link', [CustomerTelegramController::class, 'link'])->name('customer.telegram.link');
     Route::delete('/account/telegram', [CustomerTelegramController::class, 'destroy'])->name('customer.account.telegram.destroy');
     Route::get('/account/phone-verification', [CustomerPhoneVerificationController::class, 'show'])->name('customer.account.phone-verification');
     Route::post('/account/phone-verification/request-code', [CustomerPhoneVerificationController::class, 'requestCode'])->name('customer.account.phone-verification.request-code');

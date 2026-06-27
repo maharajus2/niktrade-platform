@@ -49,6 +49,7 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/account/phone-verification/confirm', [CustomerPhoneVerificationController::class, 'confirm'])->name('customer.account.phone-verification.confirm');
     Route::get('/account/orders', [CustomerOrderController::class, 'index'])->name('customer.account.orders');
     Route::get('/account/orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.account.orders.show');
+    Route::post('/account/orders/{order}/switch-account', [CustomerOrderController::class, 'switchAccount'])->name('customer.account.orders.switch-account');
     Route::get('/account/addresses', [CustomerAddressController::class, 'index'])->name('customer.account.addresses');
     Route::post('/account/addresses', [CustomerAddressController::class, 'store'])->name('customer.account.addresses.store');
     Route::patch('/account/addresses/{address}', [CustomerAddressController::class, 'update'])->name('customer.account.addresses.update');

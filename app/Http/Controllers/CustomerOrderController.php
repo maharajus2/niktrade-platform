@@ -7,6 +7,8 @@ use App\Support\WeightFormatter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerOrderController extends Controller
 {
@@ -20,9 +22,13 @@ class CustomerOrderController extends Controller
         ]);
     }
 
-    public function show(Request $request, Order $order): View
+    public function show(Request $request, Order $order): View|Response
     {
-        abort_unless($order->customer_id === $request->user('customer')?->id, 403);
+        if ($order->customer_id !== $request->user('customer')?->id) {
+            return response()->view('customer-account.orders.forbidden', [
+                'order' => $order,
+            ], 403);
+        }
 
         $order->load([
             'items.product.images' => fn ($query) => $query
@@ -50,5 +56,15 @@ class CustomerOrderController extends Controller
         $order->cancelByCustomer();
 
         return back()->with('success', 'Заказ отменён.');
+    }
+
+    public function switchAccount(Request $request, Order $order): RedirectResponse
+    {
+        $request->session()->put('url.intended', route('customer.account.orders.show', $order));
+
+        Auth::guard('customer')->logout();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('customer.login');
     }
 }

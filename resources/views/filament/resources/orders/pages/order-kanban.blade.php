@@ -151,6 +151,21 @@
                                                 {{ $label }}
                                             </button>
                                         @endforeach
+                                    </div>
+
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                        @if ($this->canShowArchiveAction($order))
+                                            <button
+                                                type="button"
+                                                wire:click="confirmArchive({{ $order->id }})"
+                                                style="display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.45rem 0.65rem; color: rgb(55, 65, 81); font-size: 0.75rem; font-weight: 800; cursor: pointer;"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width: 1rem; height: 1rem;">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                                </svg>
+                                                <span>В архив</span>
+                                            </button>
+                                        @endif
 
                                         <a
                                             href="{{ $this->editOrderUrl($order) }}"
@@ -171,4 +186,35 @@
             </div>
         </div>
     </div>
+
+    @if ($archiveOrderId !== null)
+        <div style="position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(15, 23, 42, 0.45); padding: 1rem;">
+            <section style="width: min(440px, 100%); border-radius: 1rem; background: #fff; padding: 1.25rem; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);">
+                <h2 style="margin: 0; color: rgb(17, 24, 39); font-size: 1.15rem; font-weight: 800;">Архивировать заказ?</h2>
+
+                <p style="margin: 0.75rem 0 0; color: rgb(75, 85, 99); line-height: 1.55;">
+                    После архивирования заказ исчезнет с доски заказов,<br>
+                    но останется доступным через архив.
+                </p>
+
+                <div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem;">
+                    <button
+                        type="button"
+                        wire:click="archiveConfirmed"
+                        style="border: 0; border-radius: 0.5rem; background: rgb(22, 101, 52); padding: 0.55rem 0.85rem; color: #fff; font-size: 0.875rem; font-weight: 800; cursor: pointer;"
+                    >
+                        Архивировать
+                    </button>
+
+                    <button
+                        type="button"
+                        wire:click="cancelArchive"
+                        style="border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.55rem 0.85rem; color: rgb(55, 65, 81); font-size: 0.875rem; font-weight: 800; cursor: pointer;"
+                    >
+                        Отмена
+                    </button>
+                </div>
+            </section>
+        </div>
+    @endif
 </x-filament-panels::page>

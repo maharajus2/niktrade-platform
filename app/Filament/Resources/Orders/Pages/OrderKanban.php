@@ -32,6 +32,8 @@ class OrderKanban extends Page
     #[Url(as: 'archive')]
     public bool $showArchive = false;
 
+    public ?int $archiveOrderId = null;
+
     public function getHeading(): string
     {
         return 'Доска заказов';
@@ -80,6 +82,48 @@ class OrderKanban extends Page
         Notification::make()
             ->title('Статус заказа обновлён')
             ->body($order->order_number . ': ' . Order::statusLabel($status))
+            ->success()
+            ->send();
+
+        unset($this->columns);
+    }
+
+    public function confirmArchive(int $orderId): void
+    {
+        $order = Order::query()->find($orderId);
+
+        if (! $order || ! $this->canShowArchiveAction($order)) {
+            return;
+        }
+
+        $this->archiveOrderId = $order->id;
+    }
+
+    public function cancelArchive(): void
+    {
+        $this->archiveOrderId = null;
+    }
+
+    public function archiveConfirmed(): void
+    {
+        if ($this->archiveOrderId === null) {
+            return;
+        }
+
+        $order = Order::query()->find($this->archiveOrderId);
+
+        if (! $order || ! $this->canShowArchiveAction($order)) {
+            $this->archiveOrderId = null;
+
+            return;
+        }
+
+        $order->update(['archived_at' => now()]);
+
+        $this->archiveOrderId = null;
+
+        Notification::make()
+            ->title('Заказ перемещён в архив.')
             ->success()
             ->send();
 
@@ -161,6 +205,12 @@ class OrderKanban extends Page
             ],
             default => [],
         };
+    }
+
+    public function canShowArchiveAction(Order $order): bool
+    {
+        return in_array($order->status, [Order::STATUS_COMPLETED, Order::STATUS_CANCELLED], true)
+            && $order->canBeArchived();
     }
 
     public function viewOrderUrl(Order $order): string

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AdminUsers\Pages;
 
 use App\Filament\Resources\AdminUsers\UserResource;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -19,8 +18,7 @@ class EditUser extends EditRecord
     {
         return [
             ViewAction::make(),
-            DeleteAction::make()
-                ->visible(fn (): bool => UserResource::canDelete($this->record)),
+            UserResource::archiveAction(),
         ];
     }
 }

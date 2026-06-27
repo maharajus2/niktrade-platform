@@ -19,6 +19,7 @@ class ViewUser extends ViewRecord
         return [
             EditAction::make()
                 ->visible(fn (): bool => UserResource::canEdit($this->record)),
+            UserResource::archiveAction(),
         ];
     }
 }

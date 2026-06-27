@@ -11,13 +11,18 @@ use App\Filament\Resources\AdminUsers\Tables\UsersTable;
 use App\Models\User;
 use App\Support\AdminRoles;
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class UserResource extends Resource
@@ -51,7 +56,80 @@ class UserResource extends Resource
         return $schema
             ->columns(2)
             ->components([
-                Section::make('Роль')
+                Section::make('Основная информация')
+                    ->schema([
+                        ImageEntry::make('avatar_path')
+                            ->label('Фото')
+                            ->disk('public')
+                            ->circular(),
+
+                        TextEntry::make('name')
+                            ->label('ФИО'),
+
+                        TextEntry::make('email')
+                            ->label('Email'),
+
+                        TextEntry::make('date_of_birth')
+                            ->label('Дата рождения')
+                            ->date('d.m.Y')
+                            ->placeholder('—'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('Контакты')
+                    ->schema([
+                        TextEntry::make('phone')
+                            ->label('Телефон')
+                            ->placeholder('—'),
+
+                        TextEntry::make('telegram_username')
+                            ->label('Telegram')
+                            ->prefix('@')
+                            ->placeholder('—'),
+
+                        TextEntry::make('emergency_contact')
+                            ->label('Экстренный контакт')
+                            ->placeholder('—')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('Работа')
+                    ->schema([
+                        TextEntry::make('employee_status')
+                            ->label('Статус сотрудника')
+                            ->badge()
+                            ->formatStateUsing(fn (?string $state): string => User::employeeStatusOptions()[$state] ?? 'Не указан')
+                            ->color(fn (?string $state): string => User::employeeStatusColor($state)),
+
+                        TextEntry::make('hire_date')
+                            ->label('Дата найма')
+                            ->date('d.m.Y')
+                            ->placeholder('—'),
+
+                        TextEntry::make('dismissal_date')
+                            ->label('Дата увольнения')
+                            ->date('d.m.Y')
+                            ->placeholder('—')
+                            ->visible(fn (User $record): bool => $record->employee_status === User::STATUS_DISMISSED),
+
+                        TextEntry::make('schedule_type')
+                            ->label('График')
+                            ->formatStateUsing(fn (?string $state, User $record): string => self::scheduleDescription($record)),
+
+                        TextEntry::make('archived_at')
+                            ->label('Архив')
+                            ->badge()
+                            ->color('gray')
+                            ->formatStateUsing(fn (): string => 'Архивирован')
+                            ->visible(fn (User $record): bool => $record->isArchived()),
+                    ])
+                    ->columns(3)
+                    ->columnSpanFull(),
+
+                Section::make('Роль и доступ')
                     ->icon(fn (User $record): Heroicon => AdminRoles::primaryIcon($record))
                     ->iconColor(fn (User $record): string => AdminRoles::primaryColor($record))
                     ->description(fn (User $record): string => AdminRoles::primaryDescription($record))
@@ -66,19 +144,48 @@ class UserResource extends Resource
                     ])
                     ->columnSpanFull(),
 
-                Section::make('Данные сотрудника')
+                Section::make('Документы')
                     ->schema([
-                        TextEntry::make('name')
-                            ->label('Имя'),
+                        RepeatableEntry::make('adminDocuments')
+                            ->label('Документы')
+                            ->schema([
+                                TextEntry::make('title')
+                                    ->label('Название'),
 
-                        TextEntry::make('email')
-                            ->label('Email'),
+                                TextEntry::make('category')
+                                    ->label('Категория')
+                                    ->badge()
+                                    ->formatStateUsing(fn (?string $state): string => \App\Models\AdminUserDocument::categoryOptions()[$state] ?? 'Другое'),
 
-                        TextEntry::make('created_at')
-                            ->label('Создан')
-                            ->dateTime('d.m.Y H:i'),
+                                TextEntry::make('file_path')
+                                    ->label('Файл')
+                                    ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '—')
+                                    ->url(fn (\App\Models\AdminUserDocument $record): ?string => $record->file_path
+                                        ? Storage::disk('public')->url($record->file_path)
+                                        : null,
+                                        shouldOpenInNewTab: true),
+
+                                TextEntry::make('uploaded_at')
+                                    ->label('Дата загрузки')
+                                    ->dateTime('d.m.Y H:i')
+                                    ->placeholder('—'),
+
+                                TextEntry::make('comment')
+                                    ->label('Комментарий')
+                                    ->placeholder('—')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('История активности')
+                    ->schema([
+                        TextEntry::make('activity_placeholder')
+                            ->hiddenLabel()
+                            ->state('История действий сотрудника будет доступна в следующем обновлении.'),
+                    ])
                     ->columnSpanFull(),
             ]);
     }
@@ -115,11 +222,48 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        if (auth()->id() === $record->getKey()) {
-            return false;
+        return false;
+    }
+
+    public static function archiveAction(): Action
+    {
+        return Action::make('archive')
+            ->label('Архивировать сотрудника')
+            ->icon(Heroicon::OutlinedArchiveBox)
+            ->color('gray')
+            ->requiresConfirmation()
+            ->modalHeading('Архивировать сотрудника?')
+            ->modalDescription('Сотрудник будет скрыт из списка по умолчанию и не сможет войти в админку.')
+            ->modalSubmitActionLabel('Архивировать')
+            ->visible(fn (User $record): bool => $record->canBeArchived() && static::canEdit($record))
+            ->action(function (User $record): void {
+                $record->update(['archived_at' => now()]);
+
+                Notification::make()
+                    ->title('Сотрудник архивирован.')
+                    ->success()
+                    ->send();
+            });
+    }
+
+    public static function scheduleDescription(User $record): string
+    {
+        $schedule = User::scheduleTypeOptions()[$record->schedule_type] ?? 'Не указан';
+
+        if ($record->schedule_type !== User::SCHEDULE_INDIVIDUAL) {
+            return $schedule;
         }
 
-        return static::canUseAdminPermission('users.delete');
+        $days = collect($record->working_days ?? [])
+            ->map(fn (string $day): string => User::workingDayOptions()[$day] ?? $day)
+            ->implode(', ');
+
+        $hours = trim(implode('–', array_filter([
+            $record->work_starts_at,
+            $record->work_ends_at,
+        ])));
+
+        return trim($schedule . ': ' . ($days ?: 'дни не указаны') . ($hours ? ", {$hours}" : ''));
     }
 
     public static function getPages(): array

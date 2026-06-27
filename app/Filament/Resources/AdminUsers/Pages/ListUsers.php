@@ -10,6 +10,10 @@ class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
+    protected static ?string $title = 'Сотрудники';
+
+    protected static ?string $breadcrumb = 'Сотрудники';
+
     protected function getHeaderActions(): array
     {
         return [

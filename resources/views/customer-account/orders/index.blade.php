@@ -40,6 +40,33 @@
             font-size: 2rem;
         }
 
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            border: 1px solid #d1d5db;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #374151;
+            font-weight: 800;
+            padding: 8px 13px;
+            text-decoration: none;
+        }
+
+        .tab--active {
+            border-color: #166534;
+            background: #ecfdf5;
+            color: #166534;
+        }
+
         .orders {
             display: grid;
             gap: 12px;
@@ -65,6 +92,19 @@
         .value {
             margin-top: 3px;
             font-weight: 900;
+        }
+
+        .archive-badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            border-radius: 999px;
+            background: #f3f4f6;
+            color: #4b5563;
+            font-size: 0.78rem;
+            font-weight: 900;
+            margin-top: 7px;
+            padding: 5px 9px;
         }
 
         .empty {
@@ -98,6 +138,18 @@
 
         <h1 class="title">Мои заказы</h1>
 
+        <nav class="tabs" aria-label="Фильтр заказов">
+            <a class="tab {{ $activeTab === 'active' ? 'tab--active' : '' }}" href="{{ route('customer.account.orders', ['tab' => 'active']) }}">
+                Активные ({{ $counts['active'] }})
+            </a>
+            <a class="tab {{ $activeTab === 'archive' ? 'tab--active' : '' }}" href="{{ route('customer.account.orders', ['tab' => 'archive']) }}">
+                Архив ({{ $counts['archive'] }})
+            </a>
+            <a class="tab {{ $activeTab === 'all' ? 'tab--active' : '' }}" href="{{ route('customer.account.orders', ['tab' => 'all']) }}">
+                Все ({{ $counts['all'] }})
+            </a>
+        </nav>
+
         @if (session('success'))
             <div class="empty">{{ session('success') }}</div>
         @endif
@@ -109,6 +161,9 @@
                         <div>
                             <div class="label">Номер</div>
                             <div class="value">{{ $order->order_number }}</div>
+                            @if ($order->isArchived())
+                                <span class="archive-badge">Архив</span>
+                            @endif
                         </div>
 
                         <div>
@@ -135,7 +190,9 @@
                 {{ $orders->links() }}
             </div>
         @else
-            <div class="empty">У вас пока нет заказов.</div>
+            <div class="empty">
+                {{ $activeTab === 'archive' ? 'В архиве пока нет заказов.' : 'У вас пока нет заказов.' }}
+            </div>
         @endif
     </main>
 @endsection

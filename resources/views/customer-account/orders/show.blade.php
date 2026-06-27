@@ -86,6 +86,24 @@
             color: #991b1b;
         }
 
+        .archive-badge {
+            border-radius: 999px;
+            background: #f3f4f6;
+            color: #4b5563;
+            font-weight: 900;
+            padding: 7px 11px;
+        }
+
+        .archive-note {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding: 12px;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -241,6 +259,9 @@
                 <span class="status-badge {{ $order->status === \App\Models\Order::STATUS_CANCELLED ? 'status-badge--danger' : '' }}">
                     {{ \App\Models\Order::statusLabel($order->status) }}
                 </span>
+                @if ($order->isArchived())
+                    <span class="archive-badge">Архивный заказ</span>
+                @endif
             </div>
 
             <div class="actions">
@@ -263,6 +284,10 @@
         @error('order')
             <div class="message">{{ $message }}</div>
         @enderror
+
+        @if ($order->isArchived())
+            <div class="archive-note">Этот заказ завершён и находится в архиве.</div>
+        @endif
 
         <div class="grid">
             <section class="card">

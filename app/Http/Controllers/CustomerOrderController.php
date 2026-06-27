@@ -14,11 +14,29 @@ class CustomerOrderController extends Controller
 {
     public function index(Request $request): View
     {
+        $customer = $request->user('customer');
+        $activeTab = in_array($request->query('tab'), ['active', 'archive', 'all'], true)
+            ? $request->query('tab')
+            : 'active';
+
+        $ordersQuery = $customer->orders()->latest();
+
+        if ($activeTab === 'active') {
+            $ordersQuery->whereNull('archived_at');
+        }
+
+        if ($activeTab === 'archive') {
+            $ordersQuery->whereNotNull('archived_at');
+        }
+
         return view('customer-account.orders.index', [
-            'orders' => $request->user('customer')
-                ->orders()
-                ->latest()
-                ->paginate(12),
+            'activeTab' => $activeTab,
+            'counts' => [
+                'active' => $customer->orders()->whereNull('archived_at')->count(),
+                'archive' => $customer->orders()->whereNotNull('archived_at')->count(),
+                'all' => $customer->orders()->count(),
+            ],
+            'orders' => $ordersQuery->paginate(12)->withQueryString(),
         ]);
     }
 

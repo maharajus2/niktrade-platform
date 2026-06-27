@@ -63,7 +63,7 @@ class CustomerAuthController extends Controller
         Auth::guard('customer')->login($customer);
         $request->session()->regenerate();
 
-        return redirect()->route('catalog.index');
+        return redirect()->intended(route('customer.account'));
     }
 
     public function showLogin(): View
@@ -96,7 +96,7 @@ class CustomerAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('catalog.index');
+        return redirect()->intended(route('customer.account'));
     }
 
     public function logout(Request $request): RedirectResponse

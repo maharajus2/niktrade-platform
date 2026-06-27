@@ -59,10 +59,51 @@
             </div>
         </x-filament::section>
 
-        <div style="height: calc(100vh - 18rem); min-height: 420px; max-height: 780px; overflow-x: auto; overflow-y: hidden; padding-bottom: 0.75rem;">
+        <div
+            x-data="{
+                draggedOrderId: null,
+                draggedStatus: null,
+                overStatus: null,
+                terminalMessages: {
+                    '{{ \App\Models\Order::STATUS_COMPLETED }}': {
+                        title: 'Завершить заказ?',
+                        text: 'Заказ будет переведён в статус «Завершён».',
+                    },
+                    '{{ \App\Models\Order::STATUS_CANCELLED }}': {
+                        title: 'Отменить заказ?',
+                        text: 'Заказ будет переведён в статус «Отменён». Покупатель получит уведомление, если Telegram подключён.',
+                    },
+                },
+                dropOrder(targetStatus) {
+                    if (! this.draggedOrderId || ! targetStatus || this.draggedStatus === targetStatus) {
+                        this.overStatus = null;
+                        return;
+                    }
+
+                    const message = this.terminalMessages[targetStatus];
+
+                    if (message && ! window.confirm(message.title + '\n\n' + message.text)) {
+                        this.overStatus = null;
+                        return;
+                    }
+
+                    this.$wire.moveOrder(Number(this.draggedOrderId), targetStatus);
+                    this.draggedOrderId = null;
+                    this.draggedStatus = null;
+                    this.overStatus = null;
+                },
+            }"
+            style="height: calc(100vh - 18rem); min-height: 420px; max-height: 780px; overflow-x: auto; overflow-y: hidden; padding-bottom: 0.75rem;"
+        >
             <div style="display: flex; gap: 1rem; min-width: max-content; height: 100%; align-items: stretch;">
                 @foreach ($this->columns as $status => $column)
-                    <section style="width: 320px; min-width: 320px; height: 100%; display: flex; flex-direction: column; border: 1px solid rgb(229, 231, 235); border-radius: 0.875rem; background: rgb(249, 250, 251); padding: 0.75rem;">
+                    <section
+                        data-status="{{ $status }}"
+                        x-on:dragover.prevent="if (draggedOrderId) overStatus = '{{ $status }}'"
+                        x-on:dragleave="if ($event.currentTarget === $event.target) overStatus = null"
+                        x-on:drop.prevent="dropOrder('{{ $status }}')"
+                        x-bind:style="`width: 320px; min-width: 320px; height: 100%; display: flex; flex-direction: column; border: 1px solid ${overStatus === '{{ $status }}' ? 'rgb(22, 101, 52)' : 'rgb(229, 231, 235)'}; border-radius: 0.875rem; background: ${overStatus === '{{ $status }}' ? 'rgb(240, 253, 244)' : 'rgb(249, 250, 251)'}; padding: 0.75rem; box-shadow: ${overStatus === '{{ $status }}' ? 'inset 0 0 0 2px rgba(22, 101, 52, 0.16)' : 'none'};`"
+                    >
                         <header style="position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: -0.75rem -0.75rem 0.75rem; padding: 0.75rem; border-bottom: 1px solid rgb(229, 231, 235); border-radius: 0.875rem 0.875rem 0 0; background: rgb(249, 250, 251);">
                             <div>
                                 <h2 style="margin: 0; color: rgb(17, 24, 39); font-size: 0.95rem; font-weight: 800;">{{ $column['label'] }}</h2>
@@ -93,7 +134,25 @@
                                         : 'background: rgb(239, 246, 255); color: rgb(29, 78, 216); border-color: rgba(29, 78, 216, 0.2);';
                                 @endphp
 
-                                <article style="border: 1px solid rgb(229, 231, 235); border-left: 4px solid {{ $accentBorder }}; border-radius: 0.875rem; background: {{ $accentBackground }}; padding: 0.875rem; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);">
+                                <article
+                                    @if (! $order->isArchived())
+                                        draggable="true"
+                                        x-on:dragstart="
+                                            draggedOrderId = '{{ $order->id }}';
+                                            draggedStatus = '{{ $order->status }}';
+                                            $event.dataTransfer.effectAllowed = 'move';
+                                            $event.dataTransfer.setData('text/plain', '{{ $order->id }}');
+                                            $event.currentTarget.style.opacity = '0.55';
+                                        "
+                                        x-on:dragend="
+                                            $event.currentTarget.style.opacity = '1';
+                                            draggedOrderId = null;
+                                            draggedStatus = null;
+                                            overStatus = null;
+                                        "
+                                    @endif
+                                    style="border: 1px solid rgb(229, 231, 235); border-left: 4px solid {{ $accentBorder }}; border-radius: 0.875rem; background: {{ $accentBackground }}; padding: 0.875rem; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07); cursor: {{ $order->isArchived() ? 'default' : 'grab' }};"
+                                >
                                     <a href="{{ $this->viewOrderUrl($order) }}" style="display: block; color: inherit; text-decoration: none;">
                                         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;">
                                             <div>

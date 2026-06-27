@@ -58,7 +58,22 @@ class OrderKanban extends Page
 
     public function moveToStatus(int $orderId, string $status): void
     {
+        $this->updateOrderStatus($orderId, $status, true);
+    }
+
+    public function moveOrder(int $orderId, string $targetStatus): void
+    {
+        $this->updateOrderStatus($orderId, $targetStatus);
+    }
+
+    private function updateOrderStatus(int $orderId, string $status, bool $withBody = false): void
+    {
         if (! array_key_exists($status, $this->statusColumns())) {
+            Notification::make()
+                ->title('Не удалось обновить статус заказа.')
+                ->danger()
+                ->send();
+
             return;
         }
 
@@ -66,7 +81,25 @@ class OrderKanban extends Page
 
         if (! $order) {
             Notification::make()
-                ->title('Заказ не найден')
+                ->title('Заказ не найден.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        if ($order->isArchived()) {
+            Notification::make()
+                ->title('Архивный заказ нельзя переместить.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        if (method_exists(OrderResource::class, 'canEdit') && ! OrderResource::canEdit($order)) {
+            Notification::make()
+                ->title('Недостаточно прав для изменения заказа.')
                 ->danger()
                 ->send();
 
@@ -79,11 +112,15 @@ class OrderKanban extends Page
 
         $order->update(['status' => $status]);
 
-        Notification::make()
-            ->title('Статус заказа обновлён')
-            ->body($order->order_number . ': ' . Order::statusLabel($status))
-            ->success()
-            ->send();
+        $notification = Notification::make()
+            ->title('Статус заказа обновлён.')
+            ->success();
+
+        if ($withBody) {
+            $notification->body($order->order_number . ': ' . Order::statusLabel($status));
+        }
+
+        $notification->send();
 
         unset($this->columns);
     }

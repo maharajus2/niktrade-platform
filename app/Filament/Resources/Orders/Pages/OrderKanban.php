@@ -16,7 +16,7 @@ class OrderKanban extends Page
 {
     protected static string $resource = OrderResource::class;
 
-    protected static string $view = 'filament.resources.orders.pages.order-kanban';
+    protected string $view = 'filament.resources.orders.pages.order-kanban';
 
     protected static ?string $title = 'Доска заказов';
 

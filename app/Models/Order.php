@@ -574,21 +574,11 @@ SQL,
 
     public function canBeArchived(): bool
     {
-        if ($this->isArchived()) {
-            return false;
-        }
-
-        if ($this->status === self::STATUS_CANCELLED) {
-            return true;
-        }
-
-        if ($this->status !== self::STATUS_COMPLETED) {
-            return false;
-        }
-
-        return $this->fulfillment_method === self::FULFILLMENT_PICKUP
-            ? $this->fulfillment_status === self::FULFILLMENT_STATUS_PICKED_UP
-            : $this->fulfillment_status === self::FULFILLMENT_STATUS_DELIVERED;
+        return ! $this->isArchived()
+            && in_array($this->status, [
+                self::STATUS_COMPLETED,
+                self::STATUS_CANCELLED,
+            ], true);
     }
 
     public function canBeCancelledByCustomer(): bool

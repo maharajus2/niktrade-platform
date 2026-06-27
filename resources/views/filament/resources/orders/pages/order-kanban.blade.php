@@ -59,11 +59,11 @@
             </div>
         </x-filament::section>
 
-        <div style="overflow-x: auto; padding-bottom: 0.5rem;">
-            <div style="display: flex; gap: 1rem; min-width: max-content; align-items: flex-start;">
+        <div style="height: calc(100vh - 18rem); min-height: 420px; max-height: 780px; overflow-x: auto; overflow-y: hidden; padding-bottom: 0.75rem;">
+            <div style="display: flex; gap: 1rem; min-width: max-content; height: 100%; align-items: stretch;">
                 @foreach ($this->columns as $status => $column)
-                    <section style="width: 320px; min-width: 320px; border: 1px solid rgb(229, 231, 235); border-radius: 0.875rem; background: rgb(249, 250, 251); padding: 0.75rem;">
-                        <header style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <section style="width: 320px; min-width: 320px; height: 100%; display: flex; flex-direction: column; border: 1px solid rgb(229, 231, 235); border-radius: 0.875rem; background: rgb(249, 250, 251); padding: 0.75rem;">
+                        <header style="position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: -0.75rem -0.75rem 0.75rem; padding: 0.75rem; border-bottom: 1px solid rgb(229, 231, 235); border-radius: 0.875rem 0.875rem 0 0; background: rgb(249, 250, 251);">
                             <div>
                                 <h2 style="margin: 0; color: rgb(17, 24, 39); font-size: 0.95rem; font-weight: 800;">{{ $column['label'] }}</h2>
                                 <p style="margin: 0.15rem 0 0; color: rgb(107, 114, 128); font-size: 0.75rem;">{{ $column['orders']->count() }} заказов</p>
@@ -73,7 +73,7 @@
                             </span>
                         </header>
 
-                        <div style="display: grid; gap: 0.75rem;">
+                        <div style="display: grid; gap: 0.75rem; flex: 1; min-height: 0; overflow-y: auto; padding-right: 0.25rem; align-content: start;">
                             @forelse ($column['orders'] as $order)
                                 @php
                                     $slaState = $order->getSlaState();

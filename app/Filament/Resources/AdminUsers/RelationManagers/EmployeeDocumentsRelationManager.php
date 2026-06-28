@@ -53,6 +53,9 @@ class EmployeeDocumentsRelationManager extends RelationManager
             ->header(fn (): View => view('filament.admin-users.employee-documents-summary', [
                 'employee' => $this->getOwnerRecord(),
             ]))
+            ->emptyStateHeading('Документы пока не загружены')
+            ->emptyStateDescription('Создайте первый документ сотрудника, чтобы начать контроль комплектности и сроков.')
+            ->emptyStateIcon(Heroicon::OutlinedDocumentText)
             ->columns([
                 TextColumn::make('category')
                     ->label('Категория')
@@ -86,7 +89,7 @@ class EmployeeDocumentsRelationManager extends RelationManager
                     ->sortable(),
 
                 TextColumn::make('expiration')
-                    ->label('Срок')
+                    ->label('Статус срока')
                     ->badge()
                     ->state(fn (EmployeeDocument $record): string => $record->getExpirationLabel())
                     ->color(fn (EmployeeDocument $record): string => $record->expirationColor()),

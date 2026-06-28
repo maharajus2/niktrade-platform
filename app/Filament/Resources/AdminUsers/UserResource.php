@@ -13,7 +13,6 @@ use App\Support\AdminRoles;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -22,7 +21,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class UserResource extends Resource
@@ -69,64 +67,11 @@ class UserResource extends Resource
                         TextEntry::make('email')
                             ->label('Email'),
 
-                        TextEntry::make('date_of_birth')
-                            ->label('Дата рождения')
-                            ->date('d.m.Y')
-                            ->placeholder('—'),
-                    ])
-                    ->columns(2)
-                    ->columnSpanFull(),
-
-                Section::make('Контакты')
-                    ->schema([
                         TextEntry::make('phone')
                             ->label('Телефон')
                             ->placeholder('—'),
-
-                        TextEntry::make('telegram_username')
-                            ->label('Telegram')
-                            ->prefix('@')
-                            ->placeholder('—'),
-
-                        TextEntry::make('emergency_contact')
-                            ->label('Экстренный контакт')
-                            ->placeholder('—')
-                            ->columnSpanFull(),
                     ])
                     ->columns(2)
-                    ->columnSpanFull(),
-
-                Section::make('Работа')
-                    ->schema([
-                        TextEntry::make('employee_status')
-                            ->label('Статус сотрудника')
-                            ->badge()
-                            ->formatStateUsing(fn (?string $state): string => User::employeeStatusOptions()[$state] ?? 'Не указан')
-                            ->color(fn (?string $state): string => User::employeeStatusColor($state)),
-
-                        TextEntry::make('hire_date')
-                            ->label('Дата найма')
-                            ->date('d.m.Y')
-                            ->placeholder('—'),
-
-                        TextEntry::make('dismissal_date')
-                            ->label('Дата увольнения')
-                            ->date('d.m.Y')
-                            ->placeholder('—')
-                            ->visible(fn (User $record): bool => $record->employee_status === User::STATUS_DISMISSED),
-
-                        TextEntry::make('schedule_type')
-                            ->label('График')
-                            ->formatStateUsing(fn (?string $state, User $record): string => self::scheduleDescription($record)),
-
-                        TextEntry::make('archived_at')
-                            ->label('Архив')
-                            ->badge()
-                            ->color('gray')
-                            ->formatStateUsing(fn (): string => 'Архивирован')
-                            ->visible(fn (User $record): bool => $record->isArchived()),
-                    ])
-                    ->columns(3)
                     ->columnSpanFull(),
 
                 Section::make('Роль и доступ')
@@ -141,51 +86,89 @@ class UserResource extends Resource
                             ->icon(fn (string $state): Heroicon => AdminRoles::icon($state))
                             ->color(fn (string $state): string => AdminRoles::color($state))
                             ->placeholder('Роль не назначена'),
+
+                        TextEntry::make('manager.name')
+                            ->label('Руководитель')
+                            ->placeholder('—'),
                     ])
+                    ->columns(2)
                     ->columnSpanFull(),
 
-                Section::make('Документы')
+                Section::make('HR')
+                    ->visible(fn (): bool => static::canUpdateHrProfile())
                     ->schema([
-                        RepeatableEntry::make('adminDocuments')
-                            ->label('Документы')
-                            ->schema([
-                                TextEntry::make('title')
-                                    ->label('Название'),
+                        TextEntry::make('employment_type')
+                            ->label('Тип трудоустройства')
+                            ->badge()
+                            ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentTypeLabel()),
 
-                                TextEntry::make('category')
-                                    ->label('Категория')
-                                    ->badge()
-                                    ->formatStateUsing(fn (?string $state): string => \App\Models\AdminUserDocument::categoryOptions()[$state] ?? 'Другое'),
+                        TextEntry::make('employment_status')
+                            ->label('Статус')
+                            ->badge()
+                            ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentStatusLabel())
+                            ->color(fn (?string $state, User $record): string => User::employeeStatusColor($record->employment_status ?? $record->employee_status)),
 
-                                TextEntry::make('file_path')
-                                    ->label('Файл')
-                                    ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '—')
-                                    ->url(fn (\App\Models\AdminUserDocument $record): ?string => $record->file_path
-                                        ? Storage::disk('public')->url($record->file_path)
-                                        : null,
-                                        shouldOpenInNewTab: true),
+                        TextEntry::make('hire_date')
+                            ->label('Дата найма')
+                            ->date('d.m.Y')
+                            ->placeholder('—'),
 
-                                TextEntry::make('uploaded_at')
-                                    ->label('Дата загрузки')
-                                    ->dateTime('d.m.Y H:i')
-                                    ->placeholder('—'),
+                        TextEntry::make('dismissal_date')
+                            ->label('Дата увольнения')
+                            ->date('d.m.Y')
+                            ->placeholder('—')
+                            ->visible(fn (User $record): bool => ($record->employment_status ?? $record->employee_status) === User::STATUS_DISMISSED),
 
-                                TextEntry::make('comment')
-                                    ->label('Комментарий')
-                                    ->placeholder('—')
-                                    ->columnSpanFull(),
-                            ])
-                            ->columns(2)
-                            ->columnSpanFull(),
+                        TextEntry::make('schedule_type')
+                            ->label('График')
+                            ->formatStateUsing(fn (?string $state, User $record): string => $record->getScheduleTypeLabel()),
+
+                        TextEntry::make('tenure')
+                            ->label('Стаж')
+                            ->state(fn (User $record): string => $record->getTenureLabel()),
                     ])
+                    ->columns(3)
                     ->columnSpanFull(),
 
-                Section::make('История активности')
+                Section::make('Испытательный срок')
+                    ->visible(fn (): bool => static::canManageProbation())
                     ->schema([
-                        TextEntry::make('activity_placeholder')
-                            ->hiddenLabel()
-                            ->state('История действий сотрудника будет доступна в следующем обновлении.'),
+                        TextEntry::make('probation')
+                            ->label('Статус')
+                            ->badge()
+                            ->color(fn (User $record): string => $record->isOnProbation() ? 'warning' : 'gray')
+                            ->state(fn (User $record): string => $record->getProbationLabel()),
+
+                        TextEntry::make('probation_started_at')
+                            ->label('Дата начала')
+                            ->date('d.m.Y')
+                            ->placeholder('—'),
+
+                        TextEntry::make('probation_ends_at')
+                            ->label('Дата окончания')
+                            ->date('d.m.Y')
+                            ->placeholder('—'),
+
+                        TextEntry::make('probationCancelledBy.name')
+                            ->label('Кем отменён')
+                            ->placeholder('—'),
                     ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('Оклад')
+                    ->visible(fn (User $record): bool => static::canViewSalary($record))
+                    ->schema([
+                        TextEntry::make('salary_amount')
+                            ->label('Оклад')
+                            ->money(fn (User $record): string => $record->salary_currency ?: 'RUB')
+                            ->placeholder('—'),
+
+                        TextEntry::make('salary_currency')
+                            ->label('Валюта')
+                            ->placeholder('RUB'),
+                    ])
+                    ->columns(2)
                     ->columnSpanFull(),
             ]);
     }
@@ -202,27 +185,66 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return static::canManageAdminUsers();
+        return static::canUseAnyPermission(['users.view_any', 'employees.view_any']);
     }
 
     public static function canCreate(): bool
     {
-        return static::canUseAdminPermission('users.create');
+        return static::canUseAnyPermission(['users.create', 'employees.create']);
     }
 
     public static function canEdit(Model $record): bool
     {
-        return static::canUseAdminPermission('users.update');
+        return static::canUseAnyPermission(['users.update', 'employees.update']);
     }
 
     public static function canView(Model $record): bool
     {
-        return static::canUseAdminPermission('users.view');
+        return static::canUseAnyPermission(['users.view', 'employees.view']);
     }
 
     public static function canDelete(Model $record): bool
     {
         return false;
+    }
+
+    public static function canUpdateHrProfile(): bool
+    {
+        return static::canUseAdminPermission('employees.hr.update');
+    }
+
+    public static function canManageProbation(): bool
+    {
+        return static::canUseAdminPermission('employees.probation.manage');
+    }
+
+    public static function canUpdateSalary(): bool
+    {
+        return static::canUseAdminPermission('employees.salary.update');
+    }
+
+    public static function canViewSalary(?User $record): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.salary.view')) {
+            return true;
+        }
+
+        if ($record === null) {
+            return static::canUpdateSalary();
+        }
+
+        return $record->is($user) || (int) $record->manager_id === (int) $user->getKey();
+    }
+
+    public static function canArchiveEmployee(User $record): bool
+    {
+        return $record->canBeArchived() && static::canUseAdminPermission('employees.archive');
     }
 
     public static function archiveAction(): Action
@@ -233,37 +255,21 @@ class UserResource extends Resource
             ->color('gray')
             ->requiresConfirmation()
             ->modalHeading('Архивировать сотрудника?')
-            ->modalDescription('Сотрудник будет скрыт из списка по умолчанию и не сможет войти в админку.')
+            ->modalDescription('Сотрудник будет скрыт из списка по умолчанию. Вход в админку на этом этапе не блокируется.')
             ->modalSubmitActionLabel('Архивировать')
-            ->visible(fn (User $record): bool => $record->canBeArchived() && static::canEdit($record))
+            ->visible(fn (User $record): bool => static::canArchiveEmployee($record))
             ->action(function (User $record): void {
-                $record->update(['archived_at' => now()]);
+                $record->update([
+                    'archived_at' => now(),
+                    'employment_status' => User::STATUS_ARCHIVED,
+                    'employee_status' => User::STATUS_ARCHIVED,
+                ]);
 
                 Notification::make()
                     ->title('Сотрудник архивирован.')
                     ->success()
                     ->send();
             });
-    }
-
-    public static function scheduleDescription(User $record): string
-    {
-        $schedule = User::scheduleTypeOptions()[$record->schedule_type] ?? 'Не указан';
-
-        if ($record->schedule_type !== User::SCHEDULE_INDIVIDUAL) {
-            return $schedule;
-        }
-
-        $days = collect($record->working_days ?? [])
-            ->map(fn (string $day): string => User::workingDayOptions()[$day] ?? $day)
-            ->implode(', ');
-
-        $hours = trim(implode('–', array_filter([
-            $record->work_starts_at,
-            $record->work_ends_at,
-        ])));
-
-        return trim($schedule . ': ' . ($days ?: 'дни не указаны') . ($hours ? ", {$hours}" : ''));
     }
 
     public static function getPages(): array
@@ -278,16 +284,21 @@ class UserResource extends Resource
 
     public static function canManageAdminUsers(): bool
     {
-        return static::canUseAdminPermission('users.view_any');
+        return static::canUseAnyPermission(['users.view_any', 'employees.view_any']);
     }
 
     public static function canUseAdminPermission(string $permission): bool
+    {
+        return static::canUseAnyPermission([$permission]);
+    }
+
+    public static function canUseAnyPermission(array $permissions): bool
     {
         try {
             $user = auth()->user();
 
             return $user !== null
-                && ($user->hasRole('super_admin') || $user->can($permission));
+                && ($user->hasRole('super_admin') || collect($permissions)->contains(fn (string $permission): bool => $user->can($permission)));
         } catch (Throwable) {
             return false;
         }

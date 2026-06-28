@@ -17,6 +17,7 @@ class AdminRoles
         'pickup_operator' => 'Оператор самовывоза',
         'content_manager' => 'Контент-менеджер',
         'accountant' => 'Бухгалтер',
+        'hr' => 'HR',
     ];
 
     private const DESCRIPTIONS = [
@@ -28,6 +29,7 @@ class AdminRoles
         'pickup_operator' => 'Выдача заказов со склада.',
         'content_manager' => 'Каталог, товары и сертификаты.',
         'accountant' => 'Оплаты и финансовые операции.',
+        'hr' => 'Сотрудники, HR-данные и кадровые процессы.',
     ];
 
     private const COLORS = [
@@ -39,6 +41,7 @@ class AdminRoles
         'pickup_operator' => 'purple',
         'content_manager' => 'gray',
         'accountant' => 'emerald',
+        'hr' => 'pink',
     ];
 
     public static function label(string $role): string
@@ -62,6 +65,7 @@ class AdminRoles
             'pickup_operator' => Heroicon::OutlinedBuildingStorefront,
             'content_manager' => Heroicon::OutlinedSquares2x2,
             'accountant' => Heroicon::OutlinedBanknotes,
+            'hr' => Heroicon::OutlinedUserGroup,
             default => Heroicon::OutlinedUser,
         };
     }

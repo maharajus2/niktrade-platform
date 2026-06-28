@@ -19,7 +19,7 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('roles'))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'manager']))
             ->columns([
                 ImageColumn::make('avatar_path')
                     ->label('Фото')
@@ -39,27 +39,29 @@ class UsersTable
                     ->color(fn (string $state): string => AdminRoles::color($state))
                     ->separator(', '),
 
-                TextColumn::make('employee_status')
+                TextColumn::make('employment_status')
                     ->label('Статус')
                     ->badge()
-                    ->formatStateUsing(fn (?string $state): string => User::employeeStatusOptions()[$state] ?? 'Не указан')
-                    ->color(fn (?string $state): string => User::employeeStatusColor($state))
+                    ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentStatusLabel())
+                    ->color(fn (?string $state, User $record): string => User::employeeStatusColor($record->employment_status ?? $record->employee_status))
                     ->sortable(),
 
-                TextColumn::make('phone')
-                    ->label('Телефон')
-                    ->searchable()
-                    ->placeholder('—'),
+                TextColumn::make('employment_type')
+                    ->label('Тип')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentTypeLabel())
+                    ->color('gray')
+                    ->sortable(),
+
+                TextColumn::make('manager.name')
+                    ->label('Руководитель')
+                    ->placeholder('—')
+                    ->searchable(),
 
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('last_login_at')
-                    ->label('Последний вход')
-                    ->dateTime('d.m.Y H:i')
-                    ->placeholder('Будет доступно позже'),
 
                 TextColumn::make('created_at')
                     ->label('Создан')
@@ -75,8 +77,20 @@ class UsersTable
                     ->default(false)
                     ->queries(
                         true: fn (Builder $query): Builder => $query,
-                        false: fn (Builder $query): Builder => $query->whereNull('archived_at'),
-                        blank: fn (Builder $query): Builder => $query->whereNull('archived_at'),
+                        false: fn (Builder $query): Builder => $query
+                            ->whereNull('archived_at')
+                            ->where(function (Builder $query): void {
+                                $query
+                                    ->whereNull('employment_status')
+                                    ->orWhere('employment_status', '!=', User::STATUS_ARCHIVED);
+                            }),
+                        blank: fn (Builder $query): Builder => $query
+                            ->whereNull('archived_at')
+                            ->where(function (Builder $query): void {
+                                $query
+                                    ->whereNull('employment_status')
+                                    ->orWhere('employment_status', '!=', User::STATUS_ARCHIVED);
+                            }),
                     ),
             ])
             ->recordActions([

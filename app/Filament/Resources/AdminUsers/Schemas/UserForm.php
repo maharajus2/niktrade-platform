@@ -119,6 +119,40 @@ class UserForm
                     ->columns(2)
                     ->columnSpanFull(),
 
+                Section::make('Гражданство и миграционный статус')
+                    ->visible(fn (): bool => UserResource::canUpdateHrProfile())
+                    ->schema([
+                        Select::make('citizenship_type')
+                            ->label('Гражданство')
+                            ->options(User::citizenshipTypeOptions())
+                            ->default(User::CITIZENSHIP_RUSSIAN)
+                            ->required()
+                            ->live(),
+
+                        TextInput::make('citizenship_country')
+                            ->label('Страна гражданства')
+                            ->maxLength(255)
+                            ->visible(fn (callable $get): bool => $get('citizenship_type') !== User::CITIZENSHIP_RUSSIAN),
+
+                        TextInput::make('arrival_country')
+                            ->label('Страна прибытия')
+                            ->maxLength(255)
+                            ->visible(fn (callable $get): bool => $get('citizenship_type') !== User::CITIZENSHIP_RUSSIAN),
+
+                        DatePicker::make('arrived_at')
+                            ->label('Дата прибытия в РФ')
+                            ->native(false)
+                            ->visible(fn (callable $get): bool => $get('citizenship_type') !== User::CITIZENSHIP_RUSSIAN),
+
+                        Select::make('foreign_legal_status')
+                            ->label('Миграционный статус')
+                            ->options(User::foreignLegalStatusOptions())
+                            ->nullable()
+                            ->visible(fn (callable $get): bool => $get('citizenship_type') !== User::CITIZENSHIP_RUSSIAN),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
                 Section::make('Испытательный срок')
                     ->visible(fn (): bool => UserResource::canManageProbation())
                     ->headerActions([
@@ -185,6 +219,14 @@ class UserForm
                             ->maxLength(3),
                     ])
                     ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('Контроль документов')
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('document_control_placeholder')
+                            ->hiddenLabel()
+                            ->state('Контроль сроков документов будет доступен после подключения модуля документов.'),
+                    ])
                     ->columnSpanFull(),
             ]);
     }

@@ -37,6 +37,11 @@ use Spatie\Permission\Traits\HasRoles;
     'salary_amount',
     'salary_currency',
     'schedule_type',
+    'citizenship_type',
+    'citizenship_country',
+    'arrival_country',
+    'arrived_at',
+    'foreign_legal_status',
     'archived_at',
     'last_login_at',
 ])]
@@ -75,6 +80,26 @@ class User extends Authenticatable
     public const SCHEDULE_FLEXIBLE = 'flexible';
 
     public const SCHEDULE_INDIVIDUAL = 'individual';
+
+    public const CITIZENSHIP_RUSSIAN = 'russian';
+
+    public const CITIZENSHIP_FOREIGN = 'foreign';
+
+    public const CITIZENSHIP_STATELESS = 'stateless';
+
+    public const FOREIGN_STATUS_EAEU = 'eaeu';
+
+    public const FOREIGN_STATUS_PATENT = 'patent';
+
+    public const FOREIGN_STATUS_WORK_PERMIT = 'work_permit';
+
+    public const FOREIGN_STATUS_TEMPORARY_RESIDENCE = 'temporary_residence';
+
+    public const FOREIGN_STATUS_RESIDENCE_PERMIT = 'residence_permit';
+
+    public const FOREIGN_STATUS_VISA = 'visa';
+
+    public const FOREIGN_STATUS_OTHER = 'other';
 
     protected string $guard_name = 'web';
 
@@ -123,6 +148,28 @@ class User extends Authenticatable
         ];
     }
 
+    public static function citizenshipTypeOptions(): array
+    {
+        return [
+            self::CITIZENSHIP_RUSSIAN => 'Гражданин РФ',
+            self::CITIZENSHIP_FOREIGN => 'Иностранный гражданин',
+            self::CITIZENSHIP_STATELESS => 'Лицо без гражданства',
+        ];
+    }
+
+    public static function foreignLegalStatusOptions(): array
+    {
+        return [
+            self::FOREIGN_STATUS_EAEU => 'ЕАЭС',
+            self::FOREIGN_STATUS_PATENT => 'Патент',
+            self::FOREIGN_STATUS_WORK_PERMIT => 'Разрешение на работу',
+            self::FOREIGN_STATUS_TEMPORARY_RESIDENCE => 'РВП',
+            self::FOREIGN_STATUS_RESIDENCE_PERMIT => 'ВНЖ',
+            self::FOREIGN_STATUS_VISA => 'Виза',
+            self::FOREIGN_STATUS_OTHER => 'Другое',
+        ];
+    }
+
     public function manager(): BelongsTo
     {
         return $this->belongsTo(self::class, 'manager_id');
@@ -151,6 +198,24 @@ class User extends Authenticatable
     public function getScheduleTypeLabel(): string
     {
         return self::scheduleTypeOptions()[$this->schedule_type] ?? 'Не указан';
+    }
+
+    public function getCitizenshipTypeLabel(): string
+    {
+        return self::citizenshipTypeOptions()[$this->citizenship_type] ?? 'Гражданин РФ';
+    }
+
+    public function getForeignLegalStatusLabel(): string
+    {
+        return self::foreignLegalStatusOptions()[$this->foreign_legal_status] ?? 'Не указан';
+    }
+
+    public function requiresMigrationProfile(): bool
+    {
+        return in_array($this->citizenship_type, [
+            self::CITIZENSHIP_FOREIGN,
+            self::CITIZENSHIP_STATELESS,
+        ], true);
     }
 
     public function getTenureLabel(): string
@@ -226,6 +291,7 @@ class User extends Authenticatable
             'probation_ends_at' => 'date',
             'probation_cancelled_at' => 'datetime',
             'salary_amount' => 'decimal:2',
+            'arrived_at' => 'date',
             'archived_at' => 'datetime',
             'last_login_at' => 'datetime',
         ];

@@ -130,6 +130,39 @@ class UserResource extends Resource
                     ->columns(3)
                     ->columnSpanFull(),
 
+                Section::make('Гражданство и миграционный статус')
+                    ->visible(fn (User $record): bool => static::canViewCitizenshipProfile($record))
+                    ->schema([
+                        TextEntry::make('citizenship_type')
+                            ->label('Гражданство')
+                            ->badge()
+                            ->formatStateUsing(fn (?string $state, User $record): string => $record->getCitizenshipTypeLabel()),
+
+                        TextEntry::make('citizenship_country')
+                            ->label('Страна гражданства')
+                            ->placeholder('—')
+                            ->visible(fn (User $record): bool => $record->requiresMigrationProfile()),
+
+                        TextEntry::make('arrival_country')
+                            ->label('Страна прибытия')
+                            ->placeholder('—')
+                            ->visible(fn (User $record): bool => $record->requiresMigrationProfile()),
+
+                        TextEntry::make('arrived_at')
+                            ->label('Дата прибытия в РФ')
+                            ->date('d.m.Y')
+                            ->placeholder('—')
+                            ->visible(fn (User $record): bool => $record->requiresMigrationProfile()),
+
+                        TextEntry::make('foreign_legal_status')
+                            ->label('Миграционный статус')
+                            ->badge()
+                            ->formatStateUsing(fn (?string $state, User $record): string => $record->getForeignLegalStatusLabel())
+                            ->visible(fn (User $record): bool => $record->requiresMigrationProfile()),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
+
                 Section::make('Испытательный срок')
                     ->visible(fn (): bool => static::canManageProbation())
                     ->schema([
@@ -169,6 +202,15 @@ class UserResource extends Resource
                             ->placeholder('RUB'),
                     ])
                     ->columns(2)
+                    ->columnSpanFull(),
+
+                Section::make('Контроль документов')
+                    ->visible(fn (User $record): bool => static::canViewCitizenshipProfile($record))
+                    ->schema([
+                        TextEntry::make('document_control_placeholder')
+                            ->hiddenLabel()
+                            ->state('Контроль сроков документов будет доступен после подключения модуля документов.'),
+                    ])
                     ->columnSpanFull(),
             ]);
     }
@@ -211,6 +253,17 @@ class UserResource extends Resource
     public static function canUpdateHrProfile(): bool
     {
         return static::canUseAdminPermission('employees.hr.update');
+    }
+
+    public static function canViewCitizenshipProfile(User $record): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        return $record->is($user) || static::canUseAnyPermission(['employees.hr.view', 'employees.hr.update']);
     }
 
     public static function canManageProbation(): bool

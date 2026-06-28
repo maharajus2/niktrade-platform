@@ -6,10 +6,12 @@ use App\Filament\Resources\AdminUsers\Pages\CreateUser;
 use App\Filament\Resources\AdminUsers\Pages\EditUser;
 use App\Filament\Resources\AdminUsers\Pages\ListUsers;
 use App\Filament\Resources\AdminUsers\Pages\ViewUser;
+use App\Filament\Resources\AdminUsers\RelationManagers\EmployeeDocumentsRelationManager;
 use App\Filament\Resources\AdminUsers\Schemas\UserForm;
 use App\Filament\Resources\AdminUsers\Tables\UsersTable;
 use App\Models\User;
 use App\Support\AdminRoles;
+use App\Support\EmployeeRequiredDocuments;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
@@ -217,11 +219,11 @@ class UserResource extends Resource
                     ->columnSpanFull(),
 
                 Section::make('Контроль документов')
-                    ->visible(fn (User $record): bool => static::canViewCitizenshipProfile($record))
+                    ->visible(fn (User $record): bool => static::canViewEmployeeDocuments($record))
                     ->schema([
                         TextEntry::make('document_control_placeholder')
                             ->hiddenLabel()
-                            ->state('Контроль сроков документов будет доступен после подключения модуля документов.'),
+                            ->state(fn (User $record): string => static::documentSummaryText($record)),
                     ])
                     ->columnSpanFull(),
             ]);
@@ -278,6 +280,49 @@ class UserResource extends Resource
         return $record->is($user) || static::canUseAnyPermission(['employees.hr.view', 'employees.hr.update']);
     }
 
+    public static function canViewEmployeeDocuments(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.view')) {
+            return true;
+        }
+
+        if ($record === null) {
+            return false;
+        }
+
+        return $record->is($user) || (int) $record->manager_id === (int) $user->getKey();
+    }
+
+    public static function canUploadEmployeeDocuments(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.upload'));
+    }
+
+    public static function canArchiveEmployeeDocuments(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.archive'));
+    }
+
+    public static function canDeleteEmployeeDocuments(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && ($user->hasRole('super_admin') || $user->can('employees.documents.delete'));
+    }
+
     public static function canManageProbation(): bool
     {
         return static::canUseAdminPermission('employees.probation.manage');
@@ -312,6 +357,51 @@ class UserResource extends Resource
         return $record->canBeArchived() && static::canUseAdminPermission('employees.archive');
     }
 
+    public static function documentStatusLabel(User $record): string
+    {
+        if ($record->missingRequiredDocuments() !== []) {
+            return 'Не хватает';
+        }
+
+        $expiring = $record->expiringDocuments();
+
+        if ($expiring->contains(fn ($document): bool => $document->isExpired())) {
+            return 'Просрочены';
+        }
+
+        if ($expiring->isNotEmpty()) {
+            return 'Истекают';
+        }
+
+        return 'Документы ОК';
+    }
+
+    public static function documentStatusColor(User $record): string
+    {
+        return match (static::documentStatusLabel($record)) {
+            'Документы ОК' => 'success',
+            'Истекают' => 'warning',
+            default => 'danger',
+        };
+    }
+
+    public static function documentSummaryText(User $record): string
+    {
+        $missing = collect($record->missingRequiredDocuments())
+            ->map(fn (string $category): string => '• '.EmployeeRequiredDocuments::label($category))
+            ->implode("\n");
+
+        $expiring = $record->expiringDocuments()
+            ->map(fn ($document): string => '• '.$document->getCategoryLabel().' — '.$document->getExpirationLabel())
+            ->implode("\n");
+
+        return implode("\n\n", array_filter([
+            'Комплектность: '.$record->documentCompletenessPercent().'%',
+            $missing === '' ? 'Не хватает: нет' : "Не хватает:\n".$missing,
+            $expiring === '' ? 'Истекают скоро: нет' : "Истекают скоро:\n".$expiring,
+        ]));
+    }
+
     public static function archiveAction(): Action
     {
         return Action::make('archive')
@@ -344,6 +434,13 @@ class UserResource extends Resource
             'create' => CreateUser::route('/create'),
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            EmployeeDocumentsRelationManager::class,
         ];
     }
 

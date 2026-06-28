@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use App\Support\EmployeeRequiredDocuments;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -186,6 +187,18 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(EmployeeDocument::class, 'employee_id');
+    }
+
+    public function activeDocuments(): HasMany
+    {
+        return $this->documents()
+            ->whereNull('archived_at')
+            ->whereNull('replaced_by_id');
+    }
+
     public function probationCancelledBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'probation_cancelled_by');
@@ -201,6 +214,38 @@ class User extends Authenticatable
     public function getEmploymentTypeLabel(): string
     {
         return self::employmentTypeOptions()[$this->employment_type] ?? 'Не указан';
+    }
+
+    public function missingRequiredDocuments(): array
+    {
+        return EmployeeRequiredDocuments::missingFor($this);
+    }
+
+    public function hasRequiredDocuments(): bool
+    {
+        return EmployeeRequiredDocuments::isComplete($this);
+    }
+
+    public function documentCompletenessPercent(): int
+    {
+        $required = EmployeeRequiredDocuments::requiredFor($this);
+
+        if ($required === []) {
+            return 100;
+        }
+
+        $missing = $this->missingRequiredDocuments();
+
+        return (int) round(((count($required) - count($missing)) / count($required)) * 100);
+    }
+
+    public function expiringDocuments(int $days = 30)
+    {
+        return $this->activeDocuments()
+            ->whereNotNull('expires_at')
+            ->whereDate('expires_at', '<=', today()->addDays($days))
+            ->orderBy('expires_at')
+            ->get();
     }
 
     public function getEmploymentStatusLabel(): string

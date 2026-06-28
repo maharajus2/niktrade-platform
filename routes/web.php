@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Admin\EmployeeDocumentDownloadController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerAccountController;
@@ -27,6 +28,11 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::post('/telegram/webhook', [TelegramBotController::class, 'webhook'])->name('telegram.webhook');
 Route::get('/logout', fn () => redirect()->route('catalog.index'));
+
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/employees/{employee}/documents/{document}/download', EmployeeDocumentDownloadController::class)
+        ->name('admin.employee-documents.download');
+});
 
 Route::middleware('guest:customer')->group(function () {
     Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');

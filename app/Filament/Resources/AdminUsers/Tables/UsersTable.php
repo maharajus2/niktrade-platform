@@ -63,6 +63,14 @@ class UsersTable
                     ->placeholder('—')
                     ->searchable(),
 
+                TextColumn::make('documents_status')
+                    ->label('Документы')
+                    ->badge()
+                    ->state(fn (User $record): string => UserResource::documentStatusLabel($record))
+                    ->color(fn (User $record): string => UserResource::documentStatusColor($record))
+                    ->visible(fn (): bool => UserResource::canViewEmployeeDocuments())
+                    ->toggleable(),
+
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable()

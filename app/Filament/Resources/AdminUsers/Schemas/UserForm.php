@@ -235,10 +235,11 @@ class UserForm
                     ->columnSpanFull(),
 
                 Section::make('Контроль документов')
+                    ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeDocuments($record))
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('document_control_placeholder')
                             ->hiddenLabel()
-                            ->state('Контроль сроков документов будет доступен после подключения модуля документов.'),
+                            ->state(fn (User $record): string => UserResource::documentSummaryText($record)),
                     ])
                     ->columnSpanFull(),
             ]);

@@ -19,7 +19,7 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'manager']))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'manager', 'department']))
             ->columns([
                 ImageColumn::make('avatar_path')
                     ->label('Фото')
@@ -55,6 +55,11 @@ class UsersTable
 
                 TextColumn::make('manager.name')
                     ->label('Руководитель')
+                    ->placeholder('—')
+                    ->searchable(),
+
+                TextColumn::make('department.name')
+                    ->label('Отдел')
                     ->placeholder('—')
                     ->searchable(),
 

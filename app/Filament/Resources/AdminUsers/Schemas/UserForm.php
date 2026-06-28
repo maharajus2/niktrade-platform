@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AdminUsers\Schemas;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Models\Department;
 use App\Models\User;
 use App\Support\AdminRoles;
 use Filament\Actions\Action;
@@ -15,6 +16,7 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Role;
 
 class UserForm
@@ -80,6 +82,17 @@ class UserForm
                         Select::make('manager_id')
                             ->label('Руководитель')
                             ->relationship('manager', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
+
+                        Select::make('department_id')
+                            ->label('Отдел')
+                            ->relationship('department', 'name', modifyQueryUsing: fn (Builder $query): Builder => $query
+                                ->where('is_active', true)
+                                ->orderBy('sort_order')
+                                ->orderBy('name'))
+                            ->getOptionLabelFromRecordUsing(fn (Department $record): string => $record->name)
                             ->searchable()
                             ->preload()
                             ->nullable(),

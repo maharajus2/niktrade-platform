@@ -27,6 +27,7 @@ use Spatie\Permission\Traits\HasRoles;
     'employee_status',
     'employment_status',
     'manager_id',
+    'department_id',
     'hire_date',
     'dismissal_date',
     'probation_enabled',
@@ -180,9 +181,21 @@ class User extends Authenticatable
         return $this->hasMany(self::class, 'manager_id');
     }
 
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
     public function probationCancelledBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'probation_cancelled_by');
+    }
+
+    public function getEffectiveManager(): ?self
+    {
+        return $this->manager
+            ?: $this->department?->actingManager
+            ?: $this->department?->manager;
     }
 
     public function getEmploymentTypeLabel(): string

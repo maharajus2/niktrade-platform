@@ -90,6 +90,18 @@ class UserResource extends Resource
                         TextEntry::make('manager.name')
                             ->label('Руководитель')
                             ->placeholder('—'),
+
+                        TextEntry::make('department.name')
+                            ->label('Отдел')
+                            ->placeholder('—'),
+
+                        TextEntry::make('department.manager.name')
+                            ->label('Руководитель отдела')
+                            ->placeholder('—'),
+
+                        TextEntry::make('department.actingManager.name')
+                            ->label('ВРиО руководителя')
+                            ->placeholder('—'),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

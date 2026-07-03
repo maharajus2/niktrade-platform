@@ -1,5 +1,7 @@
 <x-filament-widgets::widget>
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    @include('filament.widgets.hr.partials.styles')
+
+    <div class="nt-hr-dashboard grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         @foreach ($cards as $card)
             @php
                 $classes = match ($card['color']) {

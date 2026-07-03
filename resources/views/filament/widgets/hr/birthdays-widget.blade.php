@@ -1,5 +1,7 @@
 <x-filament-widgets::widget>
-    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    @include('filament.widgets.hr.partials.styles')
+
+    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div>
             <h2 class="text-base font-semibold text-gray-950 dark:text-white">Дни рождения</h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Сегодня, неделя и ближайший месяц.</p>

@@ -1,5 +1,7 @@
 <x-filament-widgets::widget>
-    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    @include('filament.widgets.hr.partials.styles')
+
+    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h2 class="text-base font-semibold text-gray-950 dark:text-white">Быстрые действия</h2>

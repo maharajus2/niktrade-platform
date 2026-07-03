@@ -4,6 +4,8 @@ namespace App\Filament\Resources\EmployeeScheduleRequests\Pages;
 
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use App\Models\EmployeeScheduleRequest;
+use App\Models\User;
+use App\Services\Approvals\ApprovalWorkflowService;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Filament\Notifications\Notification;
@@ -22,6 +24,8 @@ class CreateEmployeeScheduleRequest extends CreateRecord
     {
         if (
             Schema::hasTable('employee_schedule_requests')
+            && Schema::hasTable('approval_workflows')
+            && Schema::hasTable('approval_workflow_events')
             && Schema::hasColumn('employee_schedule_requests', 'request_reason_type')
             && Schema::hasColumn('employee_schedule_requests', 'vacation_without_pay')
         ) {
@@ -89,6 +93,21 @@ class CreateEmployeeScheduleRequest extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    protected function afterCreate(): void
+    {
+        $actor = auth()->user();
+
+        if (! $actor instanceof User) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->start(
+            approvable: $this->record,
+            actor: $actor,
+            initialApprover: $this->record->employee?->getEffectiveManager(),
+        );
     }
 
     protected function getCreatedNotificationTitle(): ?string

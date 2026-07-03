@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasApprovalWorkflow;
+use App\Services\Approvals\ApprovalWorkflowService;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +31,8 @@ use Illuminate\Support\Carbon;
 ])]
 class EmployeeScheduleRequest extends Model
 {
+    use HasApprovalWorkflow;
+
     public const TYPE_DAY_OFF = 'day_off_request';
 
     public const TYPE_SHIFT = 'shift_request';
@@ -41,9 +45,15 @@ class EmployeeScheduleRequest extends Model
 
     public const STATUS_PENDING = 'pending';
 
+    public const STATUS_IN_REVIEW = 'in_review';
+
+    public const STATUS_FORWARDED = 'forwarded';
+
     public const STATUS_APPROVED = 'approved';
 
     public const STATUS_REJECTED = 'rejected';
+
+    public const STATUS_RETURNED = 'returned';
 
     public const STATUS_CANCELLED = 'cancelled';
 
@@ -65,10 +75,13 @@ class EmployeeScheduleRequest extends Model
     public static function statusOptions(): array
     {
         return [
-            self::STATUS_PENDING => 'Ожидает решения',
-            self::STATUS_APPROVED => 'Одобрена',
-            self::STATUS_REJECTED => 'Отклонена',
-            self::STATUS_CANCELLED => 'Отменена',
+            self::STATUS_PENDING => 'Ожидает рассмотрения',
+            self::STATUS_IN_REVIEW => 'На рассмотрении',
+            self::STATUS_FORWARDED => 'Передано на согласование',
+            self::STATUS_APPROVED => 'Одобрено',
+            self::STATUS_REJECTED => 'Отклонено',
+            self::STATUS_RETURNED => 'Возвращено сотруднику',
+            self::STATUS_CANCELLED => 'Отменено',
         ];
     }
 
@@ -123,6 +136,9 @@ class EmployeeScheduleRequest extends Model
         return match ($this->status) {
             self::STATUS_APPROVED => 'success',
             self::STATUS_REJECTED => 'danger',
+            self::STATUS_RETURNED => 'warning',
+            self::STATUS_FORWARDED,
+            self::STATUS_IN_REVIEW => 'info',
             self::STATUS_CANCELLED => 'gray',
             default => 'warning',
         };
@@ -143,31 +159,30 @@ class EmployeeScheduleRequest extends Model
 
     public function canBeReviewed(): bool
     {
-        return $this->isPending();
+        return in_array($this->status, [
+            self::STATUS_PENDING,
+            self::STATUS_IN_REVIEW,
+            self::STATUS_FORWARDED,
+        ], true);
     }
 
     public function canBeCancelled(): bool
     {
-        return $this->isPending();
+        return in_array($this->status, [
+            self::STATUS_PENDING,
+            self::STATUS_IN_REVIEW,
+            self::STATUS_FORWARDED,
+            self::STATUS_RETURNED,
+        ], true);
     }
 
-    public function approve(User $reviewer, ?string $comment = null): int
+    public function approve(User $reviewer, string $comment): int
     {
         if (! $this->canBeReviewed()) {
             return 0;
         }
 
-        $created = $this->createScheduleEntries($reviewer);
-
-        $this->update([
-            'status' => self::STATUS_APPROVED,
-            'manager_comment' => $comment,
-            'reviewed_by' => $reviewer->getKey(),
-            'reviewed_at' => now(),
-            'created_schedule_entries_count' => $created,
-        ]);
-
-        return $created;
+        return app(ApprovalWorkflowService::class)->approveFinally($this, $reviewer, $comment);
     }
 
     public function reject(User $reviewer, string $comment): void
@@ -176,12 +191,25 @@ class EmployeeScheduleRequest extends Model
             return;
         }
 
-        $this->update([
-            'status' => self::STATUS_REJECTED,
-            'manager_comment' => $comment,
-            'reviewed_by' => $reviewer->getKey(),
-            'reviewed_at' => now(),
-        ]);
+        app(ApprovalWorkflowService::class)->reject($this, $reviewer, $comment);
+    }
+
+    public function returnToRequester(User $reviewer, string $comment): void
+    {
+        if (! $this->canBeReviewed()) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->returnToRequester($this, $reviewer, $comment);
+    }
+
+    public function forwardTo(User $reviewer, User $nextApprover, string $comment): void
+    {
+        if (! $this->canBeReviewed()) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->forward($this, $reviewer, $nextApprover, $comment);
     }
 
     public function cancel(User $reviewer, ?string $comment = null): void
@@ -190,12 +218,7 @@ class EmployeeScheduleRequest extends Model
             return;
         }
 
-        $this->update([
-            'status' => self::STATUS_CANCELLED,
-            'manager_comment' => $comment,
-            'reviewed_by' => $reviewer->getKey(),
-            'reviewed_at' => now(),
-        ]);
+        app(ApprovalWorkflowService::class)->cancel($this, $reviewer, $comment);
     }
 
     public function calendarEntryType(): string
@@ -218,8 +241,20 @@ class EmployeeScheduleRequest extends Model
         return $query->where(function (Builder $query) use ($user): void {
             $query
                 ->where('employee_id', $user->getKey())
+                ->orWhereHas('approvalWorkflow', fn (Builder $query): Builder => $query->where('current_approver_id', $user->getKey()))
                 ->orWhereHas('employee', fn (Builder $query): Builder => $query->where('manager_id', $user->getKey()));
         });
+    }
+
+    public function handleApprovalWorkflowApproved(User $reviewer, ?string $comment = null): int
+    {
+        $created = $this->createScheduleEntries($reviewer);
+
+        $this->forceFill([
+            'created_schedule_entries_count' => $created,
+        ])->save();
+
+        return $created;
     }
 
     private function createScheduleEntries(User $reviewer): int

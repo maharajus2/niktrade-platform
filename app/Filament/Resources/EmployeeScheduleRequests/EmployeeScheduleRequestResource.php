@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EmployeeScheduleRequests;
 
 use App\Filament\Resources\EmployeeScheduleRequests\Pages\CreateEmployeeScheduleRequest;
 use App\Filament\Resources\EmployeeScheduleRequests\Pages\ListEmployeeScheduleRequests;
+use App\Models\ApprovalWorkflow;
 use App\Models\Department;
 use App\Models\EmployeeScheduleRequest;
 use App\Models\User;
@@ -144,7 +145,12 @@ class EmployeeScheduleRequestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['employee.department', 'requestedBy', 'reviewedBy']))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
+                'employee.department',
+                'requestedBy',
+                'reviewedBy',
+                'approvalWorkflow.currentApprover.roles',
+            ]))
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('employee.name')
@@ -178,6 +184,11 @@ class EmployeeScheduleRequestResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (?string $state, EmployeeScheduleRequest $record): string => $record->getStatusLabel())
                     ->color(fn (EmployeeScheduleRequest $record): string => $record->getStatusColor()),
+
+                TextColumn::make('approvalWorkflow.currentApprover.name')
+                    ->label('Согласующий')
+                    ->placeholder('—')
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('Создана')
@@ -218,25 +229,110 @@ class EmployeeScheduleRequestResource extends Resource
                     ->relationship('employee', 'name')
                     ->searchable()
                     ->preload(),
+
+                SelectFilter::make('approval_queue')
+                    ->label('Очередь')
+                    ->options([
+                        'my_decision' => 'Требуют моего решения',
+                        'hr_decision' => 'Требуют решения HR',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        $value = $data['value'] ?? null;
+
+                        if ($value === 'my_decision' && auth()->id()) {
+                            return $query
+                                ->whereIn('status', [
+                                    EmployeeScheduleRequest::STATUS_PENDING,
+                                    EmployeeScheduleRequest::STATUS_IN_REVIEW,
+                                    EmployeeScheduleRequest::STATUS_FORWARDED,
+                                ])
+                                ->whereHas('approvalWorkflow', fn (Builder $query): Builder => $query->where('current_approver_id', auth()->id()));
+                        }
+
+                        if ($value === 'hr_decision') {
+                            return $query
+                                ->whereIn('status', [
+                                    EmployeeScheduleRequest::STATUS_PENDING,
+                                    EmployeeScheduleRequest::STATUS_IN_REVIEW,
+                                    EmployeeScheduleRequest::STATUS_FORWARDED,
+                                ])
+                                ->whereHas('approvalWorkflow.currentApprover.roles', fn (Builder $query): Builder => $query->where('name', 'hr'));
+                        }
+
+                        return $query;
+                    }),
             ])
             ->recordActions([
                 Action::make('approve')
-                    ->label('Одобрить')
+                    ->label('Одобрить окончательно')
                     ->icon(Heroicon::OutlinedCheckCircle)
                     ->color('success')
                     ->visible(fn (EmployeeScheduleRequest $record): bool => static::canApprove($record))
                     ->form([
                         Textarea::make('manager_comment')
                             ->label('Комментарий')
+                            ->required()
                             ->rows(3),
                     ])
                     ->action(function (array $data, EmployeeScheduleRequest $record): void {
                         /** @var User $reviewer */
                         $reviewer = auth()->user();
-                        $created = $record->approve($reviewer, $data['manager_comment'] ?? null);
+                        $created = $record->approve($reviewer, (string) $data['manager_comment']);
 
                         Notification::make()
                             ->title("Заявка одобрена. Создано событий: {$created}.")
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('forward')
+                    ->label('Передать')
+                    ->icon(Heroicon::OutlinedArrowRight)
+                    ->color('info')
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canApprove($record))
+                    ->form([
+                        Select::make('next_approver_id')
+                            ->label('Следующий согласующий')
+                            ->options(fn (): array => User::query()->orderBy('name')->pluck('name', 'id')->all())
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+                        Textarea::make('manager_comment')
+                            ->label('Комментарий')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->action(function (array $data, EmployeeScheduleRequest $record): void {
+                        /** @var User $reviewer */
+                        $reviewer = auth()->user();
+                        $nextApprover = User::query()->findOrFail($data['next_approver_id']);
+
+                        $record->forwardTo($reviewer, $nextApprover, (string) $data['manager_comment']);
+
+                        Notification::make()
+                            ->title('Заявка передана на согласование.')
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('return')
+                    ->label('Вернуть')
+                    ->icon(Heroicon::OutlinedArrowUturnLeft)
+                    ->color('warning')
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canApprove($record))
+                    ->form([
+                        Textarea::make('manager_comment')
+                            ->label('Комментарий')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->action(function (array $data, EmployeeScheduleRequest $record): void {
+                        /** @var User $reviewer */
+                        $reviewer = auth()->user();
+                        $record->returnToRequester($reviewer, (string) $data['manager_comment']);
+
+                        Notification::make()
+                            ->title('Заявка возвращена сотруднику.')
                             ->success()
                             ->send();
                     }),
@@ -352,6 +448,15 @@ class EmployeeScheduleRequestResource extends Resource
             return false;
         }
 
+        $workflow = $record->approvalWorkflow;
+
+        if ($workflow instanceof ApprovalWorkflow && $workflow->current_approver_id !== null) {
+            return (int) $workflow->current_approver_id === (int) $user->getKey()
+                || $user->hasRole('super_admin')
+                || $user->hasRole('hr')
+                || $user->can('employees.schedule_requests.approve');
+        }
+
         return $user->hasRole('super_admin')
             || $user->hasRole('hr')
             || $user->can('employees.schedule_requests.approve')
@@ -367,6 +472,11 @@ class EmployeeScheduleRequestResource extends Resource
                 $user->hasRole('super_admin')
                 || $user->hasRole('hr')
                 || $user->can('employees.schedule_requests.approve')
+                || $user->assignedApprovalWorkflows()->whereIn('status', [
+                    ApprovalWorkflow::STATUS_PENDING,
+                    ApprovalWorkflow::STATUS_IN_REVIEW,
+                    ApprovalWorkflow::STATUS_FORWARDED,
+                ])->exists()
                 || $user->directReports()->exists()
             );
     }

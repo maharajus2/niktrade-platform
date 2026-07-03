@@ -203,6 +203,11 @@ class User extends Authenticatable
         return $this->hasMany(EmployeeScheduleRequest::class, 'employee_id');
     }
 
+    public function assignedApprovalWorkflows(): HasMany
+    {
+        return $this->hasMany(ApprovalWorkflow::class, 'current_approver_id');
+    }
+
     public function futureScheduleEntries(): HasMany
     {
         return $this->scheduleEntries()

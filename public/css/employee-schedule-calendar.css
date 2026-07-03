@@ -1,0 +1,68 @@
+.nt-fullcalendar .fc {
+    --fc-border-color: rgb(229 231 235);
+    --fc-button-bg-color: rgb(2 132 199);
+    --fc-button-border-color: rgb(2 132 199);
+    --fc-button-hover-bg-color: rgb(3 105 161);
+    --fc-button-hover-border-color: rgb(3 105 161);
+    --fc-button-active-bg-color: rgb(3 105 161);
+    --fc-button-active-border-color: rgb(3 105 161);
+    color: rgb(17 24 39);
+    font-size: 0.875rem;
+}
+
+.dark .nt-fullcalendar .fc {
+    --fc-border-color: rgb(55 65 81);
+    color: rgb(243 244 246);
+}
+
+.nt-fullcalendar .fc-toolbar {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.nt-fullcalendar .fc-toolbar-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.nt-fullcalendar .fc-event {
+    border-radius: 0.5rem;
+    border: 1px solid rgb(16 185 129);
+    background: rgb(209 250 229);
+    color: rgb(6 78 59);
+    padding: 0.125rem 0.25rem;
+}
+
+.nt-fullcalendar .nt-schedule-event-past {
+    border-color: rgb(209 213 219);
+    background: rgb(243 244 246);
+    color: rgb(107 114 128);
+}
+
+.dark .nt-fullcalendar .fc-event {
+    border-color: rgb(16 185 129 / 0.45);
+    background: rgb(16 185 129 / 0.16);
+    color: rgb(209 250 229);
+}
+
+.dark .nt-fullcalendar .nt-schedule-event-past {
+    border-color: rgb(75 85 99);
+    background: rgb(31 41 55);
+    color: rgb(156 163 175);
+}
+
+@media (max-width: 768px) {
+    .nt-fullcalendar {
+        min-height: 620px;
+    }
+
+    .nt-fullcalendar .fc-header-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .nt-fullcalendar .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+    }
+}

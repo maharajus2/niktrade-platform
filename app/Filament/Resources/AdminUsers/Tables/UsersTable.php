@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AdminUsers\Tables;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Resources\Departments\DepartmentResource;
 use App\Models\User;
 use App\Support\AdminRoles;
 use Filament\Actions\EditAction;
@@ -10,8 +11,11 @@ use Filament\Actions\ViewAction;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -20,7 +24,31 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'manager', 'department']))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query
+                ->select('users.*')
+                ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
+                ->with(['roles', 'manager', 'department'])
+                ->orderByRaw('departments.name asc nulls last')
+                ->orderByRaw('case when users.id = departments.manager_id then 0 when users.id = departments.acting_manager_id then 1 else 2 end')
+                ->orderBy('users.name'))
+            ->groups([
+                Group::make('department_id')
+                    ->label('Отдел')
+                    ->getTitleFromRecordUsing(fn (User $record): string => $record->department?->name ?? 'Без отдела')
+                    ->getKeyFromRecordUsing(fn (User $record): string => $record->department_id ? (string) $record->department_id : 'none')
+                    ->scopeQueryByKeyUsing(function (Builder $query, ?string $key): Builder {
+                        return $key === 'none'
+                            ? $query->whereNull('users.department_id')
+                            : $query->where('users.department_id', $key);
+                    })
+                    ->orderQueryUsing(fn (Builder $query, string $direction): Builder => $query
+                        ->orderByRaw("departments.name {$direction} nulls last"))
+                    ->collapsible(),
+            ])
+            ->defaultGroup('department_id')
+            ->groupingSettingsHidden()
+            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersFormColumns(2)
             ->columns([
                 ImageColumn::make('avatar_path')
                     ->label('Фото')
@@ -60,11 +88,17 @@ class UsersTable
 
                 TextColumn::make('manager.name')
                     ->label('Руководитель')
+                    ->url(fn (User $record): ?string => $record->manager
+                        ? UserResource::getUrl('view', ['record' => $record->manager])
+                        : null)
                     ->placeholder('—')
                     ->searchable(),
 
                 TextColumn::make('department.name')
                     ->label('Отдел')
+                    ->url(fn (User $record): ?string => $record->department
+                        ? DepartmentResource::getUrl('view', ['record' => $record->department])
+                        : null)
                     ->placeholder('—')
                     ->searchable(),
 
@@ -88,12 +122,38 @@ class UsersTable
             ])
             ->filters([
                 SelectFilter::make('department_id')
-                    ->label('Все отделы')
+                    ->label('Отдел')
+                    ->placeholder('Все отделы')
                     ->relationship('department', 'name', modifyQueryUsing: fn (Builder $query): Builder => $query
+                        ->where('is_active', true)
                         ->orderBy('sort_order')
                         ->orderBy('name'))
                     ->searchable()
                     ->preload(),
+
+                Filter::make('management')
+                    ->label('Руководящий состав')
+                    ->query(fn (Builder $query): Builder => $query->where(function (Builder $query): void {
+                        $query
+                            ->whereExists(function ($query): void {
+                                $query
+                                    ->selectRaw('1')
+                                    ->from('departments as managed_departments')
+                                    ->whereColumn('managed_departments.manager_id', 'users.id');
+                            })
+                            ->orWhereExists(function ($query): void {
+                                $query
+                                    ->selectRaw('1')
+                                    ->from('departments as acting_departments')
+                                    ->whereColumn('acting_departments.acting_manager_id', 'users.id');
+                            })
+                            ->orWhereExists(function ($query): void {
+                                $query
+                                    ->selectRaw('1')
+                                    ->from('users as direct_reports')
+                                    ->whereColumn('direct_reports.manager_id', 'users.id');
+                            });
+                    })),
 
                 TernaryFilter::make('archived_at')
                     ->label('Показывать архив')

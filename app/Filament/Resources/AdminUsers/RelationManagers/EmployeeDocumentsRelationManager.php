@@ -50,11 +50,11 @@ class EmployeeDocumentsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->latest())
-            ->header(fn (): View => view('filament.admin-users.employee-documents-summary', [
-                'employee' => $this->getOwnerRecord(),
-            ]))
-            ->emptyStateHeading('Документы пока не загружены')
-            ->emptyStateDescription('Загрузите первый документ сотрудника.')
+            ->header(fn (): View => view(
+                'filament.resources.admin-users.components.employee-documents-dashboard',
+                UserResource::employeeDocumentsDashboardData($this->getOwnerRecord()),
+            ))
+            ->emptyState(view('filament.resources.admin-users.components.employee-documents-empty-state'))
             ->columns([
                 TextColumn::make('category')
                     ->label('Категория')

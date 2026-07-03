@@ -9,8 +9,10 @@ use App\Filament\Resources\AdminUsers\Pages\ViewUser;
 use App\Filament\Resources\AdminUsers\RelationManagers\EmployeeDocumentsRelationManager;
 use App\Filament\Resources\AdminUsers\Schemas\UserForm;
 use App\Filament\Resources\AdminUsers\Tables\UsersTable;
+use App\Models\EmployeeDocument;
 use App\Models\User;
 use App\Support\AdminRoles;
+use App\Support\EmployeeRequiredDocuments;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
@@ -218,9 +220,9 @@ class UserResource extends Resource
                     ->columns(2)
                     ->columnSpanFull(),
 
-                SchemaView::make('filament.admin-users.employee-documents-summary')
+                SchemaView::make('filament.resources.admin-users.components.employee-documents-dashboard')
                     ->visible(fn (User $record): bool => static::canViewEmployeeDocuments($record))
-                    ->viewData(fn (User $record): array => ['employee' => $record])
+                    ->viewData(fn (User $record): array => static::employeeDocumentsDashboardData($record))
                     ->columnSpanFull(),
             ]);
     }
@@ -379,6 +381,91 @@ class UserResource extends Resource
             'Истекают' => 'warning',
             default => 'danger',
         };
+    }
+
+    public static function employeeDocumentsDashboardData(User $record): array
+    {
+        $activeDocuments = $record->activeDocuments()->latest()->get();
+        $documentsByCategory = $activeDocuments->keyBy('category');
+        $required = EmployeeRequiredDocuments::requiredFor($record);
+        $optional = EmployeeRequiredDocuments::optionalFor($record);
+        $missing = $record->missingRequiredDocuments();
+        $expiringDocuments = $record->expiringDocuments();
+
+        $groups = [
+            'Основные' => ['passport', 'snils', 'inn', 'personal_data_consent'],
+            'Кадровые' => ['employment_record', 'employment_contract', 'education_document'],
+            'Медицинские' => ['medical_book', 'voluntary_medical_insurance'],
+            'Миграционные' => [
+                'foreign_passport',
+                'passport_translation',
+                'migration_card',
+                'migration_registration',
+                'patent',
+                'work_permit',
+                'visa',
+                'temporary_residence_permit',
+                'residence_permit',
+                'tax_payment_receipt',
+                'foreign_employment_notice',
+                'foreign_dismissal_notice',
+            ],
+            'Прочие' => ['driver_license', 'other'],
+        ];
+
+        $relevantCategories = collect([...$required, ...$optional, ...$activeDocuments->pluck('category')->all()])
+            ->unique()
+            ->values();
+
+        $checklistGroups = collect($groups)
+            ->map(fn (array $categories, string $label): array => [
+                'label' => $label,
+                'items' => collect($categories)
+                    ->filter(fn (string $category): bool => $relevantCategories->contains($category))
+                    ->map(function (string $category) use ($documentsByCategory, $required): array {
+                        /** @var EmployeeDocument|null $document */
+                        $document = $documentsByCategory->get($category);
+                        $isRequired = in_array($category, $required, true);
+
+                        return [
+                            'label' => EmployeeRequiredDocuments::label($category),
+                            'state' => match (true) {
+                                $document?->isExpired() => 'expired',
+                                $document?->expiresSoon() => 'warning',
+                                $document !== null => 'uploaded',
+                                $isRequired => 'missing',
+                                default => 'optional',
+                            },
+                            'description' => match (true) {
+                                $document?->isExpired() => $document->getExpirationLabel(),
+                                $document?->expiresSoon() => $document->getExpirationLabel(),
+                                $document !== null => 'Загружен',
+                                $isRequired => 'Не загружен',
+                                default => 'Не обязателен',
+                            },
+                        ];
+                    })
+                    ->values()
+                    ->all(),
+            ])
+            ->filter(fn (array $group): bool => $group['items'] !== [])
+            ->values()
+            ->all();
+
+        return [
+            'employee' => $record,
+            'completenessPercent' => $record->documentCompletenessPercent(),
+            'loadedCount' => $activeDocuments->count(),
+            'missingCount' => count($missing),
+            'expiringCount' => $expiringDocuments->count(),
+            'expiredCount' => $expiringDocuments->filter(fn (EmployeeDocument $document): bool => $document->isExpired())->count(),
+            'missingDocumentLabels' => collect($missing)
+                ->map(fn (string $category): string => EmployeeRequiredDocuments::label($category))
+                ->values()
+                ->all(),
+            'expiringDocuments' => $expiringDocuments,
+            'checklistGroups' => $checklistGroups,
+        ];
     }
 
     public static function archiveAction(): Action

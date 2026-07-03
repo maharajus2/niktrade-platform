@@ -235,9 +235,9 @@ class UserForm
                     ->columns(2)
                     ->columnSpanFull(),
 
-                SchemaView::make('filament.admin-users.employee-documents-summary')
+                SchemaView::make('filament.resources.admin-users.components.employee-documents-dashboard')
                     ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeDocuments($record))
-                    ->viewData(fn (User $record): array => ['employee' => $record])
+                    ->viewData(fn (User $record): array => UserResource::employeeDocumentsDashboardData($record))
                     ->columnSpanFull(),
             ]);
     }

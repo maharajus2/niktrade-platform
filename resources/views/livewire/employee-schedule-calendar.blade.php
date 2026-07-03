@@ -54,7 +54,7 @@
                         await loadAsset('link[data-nt-employee-schedule-css]', () => {
                             const link = document.createElement('link')
                             link.rel = 'stylesheet'
-                            link.href = '{{ asset('css/employee-schedule-calendar.css') }}'
+                            link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260703-events'
                             link.dataset.ntEmployeeScheduleCss = 'true'
 
                             return link
@@ -62,13 +62,16 @@
 
                         await loadAsset('script[data-nt-employee-schedule-js]', () => {
                             const script = document.createElement('script')
-                            script.src = '{{ asset('js/employee-schedule-calendar.js') }}'
+                            script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260703-events'
                             script.dataset.ntEmployeeScheduleJs = 'true'
 
                             return script
                         })
 
-                        window.niktradeEmployeeScheduleCalendar($el, $wire, { canUpdate: @js($canUpdate) })
+                        window.niktradeEmployeeScheduleCalendar($el, $wire, {
+                            canUpdate: @js($canUpdate),
+                            canEditPast: @js($canEditPast),
+                        })
                     })()
                 "
                 class="nt-fullcalendar min-h-[680px]"

@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'date',
     'starts_at',
     'ends_at',
+    'request_reason_type',
+    'vacation_without_pay',
     'comment',
     'created_by',
     'updated_by',
@@ -30,6 +32,10 @@ class EmployeeScheduleEntry extends Model
 
     public const TYPE_CUSTOM = 'custom';
 
+    public const REASON_TIME_OFF = 'time_off';
+
+    public const REASON_FAMILY = 'family';
+
     public static function typeOptions(): array
     {
         return [
@@ -38,6 +44,14 @@ class EmployeeScheduleEntry extends Model
             self::TYPE_VACATION => 'Отпуск',
             self::TYPE_SICK_LEAVE => 'Больничный',
             self::TYPE_CUSTOM => 'Другое событие',
+        ];
+    }
+
+    public static function reasonOptions(): array
+    {
+        return [
+            self::REASON_TIME_OFF => 'Отгул',
+            self::REASON_FAMILY => 'По семейным обстоятельствам',
         ];
     }
 
@@ -76,6 +90,18 @@ class EmployeeScheduleEntry extends Model
             return $this->timeLabel().' · '.$this->getTypeLabel();
         }
 
+        if ($this->type === self::TYPE_DAY_OFF && filled($this->request_reason_type)) {
+            return self::reasonOptions()[$this->request_reason_type] ?? $this->getTypeLabel();
+        }
+
+        if ($this->type === self::TYPE_DAY_OFF && filled($this->title)) {
+            return (string) $this->title;
+        }
+
+        if ($this->type === self::TYPE_VACATION && $this->vacation_without_pay) {
+            return 'Отпуск без сохранения';
+        }
+
         if ($this->type === self::TYPE_CUSTOM && filled($this->title)) {
             return (string) $this->title;
         }
@@ -107,6 +133,7 @@ class EmployeeScheduleEntry extends Model
         return [
             'date' => 'date',
             'is_all_day' => 'boolean',
+            'vacation_without_pay' => 'boolean',
         ];
     }
 }

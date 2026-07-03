@@ -87,6 +87,19 @@ class EmployeeScheduleRequestResource extends Resource
                     ->required(fn (callable $get): bool => $get('type') === EmployeeScheduleRequest::TYPE_CUSTOM)
                     ->visible(fn (callable $get): bool => $get('type') === EmployeeScheduleRequest::TYPE_CUSTOM),
 
+                Select::make('request_reason_type')
+                    ->label('Причина')
+                    ->options(EmployeeScheduleRequest::reasonOptions())
+                    ->default(EmployeeScheduleRequest::REASON_TIME_OFF)
+                    ->required(fn (callable $get): bool => $get('type') === EmployeeScheduleRequest::TYPE_DAY_OFF)
+                    ->visible(fn (callable $get): bool => $get('type') === EmployeeScheduleRequest::TYPE_DAY_OFF),
+
+                Toggle::make('vacation_without_pay')
+                    ->label('Без сохранения')
+                    ->helperText('Такой отпуск будет отмечен как неоплачиваемый.')
+                    ->default(false)
+                    ->visible(fn (callable $get): bool => $get('type') === EmployeeScheduleRequest::TYPE_VACATION),
+
                 DatePicker::make('start_date')
                     ->label('Дата начала')
                     ->native(false)
@@ -104,7 +117,6 @@ class EmployeeScheduleRequestResource extends Resource
                     ->default(true)
                     ->live()
                     ->disabled(fn (callable $get): bool => in_array($get('type'), [
-                        EmployeeScheduleRequest::TYPE_DAY_OFF,
                         EmployeeScheduleRequest::TYPE_VACATION,
                         EmployeeScheduleRequest::TYPE_SICK_LEAVE,
                         EmployeeScheduleRequest::TYPE_SHIFT,
@@ -150,6 +162,12 @@ class EmployeeScheduleRequestResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (?string $state, EmployeeScheduleRequest $record): string => $record->getTypeLabel())
                     ->color('info'),
+
+                TextColumn::make('reason_label')
+                    ->label('Причина')
+                    ->state(fn (EmployeeScheduleRequest $record): ?string => $record->getReasonLabel())
+                    ->placeholder('—')
+                    ->toggleable(),
 
                 TextColumn::make('date_range')
                     ->label('Период')

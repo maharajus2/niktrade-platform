@@ -20,13 +20,17 @@ class CreateEmployeeScheduleRequest extends CreateRecord
 
     protected function beforeCreate(): void
     {
-        if (Schema::hasTable('employee_schedule_requests')) {
+        if (
+            Schema::hasTable('employee_schedule_requests')
+            && Schema::hasColumn('employee_schedule_requests', 'request_reason_type')
+            && Schema::hasColumn('employee_schedule_requests', 'vacation_without_pay')
+        ) {
             return;
         }
 
         Notification::make()
             ->title('Заявку нельзя сохранить')
-            ->body('Таблица заявок на график ещё не создана. Примените миграции и повторите попытку.')
+            ->body('Миграции для заявок на график ещё не применены. Примените миграции и повторите попытку.')
             ->danger()
             ->send();
 
@@ -45,20 +49,30 @@ class CreateEmployeeScheduleRequest extends CreateRecord
 
         $type = $data['type'];
 
-        if (in_array($type, [
-            EmployeeScheduleRequest::TYPE_DAY_OFF,
-            EmployeeScheduleRequest::TYPE_VACATION,
-            EmployeeScheduleRequest::TYPE_SICK_LEAVE,
-        ], true)) {
+        if ($this->isAlwaysAllDayType($type)) {
             $data['is_all_day'] = true;
             $data['starts_at'] = null;
             $data['ends_at'] = null;
             $data['title'] = null;
         }
 
+        if ($type === EmployeeScheduleRequest::TYPE_DAY_OFF) {
+            $data['title'] = null;
+            $data['vacation_without_pay'] = false;
+        }
+
+        if ($type !== EmployeeScheduleRequest::TYPE_DAY_OFF) {
+            $data['request_reason_type'] = null;
+        }
+
         if ($type === EmployeeScheduleRequest::TYPE_SHIFT) {
             $data['is_all_day'] = false;
             $data['title'] = null;
+            $data['vacation_without_pay'] = false;
+        }
+
+        if ($type !== EmployeeScheduleRequest::TYPE_VACATION) {
+            $data['vacation_without_pay'] = false;
         }
 
         if ((bool) ($data['is_all_day'] ?? false)) {
@@ -87,7 +101,7 @@ class CreateEmployeeScheduleRequest extends CreateRecord
         $startDate = $this->normalizeDate($data['start_date'] ?? null, 'data.start_date');
         $endDate = $this->normalizeDate($data['end_date'] ?? null, 'data.end_date');
         $type = (string) ($data['type'] ?? '');
-        $isAllDay = (bool) ($data['is_all_day'] ?? false);
+        $isAllDay = $this->isAlwaysAllDayType($type) || (bool) ($data['is_all_day'] ?? false);
         $startsAt = filled($data['starts_at'] ?? null) ? substr((string) $data['starts_at'], 0, 5) : null;
         $endsAt = filled($data['ends_at'] ?? null) ? substr((string) $data['ends_at'], 0, 5) : null;
 
@@ -115,6 +129,16 @@ class CreateEmployeeScheduleRequest extends CreateRecord
             ]);
         }
 
+        if ($type === EmployeeScheduleRequest::TYPE_DAY_OFF) {
+            $reasonType = (string) ($data['request_reason_type'] ?? '');
+
+            if (! array_key_exists($reasonType, EmployeeScheduleRequest::reasonOptions())) {
+                throw ValidationException::withMessages([
+                    'data.request_reason_type' => 'Выберите причину.',
+                ]);
+            }
+        }
+
         if ($type === EmployeeScheduleRequest::TYPE_SHIFT || ! $isAllDay) {
             if (! $startsAt || ! $endsAt) {
                 throw ValidationException::withMessages([
@@ -128,6 +152,14 @@ class CreateEmployeeScheduleRequest extends CreateRecord
                 ]);
             }
         }
+    }
+
+    private function isAlwaysAllDayType(string $type): bool
+    {
+        return in_array($type, [
+            EmployeeScheduleRequest::TYPE_VACATION,
+            EmployeeScheduleRequest::TYPE_SICK_LEAVE,
+        ], true);
     }
 
     private function normalizeDate(mixed $value, string $field): string

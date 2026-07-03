@@ -5,7 +5,11 @@ namespace App\Filament\Resources\EmployeeScheduleRequests\Pages;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use App\Models\EmployeeScheduleRequest;
 use Carbon\Carbon;
+use DateTimeInterface;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
 class CreateEmployeeScheduleRequest extends CreateRecord
@@ -13,6 +17,21 @@ class CreateEmployeeScheduleRequest extends CreateRecord
     protected static string $resource = EmployeeScheduleRequestResource::class;
 
     protected static ?string $title = 'Создать заявку';
+
+    protected function beforeCreate(): void
+    {
+        if (Schema::hasTable('employee_schedule_requests')) {
+            return;
+        }
+
+        Notification::make()
+            ->title('Заявку нельзя сохранить')
+            ->body('Таблица заявок на график ещё не создана. Примените миграции и повторите попытку.')
+            ->danger()
+            ->send();
+
+        throw (new Halt())->rollBackDatabaseTransaction();
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
@@ -58,10 +77,15 @@ class CreateEmployeeScheduleRequest extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Заявка создана.';
+    }
+
     private function validateRequestData(array $data): void
     {
-        $startDate = Carbon::parse($data['start_date'] ?? null)->toDateString();
-        $endDate = Carbon::parse($data['end_date'] ?? null)->toDateString();
+        $startDate = $this->normalizeDate($data['start_date'] ?? null, 'data.start_date');
+        $endDate = $this->normalizeDate($data['end_date'] ?? null, 'data.end_date');
         $type = (string) ($data['type'] ?? '');
         $isAllDay = (bool) ($data['is_all_day'] ?? false);
         $startsAt = filled($data['starts_at'] ?? null) ? substr((string) $data['starts_at'], 0, 5) : null;
@@ -103,6 +127,27 @@ class CreateEmployeeScheduleRequest extends CreateRecord
                     'data.ends_at' => 'Время окончания должно быть позже времени начала.',
                 ]);
             }
+        }
+    }
+
+    private function normalizeDate(mixed $value, string $field): string
+    {
+        if ($value instanceof DateTimeInterface) {
+            return Carbon::instance($value)->toDateString();
+        }
+
+        if (blank($value)) {
+            throw ValidationException::withMessages([
+                $field => 'Укажите дату.',
+            ]);
+        }
+
+        try {
+            return Carbon::parse((string) $value)->toDateString();
+        } catch (\Throwable) {
+            throw ValidationException::withMessages([
+                $field => 'Укажите корректную дату.',
+            ]);
         }
     }
 }

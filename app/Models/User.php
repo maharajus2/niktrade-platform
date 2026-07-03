@@ -192,6 +192,19 @@ class User extends Authenticatable
         return $this->hasMany(EmployeeDocument::class, 'employee_id');
     }
 
+    public function scheduleEntries(): HasMany
+    {
+        return $this->hasMany(EmployeeScheduleEntry::class, 'employee_id');
+    }
+
+    public function futureScheduleEntries(): HasMany
+    {
+        return $this->scheduleEntries()
+            ->whereDate('date', '>=', today())
+            ->orderBy('date')
+            ->orderBy('starts_at');
+    }
+
     public function activeDocuments(): HasMany
     {
         return $this->documents()
@@ -256,6 +269,24 @@ class User extends Authenticatable
     public function getScheduleTypeLabel(): string
     {
         return self::scheduleTypeOptions()[$this->schedule_type] ?? 'Не указан';
+    }
+
+    public function isIndividualSchedule(): bool
+    {
+        return $this->schedule_type === self::SCHEDULE_INDIVIDUAL;
+    }
+
+    public function scheduleForMonth(int $year, int $month)
+    {
+        $start = Carbon::create($year, $month, 1)->startOfMonth();
+        $end = $start->copy()->endOfMonth();
+
+        return $this->scheduleEntries()
+            ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
+            ->orderBy('date')
+            ->orderBy('starts_at')
+            ->get()
+            ->groupBy(fn (EmployeeScheduleEntry $entry): string => $entry->date->toDateString());
     }
 
     public function getCitizenshipTypeLabel(): string

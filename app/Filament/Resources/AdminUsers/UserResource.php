@@ -224,6 +224,11 @@ class UserResource extends Resource
                     ->visible(fn (User $record): bool => static::canViewEmployeeDocuments($record))
                     ->viewData(fn (User $record): array => static::employeeDocumentsDashboardData($record))
                     ->columnSpanFull(),
+
+                SchemaView::make('filament.resources.admin-users.components.employee-schedule-section')
+                    ->visible(fn (User $record): bool => static::canViewEmployeeSchedule($record))
+                    ->viewData(fn (User $record): array => ['employee' => $record])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -319,6 +324,44 @@ class UserResource extends Resource
 
         return $user instanceof User
             && ($user->hasRole('super_admin') || $user->can('employees.documents.delete'));
+    }
+
+    public static function canViewEmployeeSchedule(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule.view')) {
+            return true;
+        }
+
+        if ($record === null) {
+            return false;
+        }
+
+        return $record->is($user) || (int) $record->manager_id === (int) $user->getKey();
+    }
+
+    public static function canUpdateEmployeeSchedule(?User $record = null): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule.update')) {
+            return true;
+        }
+
+        if ($record === null) {
+            return false;
+        }
+
+        return (int) $record->manager_id === (int) $user->getKey();
     }
 
     public static function canManageProbation(): bool

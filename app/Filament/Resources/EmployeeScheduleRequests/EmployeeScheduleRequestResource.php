@@ -150,6 +150,8 @@ class EmployeeScheduleRequestResource extends Resource
                 'requestedBy',
                 'reviewedBy',
                 'approvalWorkflow.currentApprover.roles',
+                'approvalWorkflow.events.actor',
+                'approvalWorkflow.events.forwardedTo',
             ]))
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -185,6 +187,21 @@ class EmployeeScheduleRequestResource extends Resource
                     ->formatStateUsing(fn (?string $state, EmployeeScheduleRequest $record): string => $record->getStatusLabel())
                     ->color(fn (EmployeeScheduleRequest $record): string => $record->getStatusColor()),
 
+                TextColumn::make('lifecycle')
+                    ->label('Раздел')
+                    ->badge()
+                    ->state(fn (EmployeeScheduleRequest $record): string => match (true) {
+                        $record->isDeletedState() => 'Удалённые',
+                        $record->isArchived() => 'Архив',
+                        default => 'Активные',
+                    })
+                    ->color(fn (EmployeeScheduleRequest $record): string => match (true) {
+                        $record->isDeletedState() => 'danger',
+                        $record->isArchived() => 'gray',
+                        default => 'success',
+                    })
+                    ->toggleable(),
+
                 TextColumn::make('approvalWorkflow.currentApprover.name')
                     ->label('Согласующий')
                     ->placeholder('—')
@@ -202,6 +219,35 @@ class EmployeeScheduleRequestResource extends Resource
                     ->toggleable(),
             ])
             ->filters([
+                SelectFilter::make('lifecycle')
+                    ->label('Раздел')
+                    ->default(EmployeeScheduleRequest::LIFECYCLE_ACTIVE)
+                    ->options(fn (): array => static::canViewDeletedRequests()
+                        ? [
+                            EmployeeScheduleRequest::LIFECYCLE_ACTIVE => 'Активные',
+                            EmployeeScheduleRequest::LIFECYCLE_ARCHIVE => 'Архив',
+                            EmployeeScheduleRequest::LIFECYCLE_DELETED => 'Удалённые',
+                        ]
+                        : [
+                            EmployeeScheduleRequest::LIFECYCLE_ACTIVE => 'Активные',
+                            EmployeeScheduleRequest::LIFECYCLE_ARCHIVE => 'Архив',
+                        ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        $value = $data['value'] ?? EmployeeScheduleRequest::LIFECYCLE_ACTIVE;
+
+                        return match ($value) {
+                            EmployeeScheduleRequest::LIFECYCLE_ARCHIVE => $query
+                                ->whereNotNull('archived_at')
+                                ->whereNull('deleted_at'),
+                            EmployeeScheduleRequest::LIFECYCLE_DELETED => static::canViewDeletedRequests()
+                                ? $query->whereNotNull('deleted_at')
+                                : $query->whereRaw('1 = 0'),
+                            default => $query
+                                ->whereNull('archived_at')
+                                ->whereNull('deleted_at'),
+                        };
+                    }),
+
                 SelectFilter::make('status')
                     ->label('Статус')
                     ->options(EmployeeScheduleRequest::statusOptions()),
@@ -263,6 +309,18 @@ class EmployeeScheduleRequestResource extends Resource
                     }),
             ])
             ->recordActions([
+                Action::make('history')
+                    ->label('История')
+                    ->icon(Heroicon::OutlinedClock)
+                    ->color('gray')
+                    ->modalHeading('История заявки')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn (Action $action) => $action->label('Закрыть'))
+                    ->modalContent(fn (EmployeeScheduleRequest $record) => view(
+                        'filament.resources.employee-schedule-requests.components.history',
+                        ['record' => $record->loadMissing(['approvalWorkflow.events.actor', 'approvalWorkflow.events.forwardedTo'])]
+                    )),
+
                 Action::make('approve')
                     ->label('Одобрить окончательно')
                     ->icon(Heroicon::OutlinedCheckCircle)
@@ -375,6 +433,59 @@ class EmployeeScheduleRequestResource extends Resource
                             ->success()
                             ->send();
                     }),
+
+                Action::make('archive')
+                    ->label('Архивировать')
+                    ->icon(Heroicon::OutlinedArchiveBox)
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->modalHeading('Архивировать заявку?')
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canArchiveRequest($record))
+                    ->action(function (EmployeeScheduleRequest $record): void {
+                        /** @var User $actor */
+                        $actor = auth()->user();
+                        $record->archive($actor);
+
+                        Notification::make()
+                            ->title('Заявка перемещена в архив.')
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('moveToDeleted')
+                    ->label('В удалённые')
+                    ->icon(Heroicon::OutlinedTrash)
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Переместить заявку в удалённые?')
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canMoveRequestToDeleted($record))
+                    ->action(function (EmployeeScheduleRequest $record): void {
+                        /** @var User $actor */
+                        $actor = auth()->user();
+                        $record->moveToDeleted($actor);
+
+                        Notification::make()
+                            ->title('Заявка перемещена в удалённые.')
+                            ->success()
+                            ->send();
+                    }),
+
+                Action::make('restoreDeleted')
+                    ->label('Восстановить')
+                    ->icon(Heroicon::OutlinedArrowPath)
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canRestoreDeletedRequest($record))
+                    ->action(function (EmployeeScheduleRequest $record): void {
+                        /** @var User $actor */
+                        $actor = auth()->user();
+                        $record->restoreFromDeleted($actor);
+
+                        Notification::make()
+                            ->title('Заявка восстановлена.')
+                            ->success()
+                            ->send();
+                    }),
             ]);
     }
 
@@ -418,19 +529,25 @@ class EmployeeScheduleRequestResource extends Resource
 
     public static function canApprove(EmployeeScheduleRequest $record): bool
     {
-        return $record->canBeReviewed() && static::canReview($record);
+        return $record->canBeReviewed()
+            && ! $record->isArchived()
+            && ! $record->isDeletedState()
+            && static::canReview($record);
     }
 
     public static function canReject(EmployeeScheduleRequest $record): bool
     {
-        return $record->canBeReviewed() && static::canReview($record);
+        return $record->canBeReviewed()
+            && ! $record->isArchived()
+            && ! $record->isDeletedState()
+            && static::canReview($record);
     }
 
     public static function canCancel(EmployeeScheduleRequest $record): bool
     {
         $user = auth()->user();
 
-        if (! $user instanceof User || ! $record->canBeCancelled()) {
+        if (! $user instanceof User || ! $record->canBeCancelled() || $record->isArchived() || $record->isDeletedState()) {
             return false;
         }
 
@@ -438,6 +555,57 @@ class EmployeeScheduleRequestResource extends Resource
             || $user->hasRole('super_admin')
             || $user->hasRole('hr')
             || $user->can('employees.schedule_requests.cancel');
+    }
+
+    public static function canArchiveRequest(EmployeeScheduleRequest $record): bool
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User || ! $record->canBeArchived()) {
+            return false;
+        }
+
+        return $user->hasRole('super_admin')
+            || $user->hasRole('hr')
+            || (int) $record->employee?->manager_id === (int) $user->getKey()
+            || (int) $record->approvalWorkflow?->submitted_by === (int) $user->getKey()
+            || (int) $record->approvalWorkflow?->current_approver_id === (int) $user->getKey()
+            || static::wasUserInvolvedInWorkflow($record, $user);
+    }
+
+    public static function canMoveRequestToDeleted(EmployeeScheduleRequest $record): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && $record->canBeMovedToDeleted()
+            && ($user->hasRole('super_admin') || $user->hasRole('hr'));
+    }
+
+    public static function canRestoreDeletedRequest(EmployeeScheduleRequest $record): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && $record->isDeletedState()
+            && $user->hasRole('super_admin');
+    }
+
+    public static function canViewDeletedRequests(): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User && ($user->hasRole('super_admin') || $user->hasRole('hr'));
+    }
+
+    private static function wasUserInvolvedInWorkflow(EmployeeScheduleRequest $record, User $user): bool
+    {
+        $workflow = $record->approvalWorkflow;
+
+        return $workflow instanceof ApprovalWorkflow
+            && $workflow->events()
+                ->where('actor_id', $user->getKey())
+                ->exists();
     }
 
     public static function canReview(EmployeeScheduleRequest $record): bool

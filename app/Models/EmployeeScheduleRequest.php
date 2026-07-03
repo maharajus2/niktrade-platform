@@ -28,6 +28,10 @@ use Illuminate\Support\Carbon;
     'reviewed_by',
     'reviewed_at',
     'created_schedule_entries_count',
+    'archived_at',
+    'archived_by',
+    'deleted_at',
+    'deleted_by',
 ])]
 class EmployeeScheduleRequest extends Model
 {
@@ -56,6 +60,12 @@ class EmployeeScheduleRequest extends Model
     public const STATUS_RETURNED = 'returned';
 
     public const STATUS_CANCELLED = 'cancelled';
+
+    public const LIFECYCLE_ACTIVE = 'active';
+
+    public const LIFECYCLE_ARCHIVE = 'archive';
+
+    public const LIFECYCLE_DELETED = 'deleted';
 
     public const REASON_TIME_OFF = 'time_off';
 
@@ -106,6 +116,16 @@ class EmployeeScheduleRequest extends Model
     public function reviewedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function archivedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'archived_by');
+    }
+
+    public function deletedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function getTypeLabel(): string
@@ -176,6 +196,37 @@ class EmployeeScheduleRequest extends Model
         ], true);
     }
 
+    public function isCompleted(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_APPROVED,
+            self::STATUS_REJECTED,
+            self::STATUS_CANCELLED,
+        ], true);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived_at !== null && $this->deleted_at === null;
+    }
+
+    public function isDeletedState(): bool
+    {
+        return $this->deleted_at !== null;
+    }
+
+    public function canBeArchived(): bool
+    {
+        return $this->isCompleted()
+            && $this->archived_at === null
+            && $this->deleted_at === null;
+    }
+
+    public function canBeMovedToDeleted(): bool
+    {
+        return $this->archived_at !== null && $this->deleted_at === null;
+    }
+
     public function approve(User $reviewer, string $comment): int
     {
         if (! $this->canBeReviewed()) {
@@ -221,6 +272,33 @@ class EmployeeScheduleRequest extends Model
         app(ApprovalWorkflowService::class)->cancel($this, $reviewer, $comment);
     }
 
+    public function archive(User $actor): void
+    {
+        if (! $this->canBeArchived()) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->archive($this, $actor);
+    }
+
+    public function moveToDeleted(User $actor): void
+    {
+        if (! $this->canBeMovedToDeleted()) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->moveToDeleted($this, $actor);
+    }
+
+    public function restoreFromDeleted(User $actor): void
+    {
+        if (! $this->isDeletedState()) {
+            return;
+        }
+
+        app(ApprovalWorkflowService::class)->restore($this, $actor);
+    }
+
     public function calendarEntryType(): string
     {
         return match ($this->type) {
@@ -240,9 +318,20 @@ class EmployeeScheduleRequest extends Model
 
         return $query->where(function (Builder $query) use ($user): void {
             $query
-                ->where('employee_id', $user->getKey())
-                ->orWhereHas('approvalWorkflow', fn (Builder $query): Builder => $query->where('current_approver_id', $user->getKey()))
-                ->orWhereHas('employee', fn (Builder $query): Builder => $query->where('manager_id', $user->getKey()));
+                ->where(function (Builder $query) use ($user): void {
+                    $query
+                        ->where('employee_id', $user->getKey())
+                        ->whereNull('deleted_at');
+                })
+                ->orWhere(function (Builder $query) use ($user): void {
+                    $query
+                        ->whereNull('deleted_at')
+                        ->where(function (Builder $query) use ($user): void {
+                            $query
+                                ->whereHas('approvalWorkflow', fn (Builder $query): Builder => $query->where('current_approver_id', $user->getKey()))
+                                ->orWhereHas('employee', fn (Builder $query): Builder => $query->where('manager_id', $user->getKey()));
+                        });
+                });
         });
     }
 
@@ -331,6 +420,8 @@ class EmployeeScheduleRequest extends Model
             'vacation_without_pay' => 'boolean',
             'reviewed_at' => 'datetime',
             'created_schedule_entries_count' => 'integer',
+            'archived_at' => 'datetime',
+            'deleted_at' => 'datetime',
         ];
     }
 }

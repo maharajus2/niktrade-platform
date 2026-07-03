@@ -188,6 +188,69 @@ class ApprovalWorkflowService
         });
     }
 
+    public function archive(Model $approvable, User $actor): void
+    {
+        DB::transaction(function () use ($approvable, $actor): void {
+            $approvable->forceFill([
+                'archived_at' => now(),
+                'archived_by' => $actor->getKey(),
+            ])->save();
+
+            $workflow = $this->workflowForLifecycle($approvable, $actor);
+
+            $this->recordEvent(
+                workflow: $workflow,
+                actor: $actor,
+                action: ApprovalWorkflowEvent::ACTION_ARCHIVED,
+                fromStatus: $workflow->status,
+                toStatus: $workflow->status,
+                comment: 'Заявка перемещена в архив.',
+            );
+        });
+    }
+
+    public function moveToDeleted(Model $approvable, User $actor): void
+    {
+        DB::transaction(function () use ($approvable, $actor): void {
+            $approvable->forceFill([
+                'deleted_at' => now(),
+                'deleted_by' => $actor->getKey(),
+            ])->save();
+
+            $workflow = $this->workflowForLifecycle($approvable, $actor);
+
+            $this->recordEvent(
+                workflow: $workflow,
+                actor: $actor,
+                action: ApprovalWorkflowEvent::ACTION_MOVED_TO_DELETED,
+                fromStatus: $workflow->status,
+                toStatus: $workflow->status,
+                comment: 'Заявка перемещена в удалённые.',
+            );
+        });
+    }
+
+    public function restore(Model $approvable, User $actor): void
+    {
+        DB::transaction(function () use ($approvable, $actor): void {
+            $approvable->forceFill([
+                'deleted_at' => null,
+                'deleted_by' => null,
+            ])->save();
+
+            $workflow = $this->workflowForLifecycle($approvable, $actor);
+
+            $this->recordEvent(
+                workflow: $workflow,
+                actor: $actor,
+                action: ApprovalWorkflowEvent::ACTION_RESTORED,
+                fromStatus: $workflow->status,
+                toStatus: $workflow->status,
+                comment: 'Заявка восстановлена из удалённых.',
+            );
+        });
+    }
+
     private function workflow(Model $approvable): ApprovalWorkflow
     {
         /** @var ApprovalWorkflow|null $workflow */
@@ -204,6 +267,18 @@ class ApprovalWorkflowService
                 'approval' => 'Заявка уже завершена.',
             ]);
         }
+
+        return $workflow;
+    }
+
+    private function workflowForLifecycle(Model $approvable, User $actor): ApprovalWorkflow
+    {
+        /** @var ApprovalWorkflow $workflow */
+        $workflow = $approvable->approvalWorkflow()->firstOrCreate([], [
+            'status' => (string) ($approvable->getAttribute('status') ?? ApprovalWorkflow::STATUS_PENDING),
+            'submitted_by' => $approvable->getAttribute('requested_by') ?: $actor->getKey(),
+            'current_approver_id' => null,
+        ]);
 
         return $workflow;
     }

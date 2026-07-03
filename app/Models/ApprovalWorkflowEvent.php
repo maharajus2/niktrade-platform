@@ -30,6 +30,12 @@ class ApprovalWorkflowEvent extends Model
 
     public const ACTION_CANCELLED = 'cancelled';
 
+    public const ACTION_ARCHIVED = 'archived';
+
+    public const ACTION_MOVED_TO_DELETED = 'moved_to_deleted';
+
+    public const ACTION_RESTORED = 'restored';
+
     public const ACTION_SYSTEM = 'system';
 
     public static function actionOptions(): array
@@ -41,6 +47,9 @@ class ApprovalWorkflowEvent extends Model
             self::ACTION_RETURNED => 'Возвращено сотруднику',
             self::ACTION_FORWARDED => 'Передано на согласование',
             self::ACTION_CANCELLED => 'Отменено',
+            self::ACTION_ARCHIVED => 'Заявка перемещена в архив',
+            self::ACTION_MOVED_TO_DELETED => 'Заявка перемещена в удалённые',
+            self::ACTION_RESTORED => 'Заявка восстановлена',
             self::ACTION_SYSTEM => 'Системное действие',
         ];
     }

@@ -24,7 +24,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -50,10 +49,6 @@ class EmployeeDocumentsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->latest())
-            ->header(fn (): View => view(
-                'filament.resources.admin-users.components.employee-documents-dashboard',
-                UserResource::employeeDocumentsDashboardData($this->getOwnerRecord()),
-            ))
             ->emptyState(view('filament.resources.admin-users.components.employee-documents-empty-state'))
             ->columns([
                 TextColumn::make('category')

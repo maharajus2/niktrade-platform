@@ -1,6 +1,6 @@
 <div class="space-y-4">
     <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
-        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
             <div>
                 <h3 class="text-base font-semibold text-gray-950 dark:text-white">График работы</h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -9,318 +9,357 @@
             </div>
 
             @if ($employee->isIndividualSchedule())
-                <div class="flex flex-wrap gap-2">
-                    <button
-                        type="button"
-                        wire:click="previousMonth"
-                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
-                    >
-                        Назад
-                    </button>
-
-                    <button
-                        type="button"
-                        wire:click="goToToday"
-                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
-                    >
-                        Сегодня
-                    </button>
-
-                    <button
-                        type="button"
-                        wire:click="nextMonth"
-                        class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
-                    >
-                        Вперёд
-                    </button>
-
-                    @if ($canGenerate)
-                        <button
-                            type="button"
-                            wire:click="openGenerateForm"
-                            class="rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500"
-                        >
-                            Заполнить месяц
-                        </button>
-                    @endif
+                <div class="rounded-lg border border-primary-200 bg-primary-50 px-3 py-2 text-xs font-medium text-primary-700 dark:border-primary-500/30 dark:bg-primary-500/10 dark:text-primary-200">
+                    FullCalendar
                 </div>
             @endif
         </div>
 
         @if (! $employee->isIndividualSchedule())
-            <div class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
                 Для сотрудника выбран тип графика: <span class="font-semibold">{{ $employee->getScheduleTypeLabel() }}</span>.
                 Календарь используется только для индивидуального графика.
             </div>
         @else
-            <div class="mt-5 flex items-center justify-between">
-                <h4 class="text-lg font-semibold text-gray-950 dark:text-white">{{ $monthLabel }}</h4>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Пн - Вс</span>
-            </div>
-
-            @if ($monthEntriesCount === 0)
-                <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
-                    На этот месяц смены не назначены.
-                </div>
-            @endif
-
-            @if ($entryFormVisible)
-                <form wire:submit="saveEntry" class="mt-4 rounded-xl border border-primary-200 bg-primary-50/70 p-4 dark:border-primary-500/30 dark:bg-primary-500/10">
-                    <div class="grid gap-4 md:grid-cols-4">
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Дата</span>
-                            <input
-                                type="date"
-                                wire:model="entryDate"
-                                class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"
-                            >
-                            @error('entryDate') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Начало</span>
-                            <input
-                                type="time"
-                                wire:model="startsAt"
-                                class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"
-                            >
-                            @error('startsAt') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Окончание</span>
-                            <input
-                                type="time"
-                                wire:model="endsAt"
-                                class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"
-                            >
-                            @error('endsAt') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1 md:col-span-4">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Комментарий</span>
-                            <textarea
-                                wire:model="comment"
-                                rows="2"
-                                class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"
-                            ></textarea>
-                            @error('comment') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-                    </div>
-
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <button type="submit" class="rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500">
-                            Сохранить смену
-                        </button>
-
-                        <button type="button" wire:click="cancelEntryForm" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10">
-                            Отмена
-                        </button>
-
-                        @if ($editingEntryId)
-                            <button type="button" wire:click="deleteEntry({{ $editingEntryId }})" wire:confirm="Удалить смену?" class="rounded-lg border border-danger-300 bg-white px-3 py-2 text-sm font-medium text-danger-700 shadow-sm hover:bg-danger-50 dark:border-danger-500/40 dark:bg-white/5 dark:text-danger-300">
-                                Удалить
-                            </button>
-                        @endif
-                    </div>
-                </form>
-            @endif
-
-            @if ($generateFormVisible)
-                <form wire:submit="generateMonth" class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
-                    <div class="grid gap-4 md:grid-cols-4">
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">С даты</span>
-                            <input type="date" wire:model="generateFromDate" class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white">
-                            @error('generateFromDate') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">По дату</span>
-                            <input type="date" wire:model="generateToDate" class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white">
-                            @error('generateToDate') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Начало</span>
-                            <input type="time" wire:model="generateStartsAt" class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white">
-                            @error('generateStartsAt') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <label class="space-y-1">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Окончание</span>
-                            <input type="time" wire:model="generateEndsAt" class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white">
-                            @error('generateEndsAt') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-
-                        <div class="space-y-2 md:col-span-4">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Рабочие дни</span>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach ([1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'] as $value => $label)
-                                    <label class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 dark:border-white/10 dark:bg-gray-900 dark:text-gray-200">
-                                        <input type="checkbox" wire:model="generateWeekdays" value="{{ $value }}" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
-                                        <span>{{ $label }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                            @error('generateWeekdays') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </div>
-
-                        <label class="space-y-1 md:col-span-4">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Комментарий</span>
-                            <textarea wire:model="generateComment" rows="2" class="block w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"></textarea>
-                            @error('generateComment') <span class="text-xs text-danger-600">{{ $message }}</span> @enderror
-                        </label>
-                    </div>
-
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <button type="submit" class="rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500">
-                            Создать смены
-                        </button>
-
-                        <button type="button" wire:click="cancelGenerateForm" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10">
-                            Отмена
-                        </button>
-                    </div>
-                </form>
-            @endif
-
-            <div class="mt-4 hidden overflow-hidden rounded-xl border border-gray-200 md:block dark:border-white/10">
-                <div class="grid grid-cols-7 border-b border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5">
-                    @foreach ($weekdays as $weekday)
-                        <div class="px-3 py-2 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            {{ $weekday }}
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="grid grid-cols-7 bg-white dark:bg-gray-900">
-                    @foreach ($weeks as $week)
-                        @foreach ($week as $day)
-                            <div class="min-h-36 border-b border-r border-gray-200 p-2 last:border-r-0 dark:border-white/10 {{ $day['inMonth'] ? '' : 'bg-gray-50 text-gray-400 dark:bg-white/5' }}">
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold {{ $day['isToday'] ? 'bg-primary-600 text-white' : 'text-gray-700 dark:text-gray-200' }}">
-                                        {{ $day['day'] }}
-                                    </span>
-
-                                    @if ($canUpdate && ! $day['isPast'] && $day['inMonth'])
-                                        <button
-                                            type="button"
-                                            wire:click="startCreate('{{ $day['date'] }}')"
-                                            class="rounded-md px-2 py-1 text-xs font-medium text-primary-700 hover:bg-primary-50 dark:text-primary-300 dark:hover:bg-primary-500/10"
-                                        >
-                                            + Смена
-                                        </button>
-                                    @endif
-                                </div>
-
-                                <div class="mt-2 space-y-2">
-                                    @forelse ($day['entries'] as $entry)
-                                        <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-950 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
-                                            <div class="flex items-start justify-between gap-2">
-                                                <button
-                                                    type="button"
-                                                    @if ($canUpdate && ! $day['isPast'])
-                                                        wire:click="startEdit({{ $entry->id }})"
-                                                    @endif
-                                                    class="font-semibold text-left {{ $canUpdate && ! $day['isPast'] ? 'hover:underline' : 'cursor-default' }}"
-                                                >
-                                                    {{ $entry->timeLabel() }}
-                                                </button>
-
-                                                @if ($canUpdate && ! $day['isPast'])
-                                                    <button
-                                                        type="button"
-                                                        wire:click="deleteEntry({{ $entry->id }})"
-                                                        wire:confirm="Удалить смену?"
-                                                        class="shrink-0 text-danger-600 hover:text-danger-500"
-                                                    >
-                                                        Удалить
-                                                    </button>
-                                                @endif
-                                            </div>
-
-                                            @if ($entry->comment)
-                                                <div class="mt-1 line-clamp-2 text-emerald-800 dark:text-emerald-200">{{ $entry->comment }}</div>
-                                            @endif
-                                        </div>
-                                    @empty
-                                        <div class="text-xs text-gray-400">Нет смен</div>
-                                    @endforelse
-                                </div>
-                            </div>
-                        @endforeach
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="mt-4 space-y-3 md:hidden">
-                @foreach ($weeks as $week)
-                    @foreach ($week as $day)
-                        @continue(! $day['inMonth'])
-
-                        <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-white/10 dark:bg-gray-900">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <div class="font-semibold text-gray-950 dark:text-white">
-                                        {{ $day['day'] }} {{ $monthLabel }}
-                                    </div>
-                                    @if ($day['isToday'])
-                                        <div class="text-xs font-medium text-primary-600 dark:text-primary-300">Сегодня</div>
-                                    @endif
-                                </div>
-
-                                @if ($canUpdate && ! $day['isPast'])
-                                    <button
-                                        type="button"
-                                        wire:click="startCreate('{{ $day['date'] }}')"
-                                        class="rounded-lg bg-primary-600 px-3 py-2 text-xs font-semibold text-white shadow-sm"
-                                    >
-                                        + Смена
-                                    </button>
-                                @endif
-                            </div>
-
-                            <div class="mt-3 space-y-2">
-                                @forelse ($day['entries'] as $entry)
-                                    <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-950 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
-                                        <div class="flex items-start justify-between gap-2">
-                                            <button
-                                                type="button"
-                                                @if ($canUpdate && ! $day['isPast'])
-                                                    wire:click="startEdit({{ $entry->id }})"
-                                                @endif
-                                                class="font-semibold text-left {{ $canUpdate && ! $day['isPast'] ? 'hover:underline' : 'cursor-default' }}"
-                                            >
-                                                {{ $entry->timeLabel() }}
-                                            </button>
-
-                                            @if ($canUpdate && ! $day['isPast'])
-                                                <button
-                                                    type="button"
-                                                    wire:click="deleteEntry({{ $entry->id }})"
-                                                    wire:confirm="Удалить смену?"
-                                                    class="text-xs font-medium text-danger-600"
-                                                >
-                                                    Удалить
-                                                </button>
-                                            @endif
-                                        </div>
-
-                                        @if ($entry->comment)
-                                            <div class="mt-1 text-sm text-emerald-800 dark:text-emerald-200">{{ $entry->comment }}</div>
-                                        @endif
-                                    </div>
-                                @empty
-                                    <div class="rounded-lg border border-dashed border-gray-200 p-3 text-sm text-gray-500 dark:border-white/10 dark:text-gray-400">
-                                        Нет смен
-                                    </div>
-                                @endforelse
-                            </div>
-                        </div>
-                    @endforeach
-                @endforeach
-            </div>
+            <div
+                wire:ignore
+                x-data
+                x-init="window.niktradeEmployeeScheduleCalendar($el, $wire, { canUpdate: @js($canUpdate) })"
+                class="nt-fullcalendar min-h-[680px]"
+            ></div>
         @endif
     </div>
+
+    @once
+        <script>
+            window.niktradeEmployeeScheduleCalendar = function (element, wire, options) {
+                const fullCalendarVersion = '6.1.21'
+                const canUpdate = Boolean(options.canUpdate)
+
+                const loadFullCalendar = () => {
+                    const loadScript = (src, attributeName) => new Promise((resolve, reject) => {
+                        const existingScript = document.querySelector(`[${attributeName}]`)
+
+                        if (existingScript) {
+                            if (existingScript.dataset.loaded === 'true') {
+                                resolve()
+
+                                return
+                            }
+
+                            existingScript.addEventListener('load', () => resolve(), { once: true })
+                            existingScript.addEventListener('error', () => reject(new Error('FullCalendar failed to load.')), { once: true })
+
+                            return
+                        }
+
+                        const script = document.createElement('script')
+                        script.src = src
+                        script.setAttribute(attributeName, 'true')
+                        script.onload = () => {
+                            script.dataset.loaded = 'true'
+                            resolve()
+                        }
+                        script.onerror = () => reject(new Error('FullCalendar failed to load.'))
+                        document.head.appendChild(script)
+                    })
+
+                    const calendarScript = window.FullCalendar
+                        ? Promise.resolve()
+                        : loadScript(
+                        `https://cdn.jsdelivr.net/npm/fullcalendar@${fullCalendarVersion}/index.global.min.js`,
+                        'data-nt-fullcalendar-js',
+                    )
+
+                    return calendarScript.then(() => loadScript(
+                        `https://cdn.jsdelivr.net/npm/fullcalendar@${fullCalendarVersion}/locales-all.global.min.js`,
+                        'data-nt-fullcalendar-locales-js',
+                    ))
+                }
+
+                const formatDate = (date) => {
+                    const year = date.getFullYear()
+                    const month = String(date.getMonth() + 1).padStart(2, '0')
+                    const day = String(date.getDate()).padStart(2, '0')
+
+                    return `${year}-${month}-${day}`
+                }
+
+                const formatTime = (date) => {
+                    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+                }
+
+                const addMinutes = (date, minutes) => {
+                    return new Date(date.getTime() + minutes * 60000)
+                }
+
+                const defaultTimeRange = (date) => {
+                    if (date.getHours() === 0 && date.getMinutes() === 0) {
+                        return '09:00-18:00'
+                    }
+
+                    return `${formatTime(date)}-${formatTime(addMinutes(date, 60))}`
+                }
+
+                const parseTimeRange = (value) => {
+                    const match = String(value || '').trim().match(/^(\d{2}:\d{2})\s*[-–]\s*(\d{2}:\d{2})$/)
+
+                    if (! match) {
+                        return null
+                    }
+
+                    return {
+                        startsAt: match[1],
+                        endsAt: match[2],
+                    }
+                }
+
+                const errorMessage = (error) => {
+                    const errors = error?.response?.data?.errors
+
+                    if (errors) {
+                        const firstKey = Object.keys(errors)[0]
+
+                        if (firstKey && errors[firstKey]?.[0]) {
+                            return errors[firstKey][0]
+                        }
+                    }
+
+                    return error?.message || 'Не удалось сохранить график.'
+                }
+
+                const refetch = () => {
+                    if (element._ntFullCalendar) {
+                        element._ntFullCalendar.refetchEvents()
+                    }
+                }
+
+                loadFullCalendar()
+                    .then(() => {
+                        if (element._ntFullCalendar) {
+                            element._ntFullCalendar.destroy()
+                        }
+
+                        const calendar = new FullCalendar.Calendar(element, {
+                            initialView: 'dayGridMonth',
+                            locale: 'ru',
+                            firstDay: 1,
+                            nowIndicator: true,
+                            selectable: canUpdate,
+                            editable: canUpdate,
+                            eventStartEditable: canUpdate,
+                            eventDurationEditable: canUpdate,
+                            dayMaxEvents: true,
+                            height: 'auto',
+                            expandRows: true,
+                            allDaySlot: false,
+                            slotMinTime: '07:00:00',
+                            slotMaxTime: '23:00:00',
+                            headerToolbar: {
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                            },
+                            buttonText: {
+                                today: 'Сегодня',
+                                month: 'Месяц',
+                                week: 'Неделя',
+                                day: 'День',
+                            },
+                            events: (fetchInfo, successCallback, failureCallback) => {
+                                wire.getCalendarEvents(fetchInfo.startStr, fetchInfo.endStr)
+                                    .then((events) => successCallback(events))
+                                    .catch((error) => {
+                                        alert(errorMessage(error))
+                                        failureCallback(error)
+                                    })
+                            },
+                            dateClick: (info) => {
+                                if (! canUpdate) {
+                                    return
+                                }
+
+                                const clickedDate = new Date(info.date)
+
+                                if (clickedDate < new Date(new Date().toDateString())) {
+                                    alert('Нельзя изменять прошедшие смены.')
+
+                                    return
+                                }
+
+                                const range = prompt('Время смены в формате 09:00-18:00', defaultTimeRange(clickedDate))
+                                const parsed = parseTimeRange(range)
+
+                                if (! parsed) {
+                                    if (range !== null) {
+                                        alert('Укажите время в формате 09:00-18:00.')
+                                    }
+
+                                    return
+                                }
+
+                                const comment = prompt('Комментарий к смене', '') || ''
+
+                                wire.createCalendarEntry(formatDate(clickedDate), parsed.startsAt, parsed.endsAt, comment)
+                                    .then(refetch)
+                                    .catch((error) => alert(errorMessage(error)))
+                            },
+                            eventClick: (info) => {
+                                const event = info.event
+                                const props = event.extendedProps || {}
+
+                                if (! canUpdate || ! props.editable) {
+                                    alert(`${event.title}`)
+
+                                    return
+                                }
+
+                                const currentRange = `${props.starts_at}-${props.ends_at}`
+                                const range = prompt('Измените время смены или введите delete для удаления', currentRange)
+
+                                if (range === null) {
+                                    return
+                                }
+
+                                if (String(range).trim().toLowerCase() === 'delete') {
+                                    if (! confirm('Удалить смену?')) {
+                                        return
+                                    }
+
+                                    wire.deleteCalendarEntry(Number(event.id))
+                                        .then(refetch)
+                                        .catch((error) => alert(errorMessage(error)))
+
+                                    return
+                                }
+
+                                const parsed = parseTimeRange(range)
+
+                                if (! parsed) {
+                                    alert('Укажите время в формате 09:00-18:00.')
+
+                                    return
+                                }
+
+                                const comment = prompt('Комментарий к смене', props.comment || '') || ''
+
+                                wire.updateCalendarEntry(Number(event.id), props.date, parsed.startsAt, parsed.endsAt, comment)
+                                    .then(refetch)
+                                    .catch((error) => alert(errorMessage(error)))
+                            },
+                            eventDrop: (info) => {
+                                const event = info.event
+
+                                wire.moveCalendarEntry(
+                                    Number(event.id),
+                                    formatDate(event.start),
+                                    formatTime(event.start),
+                                    formatTime(event.end || addMinutes(event.start, 60)),
+                                )
+                                    .then(refetch)
+                                    .catch((error) => {
+                                        info.revert()
+                                        alert(errorMessage(error))
+                                    })
+                            },
+                            eventResize: (info) => {
+                                const event = info.event
+
+                                wire.moveCalendarEntry(
+                                    Number(event.id),
+                                    formatDate(event.start),
+                                    formatTime(event.start),
+                                    formatTime(event.end || addMinutes(event.start, 60)),
+                                )
+                                    .then(refetch)
+                                    .catch((error) => {
+                                        info.revert()
+                                        alert(errorMessage(error))
+                                    })
+                            },
+                            eventAllow: (dropInfo) => {
+                                return canUpdate && dropInfo.start >= new Date(new Date().toDateString())
+                            },
+                        })
+
+                        calendar.render()
+                        element._ntFullCalendar = calendar
+                    })
+                    .catch((error) => {
+                        element.innerHTML = `<div class="rounded-lg border border-danger-200 bg-danger-50 p-4 text-sm text-danger-700">${error.message}</div>`
+                    })
+            }
+        </script>
+    @endonce
+
+    <style>
+        .nt-fullcalendar .fc {
+            --fc-border-color: rgb(229 231 235);
+            --fc-button-bg-color: rgb(2 132 199);
+            --fc-button-border-color: rgb(2 132 199);
+            --fc-button-hover-bg-color: rgb(3 105 161);
+            --fc-button-hover-border-color: rgb(3 105 161);
+            --fc-button-active-bg-color: rgb(3 105 161);
+            --fc-button-active-border-color: rgb(3 105 161);
+            color: rgb(17 24 39);
+            font-size: 0.875rem;
+        }
+
+        .dark .nt-fullcalendar .fc {
+            --fc-border-color: rgb(55 65 81);
+            color: rgb(243 244 246);
+        }
+
+        .nt-fullcalendar .fc-toolbar {
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nt-fullcalendar .fc-toolbar-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .nt-fullcalendar .fc-event {
+            border-radius: 0.5rem;
+            border: 1px solid rgb(16 185 129);
+            background: rgb(209 250 229);
+            color: rgb(6 78 59);
+            padding: 0.125rem 0.25rem;
+        }
+
+        .nt-fullcalendar .nt-schedule-event-past {
+            border-color: rgb(209 213 219);
+            background: rgb(243 244 246);
+            color: rgb(107 114 128);
+        }
+
+        .dark .nt-fullcalendar .fc-event {
+            border-color: rgb(16 185 129 / 0.45);
+            background: rgb(16 185 129 / 0.16);
+            color: rgb(209 250 229);
+        }
+
+        .dark .nt-fullcalendar .nt-schedule-event-past {
+            border-color: rgb(75 85 99);
+            background: rgb(31 41 55);
+            color: rgb(156 163 175);
+        }
+
+        @media (max-width: 768px) {
+            .nt-fullcalendar {
+                min-height: 620px;
+            }
+
+            .nt-fullcalendar .fc-header-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .nt-fullcalendar .fc-toolbar-chunk {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
 </div>

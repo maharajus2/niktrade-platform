@@ -15,195 +15,127 @@ class EmployeeScheduleCalendar extends Component
 {
     public int $employeeId;
 
-    public string $month;
-
-    public bool $entryFormVisible = false;
-
-    public ?int $editingEntryId = null;
-
-    public string $entryDate = '';
-
-    public string $startsAt = '09:00';
-
-    public string $endsAt = '18:00';
-
-    public ?string $comment = null;
-
-    public bool $generateFormVisible = false;
-
-    public string $generateFromDate = '';
-
-    public string $generateToDate = '';
-
-    /** @var array<int, int|string> */
-    public array $generateWeekdays = [1, 2, 3, 4, 5];
-
-    public string $generateStartsAt = '09:00';
-
-    public string $generateEndsAt = '18:00';
-
-    public ?string $generateComment = null;
-
     public function mount(int $employeeId): void
     {
         $this->employeeId = $employeeId;
-        $this->month = today()->startOfMonth()->toDateString();
     }
 
-    public function previousMonth(): void
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getCalendarEvents(string $start, string $end): array
     {
-        $this->month = Carbon::parse($this->month)->subMonthNoOverflow()->startOfMonth()->toDateString();
-        $this->resetOpenForms();
+        $employee = $this->employee();
+
+        if (! UserResource::canViewEmployeeSchedule($employee)) {
+            return [];
+        }
+
+        $startDate = Carbon::parse($start)->toDateString();
+        $endDate = Carbon::parse($end)->subDay()->toDateString();
+
+        return $employee->scheduleEntries()
+            ->whereBetween('date', [$startDate, $endDate])
+            ->orderBy('date')
+            ->orderBy('starts_at')
+            ->get()
+            ->map(fn (EmployeeScheduleEntry $entry): array => $this->eventPayload($entry))
+            ->values()
+            ->all();
     }
 
-    public function nextMonth(): void
+    /**
+     * @return array<string, mixed>
+     */
+    public function createCalendarEntry(string $date, string $startsAt, string $endsAt, ?string $comment = null): array
     {
-        $this->month = Carbon::parse($this->month)->addMonthNoOverflow()->startOfMonth()->toDateString();
-        $this->resetOpenForms();
-    }
+        $employee = $this->employee();
 
-    public function goToToday(): void
-    {
-        $this->month = today()->startOfMonth()->toDateString();
-        $this->resetOpenForms();
-    }
+        $this->authorizeScheduleUpdate($employee);
+        $this->ensureIndividualSchedule($employee);
 
-    public function startCreate(string $date): void
-    {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
+        $date = $this->normalizeDate($date);
+        [$startsAt, $endsAt] = $this->normalizeTimeRange($startsAt, $endsAt);
 
-            return;
-        }
+        $this->ensureFutureDate($date);
+        $this->ensureNoDuplicate($employee, $date, $startsAt, $endsAt);
 
-        if (! $this->employee()->isIndividualSchedule()) {
-            $this->notifyWarning('Календарь доступен только для индивидуального графика.');
-
-            return;
-        }
-
-        if (Carbon::parse($date)->startOfDay()->lt(today())) {
-            $this->notifyWarning('Нельзя изменять прошедшие смены.');
-
-            return;
-        }
-
-        $this->entryFormVisible = true;
-        $this->generateFormVisible = false;
-        $this->editingEntryId = null;
-        $this->entryDate = Carbon::parse($date)->toDateString();
-        $this->startsAt = '09:00';
-        $this->endsAt = '18:00';
-        $this->comment = null;
-    }
-
-    public function startEdit(int $entryId): void
-    {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
-
-            return;
-        }
-
-        $entry = $this->findEmployeeEntry($entryId);
-
-        if ($entry->date->startOfDay()->lt(today())) {
-            $this->notifyWarning('Нельзя изменять прошедшие смены.');
-
-            return;
-        }
-
-        $this->entryFormVisible = true;
-        $this->generateFormVisible = false;
-        $this->editingEntryId = $entry->id;
-        $this->entryDate = $entry->date->toDateString();
-        $this->startsAt = substr((string) $entry->starts_at, 0, 5);
-        $this->endsAt = substr((string) $entry->ends_at, 0, 5);
-        $this->comment = $entry->comment;
-    }
-
-    public function saveEntry(): void
-    {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
-
-            return;
-        }
-
-        if (! $this->employee()->isIndividualSchedule()) {
-            $this->notifyWarning('Календарь доступен только для индивидуального графика.');
-
-            return;
-        }
-
-        $data = $this->validateEntryForm();
-        $date = Carbon::parse($data['entryDate'])->toDateString();
-
-        if (Carbon::parse($date)->startOfDay()->lt(today())) {
-            $this->notifyWarning('Нельзя изменять прошедшие смены.');
-
-            return;
-        }
-
-        if ($this->hasDuplicateEntry($date, $data['startsAt'], $data['endsAt'], $this->editingEntryId)) {
-            throw ValidationException::withMessages([
-                'startsAt' => 'Такая смена уже есть в графике сотрудника.',
-            ]);
-        }
-
-        $payload = [
+        $entry = $employee->scheduleEntries()->create([
             'date' => $date,
-            'starts_at' => $data['startsAt'],
-            'ends_at' => $data['endsAt'],
-            'comment' => $data['comment'],
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'comment' => $comment ?: null,
+            'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
-        ];
-
-        if ($this->editingEntryId) {
-            $entry = $this->findEmployeeEntry($this->editingEntryId);
-
-            if ($entry->date->startOfDay()->lt(today())) {
-                $this->notifyWarning('Нельзя изменять прошедшие смены.');
-
-                return;
-            }
-
-            $entry->update($payload);
-        } else {
-            $this->employee()->scheduleEntries()->create($payload + [
-                'created_by' => auth()->id(),
-            ]);
-        }
-
-        $this->resetEntryForm();
+        ]);
 
         Notification::make()
             ->title('Смена сохранена.')
             ->success()
             ->send();
+
+        return $this->eventPayload($entry);
     }
 
-    public function deleteEntry(int $entryId): void
+    /**
+     * @return array<string, mixed>
+     */
+    public function updateCalendarEntry(int $entryId, string $date, string $startsAt, string $endsAt, ?string $comment = null): array
     {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
-
-            return;
-        }
-
+        $employee = $this->employee();
         $entry = $this->findEmployeeEntry($entryId);
 
-        if ($entry->date->startOfDay()->lt(today())) {
-            $this->notifyWarning('Нельзя изменять прошедшие смены.');
+        $this->authorizeScheduleUpdate($employee);
+        $this->ensureIndividualSchedule($employee);
+        $this->ensureFutureDate($entry->date->toDateString());
 
-            return;
-        }
+        $date = $this->normalizeDate($date);
+        [$startsAt, $endsAt] = $this->normalizeTimeRange($startsAt, $endsAt);
+
+        $this->ensureFutureDate($date);
+        $this->ensureNoDuplicate($employee, $date, $startsAt, $endsAt, $entry->id);
+
+        $entry->update([
+            'date' => $date,
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'comment' => $comment ?: null,
+            'updated_by' => auth()->id(),
+        ]);
+
+        Notification::make()
+            ->title('Смена сохранена.')
+            ->success()
+            ->send();
+
+        return $this->eventPayload($entry->refresh());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function moveCalendarEntry(int $entryId, string $date, string $startsAt, string $endsAt): array
+    {
+        $entry = $this->findEmployeeEntry($entryId);
+
+        return $this->updateCalendarEntry(
+            $entryId,
+            $date,
+            $startsAt,
+            $endsAt,
+            $entry->comment,
+        );
+    }
+
+    public function deleteCalendarEntry(int $entryId): void
+    {
+        $employee = $this->employee();
+        $entry = $this->findEmployeeEntry($entryId);
+
+        $this->authorizeScheduleUpdate($employee);
+        $this->ensureFutureDate($entry->date->toDateString());
 
         $entry->delete();
-
-        if ($this->editingEntryId === $entryId) {
-            $this->resetEntryForm();
-        }
 
         Notification::make()
             ->title('Смена удалена.')
@@ -211,181 +143,20 @@ class EmployeeScheduleCalendar extends Component
             ->send();
     }
 
-    public function cancelEntryForm(): void
-    {
-        $this->resetEntryForm();
-    }
-
-    public function openGenerateForm(): void
-    {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
-
-            return;
-        }
-
-        if (! $this->employee()->isIndividualSchedule()) {
-            $this->notifyWarning('Календарь доступен только для индивидуального графика.');
-
-            return;
-        }
-
-        $month = Carbon::parse($this->month)->startOfMonth();
-
-        if ($month->copy()->endOfMonth()->lt(today())) {
-            $this->notifyWarning('Нельзя изменять прошедшие смены.');
-
-            return;
-        }
-
-        $this->generateFormVisible = true;
-        $this->entryFormVisible = false;
-        $this->generateFromDate = max($month->toDateString(), today()->toDateString());
-        $this->generateToDate = $month->copy()->endOfMonth()->toDateString();
-        $this->generateWeekdays = [1, 2, 3, 4, 5];
-        $this->generateStartsAt = '09:00';
-        $this->generateEndsAt = '18:00';
-        $this->generateComment = null;
-    }
-
-    public function generateMonth(): void
-    {
-        if (! $this->canUpdateSchedule()) {
-            $this->denyScheduleAction();
-
-            return;
-        }
-
-        if (! $this->employee()->isIndividualSchedule()) {
-            $this->notifyWarning('Календарь доступен только для индивидуального графика.');
-
-            return;
-        }
-
-        $data = $this->validate([
-            'generateFromDate' => ['required', 'date', 'after_or_equal:today'],
-            'generateToDate' => ['required', 'date', 'after_or_equal:generateFromDate'],
-            'generateWeekdays' => ['required', 'array', 'min:1'],
-            'generateWeekdays.*' => ['integer', 'between:1,7'],
-            'generateStartsAt' => ['required', 'date_format:H:i'],
-            'generateEndsAt' => ['required', 'date_format:H:i', 'after:generateStartsAt'],
-            'generateComment' => ['nullable', 'string', 'max:1000'],
-        ], [], [
-            'generateFromDate' => 'дата начала',
-            'generateToDate' => 'дата окончания',
-            'generateWeekdays' => 'дни недели',
-            'generateStartsAt' => 'начало',
-            'generateEndsAt' => 'окончание',
-            'generateComment' => 'комментарий',
-        ]);
-
-        $employee = $this->employee();
-        $from = Carbon::parse($data['generateFromDate'])->startOfDay();
-        $to = Carbon::parse($data['generateToDate'])->startOfDay();
-        $weekdays = array_map('intval', $data['generateWeekdays']);
-        $created = 0;
-
-        for ($date = $from->copy(); $date->lte($to); $date->addDay()) {
-            if (! in_array((int) $date->isoWeekday(), $weekdays, true)) {
-                continue;
-            }
-
-            $dateString = $date->toDateString();
-
-            if ($this->hasDuplicateEntry($dateString, $data['generateStartsAt'], $data['generateEndsAt'])) {
-                continue;
-            }
-
-            $employee->scheduleEntries()->create([
-                'date' => $dateString,
-                'starts_at' => $data['generateStartsAt'],
-                'ends_at' => $data['generateEndsAt'],
-                'comment' => $data['generateComment'],
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
-            ]);
-
-            $created++;
-        }
-
-        $this->generateFormVisible = false;
-
-        Notification::make()
-            ->title("Создано смен: {$created}.")
-            ->success()
-            ->send();
-    }
-
-    public function cancelGenerateForm(): void
-    {
-        $this->generateFormVisible = false;
-    }
-
     public function render(): View
     {
         $employee = $this->employee();
-        $canUpdate = $this->canUpdateSchedule();
-        $monthStart = Carbon::parse($this->month)->startOfMonth();
-        $gridStart = $monthStart->copy()->startOfWeek(Carbon::MONDAY);
-        $gridEnd = $monthStart->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
-
-        $entriesByDate = $employee->scheduleEntries()
-            ->whereBetween('date', [$gridStart->toDateString(), $gridEnd->toDateString()])
-            ->orderBy('date')
-            ->orderBy('starts_at')
-            ->get()
-            ->groupBy(fn (EmployeeScheduleEntry $entry): string => $entry->date->toDateString());
-
-        $monthEntriesCount = $employee->scheduleEntries()
-            ->whereBetween('date', [
-                $monthStart->toDateString(),
-                $monthStart->copy()->endOfMonth()->toDateString(),
-            ])
-            ->count();
-
-        $weeks = [];
-        $cursor = $gridStart->copy();
-
-        while ($cursor->lte($gridEnd)) {
-            $week = [];
-
-            for ($i = 0; $i < 7; $i++) {
-                $date = $cursor->toDateString();
-
-                $week[] = [
-                    'date' => $date,
-                    'day' => $cursor->day,
-                    'inMonth' => $cursor->isSameMonth($monthStart),
-                    'isToday' => $cursor->isToday(),
-                    'isPast' => $cursor->lt(today()),
-                    'entries' => $entriesByDate->get($date, collect()),
-                ];
-
-                $cursor->addDay();
-            }
-
-            $weeks[] = $week;
-        }
+        $canUpdate = UserResource::canUpdateEmployeeSchedule($employee);
 
         return view('livewire.employee-schedule-calendar', [
             'employee' => $employee,
             'canUpdate' => $canUpdate,
-            'canGenerate' => $canUpdate && $monthStart->copy()->endOfMonth()->gte(today()),
-            'monthLabel' => $this->monthLabel($monthStart),
-            'monthEntriesCount' => $monthEntriesCount,
-            'weeks' => $weeks,
-            'weekdays' => ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
         ]);
     }
 
     private function employee(): User
     {
         return User::query()->findOrFail($this->employeeId);
-    }
-
-    private function canUpdateSchedule(): bool
-    {
-        return UserResource::canUpdateEmployeeSchedule($this->employee());
     }
 
     private function findEmployeeEntry(int $entryId): EmployeeScheduleEntry
@@ -395,81 +166,110 @@ class EmployeeScheduleCalendar extends Component
             ->findOrFail($entryId);
     }
 
-    private function hasDuplicateEntry(string $date, string $startsAt, string $endsAt, ?int $exceptId = null): bool
+    /**
+     * @return array<string, mixed>
+     */
+    private function eventPayload(EmployeeScheduleEntry $entry): array
     {
-        return EmployeeScheduleEntry::query()
-            ->where('employee_id', $this->employeeId)
+        $date = $entry->date->toDateString();
+        $startsAt = $this->trimTime((string) $entry->starts_at);
+        $endsAt = $this->trimTime((string) $entry->ends_at);
+        $isFutureEditable = ! Carbon::parse($date)->startOfDay()->lt(today());
+        $canUpdate = UserResource::canUpdateEmployeeSchedule($entry->employee);
+        $isEditable = $canUpdate && $isFutureEditable;
+
+        return [
+            'id' => (string) $entry->id,
+            'title' => $entry->timeLabel().($entry->comment ? ' · '.$entry->comment : ''),
+            'start' => "{$date}T{$startsAt}:00",
+            'end' => "{$date}T{$endsAt}:00",
+            'editable' => $isEditable,
+            'startEditable' => $isEditable,
+            'durationEditable' => $isEditable,
+            'classNames' => $isEditable ? ['nt-schedule-event'] : ['nt-schedule-event', 'nt-schedule-event-past'],
+            'extendedProps' => [
+                'date' => $date,
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+                'comment' => $entry->comment,
+                'editable' => $isEditable,
+            ],
+        ];
+    }
+
+    private function authorizeScheduleUpdate(User $employee): void
+    {
+        if (! UserResource::canUpdateEmployeeSchedule($employee)) {
+            throw ValidationException::withMessages([
+                'schedule' => 'Недостаточно прав для изменения графика.',
+            ]);
+        }
+    }
+
+    private function ensureIndividualSchedule(User $employee): void
+    {
+        if (! $employee->isIndividualSchedule()) {
+            throw ValidationException::withMessages([
+                'schedule' => 'Календарь доступен только для индивидуального графика.',
+            ]);
+        }
+    }
+
+    private function normalizeDate(string $date): string
+    {
+        return Carbon::parse($date)->toDateString();
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function normalizeTimeRange(string $startsAt, string $endsAt): array
+    {
+        $startsAt = $this->trimTime($startsAt);
+        $endsAt = $this->trimTime($endsAt);
+
+        if (! preg_match('/^\d{2}:\d{2}$/', $startsAt) || ! preg_match('/^\d{2}:\d{2}$/', $endsAt)) {
+            throw ValidationException::withMessages([
+                'time' => 'Укажите время в формате ЧЧ:ММ.',
+            ]);
+        }
+
+        if ($startsAt >= $endsAt) {
+            throw ValidationException::withMessages([
+                'ends_at' => 'Время окончания должно быть позже времени начала.',
+            ]);
+        }
+
+        return [$startsAt, $endsAt];
+    }
+
+    private function trimTime(string $time): string
+    {
+        return substr($time, 0, 5);
+    }
+
+    private function ensureFutureDate(string $date): void
+    {
+        if (Carbon::parse($date)->startOfDay()->lt(today())) {
+            throw ValidationException::withMessages([
+                'date' => 'Нельзя изменять прошедшие смены.',
+            ]);
+        }
+    }
+
+    private function ensureNoDuplicate(User $employee, string $date, string $startsAt, string $endsAt, ?int $exceptId = null): void
+    {
+        $exists = $employee->scheduleEntries()
             ->whereDate('date', $date)
             ->where('starts_at', $startsAt)
             ->where('ends_at', $endsAt)
             ->when($exceptId, fn ($query) => $query->where('id', '!=', $exceptId))
             ->exists();
-    }
 
-    /**
-     * @return array{entryDate: string, startsAt: string, endsAt: string, comment: ?string}
-     */
-    private function validateEntryForm(): array
-    {
-        return $this->validate([
-            'entryDate' => ['required', 'date', 'after_or_equal:today'],
-            'startsAt' => ['required', 'date_format:H:i'],
-            'endsAt' => ['required', 'date_format:H:i', 'after:startsAt'],
-            'comment' => ['nullable', 'string', 'max:1000'],
-        ], [], [
-            'entryDate' => 'дата',
-            'startsAt' => 'начало',
-            'endsAt' => 'окончание',
-            'comment' => 'комментарий',
-        ]);
-    }
-
-    private function resetOpenForms(): void
-    {
-        $this->resetEntryForm();
-        $this->generateFormVisible = false;
-    }
-
-    private function resetEntryForm(): void
-    {
-        $this->entryFormVisible = false;
-        $this->editingEntryId = null;
-        $this->entryDate = '';
-        $this->startsAt = '09:00';
-        $this->endsAt = '18:00';
-        $this->comment = null;
-    }
-
-    private function denyScheduleAction(): void
-    {
-        $this->notifyWarning('Недостаточно прав для изменения графика.');
-    }
-
-    private function notifyWarning(string $title): void
-    {
-        Notification::make()
-            ->title($title)
-            ->warning()
-            ->send();
-    }
-
-    private function monthLabel(Carbon $month): string
-    {
-        $months = [
-            1 => 'Январь',
-            2 => 'Февраль',
-            3 => 'Март',
-            4 => 'Апрель',
-            5 => 'Май',
-            6 => 'Июнь',
-            7 => 'Июль',
-            8 => 'Август',
-            9 => 'Сентябрь',
-            10 => 'Октябрь',
-            11 => 'Ноябрь',
-            12 => 'Декабрь',
-        ];
-
-        return ($months[$month->month] ?? $month->translatedFormat('F')).' '.$month->year;
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'schedule' => 'Такая смена уже есть в графике сотрудника.',
+            ]);
+        }
     }
 }

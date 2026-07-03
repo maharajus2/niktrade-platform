@@ -39,7 +39,7 @@
                 )
 
             return calendarScript.then(() => loadScript(
-                `https://cdn.jsdelivr.net/npm/fullcalendar@${fullCalendarVersion}/locales-all.global.min.js`,
+                `https://cdn.jsdelivr.net/npm/@fullcalendar/core@${fullCalendarVersion}/locales-all.global.min.js`,
                 'data-nt-fullcalendar-locales-js',
             ))
         }

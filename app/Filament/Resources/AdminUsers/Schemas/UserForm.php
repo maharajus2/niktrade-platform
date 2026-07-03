@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
@@ -234,13 +235,9 @@ class UserForm
                     ->columns(2)
                     ->columnSpanFull(),
 
-                Section::make('Контроль документов')
+                SchemaView::make('filament.admin-users.employee-documents-summary')
                     ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeDocuments($record))
-                    ->schema([
-                        \Filament\Infolists\Components\TextEntry::make('document_control_placeholder')
-                            ->hiddenLabel()
-                            ->state(fn (User $record): string => UserResource::documentSummaryText($record)),
-                    ])
+                    ->viewData(fn (User $record): array => ['employee' => $record])
                     ->columnSpanFull(),
             ]);
     }

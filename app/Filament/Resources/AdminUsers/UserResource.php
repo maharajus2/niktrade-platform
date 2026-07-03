@@ -11,7 +11,6 @@ use App\Filament\Resources\AdminUsers\Schemas\UserForm;
 use App\Filament\Resources\AdminUsers\Tables\UsersTable;
 use App\Models\User;
 use App\Support\AdminRoles;
-use App\Support\EmployeeRequiredDocuments;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
@@ -19,6 +18,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -218,13 +218,9 @@ class UserResource extends Resource
                     ->columns(2)
                     ->columnSpanFull(),
 
-                Section::make('Контроль документов')
+                SchemaView::make('filament.admin-users.employee-documents-summary')
                     ->visible(fn (User $record): bool => static::canViewEmployeeDocuments($record))
-                    ->schema([
-                        TextEntry::make('document_control_placeholder')
-                            ->hiddenLabel()
-                            ->state(fn (User $record): string => static::documentSummaryText($record)),
-                    ])
+                    ->viewData(fn (User $record): array => ['employee' => $record])
                     ->columnSpanFull(),
             ]);
     }
@@ -383,23 +379,6 @@ class UserResource extends Resource
             'Истекают' => 'warning',
             default => 'danger',
         };
-    }
-
-    public static function documentSummaryText(User $record): string
-    {
-        $missing = collect($record->missingRequiredDocuments())
-            ->map(fn (string $category): string => '• '.EmployeeRequiredDocuments::label($category))
-            ->implode("\n");
-
-        $expiring = $record->expiringDocuments()
-            ->map(fn ($document): string => '• '.$document->getCategoryLabel().' — '.$document->getExpirationLabel())
-            ->implode("\n");
-
-        return implode("\n\n", array_filter([
-            'Комплектность: '.$record->documentCompletenessPercent().'%',
-            $missing === '' ? 'Не хватает: нет' : "Не хватает:\n".$missing,
-            $expiring === '' ? 'Истекают скоро: нет' : "Истекают скоро:\n".$expiring,
-        ]));
     }
 
     public static function archiveAction(): Action

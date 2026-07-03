@@ -54,8 +54,7 @@ class EmployeeDocumentsRelationManager extends RelationManager
                 'employee' => $this->getOwnerRecord(),
             ]))
             ->emptyStateHeading('Документы пока не загружены')
-            ->emptyStateDescription('Создайте первый документ сотрудника, чтобы начать контроль комплектности и сроков.')
-            ->emptyStateIcon(Heroicon::OutlinedDocumentText)
+            ->emptyStateDescription('Загрузите первый документ сотрудника.')
             ->columns([
                 TextColumn::make('category')
                     ->label('Категория')

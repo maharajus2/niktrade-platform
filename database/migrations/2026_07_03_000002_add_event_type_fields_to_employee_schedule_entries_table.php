@@ -23,8 +23,8 @@ return new class extends Migration
             }
         });
 
-        DB::statement('ALTER TABLE employee_schedule_entries MODIFY starts_at TIME NULL');
-        DB::statement('ALTER TABLE employee_schedule_entries MODIFY ends_at TIME NULL');
+        DB::statement('ALTER TABLE employee_schedule_entries ALTER COLUMN starts_at DROP NOT NULL');
+        DB::statement('ALTER TABLE employee_schedule_entries ALTER COLUMN ends_at DROP NOT NULL');
 
         DB::table('employee_schedule_entries')
             ->whereNull('type')
@@ -45,8 +45,8 @@ return new class extends Migration
             ->whereNull('ends_at')
             ->update(['ends_at' => '23:59:00']);
 
-        DB::statement('ALTER TABLE employee_schedule_entries MODIFY starts_at TIME NOT NULL');
-        DB::statement('ALTER TABLE employee_schedule_entries MODIFY ends_at TIME NOT NULL');
+        DB::statement('ALTER TABLE employee_schedule_entries ALTER COLUMN starts_at SET NOT NULL');
+        DB::statement('ALTER TABLE employee_schedule_entries ALTER COLUMN ends_at SET NOT NULL');
 
         Schema::table('employee_schedule_entries', function (Blueprint $table): void {
             if (Schema::hasColumn('employee_schedule_entries', 'is_all_day')) {

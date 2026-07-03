@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Filament\Resources\Departments\RelationManagers;
+
+use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Resources\Departments\DepartmentResource;
+use App\Models\Department;
+use App\Models\User;
+use App\Support\AdminRoles;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
+
+class EmployeesRelationManager extends RelationManager
+{
+    protected static string $relationship = 'employees';
+
+    protected static ?string $title = 'Сотрудники отдела';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return $ownerRecord instanceof Department && DepartmentResource::canUseDepartmentPermission('departments.view');
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->columns(2)
+            ->components([
+                TextInput::make('name')
+                    ->label('ФИО')
+                    ->required()
+                    ->maxLength(255),
+
+                TextInput::make('email')
+                    ->label('Email')
+                    ->email()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
+
+                TextInput::make('phone')
+                    ->label('Телефон')
+                    ->tel()
+                    ->maxLength(255),
+
+                TextInput::make('password')
+                    ->label('Пароль')
+                    ->password()
+                    ->revealable()
+                    ->required()
+                    ->maxLength(255),
+
+                Select::make('roles')
+                    ->label('Роли')
+                    ->relationship('roles', 'name')
+                    ->getOptionLabelFromRecordUsing(fn (Role $record): string => AdminRoles::label($record->name))
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull(),
+
+                Select::make('employment_status')
+                    ->label('Статус')
+                    ->options(User::employeeStatusOptions())
+                    ->default(User::STATUS_WORKING)
+                    ->required(),
+
+                Select::make('employment_type')
+                    ->label('Тип трудоустройства')
+                    ->options(User::employmentTypeOptions())
+                    ->nullable(),
+            ]);
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'department']))
+            ->emptyStateHeading('В этом отделе пока нет сотрудников.')
+            ->emptyStateDescription('Добавьте сотрудника, чтобы он появился в структуре отдела.')
+            ->columns([
+                ImageColumn::make('avatar_path')
+                    ->label('Фото')
+                    ->disk('public')
+                    ->imageWidth(40)
+                    ->imageHeight(52)
+                    ->extraImgAttributes([
+                        'style' => 'background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12); object-fit: cover;',
+                    ]),
+
+                TextColumn::make('name')
+                    ->label('ФИО')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('position')
+                    ->label('Должность')
+                    ->state(fn (): string => '—'),
+
+                TextColumn::make('roles.name')
+                    ->label('Основная роль')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => AdminRoles::label($state))
+                    ->icon(fn (string $state): Heroicon => AdminRoles::icon($state))
+                    ->color(fn (string $state): string => AdminRoles::color($state))
+                    ->separator(', '),
+
+                TextColumn::make('employment_status')
+                    ->label('Статус')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentStatusLabel())
+                    ->color(fn (?string $state, User $record): string => User::employeeStatusColor($record->employment_status ?? $record->employee_status))
+                    ->sortable(),
+
+                TextColumn::make('employment_type')
+                    ->label('Тип')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state, User $record): string => $record->getEmploymentTypeLabel())
+                    ->color('gray')
+                    ->sortable(),
+
+                TextColumn::make('phone')
+                    ->label('Телефон')
+                    ->placeholder('—')
+                    ->searchable(),
+            ])
+            ->headerActions([
+                CreateAction::make()
+                    ->label('Добавить сотрудника')
+                    ->icon(Heroicon::OutlinedUserPlus)
+                    ->visible(fn (): bool => UserResource::canCreate())
+                    ->mutateFormDataUsing(fn (array $data): array => $data + [
+                        'department_id' => $this->getOwnerRecord()->getKey(),
+                    ]),
+            ])
+            ->recordActions([
+                Action::make('viewEmployee')
+                    ->label('Просмотр')
+                    ->icon(Heroicon::OutlinedEye)
+                    ->url(fn (User $record): string => UserResource::getUrl('view', ['record' => $record]))
+                    ->visible(fn (User $record): bool => UserResource::canView($record)),
+
+                Action::make('editEmployee')
+                    ->label('Редактировать')
+                    ->icon(Heroicon::OutlinedPencilSquare)
+                    ->url(fn (User $record): string => UserResource::getUrl('edit', ['record' => $record]))
+                    ->visible(fn (User $record): bool => UserResource::canEdit($record)),
+            ]);
+    }
+}

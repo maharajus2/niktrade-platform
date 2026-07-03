@@ -149,6 +149,7 @@ class UserForm
 
                         Select::make('department_id')
                             ->label('Отдел')
+                            ->default(fn (): ?int => request()->integer('department_id') ?: null)
                             ->relationship('department', 'name', modifyQueryUsing: fn (Builder $query): Builder => $query
                                 ->where('is_active', true)
                                 ->orderBy('sort_order')

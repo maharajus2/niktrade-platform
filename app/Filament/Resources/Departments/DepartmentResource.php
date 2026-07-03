@@ -5,11 +5,14 @@ namespace App\Filament\Resources\Departments;
 use App\Filament\Resources\Departments\Pages\CreateDepartment;
 use App\Filament\Resources\Departments\Pages\EditDepartment;
 use App\Filament\Resources\Departments\Pages\ListDepartments;
+use App\Filament\Resources\Departments\Pages\ViewDepartment;
+use App\Filament\Resources\Departments\RelationManagers\EmployeesRelationManager;
 use App\Filament\Resources\Departments\Schemas\DepartmentForm;
 use App\Filament\Resources\Departments\Tables\DepartmentsTable;
 use App\Models\Department;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -26,9 +29,9 @@ class DepartmentResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Отделы';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Система';
+    protected static string|\UnitEnum|null $navigationGroup = '🏢 Организация';
 
-    protected static ?int $navigationSort = 110;
+    protected static ?int $navigationSort = 90;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
@@ -40,6 +43,16 @@ class DepartmentResource extends Resource
     public static function table(Table $table): Table
     {
         return DepartmentsTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                SchemaView::make('filament.resources.departments.components.department-dashboard')
+                    ->viewData(fn (Department $record): array => ['department' => $record])
+                    ->columnSpanFull(),
+            ]);
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -77,7 +90,15 @@ class DepartmentResource extends Resource
         return [
             'index' => ListDepartments::route('/'),
             'create' => CreateDepartment::route('/create'),
+            'view' => ViewDepartment::route('/{record}'),
             'edit' => EditDepartment::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            EmployeesRelationManager::class,
         ];
     }
 

@@ -8,6 +8,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -20,6 +21,7 @@ class DepartmentsTable
     {
         return $table
             ->defaultSort(fn (Builder $query): Builder => $query->orderBy('sort_order')->orderBy('name'))
+            ->recordUrl(fn (Department $record): string => DepartmentResource::getUrl('view', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')
                     ->label('Название')
@@ -73,6 +75,7 @@ class DepartmentsTable
                     ->falseLabel('Неактивные'),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()
                     ->visible(fn (Department $record): bool => DepartmentResource::canDelete($record)),

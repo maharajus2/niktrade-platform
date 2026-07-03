@@ -10,6 +10,7 @@ use Filament\Actions\ViewAction;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,6 +87,14 @@ class UsersTable
                     ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('department_id')
+                    ->label('Все отделы')
+                    ->relationship('department', 'name', modifyQueryUsing: fn (Builder $query): Builder => $query
+                        ->orderBy('sort_order')
+                        ->orderBy('name'))
+                    ->searchable()
+                    ->preload(),
+
                 TernaryFilter::make('archived_at')
                     ->label('Показывать архив')
                     ->placeholder('Активные')

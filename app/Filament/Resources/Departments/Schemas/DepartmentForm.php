@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Departments\Schemas;
 
+use App\Models\Department;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,6 +18,11 @@ class DepartmentForm
     {
         return $schema
             ->components([
+                SchemaView::make('filament.resources.departments.components.department-dashboard')
+                    ->visible(fn (?Department $record): bool => $record !== null)
+                    ->viewData(fn (Department $record): array => ['department' => $record])
+                    ->columnSpanFull(),
+
                 Section::make('Основная информация')
                     ->schema([
                         TextInput::make('name')

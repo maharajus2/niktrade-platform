@@ -9,6 +9,7 @@ use App\Filament\Resources\AdminUsers\Pages\ViewUser;
 use App\Filament\Resources\AdminUsers\RelationManagers\EmployeeDocumentsRelationManager;
 use App\Filament\Resources\AdminUsers\Schemas\UserForm;
 use App\Filament\Resources\AdminUsers\Tables\UsersTable;
+use App\Filament\Resources\Departments\DepartmentResource;
 use App\Models\EmployeeDocument;
 use App\Models\User;
 use App\Support\AdminRoles;
@@ -36,7 +37,7 @@ class UserResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Сотрудники';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Система';
+    protected static string|\UnitEnum|null $navigationGroup = '🏢 Организация';
 
     protected static ?int $navigationSort = 100;
 
@@ -91,18 +92,30 @@ class UserResource extends Resource
 
                         TextEntry::make('manager.name')
                             ->label('Руководитель')
+                            ->url(fn (User $record): ?string => $record->manager
+                                ? static::getUrl('view', ['record' => $record->manager])
+                                : null)
                             ->placeholder('—'),
 
                         TextEntry::make('department.name')
                             ->label('Отдел')
+                            ->url(fn (User $record): ?string => $record->department
+                                ? DepartmentResource::getUrl('view', ['record' => $record->department])
+                                : null)
                             ->placeholder('—'),
 
                         TextEntry::make('department.manager.name')
                             ->label('Руководитель отдела')
+                            ->url(fn (User $record): ?string => $record->department?->manager
+                                ? static::getUrl('view', ['record' => $record->department->manager])
+                                : null)
                             ->placeholder('—'),
 
                         TextEntry::make('department.actingManager.name')
                             ->label('ВРиО руководителя')
+                            ->url(fn (User $record): ?string => $record->department?->actingManager
+                                ? static::getUrl('view', ['record' => $record->department->actingManager])
+                                : null)
                             ->placeholder('—'),
                     ])
                     ->columns(2)

@@ -11,6 +11,14 @@ class SalesStatsWidget extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        return $user !== null
+            && ($user->hasRole('super_admin') || $user->can('widgets.sales.view'));
+    }
+
     protected function getStats(): array
     {
         return [

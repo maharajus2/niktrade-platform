@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets\Hr;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Widgets\Hr\Concerns\CanViewHrDashboard;
 use App\Models\EmployeeDocument;
 use App\Models\EmployeeScheduleEntry;
 use App\Models\User;
@@ -11,6 +12,8 @@ use Illuminate\Support\Carbon;
 
 class HrUpcomingEventsWidget extends Widget
 {
+    use CanViewHrDashboard;
+
     protected string $view = 'filament.widgets.hr.upcoming-events-widget';
 
     protected int|string|array $columnSpan = [

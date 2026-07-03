@@ -3,12 +3,15 @@
 namespace App\Filament\Widgets\Hr;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Widgets\Hr\Concerns\CanViewHrDashboard;
 use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 
 class HrBirthdaysWidget extends Widget
 {
+    use CanViewHrDashboard;
+
     protected string $view = 'filament.widgets.hr.birthdays-widget';
 
     protected int|string|array $columnSpan = [

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Pages\OrderKanban;
@@ -18,6 +19,10 @@ use Filament\Tables\Table;
 
 class OrderResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'orders';
+
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationLabel = 'Заказы';

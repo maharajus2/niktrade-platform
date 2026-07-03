@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductTypes;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\ProductTypes\Pages\CreateProductType;
 use App\Filament\Resources\ProductTypes\Pages\EditProductType;
 use App\Filament\Resources\ProductTypes\Pages\ListProductTypes;
@@ -16,6 +17,10 @@ use Filament\Tables\Table;
 
 class ProductTypeResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'product_types';
+
     protected static ?string $model = ProductType::class;
 
     protected static ?string $navigationLabel = 'Типы';

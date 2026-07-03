@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\Customers\Pages\CreateCustomer;
 use App\Filament\Resources\Customers\Pages\EditCustomer;
 use App\Filament\Resources\Customers\Pages\ListCustomers;
@@ -17,6 +18,10 @@ use Filament\Tables\Table;
 
 class CustomerResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'customers';
+
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationLabel = 'Покупатели';

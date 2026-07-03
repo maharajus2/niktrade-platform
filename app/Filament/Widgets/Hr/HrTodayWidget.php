@@ -3,11 +3,14 @@
 namespace App\Filament\Widgets\Hr;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Widgets\Hr\Concerns\CanViewHrDashboard;
 use App\Models\EmployeeScheduleEntry;
 use Filament\Widgets\Widget;
 
 class HrTodayWidget extends Widget
 {
+    use CanViewHrDashboard;
+
     protected string $view = 'filament.widgets.hr.today-widget';
 
     protected int|string|array $columnSpan = [

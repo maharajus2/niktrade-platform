@@ -312,7 +312,7 @@ class EmployeeScheduleRequest extends Model
 
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule_requests.view')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.schedule_requests.view') || $user->can('workflow.view')) {
             return $query;
         }
 

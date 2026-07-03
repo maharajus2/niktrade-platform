@@ -287,6 +287,11 @@ class UserResource extends Resource
         return static::canUseAdminPermission('employees.hr.update');
     }
 
+    public static function canManageEmployeeRoles(): bool
+    {
+        return static::canUseAdminPermission('users.update');
+    }
+
     public static function canViewCitizenshipProfile(User $record): bool
     {
         $user = auth()->user();
@@ -306,7 +311,7 @@ class UserResource extends Resource
             return false;
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.view')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.documents.view')) {
             return true;
         }
 
@@ -322,7 +327,7 @@ class UserResource extends Resource
         $user = auth()->user();
 
         return $user instanceof User
-            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.upload'));
+            && ($user->hasRole('super_admin') || $user->can('employees.documents.upload'));
     }
 
     public static function canArchiveEmployeeDocuments(?User $record = null): bool
@@ -330,7 +335,7 @@ class UserResource extends Resource
         $user = auth()->user();
 
         return $user instanceof User
-            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.documents.archive'));
+            && ($user->hasRole('super_admin') || $user->can('employees.documents.archive'));
     }
 
     public static function canDeleteEmployeeDocuments(?User $record = null): bool
@@ -349,7 +354,7 @@ class UserResource extends Resource
             return false;
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule.view')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.schedule.view')) {
             return true;
         }
 
@@ -368,7 +373,7 @@ class UserResource extends Resource
             return false;
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule.update')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.schedule.update')) {
             return true;
         }
 
@@ -397,7 +402,7 @@ class UserResource extends Resource
             return false;
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.salary.view')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.salary.view')) {
             return true;
         }
 

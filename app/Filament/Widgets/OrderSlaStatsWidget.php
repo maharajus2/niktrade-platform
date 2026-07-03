@@ -13,6 +13,14 @@ class OrderSlaStatsWidget extends StatsOverviewWidget
 
     protected ?string $heading = 'Контроль обработки заказов';
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        return $user !== null
+            && ($user->hasRole('super_admin') || $user->can('widgets.orders_sla.view'));
+    }
+
     protected function getStats(): array
     {
         $overdue = Order::applySlaFilter(Order::query(), Order::SLA_STATE_OVERDUE)->count();

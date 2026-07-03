@@ -347,7 +347,7 @@ class EmployeeScheduleRequestResource extends Resource
                     ->label('Передать')
                     ->icon(Heroicon::OutlinedArrowRight)
                     ->color('info')
-                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canApprove($record))
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canForward($record))
                     ->form([
                         Select::make('next_approver_id')
                             ->label('Следующий согласующий')
@@ -377,7 +377,7 @@ class EmployeeScheduleRequestResource extends Resource
                     ->label('Вернуть')
                     ->icon(Heroicon::OutlinedArrowUturnLeft)
                     ->color('warning')
-                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canApprove($record))
+                    ->visible(fn (EmployeeScheduleRequest $record): bool => static::canReject($record))
                     ->form([
                         Textarea::make('manager_comment')
                             ->label('Комментарий')
@@ -532,7 +532,15 @@ class EmployeeScheduleRequestResource extends Resource
         return $record->canBeReviewed()
             && ! $record->isArchived()
             && ! $record->isDeletedState()
-            && static::canReview($record);
+            && static::canReview($record, ['employees.schedule_requests.approve', 'workflow.approve']);
+    }
+
+    public static function canForward(EmployeeScheduleRequest $record): bool
+    {
+        return $record->canBeReviewed()
+            && ! $record->isArchived()
+            && ! $record->isDeletedState()
+            && static::canReview($record, ['employees.schedule_requests.approve', 'workflow.forward']);
     }
 
     public static function canReject(EmployeeScheduleRequest $record): bool
@@ -540,7 +548,7 @@ class EmployeeScheduleRequestResource extends Resource
         return $record->canBeReviewed()
             && ! $record->isArchived()
             && ! $record->isDeletedState()
-            && static::canReview($record);
+            && static::canReview($record, ['employees.schedule_requests.reject', 'workflow.reject']);
     }
 
     public static function canCancel(EmployeeScheduleRequest $record): bool
@@ -553,7 +561,6 @@ class EmployeeScheduleRequestResource extends Resource
 
         return (int) $record->employee_id === (int) $user->getKey()
             || $user->hasRole('super_admin')
-            || $user->hasRole('hr')
             || $user->can('employees.schedule_requests.cancel');
     }
 
@@ -566,7 +573,8 @@ class EmployeeScheduleRequestResource extends Resource
         }
 
         return $user->hasRole('super_admin')
-            || $user->hasRole('hr')
+            || $user->can('employees.schedule_requests.archive')
+            || $user->can('workflow.archive')
             || (int) $record->employee?->manager_id === (int) $user->getKey()
             || (int) $record->approvalWorkflow?->submitted_by === (int) $user->getKey()
             || (int) $record->approvalWorkflow?->current_approver_id === (int) $user->getKey()
@@ -579,7 +587,7 @@ class EmployeeScheduleRequestResource extends Resource
 
         return $user instanceof User
             && $record->canBeMovedToDeleted()
-            && ($user->hasRole('super_admin') || $user->hasRole('hr'));
+            && ($user->hasRole('super_admin') || $user->can('employees.schedule_requests.delete'));
     }
 
     public static function canRestoreDeletedRequest(EmployeeScheduleRequest $record): bool
@@ -595,7 +603,8 @@ class EmployeeScheduleRequestResource extends Resource
     {
         $user = auth()->user();
 
-        return $user instanceof User && ($user->hasRole('super_admin') || $user->hasRole('hr'));
+        return $user instanceof User
+            && ($user->hasRole('super_admin') || $user->can('employees.schedule_requests.delete'));
     }
 
     private static function wasUserInvolvedInWorkflow(EmployeeScheduleRequest $record, User $user): bool
@@ -608,7 +617,7 @@ class EmployeeScheduleRequestResource extends Resource
                 ->exists();
     }
 
-    public static function canReview(EmployeeScheduleRequest $record): bool
+    public static function canReview(EmployeeScheduleRequest $record, array $permissions = ['employees.schedule_requests.approve']): bool
     {
         $user = auth()->user();
 
@@ -621,13 +630,11 @@ class EmployeeScheduleRequestResource extends Resource
         if ($workflow instanceof ApprovalWorkflow && $workflow->current_approver_id !== null) {
             return (int) $workflow->current_approver_id === (int) $user->getKey()
                 || $user->hasRole('super_admin')
-                || $user->hasRole('hr')
-                || $user->can('employees.schedule_requests.approve');
+                || collect($permissions)->contains(fn (string $permission): bool => $user->can($permission));
         }
 
         return $user->hasRole('super_admin')
-            || $user->hasRole('hr')
-            || $user->can('employees.schedule_requests.approve')
+            || collect($permissions)->contains(fn (string $permission): bool => $user->can($permission))
             || (int) $record->employee?->manager_id === (int) $user->getKey();
     }
 
@@ -638,8 +645,10 @@ class EmployeeScheduleRequestResource extends Resource
         return $user instanceof User
             && (
                 $user->hasRole('super_admin')
-                || $user->hasRole('hr')
                 || $user->can('employees.schedule_requests.approve')
+                || $user->can('workflow.approve')
+                || $user->can('workflow.forward')
+                || $user->can('workflow.reject')
                 || $user->assignedApprovalWorkflows()->whereIn('status', [
                     ApprovalWorkflow::STATUS_PENDING,
                     ApprovalWorkflow::STATUS_IN_REVIEW,
@@ -657,7 +666,7 @@ class EmployeeScheduleRequestResource extends Resource
             return [];
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('employees.schedule_requests.create')) {
+        if ($user->hasRole('super_admin') || $user->can('employees.schedule_requests.create')) {
             return User::query()->orderBy('name')->pluck('name', 'id')->all();
         }
 

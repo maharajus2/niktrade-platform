@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Certificates;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\Certificates\Pages\CreateCertificate;
 use App\Filament\Resources\Certificates\Pages\EditCertificate;
 use App\Filament\Resources\Certificates\Pages\ListCertificates;
@@ -16,6 +17,10 @@ use Filament\Tables\Table;
 
 class CertificateResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'certificates';
+
     /*
      * Модель, с которой работает этот ресурс.
      *

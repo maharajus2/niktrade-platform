@@ -5,10 +5,13 @@ namespace App\Filament\Widgets\Hr;
 use App\Filament\Resources\AdminUsers\UserResource;
 use App\Filament\Resources\Departments\DepartmentResource;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
+use App\Filament\Widgets\Hr\Concerns\CanViewHrDashboard;
 use Filament\Widgets\Widget;
 
 class HrQuickActionsWidget extends Widget
 {
+    use CanViewHrDashboard;
+
     protected string $view = 'filament.widgets.hr.quick-actions-widget';
 
     protected int|string|array $columnSpan = 'full';

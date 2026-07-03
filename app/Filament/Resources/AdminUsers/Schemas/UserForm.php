@@ -138,6 +138,7 @@ class UserForm
                             ->multiple()
                             ->preload()
                             ->searchable()
+                            ->visible(fn (): bool => UserResource::canManageEmployeeRoles())
                             ->columnSpanFull(),
 
                         Select::make('manager_id')

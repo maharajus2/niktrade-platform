@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Brands;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\Brands\Pages\CreateBrand;
 use App\Filament\Resources\Brands\Pages\EditBrand;
 use App\Filament\Resources\Brands\Pages\ListBrands;
@@ -16,6 +17,10 @@ use Filament\Tables\Table;
 
 class BrandResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'brands';
+
     protected static ?string $model = Brand::class;
 
     protected static ?string $navigationLabel = 'Бренды';

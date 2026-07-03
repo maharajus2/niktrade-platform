@@ -10,6 +10,14 @@ class ProductStatsWidget extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        return $user !== null
+            && ($user->hasRole('super_admin') || $user->can('widgets.products.view'));
+    }
+
     protected function getStats(): array
     {
         return [

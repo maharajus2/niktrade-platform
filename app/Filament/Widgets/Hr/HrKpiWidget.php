@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets\Hr;
 
+use App\Filament\Widgets\Hr\Concerns\CanViewHrDashboard;
 use App\Filament\Resources\AdminUsers\UserResource;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use App\Models\EmployeeDocument;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class HrKpiWidget extends Widget
 {
+    use CanViewHrDashboard;
+
     protected string $view = 'filament.widgets.hr.kpi-widget';
 
     protected int|string|array $columnSpan = 'full';

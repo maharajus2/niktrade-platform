@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Warehouses;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\Warehouses\Pages\CreateWarehouse;
 use App\Filament\Resources\Warehouses\Pages\EditWarehouse;
 use App\Filament\Resources\Warehouses\Pages\ListWarehouses;
@@ -16,6 +17,10 @@ use Filament\Tables\Table;
 
 class WarehouseResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'warehouses';
+
     protected static ?string $model = Warehouse::class;
 
     protected static ?string $navigationLabel = 'Склады';

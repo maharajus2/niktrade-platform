@@ -29,7 +29,7 @@ class AdminRoles
         'pickup_operator' => 'Выдача заказов со склада.',
         'content_manager' => 'Каталог, товары и сертификаты.',
         'accountant' => 'Оплаты и финансовые операции.',
-        'hr' => 'Сотрудники, HR-данные и кадровые процессы.',
+        'hr' => 'Кадровая работа, сотрудники, документы, графики и заявки.',
     ];
 
     private const COLORS = [
@@ -41,7 +41,7 @@ class AdminRoles
         'pickup_operator' => 'purple',
         'content_manager' => 'gray',
         'accountant' => 'emerald',
-        'hr' => 'pink',
+        'hr' => 'purple',
     ];
 
     public static function label(string $role): string

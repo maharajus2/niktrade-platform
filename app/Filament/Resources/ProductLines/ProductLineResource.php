@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductLines;
 
+use App\Filament\Resources\Concerns\UsesResourcePermissions;
 use App\Filament\Resources\ProductLines\Pages\CreateProductLine;
 use App\Filament\Resources\ProductLines\Pages\EditProductLine;
 use App\Filament\Resources\ProductLines\Pages\ListProductLines;
@@ -16,6 +17,10 @@ use Filament\Tables\Table;
 
 class ProductLineResource extends Resource
 {
+    use UsesResourcePermissions;
+
+    protected static string $permissionPrefix = 'product_lines';
+
     protected static ?string $model = ProductLine::class;
 
     protected static ?string $navigationLabel = 'Линейки';

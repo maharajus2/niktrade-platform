@@ -34,7 +34,8 @@ class DashboardWidgetRegistry
 
     public static function isHrDashboard(?User $user): bool
     {
-        return $user instanceof User && ($user->hasRole('super_admin') || $user->hasRole('hr'));
+        return $user instanceof User
+            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view'));
     }
 
     public static function widgetsFor(?User $user): array

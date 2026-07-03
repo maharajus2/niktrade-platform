@@ -2,12 +2,9 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\AnalyticsPlaceholderWidget;
-use App\Filament\Widgets\OrderSlaStatsWidget;
-use App\Filament\Widgets\ProductStatsWidget;
-use App\Filament\Widgets\RussianTimeWidget;
-use App\Filament\Widgets\SalesStatsWidget;
+use App\Support\Dashboard\DashboardWidgetRegistry;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Illuminate\Contracts\Support\Htmlable;
 
 class Dashboard extends BaseDashboard
 {
@@ -15,22 +12,40 @@ class Dashboard extends BaseDashboard
 
     protected static ?string $navigationLabel = 'Главная';
 
+    public static function getNavigationLabel(): string
+    {
+        return DashboardWidgetRegistry::isHrDashboard(auth()->user())
+            ? 'Рабочий стол'
+            : parent::getNavigationLabel();
+    }
+
     public function getColumns(): array|int
     {
         return [
             'default' => 1,
             'md' => 2,
+            'xl' => 4,
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return DashboardWidgetRegistry::isHrDashboard(auth()->user())
+            ? 'Рабочий стол'
+            : parent::getTitle();
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        if (! DashboardWidgetRegistry::isHrDashboard(auth()->user())) {
+            return null;
+        }
+
+        return 'Добро пожаловать, '.auth()->user()->name.' · '.now()->translatedFormat('d F Y');
     }
 
     public function getWidgets(): array
     {
-        return [
-            RussianTimeWidget::class,
-            OrderSlaStatsWidget::class,
-            ProductStatsWidget::class,
-            SalesStatsWidget::class,
-            AnalyticsPlaceholderWidget::class,
-        ];
+        return DashboardWidgetRegistry::widgetsFor(auth()->user());
     }
 }

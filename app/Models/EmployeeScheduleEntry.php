@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'request_reason_type',
     'vacation_without_pay',
     'comment',
+    'visibility',
+    'source',
     'created_by',
     'updated_by',
 ])]
@@ -31,6 +34,28 @@ class EmployeeScheduleEntry extends Model
     public const TYPE_SICK_LEAVE = 'sick_leave';
 
     public const TYPE_CUSTOM = 'custom';
+
+    public const TYPE_BUSINESS_TRIP = 'business_trip';
+
+    public const TYPE_PROBATION = 'probation';
+
+    public const TYPE_MEDICAL_EXAM = 'medical_exam';
+
+    public const TYPE_DOCUMENT_EXPIRATION = 'document_expiration';
+
+    public const TYPE_EMPLOYMENT_EVENT = 'employment_event';
+
+    public const VISIBILITY_PRIVATE = 'private';
+
+    public const VISIBILITY_MANAGER = 'manager';
+
+    public const VISIBILITY_HR = 'hr';
+
+    public const VISIBILITY_DEPARTMENT = 'department';
+
+    public const VISIBILITY_PUBLIC = 'public';
+
+    public const SOURCE_HR = 'hr';
 
     public const REASON_TIME_OFF = 'time_off';
 
@@ -53,6 +78,47 @@ class EmployeeScheduleEntry extends Model
             self::REASON_TIME_OFF => 'Отгул',
             self::REASON_FAMILY => 'По семейным обстоятельствам',
         ];
+    }
+
+    public static function visibilityOptions(): array
+    {
+        return [
+            self::VISIBILITY_PRIVATE => 'Личное',
+            self::VISIBILITY_MANAGER => 'Сотрудник и руководитель',
+            self::VISIBILITY_HR => 'Сотрудник и HR',
+            self::VISIBILITY_DEPARTMENT => 'Руководители отдела',
+            self::VISIBILITY_PUBLIC => 'Общее',
+        ];
+    }
+
+    public static function hrVisibleTypes(): array
+    {
+        return [
+            self::TYPE_SHIFT,
+            self::TYPE_DAY_OFF,
+            self::TYPE_VACATION,
+            self::TYPE_SICK_LEAVE,
+            self::TYPE_BUSINESS_TRIP,
+            self::TYPE_PROBATION,
+            self::TYPE_MEDICAL_EXAM,
+            self::TYPE_DOCUMENT_EXPIRATION,
+            self::TYPE_EMPLOYMENT_EVENT,
+        ];
+    }
+
+    public function scopeHrVisible(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query
+                ->where('visibility', self::VISIBILITY_HR)
+                ->orWhereIn('type', self::hrVisibleTypes());
+        });
+    }
+
+    public function isHrVisible(): bool
+    {
+        return $this->visibility === self::VISIBILITY_HR
+            || in_array($this->type, self::hrVisibleTypes(), true);
     }
 
     public function employee(): BelongsTo

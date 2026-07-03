@@ -24,6 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
     'date_of_birth',
     'telegram_username',
     'emergency_contact',
+    'position',
     'employment_type',
     'employee_status',
     'employment_status',
@@ -195,6 +196,11 @@ class User extends Authenticatable
     public function scheduleEntries(): HasMany
     {
         return $this->hasMany(EmployeeScheduleEntry::class, 'employee_id');
+    }
+
+    public function scheduleRequests(): HasMany
+    {
+        return $this->hasMany(EmployeeScheduleRequest::class, 'employee_id');
     }
 
     public function futureScheduleEntries(): HasMany

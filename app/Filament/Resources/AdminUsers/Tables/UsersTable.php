@@ -29,7 +29,7 @@ class UsersTable
                 ->leftJoin('departments', 'departments.id', '=', 'users.department_id')
                 ->with(['roles', 'manager', 'department'])
                 ->orderByRaw('departments.name asc nulls last')
-                ->orderByRaw('case when users.id = departments.manager_id then 0 when users.id = departments.acting_manager_id then 1 else 2 end')
+                ->orderByRaw('users.position asc nulls last')
                 ->orderBy('users.name'))
             ->groups([
                 Group::make('department_id')
@@ -47,7 +47,7 @@ class UsersTable
             ])
             ->defaultGroup('department_id')
             ->groupingSettingsHidden()
-            ->filtersLayout(FiltersLayout::AboveContent)
+            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
             ->filtersFormColumns(2)
             ->columns([
                 ImageColumn::make('avatar_path')
@@ -61,6 +61,12 @@ class UsersTable
 
                 TextColumn::make('name')
                     ->label('ФИО')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('position')
+                    ->label('Должность')
+                    ->placeholder('—')
                     ->searchable()
                     ->sortable(),
 

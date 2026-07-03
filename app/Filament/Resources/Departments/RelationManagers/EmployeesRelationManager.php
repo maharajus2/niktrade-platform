@@ -54,6 +54,10 @@ class EmployeesRelationManager extends RelationManager
                     ->tel()
                     ->maxLength(255),
 
+                TextInput::make('position')
+                    ->label('Должность')
+                    ->maxLength(255),
+
                 TextInput::make('password')
                     ->label('Пароль')
                     ->password()
@@ -86,7 +90,10 @@ class EmployeesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['roles', 'department']))
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query
+                ->with(['roles', 'department'])
+                ->orderByRaw('position asc nulls last')
+                ->orderBy('name'))
             ->emptyStateHeading('В этом отделе пока нет сотрудников.')
             ->emptyStateDescription('Добавьте сотрудника, чтобы он появился в структуре отдела.')
             ->columns([
@@ -106,7 +113,9 @@ class EmployeesRelationManager extends RelationManager
 
                 TextColumn::make('position')
                     ->label('Должность')
-                    ->state(fn (): string => '—'),
+                    ->placeholder('—')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('roles.name')
                     ->label('Основная роль')

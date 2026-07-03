@@ -104,6 +104,10 @@ class UserResource extends Resource
                                 : null)
                             ->placeholder('—'),
 
+                        TextEntry::make('position')
+                            ->label('Должность')
+                            ->placeholder('—'),
+
                         TextEntry::make('department.manager.name')
                             ->label('Руководитель отдела')
                             ->url(fn (User $record): ?string => $record->department?->manager

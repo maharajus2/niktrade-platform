@@ -158,6 +158,10 @@ class UserForm
                             ->searchable()
                             ->preload()
                             ->nullable(),
+
+                        TextInput::make('position')
+                            ->label('Должность')
+                            ->maxLength(255),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

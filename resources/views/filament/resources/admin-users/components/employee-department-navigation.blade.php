@@ -2,28 +2,6 @@
     /** @var \Illuminate\Support\Collection<int, \App\Models\Department> $departments */
     $selectedDepartmentId = filled($selectedDepartmentId) ? (string) $selectedDepartmentId : null;
 
-    $departmentUrl = function (?int $departmentId) use ($baseUrl): string {
-        if ($departmentId === null) {
-            return $baseUrl;
-        }
-
-        return $baseUrl.'?'.http_build_query([
-            'tableFilters' => [
-                'department_id' => [
-                    'value' => $departmentId,
-                ],
-            ],
-        ]);
-    };
-
-    $managementUrl = $baseUrl.'?'.http_build_query([
-        'tableFilters' => [
-            'management' => [
-                'isActive' => true,
-            ],
-        ],
-    ]);
-
     $chipStyle = function (bool $active): string {
         return $active
             ? 'background: #16a34a; border-color: #16a34a; color: #ffffff;'
@@ -44,18 +22,18 @@
     </div>
 
     <div style="align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
-        <a href="{{ $departmentUrl(null) }}" style="{{ $chipStyle($selectedDepartmentId === null && ! $managementSelected) }} border: 1px solid; border-radius: 999px; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; padding: 8px 11px; text-decoration: none;">
+        <button type="button" wire:click="filterByDepartment" style="{{ $chipStyle($selectedDepartmentId === null && ! $managementSelected) }} border: 1px solid; border-radius: 999px; cursor: pointer; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; padding: 8px 11px;">
             Все
-        </a>
+        </button>
 
-        <a href="{{ $managementUrl }}" style="{{ $chipStyle($managementSelected) }} border: 1px solid; border-radius: 999px; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; padding: 8px 11px; text-decoration: none;">
+        <button type="button" wire:click="filterManagement" style="{{ $chipStyle($managementSelected) }} border: 1px solid; border-radius: 999px; cursor: pointer; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; padding: 8px 11px;">
             Руководящий состав
-        </a>
+        </button>
 
         @foreach ($departments as $department)
-            <a href="{{ $departmentUrl($department->id) }}" style="{{ $chipStyle($selectedDepartmentId === (string) $department->id) }} border: 1px solid; border-radius: 999px; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; max-width: 100%; overflow-wrap: anywhere; padding: 8px 11px; text-decoration: none;">
+            <button type="button" wire:click="filterByDepartment({{ $department->id }})" style="{{ $chipStyle($selectedDepartmentId === (string) $department->id) }} border: 1px solid; border-radius: 999px; cursor: pointer; display: inline-flex; font-size: 13px; font-weight: 600; line-height: 1; max-width: 100%; overflow-wrap: anywhere; padding: 8px 11px;">
                 {{ $department->name }}
-            </a>
+            </button>
         @endforeach
     </div>
 </section>

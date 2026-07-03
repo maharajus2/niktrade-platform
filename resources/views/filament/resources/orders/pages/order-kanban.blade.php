@@ -132,9 +132,20 @@
                                     $fulfillmentStyle = $order->fulfillment_method === \App\Models\Order::FULFILLMENT_PICKUP
                                         ? 'background: rgb(250, 245, 255); color: rgb(126, 34, 206); border-color: rgba(126, 34, 206, 0.2);'
                                         : 'background: rgb(239, 246, 255); color: rgb(29, 78, 216); border-color: rgba(29, 78, 216, 0.2);';
+                                    $customerName = trim($order->customer_first_name . ' ' . $order->customer_last_name) ?: 'Покупатель';
+                                    $locationLabel = $order->fulfillment_method === \App\Models\Order::FULFILLMENT_PICKUP
+                                        ? ($order->warehouse_name_snapshot ?: 'Пункт самовывоза не указан')
+                                        : ($order->city ?: 'Город не указан');
+                                    $slaBadgeStyle = match ($slaState) {
+                                        \App\Models\Order::SLA_STATE_OVERDUE => 'background: rgb(254, 226, 226); color: rgb(153, 27, 27); border-color: rgb(254, 202, 202);',
+                                        \App\Models\Order::SLA_STATE_WARNING => 'background: rgb(254, 249, 195); color: rgb(133, 77, 14); border-color: rgb(254, 240, 138);',
+                                        \App\Models\Order::SLA_STATE_OK => 'background: rgb(220, 252, 231); color: rgb(22, 101, 52); border-color: rgb(187, 247, 208);',
+                                        default => 'background: rgb(243, 244, 246); color: rgb(75, 85, 99); border-color: rgb(229, 231, 235);',
+                                    };
                                 @endphp
 
                                 <article
+                                    x-data="{ expanded: false }"
                                     @if (! $order->isArchived())
                                         draggable="true"
                                         x-on:dragstart="
@@ -151,73 +162,105 @@
                                             overStatus = null;
                                         "
                                     @endif
-                                    style="border: 1px solid rgb(229, 231, 235); border-left: 4px solid {{ $accentBorder }}; border-radius: 0.875rem; background: {{ $accentBackground }}; padding: 0.875rem; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07); cursor: {{ $order->isArchived() ? 'default' : 'grab' }};"
+                                    style="border: 1px solid rgb(229, 231, 235); border-left: 4px solid {{ $accentBorder }}; border-radius: 0.875rem; background: {{ $accentBackground }}; padding: 0.7rem; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07); cursor: {{ $order->isArchived() ? 'default' : 'grab' }};"
                                 >
-                                    <a href="{{ $this->viewOrderUrl($order) }}" style="display: block; color: inherit; text-decoration: none;">
-                                        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;">
-                                            <div>
-                                                <div style="color: rgb(21, 128, 61); font-size: 0.925rem; font-weight: 800;">{{ $order->order_number }}</div>
-                                                <div style="color: rgb(107, 114, 128); font-size: 0.75rem;">{{ $order->created_at?->format('d.m.Y H:i') }}</div>
+                                    <div style="display: grid; gap: 0.55rem;">
+                                        <a href="{{ $this->viewOrderUrl($order) }}" style="display: block; color: inherit; text-decoration: none;">
+                                            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem;">
+                                                <div style="min-width: 0;">
+                                                    <div style="color: rgb(21, 128, 61); font-size: 0.84rem; font-weight: 850; line-height: 1.25; overflow-wrap: anywhere;">{{ $order->order_number }}</div>
+                                                    <div style="color: rgb(107, 114, 128); font-size: 0.72rem; margin-top: 0.12rem;">{{ $order->created_at?->format('d.m.Y H:i') }}</div>
+                                                </div>
+                                                <span style="display: inline-flex; flex: none; white-space: nowrap; border: 1px solid; border-radius: 999px; padding: 0.2rem 0.48rem; font-size: 0.68rem; font-weight: 800; {{ $fulfillmentStyle }}">
+                                                    {{ $order->getFulfillmentMethodLabel() }}
+                                                </span>
                                             </div>
-                                            <span style="display: inline-flex; white-space: nowrap; border: 1px solid; border-radius: 999px; padding: 0.25rem 0.55rem; font-size: 0.72rem; font-weight: 800; {{ $fulfillmentStyle }}">
-                                                {{ $order->getFulfillmentMethodLabel() }}
-                                            </span>
+
+                                            <div style="display: grid; gap: 0.15rem; margin-top: 0.55rem; color: rgb(55, 65, 81); font-size: 0.8rem; line-height: 1.28;">
+                                                <div style="color: rgb(17, 24, 39); font-weight: 800; overflow-wrap: anywhere;">{{ $customerName }}</div>
+                                                <div style="color: rgb(75, 85, 99); overflow-wrap: anywhere;">{{ $locationLabel }}</div>
+                                            </div>
+
+                                            <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 0.65rem; margin-top: 0.55rem;">
+                                                <div style="color: rgb(17, 24, 39); font-size: 0.92rem; font-weight: 850; white-space: nowrap;">{{ $this->money($order->total) }}</div>
+                                                <span style="display: inline-flex; max-width: 100%; border: 1px solid; border-radius: 999px; padding: 0.22rem 0.5rem; color: rgb(55, 65, 81); font-size: 0.68rem; font-weight: 800; line-height: 1.15; text-align: right; {{ $slaBadgeStyle }}">
+                                                    SLA: {{ $order->getSlaTimingLabel() }}
+                                                </span>
+                                            </div>
+                                        </a>
+
+                                        <button
+                                            type="button"
+                                            x-on:click="expanded = ! expanded"
+                                            x-bind:aria-expanded="expanded.toString()"
+                                            style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; width: 100%; border: 1px solid rgb(229, 231, 235); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.72); padding: 0.34rem 0.55rem; color: rgb(55, 65, 81); font-size: 0.73rem; font-weight: 800; cursor: pointer;"
+                                        >
+                                            <span x-show="! expanded">▼ Подробнее</span>
+                                            <span x-show="expanded">▲ Свернуть</span>
+                                        </button>
+
+                                        <div
+                                            x-show="expanded"
+                                            style="display: grid; gap: 0.4rem; border-top: 1px solid rgb(229, 231, 235); padding-top: 0.55rem; color: rgb(55, 65, 81); font-size: 0.75rem; line-height: 1.35;"
+                                        >
+                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
+                                                <span style="color: rgb(107, 114, 128);">Телефон</span>
+                                                <span style="color: rgb(17, 24, 39); font-weight: 700; text-align: right; overflow-wrap: anywhere;">{{ $order->phone ?: 'Не указан' }}</span>
+                                            </div>
+
+                                            @if ($order->email)
+                                                <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
+                                                    <span style="color: rgb(107, 114, 128);">Email</span>
+                                                    <span style="color: rgb(17, 24, 39); font-weight: 700; text-align: right; overflow-wrap: anywhere;">{{ $order->email }}</span>
+                                                </div>
+                                            @endif
+
+                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
+                                                <span style="color: rgb(107, 114, 128);">Оплата</span>
+                                                <span style="color: rgb(17, 24, 39); font-weight: 700; text-align: right;">{{ $this->paymentStatusLabel($order) }}</span>
+                                            </div>
+
+                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
+                                                <span style="color: rgb(107, 114, 128);">Получение</span>
+                                                <span style="color: rgb(17, 24, 39); font-weight: 700; text-align: right;">{{ $this->fulfillmentStatusLabel($order) }}</span>
+                                            </div>
+
+                                            @if ($order->delivery_comment)
+                                                <div style="display: grid; gap: 0.15rem;">
+                                                    <span style="color: rgb(107, 114, 128);">Комментарий доставки</span>
+                                                    <span style="color: rgb(17, 24, 39); font-weight: 700; overflow-wrap: anywhere;">{{ $order->delivery_comment }}</span>
+                                                </div>
+                                            @endif
+
+                                            @if ($order->comment)
+                                                <div style="display: grid; gap: 0.15rem;">
+                                                    <span style="color: rgb(107, 114, 128);">Комментарий</span>
+                                                    <span style="color: rgb(17, 24, 39); font-weight: 700; overflow-wrap: anywhere;">{{ $order->comment }}</span>
+                                                </div>
+                                            @endif
                                         </div>
+                                    </div>
 
-                                        <div style="display: grid; gap: 0.25rem; margin-top: 0.75rem; color: rgb(55, 65, 81); font-size: 0.875rem; line-height: 1.35;">
-                                            <div style="color: rgb(17, 24, 39); font-weight: 800;">
-                                                {{ trim($order->customer_first_name . ' ' . $order->customer_last_name) ?: 'Покупатель' }}
-                                            </div>
-                                            <div>{{ $order->phone ?: 'Телефон не указан' }}</div>
-                                            <div>
-                                                @if ($order->fulfillment_method === \App\Models\Order::FULFILLMENT_PICKUP)
-                                                    {{ $order->warehouse_name_snapshot ?: 'Пункт самовывоза не указан' }}
-                                                @else
-                                                    {{ $order->city ?: 'Город не указан' }}
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <dl style="display: grid; gap: 0.5rem; margin: 0.875rem 0 0; font-size: 0.78rem;">
-                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
-                                                <dt style="color: rgb(107, 114, 128);">Итого</dt>
-                                                <dd style="margin: 0; color: rgb(17, 24, 39); font-weight: 800;">{{ $this->money($order->total) }}</dd>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
-                                                <dt style="color: rgb(107, 114, 128);">Оплата</dt>
-                                                <dd style="margin: 0; color: rgb(55, 65, 81); font-weight: 700; text-align: right;">{{ $this->paymentStatusLabel($order) }}</dd>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
-                                                <dt style="color: rgb(107, 114, 128);">Получение</dt>
-                                                <dd style="margin: 0; color: rgb(55, 65, 81); font-weight: 700; text-align: right;">{{ $this->fulfillmentStatusLabel($order) }}</dd>
-                                            </div>
-                                            <div style="display: flex; justify-content: space-between; gap: 0.75rem;">
-                                                <dt style="color: rgb(107, 114, 128);">SLA</dt>
-                                                <dd style="margin: 0; color: rgb(55, 65, 81); font-weight: 700; text-align: right;">{{ $order->getSlaTimingLabel() }}</dd>
-                                            </div>
-                                        </dl>
-                                    </a>
-
-                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.875rem;">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.42rem; margin-top: 0.65rem;">
                                         @foreach ($this->getQuickActions($order) as $targetStatus => $label)
                                             <button
                                                 type="button"
                                                 wire:click="moveToStatus({{ $order->id }}, '{{ $targetStatus }}')"
                                                 wire:loading.attr="disabled"
                                                 wire:target="moveToStatus({{ $order->id }}, '{{ $targetStatus }}')"
-                                                style="border: 0; border-radius: 0.5rem; background: rgb(22, 101, 52); padding: 0.45rem 0.65rem; color: #fff; font-size: 0.75rem; font-weight: 800; cursor: pointer;"
+                                                style="border: 0; border-radius: 0.5rem; background: rgb(22, 101, 52); padding: 0.38rem 0.56rem; color: #fff; font-size: 0.72rem; font-weight: 800; cursor: pointer;"
                                             >
                                                 {{ $label }}
                                             </button>
                                         @endforeach
                                     </div>
 
-                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.42rem; margin-top: 0.45rem;">
                                         @if ($this->canShowArchiveAction($order))
                                             <button
                                                 type="button"
                                                 wire:click="confirmArchive({{ $order->id }})"
-                                                style="display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.45rem 0.65rem; color: rgb(55, 65, 81); font-size: 0.75rem; font-weight: 800; cursor: pointer;"
+                                                style="display: inline-flex; align-items: center; gap: 0.35rem; border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.38rem 0.56rem; color: rgb(55, 65, 81); font-size: 0.72rem; font-weight: 800; cursor: pointer;"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width: 1rem; height: 1rem;">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
@@ -228,7 +271,7 @@
 
                                         <a
                                             href="{{ $this->editOrderUrl($order) }}"
-                                            style="display: inline-flex; align-items: center; border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.45rem 0.65rem; color: rgb(55, 65, 81); font-size: 0.75rem; font-weight: 800; text-decoration: none;"
+                                            style="display: inline-flex; align-items: center; border: 1px solid rgb(209, 213, 219); border-radius: 0.5rem; background: #fff; padding: 0.38rem 0.56rem; color: rgb(55, 65, 81); font-size: 0.72rem; font-weight: 800; text-decoration: none;"
                                         >
                                             Открыть
                                         </a>

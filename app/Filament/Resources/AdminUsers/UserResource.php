@@ -179,6 +179,11 @@ class UserResource extends Resource
                     ->columns(2)
                     ->columnSpanFull(),
 
+                SchemaView::make('filament.resources.admin-users.components.employee-schedule-section')
+                    ->visible(fn (User $record): bool => static::canViewEmployeeSchedule($record))
+                    ->viewData(fn (User $record): array => ['employee' => $record])
+                    ->columnSpanFull(),
+
                 Section::make('Испытательный срок')
                     ->visible(fn (): bool => static::canManageProbation())
                     ->schema([
@@ -223,11 +228,6 @@ class UserResource extends Resource
                 SchemaView::make('filament.resources.admin-users.components.employee-documents-dashboard')
                     ->visible(fn (User $record): bool => static::canViewEmployeeDocuments($record))
                     ->viewData(fn (User $record): array => static::employeeDocumentsDashboardData($record))
-                    ->columnSpanFull(),
-
-                SchemaView::make('filament.resources.admin-users.components.employee-schedule-section')
-                    ->visible(fn (User $record): bool => static::canViewEmployeeSchedule($record))
-                    ->viewData(fn (User $record): array => ['employee' => $record])
                     ->columnSpanFull(),
             ]);
     }

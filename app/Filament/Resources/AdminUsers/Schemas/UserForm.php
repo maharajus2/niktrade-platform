@@ -167,6 +167,11 @@ class UserForm
                     ->columns(2)
                     ->columnSpanFull(),
 
+                SchemaView::make('filament.resources.admin-users.components.employee-schedule-section')
+                    ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeSchedule($record))
+                    ->viewData(fn (User $record): array => ['employee' => $record])
+                    ->columnSpanFull(),
+
                 Section::make('Испытательный срок')
                     ->visible(fn (): bool => UserResource::canManageProbation())
                     ->headerActions([
@@ -238,11 +243,6 @@ class UserForm
                 SchemaView::make('filament.resources.admin-users.components.employee-documents-dashboard')
                     ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeDocuments($record))
                     ->viewData(fn (User $record): array => UserResource::employeeDocumentsDashboardData($record))
-                    ->columnSpanFull(),
-
-                SchemaView::make('filament.resources.admin-users.components.employee-schedule-section')
-                    ->visible(fn (?User $record): bool => $record !== null && UserResource::canViewEmployeeSchedule($record))
-                    ->viewData(fn (User $record): array => ['employee' => $record])
                     ->columnSpanFull(),
             ]);
     }

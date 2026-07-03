@@ -15,7 +15,6 @@ use App\Support\AdminRoles;
 use App\Support\EmployeeRequiredDocuments;
 use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -60,10 +59,9 @@ class UserResource extends Resource
             ->components([
                 Section::make('Основная информация')
                     ->schema([
-                        ImageEntry::make('avatar_path')
-                            ->label('Фото')
-                            ->disk('public')
-                            ->circular(),
+                        SchemaView::make('filament.resources.admin-users.components.employee-personnel-card')
+                            ->viewData(fn (User $record): array => ['employee' => $record])
+                            ->columnSpanFull(),
 
                         TextEntry::make('name')
                             ->label('ФИО'),

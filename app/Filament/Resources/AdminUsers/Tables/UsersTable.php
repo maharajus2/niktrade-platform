@@ -24,7 +24,11 @@ class UsersTable
                 ImageColumn::make('avatar_path')
                     ->label('Фото')
                     ->disk('public')
-                    ->circular(),
+                    ->imageWidth(40)
+                    ->imageHeight(52)
+                    ->extraImgAttributes([
+                        'style' => 'background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12); object-fit: cover;',
+                    ]),
 
                 TextColumn::make('name')
                     ->label('ФИО')

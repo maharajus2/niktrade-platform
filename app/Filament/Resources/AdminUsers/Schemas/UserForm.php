@@ -33,10 +33,17 @@ class UserForm
                             ->label('Фото')
                             ->disk('public')
                             ->directory('admin-employees/avatars')
-                            ->avatar()
+                            ->image()
                             ->imageEditor()
-                            ->circleCropper()
+                            ->imageAspectRatio('35:45')
+                            ->automaticallyCropImagesToAspectRatio()
+                            ->imageEditorAspectRatios(['35:45'])
+                            ->imagePreviewHeight('155')
                             ->maxSize(3072),
+
+                        SchemaView::make('filament.resources.admin-users.components.employee-personnel-card')
+                            ->viewData(fn (?User $record): array => ['employee' => $record])
+                            ->columnSpan(1),
 
                         TextInput::make('name')
                             ->label('ФИО')

@@ -55,21 +55,40 @@ class EmployeeScheduleCalendar extends Component
         $this->authorizeScheduleUpdate($employee);
         $this->ensureIndividualSchedule($employee);
 
-        $data = $this->normalizePayload($payload);
-        $this->ensureEditableDate($data['date']);
-        $this->ensureNoDuplicate($employee, $data);
+        $range = $this->normalizeRangePayload($payload);
+        $created = 0;
+        $skipped = 0;
 
-        $entry = $employee->scheduleEntries()->create($data + [
-            'created_by' => auth()->id(),
-            'updated_by' => auth()->id(),
-        ]);
+        for ($date = Carbon::parse($range['start_date']); $date->lte(Carbon::parse($range['end_date'])); $date->addDay()) {
+            $data = $range['data'] + [
+                'date' => $date->toDateString(),
+            ];
+
+            $this->ensureEditableDate($data['date']);
+
+            if ($this->hasDuplicate($employee, $data)) {
+                $skipped++;
+
+                continue;
+            }
+
+            $employee->scheduleEntries()->create($data + [
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]);
+
+            $created++;
+        }
 
         Notification::make()
-            ->title('Событие сохранено.')
+            ->title("Создано событий: {$created}. Пропущено дублей: {$skipped}.")
             ->success()
             ->send();
 
-        return $this->eventPayload($entry);
+        return [
+            'created' => $created,
+            'skipped' => $skipped,
+        ];
     }
 
     /**
@@ -85,7 +104,7 @@ class EmployeeScheduleCalendar extends Component
         $this->ensureIndividualSchedule($employee);
         $this->ensureEditableDate($entry->date->toDateString());
 
-        $data = $this->normalizePayload($payload);
+        $data = $this->normalizeSinglePayload($payload);
         $this->ensureEditableDate($data['date']);
         $this->ensureNoDuplicate($employee, $data, $entry->id);
 
@@ -112,7 +131,8 @@ class EmployeeScheduleCalendar extends Component
         return $this->updateCalendarEntry($entryId, [
             'type' => $entry->type,
             'title' => $entry->title,
-            'date' => $payload['date'] ?? $entry->date->toDateString(),
+            'start_date' => $payload['date'] ?? $entry->date->toDateString(),
+            'end_date' => $payload['date'] ?? $entry->date->toDateString(),
             'is_all_day' => $payload['is_all_day'] ?? $entry->is_all_day,
             'starts_at' => $payload['starts_at'] ?? $entry->starts_at,
             'ends_at' => $payload['ends_at'] ?? $entry->ends_at,
@@ -237,9 +257,69 @@ class EmployeeScheduleCalendar extends Component
 
     /**
      * @param  array<string, mixed>  $payload
+     * @return array{start_date: string, end_date: string, data: array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}}
+     */
+    private function normalizeRangePayload(array $payload): array
+    {
+        $startDateValue = $payload['start_date'] ?? $payload['date'] ?? null;
+        $endDateValue = $payload['end_date'] ?? $payload['date'] ?? $startDateValue;
+
+        if (blank($startDateValue) || blank($endDateValue)) {
+            throw ValidationException::withMessages([
+                'start_date' => 'Укажите дату начала и дату окончания.',
+            ]);
+        }
+
+        $startDate = Carbon::parse((string) $startDateValue)->toDateString();
+        $endDate = Carbon::parse((string) $endDateValue)->toDateString();
+
+        if ($endDate < $startDate) {
+            throw ValidationException::withMessages([
+                'end_date' => 'Дата окончания должна быть не раньше даты начала.',
+            ]);
+        }
+
+        $days = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
+
+        if ($days > 60) {
+            throw ValidationException::withMessages([
+                'end_date' => 'Диапазон не может быть больше 60 дней.',
+            ]);
+        }
+
+        $data = $this->normalizeEventPayload($payload);
+
+        if ($data['type'] === EmployeeScheduleEntry::TYPE_SHIFT && $endDate !== $startDate) {
+            throw ValidationException::withMessages([
+                'end_date' => 'Смена создаётся только на один день.',
+            ]);
+        }
+
+        return [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'data' => $data,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
      * @return array{type: string, title: ?string, date: string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}
      */
-    private function normalizePayload(array $payload): array
+    private function normalizeSinglePayload(array $payload): array
+    {
+        $range = $this->normalizeRangePayload($payload);
+
+        return $range['data'] + [
+            'date' => $range['start_date'],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}
+     */
+    private function normalizeEventPayload(array $payload): array
     {
         $type = (string) ($payload['type'] ?? EmployeeScheduleEntry::TYPE_SHIFT);
         $allowedTypes = array_keys(EmployeeScheduleEntry::typeOptions());
@@ -250,7 +330,6 @@ class EmployeeScheduleCalendar extends Component
             ]);
         }
 
-        $date = Carbon::parse((string) ($payload['date'] ?? today()->toDateString()))->toDateString();
         $isAllDay = filter_var($payload['is_all_day'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if (in_array($type, [
@@ -292,7 +371,6 @@ class EmployeeScheduleCalendar extends Component
         return [
             'type' => $type,
             'title' => $title === '' ? null : $title,
-            'date' => $date,
             'is_all_day' => $isAllDay,
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
@@ -346,20 +424,26 @@ class EmployeeScheduleCalendar extends Component
      */
     private function ensureNoDuplicate(User $employee, array $data, ?int $exceptId = null): void
     {
-        $exists = $employee->scheduleEntries()
-            ->whereDate('date', $data['date'])
-            ->where('type', $data['type'])
-            ->where('is_all_day', $data['is_all_day'])
-            ->where('starts_at', $data['starts_at'])
-            ->where('ends_at', $data['ends_at'])
-            ->when($data['type'] === EmployeeScheduleEntry::TYPE_CUSTOM, fn ($query) => $query->where('title', $data['title']))
-            ->when($exceptId, fn ($query) => $query->where('id', '!=', $exceptId))
-            ->exists();
-
-        if ($exists) {
+        if ($this->hasDuplicate($employee, $data, $exceptId)) {
             throw ValidationException::withMessages([
                 'schedule' => 'Такое событие уже есть в графике сотрудника.',
             ]);
         }
+    }
+
+    /**
+     * @param  array{type: string, date: string, is_all_day: bool, starts_at: ?string, ends_at: ?string, title: ?string}  $data
+     */
+    private function hasDuplicate(User $employee, array $data, ?int $exceptId = null): bool
+    {
+        return $employee->scheduleEntries()
+            ->whereDate('date', $data['date'])
+            ->where('type', $data['type'])
+            ->where('title', $data['title'])
+            ->where('is_all_day', $data['is_all_day'])
+            ->where('starts_at', $data['starts_at'])
+            ->where('ends_at', $data['ends_at'])
+            ->when($exceptId, fn ($query) => $query->where('id', '!=', $exceptId))
+            ->exists();
     }
 }

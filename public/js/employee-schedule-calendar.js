@@ -126,10 +126,21 @@
                             <input type="text" name="title" maxlength="255" placeholder="Например: обучение">
                         </label>
 
-                        <label>
-                            <span>Дата</span>
-                            <input type="date" name="date" required>
-                        </label>
+                        <div class="nt-schedule-form__date-grid">
+                            <label>
+                                <span>Дата начала</span>
+                                <input type="date" name="start_date" required>
+                            </label>
+
+                            <label>
+                                <span>Дата окончания</span>
+                                <input type="date" name="end_date" required>
+                            </label>
+                        </div>
+
+                        <div class="nt-schedule-modal__hint" data-nt-edit-range-hint hidden>
+                            Редактирование диапазона будет добавлено позже. Сейчас редактируется выбранный день.
+                        </div>
 
                         <label class="nt-schedule-checkbox">
                             <input type="checkbox" name="is_all_day">
@@ -182,18 +193,32 @@
 
             modal.querySelector('[name="type"]').addEventListener('change', () => updateModalVisibility(modal, true))
             modal.querySelector('[name="is_all_day"]').addEventListener('change', () => updateModalVisibility(modal, false))
+            modal.querySelector('[name="start_date"]').addEventListener('change', () => syncDateRange(modal))
 
             return modal
+        }
+
+        const syncDateRange = (modal) => {
+            const mode = modal.dataset.mode
+            const type = modal.querySelector('[name="type"]').value
+            const startDate = modal.querySelector('[name="start_date"]')
+            const endDate = modal.querySelector('[name="end_date"]')
+
+            if (mode === 'edit' || type === 'shift') {
+                endDate.value = startDate.value
+            }
         }
 
         const updateModalVisibility = (modal, typeChanged) => {
             const type = modal.querySelector('[name="type"]').value
             const titleWrapper = modal.querySelector('[data-nt-custom-title]')
             const allDayInput = modal.querySelector('[name="is_all_day"]')
+            const endDate = modal.querySelector('[name="end_date"]')
             const timeFields = modal.querySelector('[data-nt-time-fields]')
             const startsAt = modal.querySelector('[name="starts_at"]')
             const endsAt = modal.querySelector('[name="ends_at"]')
             const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave']
+            const isEditMode = modal.dataset.mode === 'edit'
 
             titleWrapper.hidden = type !== 'custom'
 
@@ -207,6 +232,9 @@
                 }
             }
 
+            syncDateRange(modal)
+
+            endDate.disabled = isEditMode || type === 'shift'
             allDayInput.disabled = type === 'shift' || forceAllDayTypes.includes(type)
             timeFields.hidden = allDayInput.checked
             startsAt.required = ! allDayInput.checked
@@ -221,7 +249,8 @@
             return {
                 type: modal.querySelector('[name="type"]').value,
                 title: modal.querySelector('[name="title"]').value,
-                date: modal.querySelector('[name="date"]').value,
+                start_date: modal.querySelector('[name="start_date"]').value,
+                end_date: modal.querySelector('[name="end_date"]').value,
                 is_all_day: modal.querySelector('[name="is_all_day"]').checked,
                 starts_at: modal.querySelector('[name="starts_at"]').value,
                 ends_at: modal.querySelector('[name="ends_at"]').value,
@@ -234,19 +263,23 @@
             const form = modal.querySelector('form')
             const error = modal.querySelector('[data-nt-schedule-error]')
             const deleteButton = modal.querySelector('[data-nt-schedule-delete]')
+            const editRangeHint = modal.querySelector('[data-nt-edit-range-hint]')
 
             form.reset()
+            modal.dataset.mode = mode
             error.textContent = ''
             modal.querySelector('#nt-schedule-modal-title').textContent = mode === 'create' ? 'Новое событие' : 'Редактирование события'
             modal.querySelector('[name="id"]').value = data.id || ''
             modal.querySelector('[name="type"]').value = data.type || 'shift'
             modal.querySelector('[name="title"]').value = data.title || ''
-            modal.querySelector('[name="date"]').value = data.date || formatDate(new Date())
+            modal.querySelector('[name="start_date"]').value = data.start_date || data.date || formatDate(new Date())
+            modal.querySelector('[name="end_date"]').value = data.end_date || data.date || data.start_date || formatDate(new Date())
             modal.querySelector('[name="is_all_day"]').checked = Boolean(data.is_all_day)
             modal.querySelector('[name="starts_at"]').value = data.starts_at || '09:00'
             modal.querySelector('[name="ends_at"]').value = data.ends_at || '18:00'
             modal.querySelector('[name="comment"]').value = data.comment || ''
             deleteButton.hidden = mode === 'create' || ! data.editable
+            editRangeHint.hidden = mode !== 'edit'
             updateModalVisibility(modal, false)
 
             form.onsubmit = (event) => {
@@ -354,7 +387,8 @@
 
                         openModal('create', {
                             type: 'shift',
-                            date: formatDate(clickedDate),
+                            start_date: formatDate(clickedDate),
+                            end_date: formatDate(clickedDate),
                             is_all_day: false,
                             starts_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '09:00' : formatTime(info.date),
                             ends_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '18:00' : formatTime(addMinutes(info.date, 60)),
@@ -375,7 +409,8 @@
                             id: event.id,
                             type: props.type || 'shift',
                             title: props.title || '',
-                            date: props.date || formatDate(event.start),
+                            start_date: props.date || formatDate(event.start),
+                            end_date: props.date || formatDate(event.start),
                             is_all_day: Boolean(props.is_all_day),
                             starts_at: props.starts_at || '',
                             ends_at: props.ends_at || '',

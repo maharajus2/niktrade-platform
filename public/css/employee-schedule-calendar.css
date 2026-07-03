@@ -224,6 +224,27 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.nt-schedule-form__date-grid {
+    display: grid;
+    gap: 0.875rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nt-schedule-modal__hint {
+    background: rgb(239 246 255);
+    border: 1px solid rgb(191 219 254);
+    border-radius: 0.5rem;
+    color: rgb(30 64 175);
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.75rem;
+}
+
+.dark .nt-schedule-modal__hint {
+    background: rgb(30 64 175 / 0.18);
+    border-color: rgb(59 130 246 / 0.35);
+    color: rgb(191 219 254);
+}
+
 .nt-schedule-modal__error {
     color: rgb(220 38 38);
     font-size: 0.875rem;
@@ -285,6 +306,10 @@
     }
 
     .nt-schedule-form__time-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nt-schedule-form__date-grid {
         grid-template-columns: 1fr;
     }
 

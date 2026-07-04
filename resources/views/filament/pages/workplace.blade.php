@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+    @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_EMPLOYEE)
+        @include('filament.pages.partials.employee-workplace', ['workspace' => $employeeWorkspace])
+    @else
     <style>
         .nt-workplace {
             width: 100%;
@@ -244,38 +247,7 @@
             </div>
         </header>
 
-        @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_EMPLOYEE)
-            <div class="nt-workplace__grid">
-                <div class="nt-workplace__span-5">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeMyDayWidget::class, key('workplace-employee-my-day'))
-                </div>
-
-                <div class="nt-workplace__span-4">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeCalendarWidget::class, key('workplace-employee-calendar'))
-                </div>
-
-                <aside class="nt-workplace__span-3 nt-workplace__stack">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeAttentionWidget::class, key('workplace-employee-attention'))
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeQuickActionsWidget::class, key('workplace-employee-actions'))
-                </aside>
-
-                <div class="nt-workplace__span-9">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeTasksWidget::class, key('workplace-employee-tasks'))
-                </div>
-
-                <aside class="nt-workplace__span-3">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeMessagesWidget::class, key('workplace-employee-messages'))
-                </aside>
-
-                <div class="nt-workplace__span-6">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeRequestsWidget::class, key('workplace-employee-requests'))
-                </div>
-
-                <div class="nt-workplace__span-6">
-                    @livewire(\App\Filament\Widgets\Employee\EmployeeDocumentsWidget::class, key('workplace-employee-documents'))
-                </div>
-            </div>
-        @elseif ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
+        @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
             <div class="nt-workplace__grid">
                 <div class="nt-workplace__span-6">
                     @livewire(\App\Filament\Widgets\Hr\HrTodayWidget::class, key('workplace-hr-today'))
@@ -306,4 +278,5 @@
             </div>
         @endif
     </div>
+    @endif
 </x-filament-panels::page>

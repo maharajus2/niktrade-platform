@@ -15,7 +15,7 @@
         : 'N';
 @endphp
 
-@vite('resources/css/work.css')
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <div class="nik-work-app">
     <div class="nik-work-shell">

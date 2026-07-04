@@ -17,6 +17,19 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+@once
+    <style>
+        {!! collect(file(resource_path('css/work.css')))
+            ->reject(function (string $line): bool {
+                $line = ltrim($line);
+
+                return str_starts_with($line, '@import')
+                    || str_starts_with($line, '@source');
+            })
+            ->implode('') !!}
+    </style>
+@endonce
+
 <div class="nik-work-app">
     <div class="nik-work-shell">
         <div class="nik-work-layout">

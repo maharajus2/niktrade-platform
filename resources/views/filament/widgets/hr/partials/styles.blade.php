@@ -393,6 +393,10 @@
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
 
+            .nt-hr-dashboard .sm\:grid-cols-4 {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
             .nt-hr-dashboard .sm\:flex-row {
                 flex-direction: row;
             }

@@ -3,17 +3,25 @@
 namespace App\Filament\Pages;
 
 use App\Support\Dashboard\DashboardWidgetRegistry;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 
-class Dashboard extends BaseDashboard
+class Workplace extends BaseDashboard
 {
-    protected static ?string $title = 'Главная';
+    protected static string $routePath = '/workplace';
 
-    protected static ?string $navigationLabel = 'Главная';
+    protected static ?string $title = 'Рабочее пространство';
+
+    protected static ?string $navigationLabel = 'Рабочее пространство';
+
+    protected static ?int $navigationSort = -1;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
     public function getColumns(): array|int
     {
@@ -26,12 +34,12 @@ class Dashboard extends BaseDashboard
 
     public function getTitle(): string|Htmlable
     {
-        return 'Главная';
+        return 'Рабочее пространство';
     }
 
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Контекст: '.DashboardWidgetRegistry::contextLabelFor(auth()->user()).' · '.now()->translatedFormat('d F Y');
+        return 'Контекст: '.DashboardWidgetRegistry::contextLabelFor(auth()->user());
     }
 
     protected function getHeaderActions(): array
@@ -65,6 +73,6 @@ class Dashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
-        return DashboardWidgetRegistry::homeWidgetsFor(auth()->user());
+        return DashboardWidgetRegistry::workspaceWidgetsFor(auth()->user());
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Support\Dashboard;
 
 use App\Filament\Widgets\AnalyticsPlaceholderWidget;
-use App\Filament\Widgets\Hr\HrBirthdaysWidget;
 use App\Filament\Widgets\Hr\HrEmployeeAlertsWidget;
-use App\Filament\Widgets\Hr\HrKpiWidget;
+use App\Filament\Widgets\Hr\HrHomeOverviewWidget;
 use App\Filament\Widgets\Hr\HrQuickActionsWidget;
 use App\Filament\Widgets\Hr\HrTodayWidget;
 use App\Filament\Widgets\Hr\HrUpcomingEventsWidget;
@@ -14,13 +13,20 @@ use App\Filament\Widgets\OrderSlaStatsWidget;
 use App\Filament\Widgets\ProductStatsWidget;
 use App\Filament\Widgets\RussianTimeWidget;
 use App\Filament\Widgets\SalesStatsWidget;
+use App\Filament\Widgets\WorkplacePlaceholderWidget;
 use App\Models\User;
 
 class DashboardWidgetRegistry
 {
-    public const DASHBOARD_GENERIC = 'generic';
+    public const CONTEXT_GENERIC = 'generic';
 
-    public const DASHBOARD_HR = 'hr';
+    public const CONTEXT_HR = 'hr';
+
+    public const CONTEXT_ORDERS = 'orders_manager';
+
+    public const DASHBOARD_GENERIC = self::CONTEXT_GENERIC;
+
+    public const DASHBOARD_HR = self::CONTEXT_HR;
 
     /** @var array<string, array<int, class-string>> */
     private static array $registeredWidgets = [];
@@ -28,44 +34,64 @@ class DashboardWidgetRegistry
     /**
      * @param  array<int, class-string>  $widgets
      */
-    public static function register(string $dashboard, array $widgets): void
+    public static function register(string $area, array $widgets): void
     {
-        self::$registeredWidgets[$dashboard] = [
-            ...(self::$registeredWidgets[$dashboard] ?? []),
+        self::$registeredWidgets[$area] = [
+            ...(self::$registeredWidgets[$area] ?? []),
             ...$widgets,
         ];
     }
 
     public static function isHrDashboard(?User $user): bool
     {
-        return self::dashboardKeyFor($user) === self::DASHBOARD_HR;
+        return self::contextKeyFor($user) === self::CONTEXT_HR;
     }
 
     public static function widgetsFor(?User $user): array
     {
-        return match (self::dashboardKeyFor($user)) {
-            self::DASHBOARD_HR => self::hrWidgets(),
-            default => self::genericWidgets(),
+        return self::homeWidgetsFor($user);
+    }
+
+    public static function homeWidgetsFor(?User $user): array
+    {
+        return match (self::contextKeyFor($user)) {
+            self::CONTEXT_HR => self::hrHomeWidgets(),
+            default => self::genericHomeWidgets(),
+        };
+    }
+
+    public static function workspaceWidgetsFor(?User $user): array
+    {
+        return match (self::contextKeyFor($user)) {
+            self::CONTEXT_HR => self::hrWorkspaceWidgets(),
+            default => [
+                WorkplacePlaceholderWidget::class,
+            ],
         };
     }
 
     public static function dashboardKeyFor(?User $user): string
     {
+        return self::contextKeyFor($user);
+    }
+
+    public static function contextKeyFor(?User $user): string
+    {
         if (! $user instanceof User) {
-            return self::DASHBOARD_GENERIC;
+            return self::CONTEXT_GENERIC;
         }
 
-        $available = self::availableDashboardsFor($user);
+        $available = self::availableContextsFor($user);
 
         if ($user->dashboard_preference && array_key_exists($user->dashboard_preference, $available)) {
             return $user->dashboard_preference;
         }
 
-        if (array_key_exists(self::DASHBOARD_HR, $available)) {
-            return self::DASHBOARD_HR;
+        if (array_key_exists(self::CONTEXT_HR, $available)) {
+            return self::CONTEXT_HR;
         }
 
-        return self::DASHBOARD_GENERIC;
+        return self::CONTEXT_GENERIC;
     }
 
     public static function canChooseDashboard(?User $user): bool
@@ -75,38 +101,58 @@ class DashboardWidgetRegistry
 
     public static function availableDashboardsFor(?User $user): array
     {
+        return self::availableContextsFor($user);
+    }
+
+    public static function availableContextsFor(?User $user): array
+    {
         if (! $user instanceof User) {
             return [
-                self::DASHBOARD_GENERIC => 'Общий',
+                self::CONTEXT_GENERIC => 'Общий',
             ];
         }
 
-        $dashboards = [
-            self::DASHBOARD_GENERIC => 'Общий',
+        $contexts = [
+            self::CONTEXT_GENERIC => 'Общий',
         ];
 
         if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view')) {
-            $dashboards[self::DASHBOARD_HR] = 'HR';
+            $contexts[self::CONTEXT_HR] = 'HR';
         }
 
-        return $dashboards;
+        if ($user->hasRole('super_admin')) {
+            $contexts[self::CONTEXT_ORDERS] = 'Менеджер заказов';
+        }
+
+        return $contexts;
     }
 
-    private static function hrWidgets(): array
+    public static function contextLabelFor(?User $user): string
+    {
+        return self::availableContextsFor($user)[self::contextKeyFor($user)] ?? 'Общий';
+    }
+
+    private static function hrHomeWidgets(): array
     {
         return [
-            HrKpiWidget::class,
+            HrHomeOverviewWidget::class,
+            ...(self::$registeredWidgets['hr.home'] ?? []),
+        ];
+    }
+
+    private static function hrWorkspaceWidgets(): array
+    {
+        return [
             HrTodayWidget::class,
             HrEmployeeAlertsWidget::class,
             HrUpcomingEventsWidget::class,
             HrWorkflowWidget::class,
-            HrBirthdaysWidget::class,
             HrQuickActionsWidget::class,
-            ...(self::$registeredWidgets['hr'] ?? []),
+            ...(self::$registeredWidgets['hr.workspace'] ?? []),
         ];
     }
 
-    private static function genericWidgets(): array
+    private static function genericHomeWidgets(): array
     {
         return [
             RussianTimeWidget::class,
@@ -114,7 +160,7 @@ class DashboardWidgetRegistry
             ProductStatsWidget::class,
             SalesStatsWidget::class,
             AnalyticsPlaceholderWidget::class,
-            ...(self::$registeredWidgets['generic'] ?? []),
+            ...(self::$registeredWidgets['generic.home'] ?? []),
         ];
     }
 }

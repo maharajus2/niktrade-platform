@@ -1005,6 +1005,39 @@
     text-decoration: none;
 }
 
+body:has(.nik-work-app) > .fi-topbar-ctn,
+body:has(.nik-work-app) .fi-main-sidebar,
+body:has(.nik-work-app) .fi-header {
+    display: none !important;
+}
+
+body:has(.nik-work-app) .fi-layout,
+body:has(.nik-work-app) .fi-main-ctn,
+body:has(.nik-work-app) .fi-main,
+body:has(.nik-work-app) .fi-page,
+body:has(.nik-work-app) .fi-page-header-main-ctn,
+body:has(.nik-work-app) .fi-page-main,
+body:has(.nik-work-app) .fi-page-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body:has(.nik-work-app) {
+    background: #f6f8fc !important;
+}
+
+body:has(.nik-work-app) .nik-work-app {
+    min-height: 100vh;
+    margin: 0;
+}
+
+body:has(.nik-work-app) .nik-work-sidebar {
+    height: 100vh;
+}
+
 @media (min-width: 1281px) {
     .nik-work-app .nik-work-grid > :nth-child(1) {
         grid-column: 1 / span 5;

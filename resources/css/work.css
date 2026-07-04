@@ -1038,6 +1038,134 @@ body:has(.nik-work-app) .nik-work-sidebar {
     height: 100vh;
 }
 
+.nik-work-app {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+}
+
+.nik-work-app .nik-work-svg {
+    width: 1em;
+    height: 1em;
+    flex: none;
+}
+
+.nik-work-app .nik-work-logo {
+    font-size: 23px;
+    font-weight: 760;
+}
+
+.nik-work-app .nik-work-nav-link {
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-nav-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 17px;
+}
+
+.nik-work-app .nik-work-nav-icon .nik-work-svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nik-work-app .nik-work-nav-section {
+    font-weight: 700;
+}
+
+.nik-work-app .nik-work-title {
+    font-size: 28px;
+    font-weight: 780;
+    letter-spacing: 0;
+}
+
+.nik-work-app .nik-work-date {
+    font-weight: 500;
+}
+
+.nik-work-app .nik-work-search {
+    font-weight: 500;
+}
+
+.nik-work-app .nik-work-search .nik-work-svg {
+    width: 17px;
+    height: 17px;
+}
+
+.nik-work-app .nik-work-icon-button .nik-work-svg {
+    width: 19px;
+    height: 19px;
+}
+
+.nik-work-app .nik-work-card-title {
+    font-size: 16px;
+    font-weight: 760;
+}
+
+.nik-work-app .nik-work-symbol {
+    color: #0b70f0;
+    font-size: 18px;
+}
+
+.nik-work-app .nik-work-symbol .nik-work-svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nik-work-app .nik-work-card-arrows {
+    gap: 14px;
+    font-size: 18px;
+}
+
+.nik-work-app .nik-work-label {
+    font-weight: 600;
+}
+
+.nik-work-app .nik-work-shift-time {
+    font-weight: 780;
+}
+
+.nik-work-app .nik-work-status,
+.nik-work-app .nik-work-badge,
+.nik-work-app .nik-work-nav-badge {
+    font-weight: 700;
+}
+
+.nik-work-app .nik-work-row-title {
+    font-weight: 720;
+}
+
+.nik-work-app .nik-work-row-meta,
+.nik-work-app .nik-work-calendar-weekday {
+    font-weight: 500;
+}
+
+.nik-work-app .nik-work-timeline-time,
+.nik-work-app .nik-work-day-cell,
+.nik-work-app .nik-work-action,
+.nik-work-app .nik-work-kanban-title,
+.nik-work-app .nik-work-kanban-footer {
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-task-meta {
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-alert-icon .nik-work-svg,
+.nik-work-app .nik-work-action-icon .nik-work-svg {
+    width: 17px;
+    height: 17px;
+}
+
+.nik-work-app .nik-work-sidebar-name,
+.nik-work-app .nik-work-message-avatar,
+.nik-work-app .nik-work-sidebar-avatar {
+    font-weight: 760;
+}
+
 @media (min-width: 1281px) {
     .nik-work-app .nik-work-grid > :nth-child(1) {
         grid-column: 1 / span 5;

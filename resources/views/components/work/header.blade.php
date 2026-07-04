@@ -15,16 +15,16 @@
 
     <div class="nik-work-header-tools">
         <div class="nik-work-search" aria-label="Поиск">
-            <span aria-hidden="true">⌕</span>
+            <x-work.icon name="search" />
             <span>Поиск...</span>
         </div>
 
         <button type="button" class="nik-work-icon-button has-badge" aria-label="Уведомления">
-            <span aria-hidden="true">♢</span>
+            <x-work.icon name="bell" />
             <span class="nik-work-notification-count">3</span>
         </button>
         <button type="button" class="nik-work-icon-button" aria-label="Выйти">
-            <span aria-hidden="true">↪</span>
+            <x-work.icon name="log-out" />
         </button>
     </div>
 </header>

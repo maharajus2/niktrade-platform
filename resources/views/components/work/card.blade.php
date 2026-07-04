@@ -11,7 +11,9 @@
                 @if ($title)
                     <div class="nik-work-card-title">
                         @if ($icon)
-                            <span class="nik-work-symbol">{{ $icon }}</span>
+                            <span class="nik-work-symbol">
+                                <x-work.icon :name="$icon" />
+                            </span>
                         @endif
                         <span>{{ $title }}</span>
                     </div>

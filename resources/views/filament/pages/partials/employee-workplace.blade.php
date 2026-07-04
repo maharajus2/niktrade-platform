@@ -13,7 +13,7 @@
     'showSidebar' => true,
 ])
     <main class="nik-work-grid">
-        <x-work.card class="nik-work-span-5" title="Мой день" icon="◷">
+        <x-work.card class="nik-work-span-5" title="Мой день" icon="clock">
             <x-slot:actions>
                 <x-work.badge>Сегодня</x-work.badge>
             </x-slot:actions>
@@ -42,11 +42,11 @@
             </div>
         </x-work.card>
 
-        <x-work.card class="nik-work-span-4" title="Календарь" icon="▣">
+        <x-work.card class="nik-work-span-4" title="Календарь" icon="calendar">
             <x-slot:actions>
                 <div class="nik-work-card-arrows" aria-hidden="true">
-                    <span>‹</span>
-                    <span>›</span>
+                    <x-work.icon name="chevron-left" />
+                    <x-work.icon name="chevron-right" />
                 </div>
             </x-slot:actions>
 
@@ -58,7 +58,7 @@
         </x-work.card>
 
         <aside class="nik-work-span-3 nik-work-stack">
-            <x-work.card title="Требует внимания" icon="!">
+            <x-work.card title="Требует внимания" icon="bell">
                 <x-slot:actions>
                     @if (count($attentionItems) > 0)
                         <x-work.badge tone="red">{{ count($attentionItems) }}</x-work.badge>
@@ -68,7 +68,7 @@
                 <div class="nik-work-list">
                     @forelse ($attentionItems as $item)
                         <div class="nik-work-alert is-{{ $item['tone'] }}">
-                            <div class="nik-work-alert-icon">!</div>
+                            <div class="nik-work-alert-icon"><x-work.icon name="alert" /></div>
                             <div>
                                 <div class="nik-work-row-title">{{ $item['title'] }}</div>
                                 <div class="nik-work-row-meta">{{ $item['text'] }}</div>
@@ -81,26 +81,26 @@
                 </div>
             </x-work.card>
 
-            <x-work.card title="Быстрые действия" icon="+">
+            <x-work.card title="Быстрые действия" icon="zap">
                 <div class="nik-work-list">
                     <x-work.action-row
                         :href="$workspace['urls']['createRequest']"
-                        icon="+"
+                        icon="plus"
                         label="Создать заявку"
                         primary
                     />
                     <x-work.action-row
                         :href="$workspace['urls']['calendar']"
-                        icon="▣"
+                        icon="calendar"
                         label="Открыть календарь"
                     />
                     <x-work.action-row
                         :href="$workspace['urls']['documents']"
-                        icon="▤"
+                        icon="file"
                         label="Открыть документы"
                     />
                     <x-work.action-row
-                        icon="○"
+                        icon="message"
                         label="Написать сообщение"
                         suffix="Скоро"
                         disabled
@@ -109,7 +109,7 @@
             </x-work.card>
         </aside>
 
-        <x-work.card class="nik-work-span-8" title="Мои задачи" icon="☑">
+        <x-work.card class="nik-work-span-8" title="Мои задачи" icon="check-square">
             <x-slot:actions>
                 <x-work.badge tone="gray">Скоро</x-work.badge>
             </x-slot:actions>
@@ -117,7 +117,7 @@
             <x-work.kanban-preview />
         </x-work.card>
 
-        <x-work.card class="nik-work-span-4" title="Сообщения" icon="○">
+        <x-work.card class="nik-work-span-4" title="Сообщения" icon="message">
             <x-slot:actions>
                 <x-work.badge tone="red">2</x-work.badge>
             </x-slot:actions>
@@ -160,7 +160,7 @@
             <a href="#" class="nik-work-card-link">Открыть все сообщения</a>
         </x-work.card>
 
-        <x-work.card class="nik-work-span-6" title="Мои заявки" icon="□">
+        <x-work.card class="nik-work-span-6" title="Мои заявки" icon="link">
             <x-slot:actions>
                 <x-work.badge>{{ $requestCounts['pending'] }}</x-work.badge>
             </x-slot:actions>
@@ -193,7 +193,7 @@
             </a>
         </x-work.card>
 
-        <x-work.card id="employee-documents" class="nik-work-span-6" title="Мои документы" icon="▤">
+        <x-work.card id="employee-documents" class="nik-work-span-6" title="Мои документы" icon="file">
             <x-slot:actions>
                 <x-work.badge :tone="$documents['expiredCount'] > 0 ? 'red' : 'blue'">
                     {{ $documents['completeness'] }}%

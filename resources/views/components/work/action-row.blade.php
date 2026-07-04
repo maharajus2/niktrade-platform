@@ -9,13 +9,21 @@
 
 @if ($disabled || ! $href)
     <span {{ $attributes->class(['nik-work-action', 'is-muted' => $disabled]) }}>
-        <span>{{ $icon }}</span>
+        <span class="nik-work-action-icon">
+            @if ($icon)
+                <x-work.icon :name="$icon" />
+            @endif
+        </span>
         <span>{{ $label }}</span>
         <span>{{ $suffix }}</span>
     </span>
 @else
     <a href="{{ $href }}" {{ $attributes->class(['nik-work-action', 'is-primary' => $primary]) }}>
-        <span>{{ $icon }}</span>
+        <span class="nik-work-action-icon">
+            @if ($icon)
+                <x-work.icon :name="$icon" />
+            @endif
+        </span>
         <span>{{ $label }}</span>
         <span>{{ $suffix }}</span>
     </a>

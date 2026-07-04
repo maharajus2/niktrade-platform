@@ -21,14 +21,6 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Deployment Requirements
-
-Frontend production builds require Node.js >= 22 LTS and npm >= 10.
-
-This project currently uses Vite 8.1.3 through the committed `package-lock.json`. Node.js 18 is not supported for production builds.
-
-See [docs/deployment.md](docs/deployment.md) for the deployment checklist.
-
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

@@ -27,6 +27,10 @@
     gap: 28px;
 }
 
+.nik-work-app .nik-work-layout--no-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+}
+
 .nik-work-app .nik-work-sidebar {
     position: sticky;
     top: 24px;

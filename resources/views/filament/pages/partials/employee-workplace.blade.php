@@ -10,6 +10,7 @@
     'subtitle' => $workspace['dateLabel'],
     'user' => $employee,
     'active' => 'workplace',
+    'showSidebar' => false,
 ])
     <main class="nik-work-grid">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="◷">

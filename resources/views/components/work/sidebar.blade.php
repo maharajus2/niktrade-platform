@@ -29,10 +29,7 @@
 
 <aside class="nik-work-sidebar" aria-label="Рабочая навигация">
     <a href="{{ \App\Filament\Pages\Workplace::getUrl() }}" class="nik-work-logo">
-        <span class="nik-work-logo-mark">
-            <img src="{{ asset('images/logo-icon.png') }}" alt="" />
-        </span>
-        <span>Niktrade</span>
+        <img class="nik-work-brand-logo" src="{{ asset('images/logont.png') }}" alt="Никтрейд" />
     </a>
 
     <nav class="nik-work-nav">

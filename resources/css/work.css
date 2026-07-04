@@ -1055,6 +1055,13 @@ body:has(.nik-work-app) .nik-work-sidebar {
     font-weight: 760;
 }
 
+.nik-work-app .nik-work-brand-logo {
+    display: block;
+    width: 132px;
+    height: auto;
+    object-fit: contain;
+}
+
 .nik-work-app .nik-work-nav-link {
     font-size: 14px;
     font-weight: 650;

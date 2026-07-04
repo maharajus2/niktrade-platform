@@ -10,6 +10,7 @@ use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -28,10 +29,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->sidebarWidth('16rem')
+            ->maxContentWidth(Width::Full)
             //->brandLogo(fn () => view('filament.brand'))
             ->brandName('Никтрейд')
             ->brandLogo(asset('images/logont.png'))
             ->brandLogoHeight('2rem')
+            ->viteTheme('resources/css/admin.css')
             ->login()
             ->colors([
                 'primary' => Color::Sky,

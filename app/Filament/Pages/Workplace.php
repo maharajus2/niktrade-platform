@@ -30,13 +30,14 @@ class Workplace extends Page
         return 'Рабочее пространство';
     }
 
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
     public function getSubheading(): string|Htmlable|null
     {
-        if (DashboardWidgetRegistry::contextKeyFor(auth()->user()) === DashboardWidgetRegistry::CONTEXT_EMPLOYEE) {
-            return 'Добро пожаловать, '.auth()->user()->name.' · '.now()->translatedFormat('d F Y');
-        }
-
-        return 'Контекст: '.DashboardWidgetRegistry::contextLabelFor(auth()->user());
+        return null;
     }
 
     protected function getHeaderActions(): array

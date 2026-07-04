@@ -1,17 +1,31 @@
 <x-filament-widgets::widget>
     @include('filament.widgets.hr.partials.styles')
 
-    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <h2 class="text-base font-semibold text-gray-950 dark:text-white">Требует внимания</h2>
-
-        <div class="mt-5 space-y-3">
-            @forelse ($items as $item)
-                <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-700">{{ $item }}</div>
-            @empty
-                <div class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500">
-                    На сегодня нет важных уведомлений.
+    <section class="nt-hr-card">
+        <div class="nt-hr-card__header">
+            <div>
+                <div class="nt-hr-card__title">
+                    <span aria-hidden="true">!</span>
+                    <span>Требует внимания</span>
                 </div>
-            @endforelse
+            </div>
+
+            @if (count($items) > 0)
+                <span class="nt-pill" style="background: #fee2e2; color: #dc2626;">{{ count($items) }}</span>
+            @endif
         </div>
-    </div>
+
+        <div class="nt-hr-card__body">
+            <div class="nt-mini-list">
+                @forelse ($items as $item)
+                    <div class="nt-mini-row" style="border-color: #fed7aa; background: #fff7ed;">
+                        <div class="nt-mini-row__dot" style="background: #f97316; box-shadow: 0 0 0 5px rgba(249, 115, 22, .14);"></div>
+                        <div class="nt-mini-row__title">{{ $item }}</div>
+                    </div>
+                @empty
+                    <div class="nt-empty">На сегодня нет важных уведомлений.</div>
+                @endforelse
+            </div>
+        </div>
+    </section>
 </x-filament-widgets::widget>

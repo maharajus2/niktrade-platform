@@ -1,33 +1,37 @@
 <x-filament-widgets::widget>
     @include('filament.widgets.hr.partials.styles')
 
-    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div class="flex items-start justify-between gap-3">
+    <section class="nt-hr-card">
+        <div class="nt-hr-card__header">
             <div>
-                <h2 class="text-base font-semibold text-gray-950 dark:text-white">Мои заявки</h2>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Отпуск, больничный, выходной и изменения графика.</p>
+                <div class="nt-hr-card__title">
+                    <span aria-hidden="true">□</span>
+                    <span>Мои заявки</span>
+                </div>
+                <div class="nt-hr-card__subtitle">Отпуск, больничный, выходной и изменения графика.</div>
             </div>
 
-            <a href="{{ $createUrl }}" class="text-sm font-medium text-primary-600 hover:text-primary-500">Создать заявку</a>
+            <a href="{{ $createUrl }}" class="nt-pill">Создать</a>
         </div>
 
-        <div class="mt-5 grid grid-cols-2 gap-3">
-            <a href="{{ $indexUrl }}" class="rounded-lg border border-gray-200 bg-gray-50 p-3 hover:bg-white">
-                <div class="text-xs text-gray-500">Ожидают</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $counts['pending'] }}</div>
-            </a>
-            <a href="{{ $indexUrl }}" class="rounded-lg border border-gray-200 bg-gray-50 p-3 hover:bg-white">
-                <div class="text-xs text-gray-500">Одобрены</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $counts['approved'] }}</div>
-            </a>
-            <a href="{{ $indexUrl }}" class="rounded-lg border border-gray-200 bg-gray-50 p-3 hover:bg-white">
-                <div class="text-xs text-gray-500">Отклонены</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $counts['rejected'] }}</div>
-            </a>
-            <a href="{{ $indexUrl }}" class="rounded-lg border border-gray-200 bg-gray-50 p-3 hover:bg-white">
-                <div class="text-xs text-gray-500">Возвращены</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $counts['returned'] }}</div>
+        <div class="nt-hr-card__body">
+            <div class="nt-kpi-grid">
+                @foreach ([
+                    'pending' => 'Ожидают',
+                    'approved' => 'Одобрены',
+                    'rejected' => 'Отклонены',
+                    'returned' => 'Возвращены',
+                ] as $key => $label)
+                    <a href="{{ $indexUrl }}" class="nt-kpi" style="text-decoration: none;">
+                        <div class="nt-kpi__label">{{ $label }}</div>
+                        <div class="nt-kpi__value">{{ $counts[$key] }}</div>
+                    </a>
+                @endforeach
+            </div>
+
+            <a href="{{ $indexUrl }}" style="display: block; margin-top: 1rem; color: #2563eb; font-size: .88rem; font-weight: 800; text-align: center; text-decoration: none;">
+                Открыть все заявки
             </a>
         </div>
-    </div>
+    </section>
 </x-filament-widgets::widget>

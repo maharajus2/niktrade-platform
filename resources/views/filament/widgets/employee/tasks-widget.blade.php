@@ -1,25 +1,34 @@
 <x-filament-widgets::widget>
     @include('filament.widgets.hr.partials.styles')
 
-    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div class="flex items-start justify-between gap-3">
-            <h2 class="text-base font-semibold text-gray-950 dark:text-white">Мои задачи</h2>
-            <span class="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500">Скоро</span>
-        </div>
-
-        <div class="mt-5 grid grid-cols-2 gap-3">
-            @foreach (['Новые', 'В работе', 'На проверке', 'Готово'] as $column)
-                <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                    <div class="text-sm font-medium text-gray-950">{{ $column }}</div>
-                    <div class="mt-2 text-xs text-gray-500">Модуль задач будет подключён позже.</div>
+    <section class="nt-hr-card">
+        <div class="nt-hr-card__header">
+            <div>
+                <div class="nt-hr-card__title">
+                    <span aria-hidden="true">☑</span>
+                    <span>Мои задачи</span>
                 </div>
-            @endforeach
+                <div class="nt-hr-card__subtitle">Компактная доска задач появится после подключения модуля.</div>
+            </div>
+
+            <span class="nt-pill">Скоро</span>
         </div>
 
-        <div class="mt-5 flex flex-wrap gap-2">
-            @foreach (['Встречи', 'Почта', 'Заметки', 'Тайм-трекинг'] as $item)
-                <span class="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500">{{ $item }}</span>
-            @endforeach
+        <div class="nt-hr-card__body">
+            <div class="nt-task-board">
+                @foreach (['Новые', 'В работе', 'На проверке', 'Готово'] as $column)
+                    <div style="min-height: 8rem; border: 1px solid #e5e7eb; border-radius: 14px; background: #f8fafc; padding: .85rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: .5rem;">
+                            <div style="color: #0f172a; font-size: .9rem; font-weight: 850;">{{ $column }}</div>
+                            <span style="border-radius: 999px; background: #e2e8f0; padding: .12rem .45rem; color: #64748b; font-size: .72rem; font-weight: 800;">0</span>
+                        </div>
+
+                        <div style="margin-top: .8rem; border: 1px dashed #cbd5e1; border-radius: 12px; background: #fff; padding: .75rem; color: #94a3b8; font-size: .82rem;">
+                            Модуль задач будет подключён позже.
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
-    </div>
+    </section>
 </x-filament-widgets::widget>

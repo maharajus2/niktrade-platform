@@ -1,39 +1,47 @@
 <x-filament-widgets::widget>
     @include('filament.widgets.hr.partials.styles')
 
-    <div id="employee-documents" class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div class="flex items-start justify-between gap-3">
+    <section id="employee-documents" class="nt-hr-card">
+        <div class="nt-hr-card__header">
             <div>
-                <h2 class="text-base font-semibold text-gray-950 dark:text-white">Мои документы</h2>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Комплектность и сроки ваших документов.</p>
+                <div class="nt-hr-card__title">
+                    <span aria-hidden="true">▤</span>
+                    <span>Мои документы</span>
+                </div>
+                <div class="nt-hr-card__subtitle">Комплектность и сроки ваших документов.</div>
             </div>
 
-            <a href="#employee-documents" class="text-sm font-medium text-primary-600 hover:text-primary-500">Открыть документы</a>
+            <span class="nt-pill">{{ $completeness }}%</span>
         </div>
 
-        <div class="mt-5">
-            <div class="flex items-center justify-between gap-3">
-                <div class="text-sm text-gray-600">Комплектность</div>
-                <div class="text-sm font-semibold text-gray-950">{{ $completeness }}%</div>
+        <div class="nt-hr-card__body">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: .75rem;">
+                <div style="color: #64748b; font-size: .84rem; font-weight: 800;">Комплектность</div>
+                <div style="color: #0f172a; font-size: .9rem; font-weight: 850;">{{ $completeness }}%</div>
             </div>
-            <div class="mt-2 rounded-full bg-gray-100" style="height: 8px;">
-                <div class="rounded-full bg-primary-600" style="height: 8px; width: {{ $completeness }}%;"></div>
-            </div>
-        </div>
 
-        <div class="mt-5 grid grid-cols-2 gap-3">
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <div class="text-xs text-gray-500">Не хватает</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $missingCount }}</div>
+            <div class="nt-progress" style="margin-top: .65rem;">
+                <div class="nt-progress__bar" style="width: {{ $completeness }}%;"></div>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <div class="text-xs text-gray-500">Истекают</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $expiringCount }}</div>
+
+            <div class="nt-kpi-grid" style="margin-top: 1rem;">
+                <div class="nt-kpi">
+                    <div class="nt-kpi__label">Не хватает</div>
+                    <div class="nt-kpi__value">{{ $missingCount }}</div>
+                </div>
+                <div class="nt-kpi">
+                    <div class="nt-kpi__label">Истекают</div>
+                    <div class="nt-kpi__value">{{ $expiringCount }}</div>
+                </div>
+                <div class="nt-kpi">
+                    <div class="nt-kpi__label">Просрочены</div>
+                    <div class="nt-kpi__value">{{ $expiredCount }}</div>
+                </div>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <div class="text-xs text-gray-500">Просрочены</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950">{{ $expiredCount }}</div>
-            </div>
+
+            <a href="#employee-documents" style="display: block; margin-top: 1rem; color: #2563eb; font-size: .88rem; font-weight: 800; text-align: center; text-decoration: none;">
+                Открыть документы
+            </a>
         </div>
-    </div>
+    </section>
 </x-filament-widgets::widget>

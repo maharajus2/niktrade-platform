@@ -1,41 +1,65 @@
 <x-filament-widgets::widget>
     @include('filament.widgets.hr.partials.styles')
 
-    <div class="nt-hr-dashboard rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <section class="nt-hr-card">
+        <div class="nt-hr-card__header">
             <div>
-                <h2 class="text-base font-semibold text-gray-950 dark:text-white">Мой день</h2>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ $dateLabel }}</p>
+                <div class="nt-hr-card__title">
+                    <span aria-hidden="true">◷</span>
+                    <span>Мой день</span>
+                </div>
+                <div class="nt-hr-card__subtitle">{{ $dateLabel }}</div>
             </div>
 
-            <span class="rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700">{{ $statusLabel }}</span>
+            <span class="nt-pill">{{ $statusLabel }}</span>
         </div>
 
-        <div class="mt-5 grid gap-3 md:grid-cols-2">
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-950">
-                <div class="text-xs text-gray-500 dark:text-gray-400">Сегодняшняя смена</div>
-                <div class="mt-1 text-sm font-medium text-gray-950 dark:text-white">
-                    {{ $shiftLabel ?? 'Сегодня смен не назначено.' }}
+        <div class="nt-hr-card__body">
+            <div class="nt-my-day-grid">
+                <div style="border: 1px solid #e5e7eb; border-radius: 16px; background: linear-gradient(180deg, #f8fafc, #fff); padding: 1rem;">
+                    <div style="color: #64748b; font-size: .8rem; font-weight: 700;">Ваша смена</div>
+                    <div style="margin-top: .45rem; color: #0f172a; font-size: 1.55rem; font-weight: 850; line-height: 1.1;">
+                        {{ $shiftLabel ?? 'Не назначена' }}
+                    </div>
+
+                    @if ($shiftLabel)
+                        <div style="display: inline-flex; margin-top: .7rem; border-radius: 999px; background: #dcfce7; padding: .35rem .65rem; color: #15803d; font-size: .8rem; font-weight: 800;">
+                            Сегодня
+                        </div>
+                    @else
+                        <div style="margin-top: .7rem; color: #64748b; font-size: .86rem;">
+                            Сегодня смен не назначено.
+                        </div>
+                    @endif
+
+                    <div style="margin-top: 1.25rem; border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+                        <div style="color: #64748b; font-size: .8rem; font-weight: 700;">Рабочее время сегодня</div>
+                        <div style="margin-top: .35rem; color: #0f172a; font-size: 1.2rem; font-weight: 850;">
+                            {{ number_format($hoursToday, 1, ',', ' ') }} ч
+                        </div>
+                        <div class="nt-progress" style="margin-top: .75rem;">
+                            <div class="nt-progress__bar" style="width: {{ min(100, ($hoursToday / 8) * 100) }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nt-mini-list">
+                    @forelse ($timeline as $index => $item)
+                        <div class="nt-mini-row" style="border-color: {{ $index === 0 ? '#bfdbfe' : '#e5e7eb' }};">
+                            <div style="width: 3.25rem; flex: 0 0 auto; color: #0f172a; font-size: .82rem; font-weight: 850;">
+                                {{ $item['time'] }}
+                            </div>
+                            <div class="nt-mini-row__dot" style="background: {{ $index === 0 ? '#22c55e' : '#3b82f6' }};"></div>
+                            <div style="min-width: 0;">
+                                <div class="nt-mini-row__title">{{ $item['title'] }}</div>
+                                <div class="nt-mini-row__meta">Событие рабочего дня</div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="nt-empty">На сегодня нет событий в календаре.</div>
+                    @endforelse
                 </div>
             </div>
-
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-950">
-                <div class="text-xs text-gray-500 dark:text-gray-400">Часы сегодня</div>
-                <div class="mt-1 text-2xl font-semibold text-gray-950 dark:text-white">{{ number_format($hoursToday, 1, ',', ' ') }}</div>
-            </div>
         </div>
-
-        <div class="mt-5 space-y-3">
-            @forelse ($timeline as $item)
-                <div class="flex items-start gap-3">
-                    <div class="shrink-0 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">{{ $item['time'] }}</div>
-                    <div class="min-w-0 text-sm text-gray-950 dark:text-white">{{ $item['title'] }}</div>
-                </div>
-            @empty
-                <div class="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
-                    На сегодня нет событий.
-                </div>
-            @endforelse
-        </div>
-    </div>
+    </section>
 </x-filament-widgets::widget>

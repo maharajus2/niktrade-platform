@@ -47,6 +47,7 @@ use Spatie\Permission\Traits\HasRoles;
     'foreign_legal_status',
     'archived_at',
     'last_login_at',
+    'dashboard_preference',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

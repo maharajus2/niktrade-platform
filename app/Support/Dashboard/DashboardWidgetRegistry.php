@@ -18,6 +18,10 @@ use App\Models\User;
 
 class DashboardWidgetRegistry
 {
+    public const DASHBOARD_GENERIC = 'generic';
+
+    public const DASHBOARD_HR = 'hr';
+
     /** @var array<string, array<int, class-string>> */
     private static array $registeredWidgets = [];
 
@@ -34,17 +38,58 @@ class DashboardWidgetRegistry
 
     public static function isHrDashboard(?User $user): bool
     {
-        return $user instanceof User
-            && ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view'));
+        return self::dashboardKeyFor($user) === self::DASHBOARD_HR;
     }
 
     public static function widgetsFor(?User $user): array
     {
-        if (self::isHrDashboard($user)) {
-            return self::hrWidgets();
+        return match (self::dashboardKeyFor($user)) {
+            self::DASHBOARD_HR => self::hrWidgets(),
+            default => self::genericWidgets(),
+        };
+    }
+
+    public static function dashboardKeyFor(?User $user): string
+    {
+        if (! $user instanceof User) {
+            return self::DASHBOARD_GENERIC;
         }
 
-        return self::genericWidgets();
+        $available = self::availableDashboardsFor($user);
+
+        if ($user->dashboard_preference && array_key_exists($user->dashboard_preference, $available)) {
+            return $user->dashboard_preference;
+        }
+
+        if (array_key_exists(self::DASHBOARD_HR, $available)) {
+            return self::DASHBOARD_HR;
+        }
+
+        return self::DASHBOARD_GENERIC;
+    }
+
+    public static function canChooseDashboard(?User $user): bool
+    {
+        return $user instanceof User && $user->hasRole('super_admin');
+    }
+
+    public static function availableDashboardsFor(?User $user): array
+    {
+        if (! $user instanceof User) {
+            return [
+                self::DASHBOARD_GENERIC => 'Общий',
+            ];
+        }
+
+        $dashboards = [
+            self::DASHBOARD_GENERIC => 'Общий',
+        ];
+
+        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view')) {
+            $dashboards[self::DASHBOARD_HR] = 'HR';
+        }
+
+        return $dashboards;
     }
 
     private static function hrWidgets(): array

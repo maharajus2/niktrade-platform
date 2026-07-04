@@ -1,0 +1,28 @@
+- generic [ref=e1] [box=0,0,929,861]:
+  - main [ref=e4] [box=209,203,512,456]:
+    - generic [ref=e6] [box=257,251,416,360]:
+      - generic [ref=e7] [box=257,251,416,80]:
+        - img "Логотип Никтрейд" [ref=e8] [box=399,251,131,32]
+        - heading "Войдите в свой аккаунт" [level=1] [ref=e9] [box=327,299,275,32]
+      - generic [ref=e13] [box=257,355,416,256]:
+        - generic [ref=e17] [box=257,355,416,196]:
+          - generic [ref=e20] [box=257,355,416,64]:
+            - generic [ref=e24] [box=257,355,189,20]:
+              - text: Адрес электронной почты
+              - superscript [ref=e25] [box=440,354,5,13]: "*"
+            - textbox "Адрес электронной почты*" [active] [ref=e29] [box=257,383,416,36]
+          - generic [ref=e32] [box=257,443,416,64]:
+            - generic [ref=e36] [box=257,443,57,20]:
+              - text: Пароль
+              - superscript [ref=e37] [box=308,442,5,13]: "*"
+            - generic [ref=e39] [box=257,471,416,36]:
+              - textbox "Пароль*" [ref=e41] [box=257,471,371,36]
+              - button "Показать пароль" [ref=e44] [cursor=pointer] [box=635,473,32,32]:
+                - img [ref=e45] [box=641,479,20,20]
+          - generic [ref=e53] [box=257,531,143,20]:
+            - checkbox "Запомнить меня" [ref=e54] [box=257,533,16,16]
+            - generic [ref=e55] [box=285,531,115,20]: Запомнить меня
+        - button "Войти" [ref=e61] [cursor=pointer] [box=257,575,416,36]:
+          - generic [ref=e62] [box=444,583,41,20]: Войти
+  - generic [box=0,861,929,0]:
+    - status [box=16,16,897,829]

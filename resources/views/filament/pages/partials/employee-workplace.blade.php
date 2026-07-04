@@ -10,7 +10,7 @@
     'subtitle' => $workspace['dateLabel'],
     'user' => $employee,
     'active' => 'workplace',
-    'showSidebar' => false,
+    'showSidebar' => true,
 ])
     <main class="nik-work-grid">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="◷">
@@ -44,7 +44,10 @@
 
         <x-work.card class="nik-work-span-4" title="Календарь" icon="▣">
             <x-slot:actions>
-                <a href="{{ $workspace['urls']['calendar'] }}" class="nik-work-badge">Открыть</a>
+                <div class="nik-work-card-arrows" aria-hidden="true">
+                    <span>‹</span>
+                    <span>›</span>
+                </div>
             </x-slot:actions>
 
             <x-work.calendar-mini
@@ -116,18 +119,45 @@
 
         <x-work.card class="nik-work-span-4" title="Сообщения" icon="○">
             <x-slot:actions>
-                <x-work.badge tone="gray">Скоро</x-work.badge>
+                <x-work.badge tone="red">2</x-work.badge>
             </x-slot:actions>
 
-            <div class="nik-work-list">
-                <div class="nik-work-row" style="background: #f8fafc;">
+            <div class="nik-work-message-list">
+                <div class="nik-work-message">
+                    <div class="nik-work-message-avatar is-purple">HR</div>
                     <div>
-                        <div class="nik-work-row-title">Корпоративный мессенджер</div>
-                        <div class="nik-work-row-meta">Будет подключён позже.</div>
+                        <div class="nik-work-row-title">HR-отдел</div>
+                        <div class="nik-work-row-meta">Напоминаем о медосмотре...</div>
                     </div>
-                    <x-work.badge tone="gray">Скоро</x-work.badge>
+                    <div class="nik-work-message-side">
+                        <span>10:15</span>
+                        <span class="nik-work-message-dot"></span>
+                    </div>
+                </div>
+
+                <div class="nik-work-message">
+                    <div class="nik-work-message-avatar is-blue">IT</div>
+                    <div>
+                        <div class="nik-work-row-title">IT-поддержка</div>
+                        <div class="nik-work-row-meta">Ваш тикет #3456 обновлён</div>
+                    </div>
+                    <div class="nik-work-message-side">
+                        <span>09:42</span>
+                        <span class="nik-work-message-dot"></span>
+                    </div>
+                </div>
+
+                <div class="nik-work-message">
+                    <div class="nik-work-message-avatar is-green">OK</div>
+                    <div>
+                        <div class="nik-work-row-title">Отдел кадров</div>
+                        <div class="nik-work-row-meta">Новый график на декабрь</div>
+                    </div>
+                    <div class="nik-work-message-side">Вчера</div>
                 </div>
             </div>
+
+            <a href="#" class="nik-work-card-link">Открыть все сообщения</a>
         </x-work.card>
 
         <x-work.card class="nik-work-span-6" title="Мои заявки" icon="□">

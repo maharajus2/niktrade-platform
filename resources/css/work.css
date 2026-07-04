@@ -540,6 +540,508 @@
     font-weight: 650;
 }
 
+.nik-work-app {
+    min-height: calc(100vh - 2.5rem);
+    background: #f6f8fc;
+    color: #111827;
+}
+
+.nik-work-app .nik-work-shell {
+    max-width: 1600px;
+    padding: 0;
+}
+
+.nik-work-app .nik-work-layout {
+    grid-template-columns: 236px minmax(0, 1fr);
+    gap: 30px;
+}
+
+.nik-work-app .nik-work-sidebar {
+    top: 0;
+    height: calc(100vh - 2.5rem);
+    border-width: 0 1px 0 0;
+    border-color: #e5eaf2;
+    border-radius: 0;
+    background: rgba(255, 255, 255, .96);
+    padding: 22px 10px 16px;
+    box-shadow: none;
+}
+
+.nik-work-app .nik-work-logo {
+    gap: 10px;
+    padding: 4px 16px 28px;
+    font-size: 24px;
+    letter-spacing: 0;
+}
+
+.nik-work-app .nik-work-logo-mark {
+    width: 28px;
+    height: 28px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #1473e6;
+}
+
+.nik-work-app .nik-work-logo-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nik-work-app .nik-work-nav {
+    gap: 6px;
+}
+
+.nik-work-app .nik-work-nav-section {
+    margin: 30px 14px 10px;
+    color: #8492a6;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.nik-work-app .nik-work-nav-link {
+    grid-template-columns: 24px minmax(0, 1fr) 26px;
+    min-height: 44px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #25324b;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-work-nav-link:hover,
+.nik-work-app .nik-work-nav-link.is-active {
+    background: #eaf3ff;
+    color: #0b70f0;
+}
+
+.nik-work-app .nik-work-nav-badge {
+    display: inline-flex;
+    min-width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #eef2f7;
+    color: #5f6f89;
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-work-sidebar-user {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    border: 1px solid #dfe6f0;
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px;
+    color: #172033;
+}
+
+.nik-work-app .nik-work-sidebar-avatar {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #dbeafe, #c7d2fe);
+    color: #1d4ed8;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-sidebar-name {
+    overflow: hidden;
+    color: #111827;
+    font-size: 14px;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nik-work-app .nik-work-sidebar-role {
+    margin-top: 3px;
+    color: #7a879a;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-main {
+    padding: 28px 26px 34px 0;
+}
+
+.nik-work-app .nik-work-header {
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.nik-work-app .nik-work-title {
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-date {
+    color: #526178;
+    font-size: 15px;
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-search {
+    width: min(312px, 28vw);
+    height: 44px;
+    border-color: #dfe6f0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(25, 38, 65, .04);
+}
+
+.nik-work-app .nik-work-icon-button {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-color: #dfe6f0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(25, 38, 65, .04);
+}
+
+.nik-work-app .nik-work-notification-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: inline-flex;
+    min-width: 18px;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+}
+
+.nik-work-app .nik-work-grid {
+    gap: 16px;
+}
+
+.nik-work-app .nik-work-stack {
+    gap: 16px;
+}
+
+.nik-work-app .nik-work-card {
+    border-color: #dfe6f0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .94);
+    padding: 18px;
+    box-shadow: 0 12px 30px rgba(31, 42, 68, .06);
+}
+
+.nik-work-app .nik-work-card-header {
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.nik-work-app .nik-work-card-title {
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-symbol {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: transparent;
+    color: #0b70f0;
+    font-size: 18px;
+}
+
+.nik-work-app .nik-work-card-arrows {
+    display: flex;
+    gap: 18px;
+    color: #111827;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.nik-work-app .nik-work-badge {
+    min-width: 26px;
+    min-height: 24px;
+    border-radius: 999px;
+    background: #eaf3ff;
+    padding: 5px 10px;
+    color: #0b70f0;
+    font-size: 12px;
+}
+
+.nik-work-app .nik-work-badge.is-red { background: #fee2e2; color: #ef4444; }
+.nik-work-app .nik-work-badge.is-green { background: #dcfce7; color: #16a34a; }
+.nik-work-app .nik-work-badge.is-amber { background: #fff4d6; color: #f59e0b; }
+
+.nik-work-app .nik-work-day-layout {
+    grid-template-columns: minmax(188px, .82fr) minmax(0, 1.28fr);
+    gap: 26px;
+}
+
+.nik-work-app .nik-work-shift-card {
+    border-color: #d9e2ef;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #fbfdff, #fff);
+    padding: 18px;
+}
+
+.nik-work-app .nik-work-shift-time {
+    font-size: 22px;
+}
+
+.nik-work-app .nik-work-status {
+    border-radius: 8px;
+    padding: 7px 11px;
+}
+
+.nik-work-app .nik-work-progress {
+    height: 8px;
+    background: #e9eef6;
+}
+
+.nik-work-app .nik-work-progress-bar {
+    background: #1d7cf2;
+}
+
+.nik-work-app .nik-work-timeline {
+    gap: 16px;
+}
+
+.nik-work-app .nik-work-timeline::before {
+    left: 69px;
+    background: #dce5f0;
+}
+
+.nik-work-app .nik-work-timeline-row {
+    grid-template-columns: 52px 26px minmax(0, 1fr);
+    gap: 13px;
+}
+
+.nik-work-app .nik-work-row-title {
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-row-meta {
+    color: #59677e;
+    font-size: 13px;
+}
+
+.nik-work-app .nik-work-calendar-head,
+.nik-work-app .nik-work-calendar-grid {
+    gap: 7px;
+}
+
+.nik-work-app .nik-work-day-cell {
+    min-height: 39px;
+    border-radius: 999px;
+}
+
+.nik-work-app .nik-work-day-cell.is-today {
+    background: #1d7cf2;
+}
+
+.nik-work-app .nik-work-alert {
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    min-height: 64px;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.nik-work-app .nik-work-alert-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+}
+
+.nik-work-app .nik-work-action {
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+    min-height: 44px;
+    border-color: #dfe6f0;
+    border-radius: 8px;
+    background: #fff;
+    padding: 9px 12px;
+}
+
+.nik-work-app .nik-work-action.is-primary {
+    border-color: #dfe6f0;
+    background: #fff;
+    color: #0f172a;
+}
+
+.nik-work-app .nik-work-kanban {
+    gap: 12px;
+}
+
+.nik-work-app .nik-work-kanban-column {
+    min-height: 190px;
+    border-radius: 8px;
+    background: #f3f6fb;
+    padding: 12px;
+}
+
+.nik-work-app .nik-work-kanban-title {
+    margin-bottom: 9px;
+    font-size: 14px;
+}
+
+.nik-work-app .nik-work-task-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    border: 1px solid #e5eaf2;
+    border-radius: 6px;
+    background: #fff;
+    padding: 10px 12px;
+    box-shadow: 0 6px 16px rgba(31, 42, 68, .04);
+}
+
+.nik-work-app .nik-work-task-card + .nik-work-task-card {
+    margin-top: 6px;
+}
+
+.nik-work-app .nik-work-task-meta {
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-work-task-meta.is-red { color: #ef4444; }
+.nik-work-app .nik-work-task-meta.is-amber { color: #f59e0b; }
+.nik-work-app .nik-work-task-meta.is-green { color: #16a34a; }
+
+.nik-work-app .nik-work-task-check {
+    color: #16a34a;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-kanban-footer {
+    margin-top: 12px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.nik-work-app .nik-work-row {
+    border-color: #e5eaf2;
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.nik-work-app .nik-work-designed-empty {
+    border: 1px solid #e5eaf2;
+    border-radius: 8px;
+    background: #f8fafc;
+    padding: 14px;
+}
+
+.nik-work-app .nik-work-message-list {
+    display: grid;
+    gap: 14px;
+}
+
+.nik-work-app .nik-work-message {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.nik-work-app .nik-work-message-avatar {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.nik-work-app .nik-work-message-avatar.is-purple { background: #a855f7; }
+.nik-work-app .nik-work-message-avatar.is-blue { background: #1d7cf2; }
+.nik-work-app .nik-work-message-avatar.is-green { background: #22c55e; }
+
+.nik-work-app .nik-work-message-side {
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.nik-work-app .nik-work-message-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #1d7cf2;
+}
+
+.nik-work-app .nik-work-card-link {
+    display: block;
+    margin-top: 18px;
+    color: #0b70f0;
+    font-size: 14px;
+    font-weight: 850;
+    text-align: center;
+    text-decoration: none;
+}
+
+@media (min-width: 1281px) {
+    .nik-work-app .nik-work-grid > :nth-child(1) {
+        grid-column: 1 / span 5;
+        grid-row: 1;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(2) {
+        grid-column: 6 / span 4;
+        grid-row: 1;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(3) {
+        grid-column: 10 / span 3;
+        grid-row: 1 / span 2;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(4) {
+        grid-column: 1 / span 8;
+        grid-row: 2;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(5) {
+        grid-column: 10 / span 3;
+        grid-row: 3;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(6) {
+        grid-column: 1 / span 5;
+        grid-row: 3;
+    }
+
+    .nik-work-app .nik-work-grid > :nth-child(7) {
+        grid-column: 6 / span 4;
+        grid-row: 3;
+    }
+}
+
 @media (max-width: 1280px) {
     .nik-work-app .nik-work-layout {
         grid-template-columns: 1fr;

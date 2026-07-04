@@ -19,7 +19,12 @@
             <span>Поиск...</span>
         </div>
 
-        <button type="button" class="nik-work-icon-button" aria-label="Уведомления">!</button>
-        <div class="nik-work-avatar" aria-label="Профиль">{{ $initials }}</div>
+        <button type="button" class="nik-work-icon-button has-badge" aria-label="Уведомления">
+            <span aria-hidden="true">♢</span>
+            <span class="nik-work-notification-count">3</span>
+        </button>
+        <button type="button" class="nik-work-icon-button" aria-label="Выйти">
+            <span aria-hidden="true">↪</span>
+        </button>
     </div>
 </header>

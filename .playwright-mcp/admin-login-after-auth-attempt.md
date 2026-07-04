@@ -1,0 +1,30 @@
+- generic [active] [ref=f1e1] [box=0,0,929,861]:
+  - main [ref=f1e4] [box=209,189,512,484]:
+    - generic [ref=f1e6] [box=257,237,416,388]:
+      - generic [ref=f1e7] [box=257,237,416,80]:
+        - img "Логотип Никтрейд" [ref=f1e8] [box=399,237,131,32]
+        - heading "Войдите в свой аккаунт" [level=1] [ref=f1e9] [box=327,285,275,32]
+      - generic [ref=f1e13] [box=257,341,416,284]:
+        - generic [ref=f1e17] [box=257,341,416,224]:
+          - generic [ref=f1e20] [box=257,341,416,92]:
+            - generic [ref=f1e24] [box=257,341,189,20]:
+              - text: Адрес электронной почты
+              - superscript [ref=f1e25] [box=440,340,5,13]: "*"
+            - generic [ref=f1e26] [box=257,369,416,64]:
+              - textbox "Адрес электронной почты*" [ref=f1e29] [box=257,369,416,36]: codex@niktrade.local
+              - paragraph [ref=f1e63] [box=257,413,416,20]: Неверное имя пользователя или пароль.
+          - generic [ref=f1e32] [box=257,457,416,64]:
+            - generic [ref=f1e36] [box=257,457,57,20]:
+              - text: Пароль
+              - superscript [ref=f1e37] [box=308,456,5,13]: "*"
+            - generic [ref=f1e39] [box=257,485,416,36]:
+              - textbox "Пароль*" [ref=f1e41] [box=257,485,371,36]: maHA8RAjuZ
+              - button "Скрыть пароль" [ref=f1e64] [cursor=pointer] [box=635,487,32,32]:
+                - img [ref=f1e65] [box=641,493,20,20]
+          - generic [ref=f1e53] [box=257,545,143,20]:
+            - checkbox "Запомнить меня" [ref=f1e54] [box=257,547,16,16]
+            - generic [ref=f1e55] [box=285,545,115,20]: Запомнить меня
+        - button "Войти" [ref=f1e61] [cursor=pointer] [box=257,589,416,36]:
+          - generic [ref=f1e62] [box=444,597,41,20]: Войти
+  - generic [box=0,861,929,0]:
+    - status [box=16,16,897,829]

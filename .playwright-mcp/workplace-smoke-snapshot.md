@@ -1,0 +1,292 @@
+- generic [active] [ref=f5e1] [box=0,0,914,2176]:
+  - navigation [ref=f5e3] [box=0,0,914,64]:
+    - button "Раскрыть боковую панель" [ref=f5e4] [cursor=pointer] [box=16,14,36,36]:
+      - img [ref=f5e5] [box=22,20,24,24]
+    - button "Меню пользователя" [ref=f5e10] [cursor=pointer] [box=866,16,32,32]:
+      - img "Аватар CODEX" [ref=f5e11] [box=866,16,32,32]
+  - generic [ref=f5e12] [box=0,64,914,2112]:
+    - complementary [ref=f5e13] [box=-256,0,256,861]:
+      - link "Логотип Никтрейд" [ref=f5e17] [cursor=pointer] [box=-240,16,224,32]:
+        - /url: https://preprod.niktrade.ru/admin
+        - img "Логотип Никтрейд" [ref=f5e18] [box=-228,16,131,32]
+      - navigation [ref=f5e19] [box=-256,64,256,797]:
+        - list [ref=f5e20] [box=-240,96,209,884]:
+          - listitem [ref=f5e21] [box=-240,96,209,84]:
+            - list [ref=f5e22] [box=-240,96,209,84]:
+              - listitem [ref=f5e23] [box=-240,96,209,40]:
+                - link "Главная" [ref=f5e24] [cursor=pointer] [box=-240,96,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin
+                  - img [ref=f5e25] [box=-232,104,24,24]
+                  - generic [ref=f5e27] [box=-196,106,157,20]: Главная
+              - listitem [ref=f5e28] [box=-240,140,209,40]:
+                - link "Рабочее пространство" [ref=f5e29] [cursor=pointer] [box=-240,140,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/workplace
+                  - img [ref=f5e30] [box=-232,148,24,24]
+                  - generic [ref=f5e32] [box=-196,150,157,20]: Рабочее пространство
+          - listitem [ref=f5e33] [box=-240,208,209,128]:
+            - generic [ref=f5e34] [cursor=pointer] [box=-240,208,209,40]:
+              - generic [ref=f5e35] [box=-232,216,161,24]: Продажи
+              - button "Продажи" [expanded] [ref=f5e36] [box=-67,210,36,36]:
+                - img [ref=f5e37] [box=-59,218,20,20]
+            - list [ref=f5e39] [box=-240,252,209,84]:
+              - listitem [ref=f5e40] [box=-240,252,209,40]:
+                - link "Заказы" [ref=f5e41] [cursor=pointer] [box=-240,252,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/orders
+                  - img [ref=f5e42] [box=-232,260,24,24]
+                  - generic [ref=f5e44] [box=-196,262,157,20]: Заказы
+              - listitem [ref=f5e45] [box=-240,296,209,40]:
+                - link "Покупатели" [ref=f5e46] [cursor=pointer] [box=-240,296,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/customers
+                  - img [ref=f5e47] [box=-232,304,24,24]
+                  - generic [ref=f5e49] [box=-196,306,157,20]: Покупатели
+          - listitem [ref=f5e50] [box=-240,364,209,304]:
+            - generic [ref=f5e51] [cursor=pointer] [box=-240,364,209,40]:
+              - generic [ref=f5e52] [box=-232,372,161,24]: Каталог
+              - button "Каталог" [expanded] [ref=f5e53] [box=-67,366,36,36]:
+                - img [ref=f5e54] [box=-59,374,20,20]
+            - list [ref=f5e56] [box=-240,408,209,260]:
+              - listitem [ref=f5e57] [box=-240,408,209,40]:
+                - link "Товары" [ref=f5e58] [cursor=pointer] [box=-240,408,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/products
+                  - img [ref=f5e59] [box=-232,416,24,24]
+                  - generic [ref=f5e61] [box=-196,418,157,20]: Товары
+              - listitem [ref=f5e62] [box=-240,452,209,40]:
+                - link "Категории" [ref=f5e63] [cursor=pointer] [box=-240,452,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/categories
+                  - img [ref=f5e64] [box=-232,460,24,24]
+                  - generic [ref=f5e67] [box=-196,462,157,20]: Категории
+              - listitem [ref=f5e68] [box=-240,496,209,40]:
+                - link "Бренды" [ref=f5e69] [cursor=pointer] [box=-240,496,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/brands
+                  - img [ref=f5e70] [box=-232,504,24,24]
+                  - generic [ref=f5e72] [box=-196,506,157,20]: Бренды
+              - listitem [ref=f5e73] [box=-240,540,209,40]:
+                - link "Линейки" [ref=f5e74] [cursor=pointer] [box=-240,540,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/product-lines
+                  - img [ref=f5e75] [box=-232,548,24,24]
+                  - generic [ref=f5e77] [box=-196,550,157,20]: Линейки
+              - listitem [ref=f5e78] [box=-240,584,209,40]:
+                - link "Типы" [ref=f5e79] [cursor=pointer] [box=-240,584,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/product-types
+                  - img [ref=f5e80] [box=-232,592,24,24]
+                  - generic [ref=f5e82] [box=-196,594,157,20]: Типы
+              - listitem [ref=f5e83] [box=-240,628,209,40]:
+                - link "Документация" [ref=f5e84] [cursor=pointer] [box=-240,628,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/certificates
+                  - img [ref=f5e85] [box=-232,636,24,24]
+                  - generic [ref=f5e87] [box=-196,638,157,20]: Документация
+          - listitem [ref=f5e88] [box=-240,696,209,84]:
+            - generic [ref=f5e89] [cursor=pointer] [box=-240,696,209,40]:
+              - generic [ref=f5e90] [box=-232,704,161,24]: Справочники
+              - button "Справочники" [expanded] [ref=f5e91] [box=-67,698,36,36]:
+                - img [ref=f5e92] [box=-59,706,20,20]
+            - list [ref=f5e94] [box=-240,740,209,40]:
+              - listitem [ref=f5e95] [box=-240,740,209,40]:
+                - link "Склады" [ref=f5e96] [cursor=pointer] [box=-240,740,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/warehouses
+                  - img [ref=f5e97] [box=-232,748,24,24]
+                  - generic [ref=f5e99] [box=-196,750,157,20]: Склады
+          - listitem [ref=f5e100] [box=-240,808,209,172]:
+            - generic [ref=f5e101] [cursor=pointer] [box=-240,808,209,40]:
+              - generic [ref=f5e102] [box=-232,816,161,24]: 🏢 Организация
+              - button "🏢 Организация" [expanded] [ref=f5e103] [box=-67,810,36,36]:
+                - img [ref=f5e104] [box=-59,818,20,20]
+            - list [ref=f5e106] [box=-240,852,209,128]:
+              - listitem [ref=f5e107] [box=-240,852,209,40]:
+                - link "Отделы" [ref=f5e108] [cursor=pointer] [box=-240,852,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/departments
+                  - img [ref=f5e109] [box=-232,860,24,24]
+                  - generic [ref=f5e111] [box=-196,862,157,20]: Отделы
+              - listitem [ref=f5e112] [box=-240,896,209,40]:
+                - link "Сотрудники" [ref=f5e113] [cursor=pointer] [box=-240,896,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                  - img [ref=f5e114] [box=-232,904,24,24]
+                  - generic [ref=f5e116] [box=-196,906,157,20]: Сотрудники
+              - listitem [ref=f5e117] [box=-240,940,209,40]:
+                - link "Заявки сотрудников" [ref=f5e118] [cursor=pointer] [box=-240,940,209,40]:
+                  - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                  - img [ref=f5e119] [box=-232,948,24,24]
+                  - generic [ref=f5e121] [box=-196,950,157,20]: Заявки сотрудников
+    - main [ref=f5e123] [box=0,64,914,2112]:
+      - generic [ref=f5e125] [box=24,64,866,2112]:
+        - button "Выбрать контекст" [ref=f5e129] [cursor=pointer] [box=723,96,167,36]:
+          - img [ref=f5e130] [box=735,104,20,20]
+          - text: Выбрать контекст
+        - generic [ref=f5e137] [box=36,172,842,1956]:
+          - generic [ref=f5e138] [box=36,172,842,64]:
+            - generic [ref=f5e139] [box=36,172,401,64]:
+              - heading "Добрый день, CODEX! 👋" [level=1] [ref=f5e140] [box=36,172,401,33]
+              - generic [ref=f5e141] [box=36,213,401,23]: суббота, 04 июля 2026
+            - generic [ref=f5e142] [box=461,180,417,48]:
+              - generic "Поиск" [ref=f5e143] [box=461,180,297,48]:
+                - generic [ref=f5e144] [box=478,193,11,21]: ⌕
+                - generic [ref=f5e145] [box=498,193,54,21]: Поиск...
+              - button "Уведомления" [ref=f5e146] [cursor=pointer] [box=770,180,48,48]: "!"
+              - generic "Профиль" [ref=f5e147] [box=830,180,48,48]: C
+          - main [ref=f5e148] [box=36,264,842,1864]:
+            - generic [ref=f5e149] [box=36,264,409,423]:
+              - generic [ref=f5e150] [box=61,289,359,32]:
+                - generic [ref=f5e152] [box=61,289,123,28]:
+                  - generic [ref=f5e153] [box=61,289,28,28]: ◷
+                  - generic [ref=f5e154] [box=99,290,85,26]: Мой день
+                - generic [ref=f5e155] [box=346,289,74,32]: Сегодня
+              - generic [ref=f5e156] [box=61,341,359,321]:
+                - generic [ref=f5e157] [box=61,341,190,321]:
+                  - generic [ref=f5e158] [box=80,360,152,20]: Ваша смена
+                  - generic [ref=f5e159] [box=80,387,152,55]: Не назначена
+                  - generic [ref=f5e160] [box=80,456,150,36]: Смен не назначено
+                  - generic [ref=f5e161] [box=80,518,152,125]:
+                    - generic [ref=f5e162] [box=80,539,152,20]: Рабочее время сегодня
+                    - generic [ref=f5e163] [box=80,566,152,33]: 0,0 ч
+                    - generic [ref=f5e164] [box=80,603,152,20]: из 8 ч
+                - generic [ref=f5e168] [box=303,359,99,63]: Сегодня смен и событий не назначено.
+            - generic [ref=f5e169] [box=469,264,409,455]:
+              - generic [ref=f5e170] [box=494,289,359,32]:
+                - generic [ref=f5e172] [box=494,289,133,28]:
+                  - generic [ref=f5e173] [box=494,289,28,28]: ▣
+                  - generic [ref=f5e174] [box=532,290,95,26]: Календарь
+                - link "Открыть" [ref=f5e175] [cursor=pointer] [box=776,289,77,32]:
+                  - /url: https://preprod.niktrade.ru/admin/my-calendar
+              - generic [ref=f5e176] [box=494,341,359,24]: июль 2026
+              - generic [ref=f5e177] [box=494,383,359,20]:
+                - generic [ref=f5e178] [box=494,383,44,20]: Пн
+                - generic [ref=f5e179] [box=546,383,44,20]: Вт
+                - generic [ref=f5e180] [box=599,383,44,20]: Ср
+                - generic [ref=f5e181] [box=651,383,44,20]: Чт
+                - generic [ref=f5e182] [box=704,383,44,20]: Пт
+                - generic [ref=f5e183] [box=756,383,44,20]: Сб
+                - generic [ref=f5e184] [box=809,383,44,20]: Вс
+              - generic [ref=f5e185] [box=494,410,359,242]:
+                - generic [ref=f5e187] [box=508,421,16,21]: "29"
+                - generic [ref=f5e189] [box=561,421,16,21]: "30"
+                - generic [ref=f5e191] [box=617,421,8,21]: "1"
+                - generic [ref=f5e193] [box=669,421,8,21]: "2"
+                - generic [ref=f5e195] [box=722,421,8,21]: "3"
+                - generic [ref=f5e197] [box=774,421,8,21]: "4"
+                - generic [ref=f5e199] [box=827,421,8,21]: "5"
+                - generic [ref=f5e201] [box=512,471,8,21]: "6"
+                - generic [ref=f5e203] [box=565,471,8,21]: "7"
+                - generic [ref=f5e205] [box=617,471,8,21]: "8"
+                - generic [ref=f5e207] [box=669,471,8,21]: "9"
+                - generic [ref=f5e209] [box=718,471,16,21]: "10"
+                - generic [ref=f5e211] [box=770,471,16,21]: "11"
+                - generic [ref=f5e213] [box=823,471,16,21]: "12"
+                - generic [ref=f5e215] [box=508,521,16,21]: "13"
+                - generic [ref=f5e217] [box=561,521,16,21]: "14"
+                - generic [ref=f5e219] [box=613,521,16,21]: "15"
+                - generic [ref=f5e221] [box=665,521,16,21]: "16"
+                - generic [ref=f5e223] [box=718,521,16,21]: "17"
+                - generic [ref=f5e225] [box=770,521,16,21]: "18"
+                - generic [ref=f5e227] [box=823,521,16,21]: "19"
+                - generic [ref=f5e229] [box=508,571,16,21]: "20"
+                - generic [ref=f5e231] [box=561,571,16,21]: "21"
+                - generic [ref=f5e233] [box=613,571,16,21]: "22"
+                - generic [ref=f5e235] [box=665,571,16,21]: "23"
+                - generic [ref=f5e237] [box=718,571,16,21]: "24"
+                - generic [ref=f5e239] [box=770,571,16,21]: "25"
+                - generic [ref=f5e241] [box=823,571,16,21]: "26"
+                - generic [ref=f5e243] [box=508,621,16,21]: "27"
+                - generic [ref=f5e245] [box=561,621,16,21]: "28"
+                - generic [ref=f5e247] [box=613,621,16,21]: "29"
+                - generic [ref=f5e249] [box=665,621,16,21]: "30"
+                - generic [ref=f5e251] [box=718,621,16,21]: "31"
+                - generic [ref=f5e253] [box=774,621,8,21]: "1"
+                - generic [ref=f5e255] [box=827,621,8,21]: "2"
+              - link "Открыть полный календарь" [ref=f5e256] [cursor=pointer] [box=494,672,359,21]:
+                - /url: https://preprod.niktrade.ru/admin/my-calendar
+            - complementary [ref=f5e257] [box=36,742,409,501]:
+              - generic [ref=f5e258] [box=36,742,409,155]:
+                - generic [ref=f5e261] [box=61,767,200,28]:
+                  - generic [ref=f5e262] [box=61,767,28,28]: "!"
+                  - generic [ref=f5e263] [box=99,768,162,26]: Требует внимания
+                - generic [ref=f5e266] [box=79,833,323,21]: На сегодня нет важных уведомлений.
+              - generic [ref=f5e267] [box=36,917,409,326]:
+                - generic [ref=f5e270] [box=61,942,203,28]:
+                  - generic [ref=f5e271] [box=61,942,28,28]: +
+                  - generic [ref=f5e272] [box=99,943,165,26]: Быстрые действия
+                - generic [ref=f5e273] [box=61,990,359,228]:
+                  - link "+ Создать заявку →" [ref=f5e274] [cursor=pointer] [box=61,990,359,48]:
+                    - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests/create
+                    - generic [ref=f5e275] [box=74,1004,32,21]: +
+                    - generic [ref=f5e276] [box=118,1004,265,21]: Создать заявку
+                    - generic [ref=f5e277] [box=395,1004,12,21]: →
+                  - link "▣ Открыть календарь →" [ref=f5e278] [cursor=pointer] [box=61,1050,359,48]:
+                    - /url: https://preprod.niktrade.ru/admin/my-calendar
+                    - generic [ref=f5e279] [box=74,1064,32,21]: ▣
+                    - generic [ref=f5e280] [box=118,1064,265,21]: Открыть календарь
+                    - generic [ref=f5e281] [box=395,1064,12,21]: →
+                  - link "▤ Открыть документы →" [ref=f5e282] [cursor=pointer] [box=61,1110,359,48]:
+                    - /url: "#employee-documents"
+                    - generic [ref=f5e283] [box=74,1124,32,21]: ▤
+                    - generic [ref=f5e284] [box=118,1124,265,21]: Открыть документы
+                    - generic [ref=f5e285] [box=395,1124,12,21]: →
+                  - generic [ref=f5e286] [box=61,1170,359,48]:
+                    - generic [ref=f5e287] [box=74,1184,32,21]: ○
+                    - generic [ref=f5e288] [box=118,1184,233,21]: Написать сообщение
+                    - generic [ref=f5e289] [box=363,1184,44,21]: Скоро
+            - generic [ref=f5e290] [box=36,1267,842,252]:
+              - generic [ref=f5e291] [box=61,1292,792,32]:
+                - generic [ref=f5e293] [box=61,1292,142,28]:
+                  - generic [ref=f5e294] [box=61,1292,28,28]: ☑
+                  - generic [ref=f5e295] [box=99,1293,104,26]: Мои задачи
+                - generic [ref=f5e296] [box=791,1292,62,32]: Скоро
+              - generic [ref=f5e297] [box=61,1344,792,150]:
+                - generic [ref=f5e298] [box=61,1344,188,150]:
+                  - generic [ref=f5e299] [box=75,1358,160,32]:
+                    - generic [ref=f5e300] [box=75,1364,49,21]: Новые
+                    - generic [ref=f5e301] [box=203,1358,31,32]: "0"
+                  - generic [ref=f5e302] [box=75,1402,160,67]: Модуль задач будет подключён позже.
+                - generic [ref=f5e303] [box=263,1344,188,150]:
+                  - generic [ref=f5e304] [box=277,1358,160,32]:
+                    - generic [ref=f5e305] [box=277,1364,63,21]: В работе
+                    - generic [ref=f5e306] [box=405,1358,31,32]: "0"
+                  - generic [ref=f5e307] [box=277,1402,160,67]: Модуль задач будет подключён позже.
+                - generic [ref=f5e308] [box=464,1344,188,150]:
+                  - generic [ref=f5e309] [box=478,1358,160,32]:
+                    - generic [ref=f5e310] [box=478,1364,91,21]: На проверке
+                    - generic [ref=f5e311] [box=606,1358,31,32]: "0"
+                  - generic [ref=f5e312] [box=478,1402,160,67]: Модуль задач будет подключён позже.
+                - generic [ref=f5e313] [box=666,1344,188,150]:
+                  - generic [ref=f5e314] [box=680,1358,160,32]:
+                    - generic [ref=f5e315] [box=680,1364,49,21]: Готово
+                    - generic [ref=f5e316] [box=808,1358,31,32]: "0"
+                  - generic [ref=f5e317] [box=680,1402,160,67]: Модуль задач будет подключён позже.
+            - generic [ref=f5e318] [box=36,1543,409,175]:
+              - generic [ref=f5e319] [box=61,1568,359,32]:
+                - generic [ref=f5e321] [box=61,1568,139,28]:
+                  - generic [ref=f5e322] [box=61,1568,28,28]: ○
+                  - generic [ref=f5e323] [box=99,1569,101,26]: Сообщения
+                - generic [ref=f5e324] [box=358,1568,62,32]: Скоро
+              - generic [ref=f5e326] [box=61,1620,359,73]:
+                - generic [ref=f5e327] [box=78,1634,249,45]:
+                  - generic [ref=f5e328] [box=78,1634,249,21]: Корпоративный мессенджер
+                  - generic [ref=f5e329] [box=78,1659,249,20]: Будет подключён позже.
+                - generic [ref=f5e330] [box=341,1640,62,32]: Скоро
+            - generic [ref=f5e331] [box=469,1543,409,286]:
+              - generic [ref=f5e332] [box=494,1568,359,32]:
+                - generic [ref=f5e334] [box=494,1568,142,28]:
+                  - generic [ref=f5e335] [box=494,1568,28,28]: □
+                  - generic [ref=f5e336] [box=532,1569,104,26]: Мои заявки
+                - generic [ref=f5e337] [box=822,1568,31,32]: "0"
+              - generic [ref=f5e338] [box=494,1620,359,72]:
+                - generic [ref=f5e339] [box=494,1620,94,32]: Ожидают 0
+                - generic [ref=f5e340] [box=596,1620,100,32]: Одобрены 0
+                - generic [ref=f5e341] [box=703,1620,105,32]: Отклонены 0
+                - generic [ref=f5e342] [box=494,1660,115,32]: Возвращены 0
+              - generic [ref=f5e345] [box=512,1724,323,21]: У вас пока нет заявок.
+              - link "Открыть все заявки" [ref=f5e346] [cursor=pointer] [box=494,1783,359,21]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - generic [ref=f5e347] [box=36,1853,409,275]:
+              - generic [ref=f5e348] [box=61,1878,359,32]:
+                - generic [ref=f5e350] [box=61,1878,181,28]:
+                  - generic [ref=f5e351] [box=61,1878,28,28]: ▤
+                  - generic [ref=f5e352] [box=99,1879,143,26]: Мои документы
+                - generic [ref=f5e353] [box=378,1878,42,32]: 0%
+              - generic [ref=f5e355] [box=61,1930,359,20]:
+                - generic [ref=f5e356] [box=61,1930,103,20]: Комплектность
+                - generic [ref=f5e357] [box=401,1930,19,20]: 0%
+              - generic [ref=f5e361] [box=79,2002,323,42]: "Документы пока не загружены. Не хватает: 5."
+              - link "Открыть все документы" [ref=f5e362] [cursor=pointer] [box=61,2082,359,21]:
+                - /url: "#employee-documents"
+  - generic [box=0,2176,914,0]:
+    - status [box=16,16,882,829]

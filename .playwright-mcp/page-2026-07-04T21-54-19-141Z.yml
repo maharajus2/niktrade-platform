@@ -1,0 +1,279 @@
+- generic [active] [ref=f6e1]:
+  - generic [ref=f6e2]:
+    - generic [ref=f6e4]:
+      - generic [ref=f6e5]:
+        - img [ref=f6e7]
+        - generic [ref=f6e10]: Internal Server Error
+      - button "Copy as Markdown" [ref=f6e11] [cursor=pointer]:
+        - img [ref=f6e12]
+        - generic [ref=f6e15]: Copy as Markdown
+    - generic [ref=f6e18]:
+      - generic [ref=f6e19]:
+        - heading "Illuminate\\Encryption\\MissingAppKeyException" [level=1] [ref=f6e20]
+        - generic [ref=f6e22]: vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:83
+        - paragraph [ref=f6e23]: No application encryption key has been specified.
+      - generic [ref=f6e24]:
+        - generic [ref=f6e25]:
+          - generic [ref=f6e26]:
+            - generic [ref=f6e27]: LARAVEL
+            - generic [ref=f6e28]: 13.13.0
+          - generic [ref=f6e29]:
+            - generic [ref=f6e30]: PHP
+            - generic [ref=f6e31]: 8.4.22
+        - generic [ref=f6e32]:
+          - img [ref=f6e33]
+          - text: UNHANDLED
+        - generic [ref=f6e36]: CODE 0
+      - generic [ref=f6e38]:
+        - generic [ref=f6e39]:
+          - img [ref=f6e40]
+          - text: "500"
+        - generic [ref=f6e43]:
+          - img [ref=f6e44]
+          - text: GET
+        - generic [ref=f6e47]: http://127.0.0.1:8000/admin/workplace
+        - button [ref=f6e48] [cursor=pointer]:
+          - img [ref=f6e49]
+    - generic [ref=f6e53]:
+      - generic [ref=f6e54]:
+        - generic [ref=f6e55]:
+          - img [ref=f6e57]
+          - heading "Exception trace" [level=3] [ref=f6e60]
+        - generic [ref=f6e61]:
+          - generic [ref=f6e63] [cursor=pointer]:
+            - img [ref=f6e64]
+            - generic [ref=f6e68]: 51 vendor frames
+            - button [ref=f6e69]:
+              - img [ref=f6e70]
+          - generic [ref=f6e74]:
+            - generic [ref=f6e75] [cursor=pointer]:
+              - generic [ref=f6e78]:
+                - code [ref=f6e82]:
+                  - generic [ref=f6e83]: Illuminate\Foundation\Application->handleRequest(object(Illuminate\Http\Request))
+                - generic [ref=f6e85]: public\index.php:20
+              - button [ref=f6e87]:
+                - img [ref=f6e88]
+            - code [ref=f6e96]:
+              - generic [ref=f6e97]: "15"
+              - generic [ref=f6e98]: 16// Bootstrap Laravel and handle the request...
+              - generic [ref=f6e99]: 17/** @var Application $app */
+              - generic [ref=f6e100]: 18$app = require_once __DIR__.'/../bootstrap/app.php';
+              - generic [ref=f6e101]: "19"
+              - generic [ref=f6e102]: 20$app->handleRequest(Request::capture());
+              - generic [ref=f6e103]: "21"
+          - generic [ref=f6e105] [cursor=pointer]:
+            - img [ref=f6e106]
+            - generic [ref=f6e110]: 1 vendor frame
+            - button [ref=f6e111]:
+              - img [ref=f6e112]
+      - generic [ref=f6e116]:
+        - generic [ref=f6e118]:
+          - img [ref=f6e120]
+          - heading "Queries" [level=3] [ref=f6e122]
+        - generic [ref=f6e124]: // No queries executed
+    - generic [ref=f6e126]:
+      - generic [ref=f6e127]:
+        - heading "Headers" [level=2] [ref=f6e128]
+        - generic [ref=f6e129]:
+          - generic [ref=f6e130]:
+            - generic [ref=f6e131]: host
+            - generic [ref=f6e133]: 127.0.0.1:8000
+          - generic [ref=f6e134]:
+            - generic [ref=f6e135]: connection
+            - generic [ref=f6e137]: keep-alive
+          - generic [ref=f6e138]:
+            - generic [ref=f6e139]: sec-ch-ua
+            - generic [ref=f6e141]: "\"Google Chrome\";v=\"149\", \"Chromium\";v=\"149\", \"Not)A;Brand\";v=\"24\""
+          - generic [ref=f6e142]:
+            - generic [ref=f6e143]: sec-ch-ua-mobile
+            - generic [ref=f6e145]: "?0"
+          - generic [ref=f6e146]:
+            - generic [ref=f6e147]: sec-ch-ua-platform
+            - generic [ref=f6e149]: "\"Windows\""
+          - generic [ref=f6e150]:
+            - generic [ref=f6e151]: upgrade-insecure-requests
+            - generic [ref=f6e153]: "1"
+          - generic [ref=f6e154]:
+            - generic [ref=f6e155]: user-agent
+            - generic [ref=f6e157]: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36
+          - generic [ref=f6e158]:
+            - generic [ref=f6e159]: accept
+            - generic [ref=f6e161]: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+          - generic [ref=f6e162]:
+            - generic [ref=f6e163]: sec-fetch-site
+            - generic [ref=f6e165]: none
+          - generic [ref=f6e166]:
+            - generic [ref=f6e167]: sec-fetch-mode
+            - generic [ref=f6e169]: navigate
+          - generic [ref=f6e170]:
+            - generic [ref=f6e171]: sec-fetch-user
+            - generic [ref=f6e173]: "?1"
+          - generic [ref=f6e174]:
+            - generic [ref=f6e175]: sec-fetch-dest
+            - generic [ref=f6e177]: document
+          - generic [ref=f6e178]:
+            - generic [ref=f6e179]: accept-encoding
+            - generic [ref=f6e181]: gzip, deflate, br, zstd
+          - generic [ref=f6e182]:
+            - generic [ref=f6e183]: accept-language
+            - generic [ref=f6e185]: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+      - generic [ref=f6e186]:
+        - heading "Body" [level=2] [ref=f6e187]
+        - generic [ref=f6e188]: // No request body
+      - generic [ref=f6e189]:
+        - heading "Routing" [level=2] [ref=f6e190]
+        - generic [ref=f6e191]:
+          - generic [ref=f6e192]:
+            - generic [ref=f6e193]: controller
+            - generic [ref=f6e195]: App\Filament\Pages\Workplace
+          - generic [ref=f6e196]:
+            - generic [ref=f6e197]: route name
+            - generic [ref=f6e199]: filament.admin.pages.workplace
+          - generic [ref=f6e200]:
+            - generic [ref=f6e201]: middleware
+            - generic [ref=f6e203]: panel:admin, Illuminate\Cookie\Middleware\EncryptCookies, Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse, Illuminate\Session\Middleware\StartSession, Filament\Http\Middleware\AuthenticateSession, Illuminate\View\Middleware\ShareErrorsFromSession, Illuminate\Foundation\Http\Middleware\PreventRequestForgery, Illuminate\Routing\Middleware\SubstituteBindings, Filament\Http\Middleware\DisableBladeIconComponents, Filament\Http\Middleware\DispatchServingFilamentEvent, Filament\Http\Middleware\Authenticate
+      - generic [ref=f6e204]:
+        - heading "Routing parameters" [level=2] [ref=f6e205]
+        - generic [ref=f6e206]: // No routing parameters
+    - generic [ref=f6e209]:
+      - img [ref=f6e211]
+      - img [ref=f6e3249]
+  - generic [ref=f6e6287]:
+    - generic [ref=f6e6289]:
+      - generic [ref=f6e6290]:
+        - img [ref=f6e6292]
+        - generic [ref=f6e6295]: Internal Server Error
+      - button "Copy as Markdown" [ref=f6e6296] [cursor=pointer]:
+        - img [ref=f6e6297]
+        - generic [ref=f6e6300]: Copy as Markdown
+    - generic [ref=f6e6303]:
+      - generic [ref=f6e6304]:
+        - heading "Illuminate\\Encryption\\MissingAppKeyException" [level=1] [ref=f6e6305]
+        - generic [ref=f6e6307]: vendor\laravel\framework\src\Illuminate\Encryption\EncryptionServiceProvider.php:83
+        - paragraph [ref=f6e6308]: No application encryption key has been specified.
+      - generic [ref=f6e6309]:
+        - generic [ref=f6e6310]:
+          - generic [ref=f6e6311]:
+            - generic [ref=f6e6312]: LARAVEL
+            - generic [ref=f6e6313]: 13.13.0
+          - generic [ref=f6e6314]:
+            - generic [ref=f6e6315]: PHP
+            - generic [ref=f6e6316]: 8.4.22
+        - generic [ref=f6e6317]:
+          - img [ref=f6e6318]
+          - text: UNHANDLED
+        - generic [ref=f6e6321]: CODE 0
+      - generic [ref=f6e6323]:
+        - generic [ref=f6e6324]:
+          - img [ref=f6e6325]
+          - text: "500"
+        - generic [ref=f6e6328]:
+          - img [ref=f6e6329]
+          - text: GET
+        - generic [ref=f6e6332]: http://127.0.0.1:8000/admin/workplace
+        - button [ref=f6e6333] [cursor=pointer]:
+          - img [ref=f6e6334]
+    - generic [ref=f6e6338]:
+      - generic [ref=f6e6339]:
+        - generic [ref=f6e6340]:
+          - img [ref=f6e6342]
+          - heading "Exception trace" [level=3] [ref=f6e6345]
+        - generic [ref=f6e6346]:
+          - generic [ref=f6e6348] [cursor=pointer]:
+            - img [ref=f6e6349]
+            - generic [ref=f6e6353]: 20 vendor frames
+            - button [ref=f6e6354]:
+              - img [ref=f6e6355]
+          - generic [ref=f6e6359]:
+            - generic [ref=f6e6360] [cursor=pointer]:
+              - generic [ref=f6e6363]:
+                - code [ref=f6e6367]:
+                  - generic [ref=f6e6368]: Illuminate\Foundation\Application->handleRequest(object(Illuminate\Http\Request))
+                - generic [ref=f6e6370]: public\index.php:20
+              - button [ref=f6e6372]:
+                - img [ref=f6e6373]
+            - code [ref=f6e6381]:
+              - generic [ref=f6e6382]: "15"
+              - generic [ref=f6e6383]: 16// Bootstrap Laravel and handle the request...
+              - generic [ref=f6e6384]: 17/** @var Application $app */
+              - generic [ref=f6e6385]: 18$app = require_once __DIR__.'/../bootstrap/app.php';
+              - generic [ref=f6e6386]: "19"
+              - generic [ref=f6e6387]: 20$app->handleRequest(Request::capture());
+              - generic [ref=f6e6388]: "21"
+          - generic [ref=f6e6390] [cursor=pointer]:
+            - img [ref=f6e6391]
+            - generic [ref=f6e6395]: 1 vendor frame
+            - button [ref=f6e6396]:
+              - img [ref=f6e6397]
+      - generic [ref=f6e6401]:
+        - generic [ref=f6e6403]:
+          - img [ref=f6e6405]
+          - heading "Queries" [level=3] [ref=f6e6407]
+        - generic [ref=f6e6409]: // No queries executed
+    - generic [ref=f6e6411]:
+      - generic [ref=f6e6412]:
+        - heading "Headers" [level=2] [ref=f6e6413]
+        - generic [ref=f6e6414]:
+          - generic [ref=f6e6415]:
+            - generic [ref=f6e6416]: host
+            - generic [ref=f6e6418]: 127.0.0.1:8000
+          - generic [ref=f6e6419]:
+            - generic [ref=f6e6420]: connection
+            - generic [ref=f6e6422]: keep-alive
+          - generic [ref=f6e6423]:
+            - generic [ref=f6e6424]: sec-ch-ua
+            - generic [ref=f6e6426]: "\"Google Chrome\";v=\"149\", \"Chromium\";v=\"149\", \"Not)A;Brand\";v=\"24\""
+          - generic [ref=f6e6427]:
+            - generic [ref=f6e6428]: sec-ch-ua-mobile
+            - generic [ref=f6e6430]: "?0"
+          - generic [ref=f6e6431]:
+            - generic [ref=f6e6432]: sec-ch-ua-platform
+            - generic [ref=f6e6434]: "\"Windows\""
+          - generic [ref=f6e6435]:
+            - generic [ref=f6e6436]: upgrade-insecure-requests
+            - generic [ref=f6e6438]: "1"
+          - generic [ref=f6e6439]:
+            - generic [ref=f6e6440]: user-agent
+            - generic [ref=f6e6442]: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36
+          - generic [ref=f6e6443]:
+            - generic [ref=f6e6444]: accept
+            - generic [ref=f6e6446]: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+          - generic [ref=f6e6447]:
+            - generic [ref=f6e6448]: sec-fetch-site
+            - generic [ref=f6e6450]: none
+          - generic [ref=f6e6451]:
+            - generic [ref=f6e6452]: sec-fetch-mode
+            - generic [ref=f6e6454]: navigate
+          - generic [ref=f6e6455]:
+            - generic [ref=f6e6456]: sec-fetch-user
+            - generic [ref=f6e6458]: "?1"
+          - generic [ref=f6e6459]:
+            - generic [ref=f6e6460]: sec-fetch-dest
+            - generic [ref=f6e6462]: document
+          - generic [ref=f6e6463]:
+            - generic [ref=f6e6464]: accept-encoding
+            - generic [ref=f6e6466]: gzip, deflate, br, zstd
+          - generic [ref=f6e6467]:
+            - generic [ref=f6e6468]: accept-language
+            - generic [ref=f6e6470]: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+      - generic [ref=f6e6471]:
+        - heading "Body" [level=2] [ref=f6e6472]
+        - generic [ref=f6e6473]: // No request body
+      - generic [ref=f6e6474]:
+        - heading "Routing" [level=2] [ref=f6e6475]
+        - generic [ref=f6e6476]:
+          - generic [ref=f6e6477]:
+            - generic [ref=f6e6478]: controller
+            - generic [ref=f6e6480]: App\Filament\Pages\Workplace
+          - generic [ref=f6e6481]:
+            - generic [ref=f6e6482]: route name
+            - generic [ref=f6e6484]: filament.admin.pages.workplace
+          - generic [ref=f6e6485]:
+            - generic [ref=f6e6486]: middleware
+            - generic [ref=f6e6488]: panel:admin, Illuminate\Cookie\Middleware\EncryptCookies, Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse, Illuminate\Session\Middleware\StartSession, Filament\Http\Middleware\AuthenticateSession, Illuminate\View\Middleware\ShareErrorsFromSession, Illuminate\Foundation\Http\Middleware\PreventRequestForgery, Illuminate\Routing\Middleware\SubstituteBindings, Filament\Http\Middleware\DisableBladeIconComponents, Filament\Http\Middleware\DispatchServingFilamentEvent, Filament\Http\Middleware\Authenticate
+      - generic [ref=f6e6489]:
+        - heading "Routing parameters" [level=2] [ref=f6e6490]
+        - generic [ref=f6e6491]: // No routing parameters
+    - generic [ref=f6e6494]:
+      - img [ref=f6e6496]
+      - img [ref=f6e9534]

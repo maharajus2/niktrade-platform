@@ -1,0 +1,119 @@
+- generic [active] [ref=f4e1]:
+  - navigation [ref=f4e3]:
+    - button "Раскрыть боковую панель" [ref=f4e4] [cursor=pointer]:
+      - img [ref=f4e5]
+    - button "Меню пользователя" [ref=f4e10] [cursor=pointer]:
+      - img "Аватар CODEX" [ref=f4e11]
+  - generic [ref=f4e12]:
+    - complementary [ref=f4e13]:
+      - link "Логотип Никтрейд" [ref=f4e17] [cursor=pointer]:
+        - /url: https://preprod.niktrade.ru/admin
+        - img "Логотип Никтрейд" [ref=f4e18]
+      - navigation [ref=f4e19]:
+        - list [ref=f4e20]:
+          - listitem [ref=f4e21]:
+            - list [ref=f4e22]:
+              - listitem [ref=f4e23]:
+                - link "Главная" [ref=f4e24] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin
+                  - img [ref=f4e25]
+                  - generic [ref=f4e27]: Главная
+              - listitem [ref=f4e28]:
+                - link "Рабочее пространство" [ref=f4e29] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/workplace
+                  - img [ref=f4e30]
+                  - generic [ref=f4e32]: Рабочее пространство
+          - listitem [ref=f4e33]:
+            - generic [ref=f4e34] [cursor=pointer]:
+              - generic [ref=f4e35]: Продажи
+              - button "Продажи" [expanded] [ref=f4e36]:
+                - img [ref=f4e37]
+            - list [ref=f4e39]:
+              - listitem [ref=f4e40]:
+                - link "Заказы" [ref=f4e41] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/orders
+                  - img [ref=f4e42]
+                  - generic [ref=f4e44]: Заказы
+              - listitem [ref=f4e45]:
+                - link "Покупатели" [ref=f4e46] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/customers
+                  - img [ref=f4e47]
+                  - generic [ref=f4e49]: Покупатели
+          - listitem [ref=f4e50]:
+            - generic [ref=f4e51] [cursor=pointer]:
+              - generic [ref=f4e52]: Каталог
+              - button "Каталог" [expanded] [ref=f4e53]:
+                - img [ref=f4e54]
+            - list [ref=f4e56]:
+              - listitem [ref=f4e57]:
+                - link "Товары" [ref=f4e58] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/products
+                  - img [ref=f4e59]
+                  - generic [ref=f4e61]: Товары
+              - listitem [ref=f4e62]:
+                - link "Категории" [ref=f4e63] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/categories
+                  - img [ref=f4e64]
+                  - generic [ref=f4e67]: Категории
+              - listitem [ref=f4e68]:
+                - link "Бренды" [ref=f4e69] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/brands
+                  - img [ref=f4e70]
+                  - generic [ref=f4e72]: Бренды
+              - listitem [ref=f4e73]:
+                - link "Линейки" [ref=f4e74] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/product-lines
+                  - img [ref=f4e75]
+                  - generic [ref=f4e77]: Линейки
+              - listitem [ref=f4e78]:
+                - link "Типы" [ref=f4e79] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/product-types
+                  - img [ref=f4e80]
+                  - generic [ref=f4e82]: Типы
+              - listitem [ref=f4e83]:
+                - link "Документация" [ref=f4e84] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/certificates
+                  - img [ref=f4e85]
+                  - generic [ref=f4e87]: Документация
+          - listitem [ref=f4e88]:
+            - generic [ref=f4e89] [cursor=pointer]:
+              - generic [ref=f4e90]: Справочники
+              - button "Справочники" [expanded] [ref=f4e91]:
+                - img [ref=f4e92]
+            - list [ref=f4e94]:
+              - listitem [ref=f4e95]:
+                - link "Склады" [ref=f4e96] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/warehouses
+                  - img [ref=f4e97]
+                  - generic [ref=f4e99]: Склады
+          - listitem [ref=f4e100]:
+            - generic [ref=f4e101] [cursor=pointer]:
+              - generic [ref=f4e102]: 🏢 Организация
+              - button "🏢 Организация" [expanded] [ref=f4e103]:
+                - img [ref=f4e104]
+            - list [ref=f4e106]:
+              - listitem [ref=f4e107]:
+                - link "Отделы" [ref=f4e108] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/departments
+                  - img [ref=f4e109]
+                  - generic [ref=f4e111]: Отделы
+              - listitem [ref=f4e112]:
+                - link "Сотрудники" [ref=f4e113] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                  - img [ref=f4e114]
+                  - generic [ref=f4e116]: Сотрудники
+              - listitem [ref=f4e117]:
+                - link "Заявки сотрудников" [ref=f4e118] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                  - img [ref=f4e119]
+                  - generic [ref=f4e121]: Заявки сотрудников
+    - main [ref=f4e123]:
+      - generic [ref=f4e126]:
+        - generic [ref=f4e127]:
+          - heading "Главная" [level=1] [ref=f4e128]
+          - paragraph [ref=f4e129]: "Контекст: Сотрудник · 04 июля 2026"
+        - button "Выбрать контекст" [ref=f4e132] [cursor=pointer]:
+          - img [ref=f4e133]
+          - text: Выбрать контекст
+  - generic:
+    - status

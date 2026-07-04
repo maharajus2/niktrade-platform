@@ -1,0 +1,303 @@
+- generic [ref=f10e366] [box=0,-20,1600,1272]:
+  - complementary "Рабочая навигация" [ref=f10e367] [box=0,0,236,998]:
+    - generic [ref=f10e370] [box=64,26,114,33]: Niktrade
+    - navigation [ref=f10e371] [box=10,87,215,820]:
+      - generic [ref=f10e372] [box=10,87,215,64]:
+        - generic [ref=f10e373] [box=24,110,24,19]: ⌂
+        - generic [ref=f10e374] [box=58,110,117,19]: Главная
+      - generic [ref=f10e375] [box=10,157,215,64]:
+        - generic [ref=f10e376] [box=24,180,24,19]: ▦
+        - generic [ref=f10e377] [box=58,170,117,38]: Рабочее пространство
+      - generic [ref=f10e378] [box=24,257,187,17]: Основное
+      - generic [ref=f10e379] [box=10,290,215,64]:
+        - generic [ref=f10e380] [box=24,313,24,19]: ▣
+        - generic [ref=f10e381] [box=58,313,117,19]: Календарь
+      - generic [ref=f10e382] [box=10,360,215,64]:
+        - generic [ref=f10e383] [box=24,383,24,19]: ☑
+        - generic [ref=f10e384] [box=58,383,117,19]: Задачи
+        - generic [ref=f10e385] [box=185,380,26,24]: "3"
+      - generic [ref=f10e386] [box=10,430,215,64]:
+        - generic [ref=f10e387] [box=24,453,24,19]: □
+        - generic [ref=f10e388] [box=58,453,117,19]: Заявки
+      - generic [ref=f10e389] [box=10,500,215,64]:
+        - generic [ref=f10e390] [box=24,523,24,19]: ▤
+        - generic [ref=f10e391] [box=58,523,117,19]: Документы
+      - generic [ref=f10e392] [box=10,570,215,64]:
+        - generic [ref=f10e393] [box=24,593,24,19]: ○
+        - generic [ref=f10e394] [box=58,593,117,19]: Сообщения
+        - generic [ref=f10e395] [box=185,590,26,24]: "2"
+      - generic [ref=f10e396] [box=10,640,215,64]:
+        - generic [ref=f10e397] [box=24,663,24,19]: ▦
+        - generic [ref=f10e398] [box=58,663,117,19]: Справочники
+      - generic [ref=f10e399] [box=24,740,187,17]: Компания
+      - generic [ref=f10e400] [box=10,773,215,64]:
+        - generic [ref=f10e401] [box=24,796,24,19]: ♙
+        - generic [ref=f10e402] [box=58,796,117,19]: Сотрудники
+      - generic [ref=f10e403] [box=10,843,215,64]:
+        - generic [ref=f10e404] [box=24,866,24,19]: ⌘
+        - generic [ref=f10e405] [box=58,866,117,19]: Организация
+    - generic [ref=f10e406] [box=10,916,215,66]:
+      - generic [ref=f10e407] [box=21,927,44,44]: ИП
+      - generic [ref=f10e408] [box=75,931,120,36]:
+        - generic [ref=f10e409] [box=75,931,120,19]: Иван Петров
+        - generic [ref=f10e410] [box=75,953,120,14]: Сотрудник
+      - generic [ref=f10e411] [box=205,939,9,20]: ⌄
+  - generic [ref=f10e412] [box=266,-20,1334,1272]:
+    - banner [ref=f10e413] [box=266,8,1308,56]:
+      - generic [ref=f10e414] [box=266,8,826,56]:
+        - heading "Доброе утро, Иван! 👋" [level=1] [ref=f10e415] [box=266,8,826,31]
+        - generic [ref=f10e416] [box=266,47,826,17]: Среда, 27 ноября 2024
+      - generic [ref=f10e417] [box=1116,13,458,46]:
+        - generic [ref=f10e418] [box=1116,13,346,46]:
+          - generic [ref=f10e419] [box=1133,27,8,17]: ⌕
+          - generic [ref=f10e420] [box=1151,28,54,16]: Поиск...
+        - button "♢ 3" [ref=f10e421] [box=1474,14,44,44]:
+          - generic [ref=f10e422] [box=1491,26,9,19]: ♢
+          - generic [ref=f10e423] [box=1501,9,22,22]: "3"
+        - button "↪" [ref=f10e424] [box=1530,14,44,44]
+    - main [ref=f10e425] [box=266,90,1308,1128]:
+      - generic [ref=f10e426] [box=266,90,536,400]:
+        - generic [ref=f10e427] [box=285,109,498,34]:
+          - generic [ref=f10e429] [box=285,114,117,23]:
+            - generic [ref=f10e430] [box=285,115,22,22]: ◷
+            - generic [ref=f10e431] [box=317,114,85,23]: Мой день
+          - generic [ref=f10e432] [box=707,109,75,34]: Сегодня
+        - generic [ref=f10e433] [box=285,161,498,310]:
+          - generic [ref=f10e434] [box=285,161,188,310]:
+            - generic [ref=f10e435] [box=304,180,150,15]: Ваша смена
+            - generic [ref=f10e436] [box=304,203,150,48]: 09:00 – 18:00
+            - generic [ref=f10e437] [box=304,265,114,32]: Идёт сейчас
+            - generic [ref=f10e438] [box=304,323,150,129]:
+              - generic [ref=f10e439] [box=304,344,150,30]: Рабочее время сегодня
+              - generic [ref=f10e440] [box=304,382,150,31]: 5 ч 32 мин
+              - generic [ref=f10e441] [box=304,417,150,15]: из 8 ч
+          - generic [ref=f10e444] [box=499,161,284,310]:
+            - generic [ref=f10e445] [box=505,161,278,66]:
+              - generic [ref=f10e446] [box=505,161,52,28]: 09:00
+              - generic [ref=f10e449] [box=609,161,174,38]:
+                - generic [ref=f10e450] [box=609,161,174,19]: Начало смены
+                - generic [ref=f10e451] [box=609,184,174,15]: Вы начали рабочий день
+            - generic [ref=f10e452] [box=505,242,278,66]:
+              - generic [ref=f10e453] [box=505,242,52,28]: 10:30
+              - generic [ref=f10e456] [box=609,242,174,38]:
+                - generic [ref=f10e457] [box=609,242,174,19]: Совещание отдела
+                - generic [ref=f10e458] [box=609,265,174,15]: Переговорная 2 этаж
+            - generic [ref=f10e459] [box=505,324,278,66]:
+              - generic [ref=f10e460] [box=505,324,52,28]: 13:00
+              - generic [ref=f10e463] [box=609,324,174,38]:
+                - generic [ref=f10e464] [box=609,324,174,19]: Обеденный перерыв
+                - generic [ref=f10e465] [box=609,347,174,15]: 13:00 – 14:00
+            - generic [ref=f10e466] [box=505,406,278,66]:
+              - generic [ref=f10e467] [box=505,406,52,28]: 18:00
+              - generic [ref=f10e470] [box=609,406,174,38]:
+                - generic [ref=f10e471] [box=609,406,174,19]: Конец смены
+                - generic [ref=f10e472] [box=609,429,174,15]: Хорошего вечера!
+      - generic [ref=f10e473] [box=818,90,425,407]:
+        - generic [ref=f10e474] [box=837,109,387,24]:
+          - generic [ref=f10e476] [box=837,109,130,23]:
+            - generic [ref=f10e477] [box=837,110,22,22]: ▣
+            - generic [ref=f10e478] [box=869,109,98,23]: Календарь
+          - generic [ref=f10e479] [box=1190,109,34,24]:
+            - generic [ref=f10e480] [box=1190,109,8,24]: ‹
+            - generic [ref=f10e481] [box=1216,109,8,24]: ›
+        - generic [ref=f10e482] [box=837,151,387,23]: Ноябрь 2024
+        - generic [ref=f10e483] [box=837,192,387,18]:
+          - generic [ref=f10e484] [box=837,192,49,18]: Пн
+          - generic [ref=f10e485] [box=893,192,49,18]: Вт
+          - generic [ref=f10e486] [box=949,192,49,18]: Ср
+          - generic [ref=f10e487] [box=1006,192,49,18]: Чт
+          - generic [ref=f10e488] [box=1062,192,49,18]: Пт
+          - generic [ref=f10e489] [box=1118,192,49,18]: Сб
+          - generic [ref=f10e490] [box=1175,192,49,18]: Вс
+        - generic [ref=f10e491] [box=837,218,387,223]:
+          - generic [ref=f10e493] [box=854,229,16,16]: "28"
+          - generic [ref=f10e495] [box=910,229,16,16]: "29"
+          - generic [ref=f10e497] [box=966,229,16,16]: "30"
+          - generic [ref=f10e499] [box=1023,229,16,16]: "31"
+          - generic [ref=f10e501] [box=1083,229,8,16]: "1"
+          - generic [ref=f10e503] [box=1139,229,8,16]: "2"
+          - generic [ref=f10e505] [box=1195,229,8,16]: "3"
+          - generic [ref=f10e507] [box=857,275,8,16]: "4"
+          - generic [ref=f10e511] [box=914,275,8,16]: "5"
+          - generic [ref=f10e515] [box=970,275,8,16]: "6"
+          - generic [ref=f10e517] [box=1026,275,8,16]: "7"
+          - generic [ref=f10e519] [box=1083,275,8,16]: "8"
+          - generic [ref=f10e523] [box=1139,275,8,16]: "9"
+          - generic [ref=f10e525] [box=1192,275,16,16]: "10"
+          - generic [ref=f10e527] [box=854,321,15,16]: "11"
+          - generic [ref=f10e531] [box=910,321,16,16]: "12"
+          - generic [ref=f10e533] [box=966,321,16,16]: "13"
+          - generic [ref=f10e535] [box=1023,321,16,16]: "14"
+          - generic [ref=f10e537] [box=1079,321,16,16]: "15"
+          - generic [ref=f10e541] [box=1135,321,16,16]: "16"
+          - generic [ref=f10e543] [box=1192,321,16,16]: "17"
+          - generic [ref=f10e545] [box=854,367,16,16]: "18"
+          - generic [ref=f10e547] [box=910,367,16,16]: "19"
+          - generic [ref=f10e549] [box=966,367,16,16]: "20"
+          - generic [ref=f10e553] [box=1023,367,16,16]: "21"
+          - generic [ref=f10e555] [box=1079,367,16,16]: "22"
+          - generic [ref=f10e557] [box=1135,367,16,16]: "23"
+          - generic [ref=f10e559] [box=1192,367,16,16]: "24"
+          - generic [ref=f10e561] [box=854,413,16,16]: "25"
+          - generic [ref=f10e565] [box=910,413,16,16]: "26"
+          - generic [ref=f10e569] [box=966,413,16,16]: "27"
+          - generic [ref=f10e573] [box=1023,413,16,16]: "28"
+          - generic [ref=f10e577] [box=1079,413,16,16]: "29"
+          - generic [ref=f10e579] [box=1135,413,16,16]: "30"
+          - generic [ref=f10e581] [box=1195,413,8,16]: "1"
+        - generic [ref=f10e582] [box=837,459,387,19]: Открыть полный календарь
+      - complementary [ref=f10e583] [box=1259,90,315,765]:
+        - generic [ref=f10e584] [box=1259,90,315,378]:
+          - generic [ref=f10e585] [box=1278,109,277,34]:
+            - generic [ref=f10e587] [box=1278,114,199,23]:
+              - generic [ref=f10e588] [box=1278,115,22,22]: "!"
+              - generic [ref=f10e589] [box=1310,114,167,23]: Требует внимания
+            - generic [ref=f10e590] [box=1509,109,46,34]: "3"
+          - generic [ref=f10e591] [box=1278,161,277,288]:
+            - generic [ref=f10e592] [box=1278,161,277,88]:
+              - generic [ref=f10e593] [box=1290,188,34,34]: "!"
+              - generic [ref=f10e594] [box=1340,186,186,38]:
+                - generic [ref=f10e595] [box=1340,186,186,19]: Медкнижка истекает
+                - generic [ref=f10e596] [box=1340,209,186,15]: Через 12 дней
+              - generic [ref=f10e597] [box=1538,196,5,18]: ›
+            - generic [ref=f10e598] [box=1278,261,277,88]:
+              - generic [ref=f10e599] [box=1290,288,34,34]: "!"
+              - generic [ref=f10e600] [box=1340,286,186,38]:
+                - generic [ref=f10e601] [box=1340,286,186,19]: Заявка возвращена
+                - generic [ref=f10e602] [box=1340,309,186,15]: №1256 от 25.11.2024
+              - generic [ref=f10e603] [box=1538,296,5,18]: ›
+            - generic [ref=f10e604] [box=1278,361,277,88]:
+              - generic [ref=f10e605] [box=1290,388,34,34]: "!"
+              - generic [ref=f10e606] [box=1340,386,186,38]:
+                - generic [ref=f10e607] [box=1340,386,186,19]: Новая смена
+                - generic [ref=f10e608] [box=1340,409,186,15]: 28.11.2024 с 09:00 до 18:00
+              - generic [ref=f10e609] [box=1538,396,5,18]: ›
+        - generic [ref=f10e610] [box=1259,484,315,371]:
+          - generic [ref=f10e613] [box=1278,503,202,23]:
+            - generic [ref=f10e614] [box=1278,503,22,22]: +
+            - generic [ref=f10e615] [box=1310,503,170,23]: Быстрые действия
+          - generic [ref=f10e616] [box=1278,544,277,292]:
+            - generic [ref=f10e617] [box=1278,544,277,64]:
+              - generic [ref=f10e618] [box=1291,566,22,19]: +
+              - generic [ref=f10e619] [box=1325,566,191,19]: Создать заявку
+              - generic [ref=f10e620] [box=1528,566,14,19]: →
+            - generic [ref=f10e621] [box=1278,620,277,64]:
+              - generic [ref=f10e622] [box=1291,642,22,19]: ▣
+              - generic [ref=f10e623] [box=1325,642,191,19]: Открыть календарь
+              - generic [ref=f10e624] [box=1528,642,14,19]: →
+            - generic [ref=f10e625] [box=1278,696,277,64]:
+              - generic [ref=f10e626] [box=1291,718,22,19]: ▤
+              - generic [ref=f10e627] [box=1325,718,191,19]: Открыть документы
+              - generic [ref=f10e628] [box=1528,718,14,19]: →
+            - generic [ref=f10e629] [box=1278,772,277,64]:
+              - generic [ref=f10e630] [box=1291,794,22,19]: ○
+              - generic [ref=f10e631] [box=1325,794,191,19]: Написать сообщение
+              - generic [ref=f10e632] [box=1528,794,14,19]: →
+      - generic [ref=f10e633] [box=266,532,867,304]:
+        - generic [ref=f10e634] [box=285,551,829,34]:
+          - generic [ref=f10e636] [box=285,556,139,23]:
+            - generic [ref=f10e637] [box=285,557,22,22]: ☑
+            - generic [ref=f10e638] [box=317,556,107,23]: Мои задачи
+          - generic [ref=f10e639] [box=1068,551,46,34]: "3"
+        - generic [ref=f10e640] [box=285,603,829,214]:
+          - generic [ref=f10e641] [box=285,603,198,214]:
+            - generic [ref=f10e642] [box=297,615,174,19]:
+              - generic [ref=f10e643] [box=297,615,52,19]: Новые
+              - generic [ref=f10e644] [box=462,615,9,19]: "2"
+            - generic [ref=f10e646] [box=310,654,138,61]:
+              - generic [ref=f10e647] [box=310,654,138,38]: Подготовить отчёт
+              - generic [ref=f10e648] [box=310,697,138,18]: До 28.11
+            - generic [ref=f10e649] [box=297,738,174,16]: + Добавить задачу
+          - generic [ref=f10e650] [box=495,603,198,214]:
+            - generic [ref=f10e651] [box=507,615,174,19]:
+              - generic [ref=f10e652] [box=507,615,69,19]: В работе
+              - generic [ref=f10e653] [box=672,615,9,19]: "1"
+            - generic [ref=f10e655] [box=520,654,138,61]:
+              - generic [ref=f10e656] [box=520,654,138,38]: Проверить документы
+              - generic [ref=f10e657] [box=520,697,138,18]: До 30.11
+            - generic [ref=f10e658] [box=507,738,174,16]: + Добавить задачу
+          - generic [ref=f10e659] [box=705,603,198,214]:
+            - generic [ref=f10e660] [box=717,615,174,19]:
+              - generic [ref=f10e661] [box=717,615,99,19]: На проверке
+              - generic [ref=f10e662] [box=882,615,9,19]: "1"
+            - generic [ref=f10e664] [box=730,654,138,61]:
+              - generic [ref=f10e665] [box=730,654,138,38]: Согласовать договор
+              - generic [ref=f10e666] [box=730,697,138,18]: До 26.11
+            - generic [ref=f10e667] [box=717,738,174,16]: + Добавить задачу
+          - generic [ref=f10e668] [box=915,603,198,214]:
+            - generic [ref=f10e669] [box=927,615,174,19]:
+              - generic [ref=f10e670] [box=927,615,53,19]: Готово
+              - generic [ref=f10e671] [box=1092,615,9,19]: "1"
+            - generic [ref=f10e672] [box=927,643,174,83]:
+              - generic [ref=f10e673] [box=940,654,125,61]:
+                - generic [ref=f10e674] [box=940,654,125,38]: Отчёт за неделю
+                - generic [ref=f10e675] [box=940,697,125,18]: До 26.11
+              - generic [ref=f10e676] [box=1075,671,13,26]: ✓
+            - generic [ref=f10e677] [box=927,738,174,16]: + Добавить задачу
+      - generic [ref=f10e678] [box=1259,871,315,284]:
+        - generic [ref=f10e679] [box=1278,890,277,34]:
+          - generic [ref=f10e681] [box=1278,895,135,23]:
+            - generic [ref=f10e682] [box=1278,896,22,22]: ○
+            - generic [ref=f10e683] [box=1310,895,103,23]: Сообщения
+          - generic [ref=f10e684] [box=1509,890,46,34]: "2"
+        - generic [ref=f10e685] [box=1278,942,277,157]:
+          - generic [ref=f10e686] [box=1278,942,277,53]:
+            - generic [ref=f10e687] [box=1278,950,36,36]: HR
+            - generic [ref=f10e688] [box=1326,942,184,53]:
+              - generic [ref=f10e689] [box=1326,942,184,19]: HR-отдел
+              - generic [ref=f10e690] [box=1326,965,184,30]: Напоминаем о медосмотре...
+            - generic [ref=f10e692] [box=1522,953,33,15]: 10:15
+          - generic [ref=f10e694] [box=1278,1009,277,38]:
+            - generic [ref=f10e695] [box=1278,1010,36,36]: IT
+            - generic [ref=f10e696] [box=1326,1009,184,38]:
+              - generic [ref=f10e697] [box=1326,1009,184,19]: IT-поддержка
+              - generic [ref=f10e698] [box=1326,1032,184,15]: "Ваш тикет #3456 обновлён"
+            - generic [ref=f10e700] [box=1522,1013,33,15]: 09:42
+          - generic [ref=f10e702] [box=1278,1061,277,38]:
+            - generic [ref=f10e703] [box=1278,1062,36,36]: OK
+            - generic [ref=f10e704] [box=1326,1061,178,38]:
+              - generic [ref=f10e705] [box=1326,1061,178,19]: Отдел кадров
+              - generic [ref=f10e706] [box=1326,1084,178,15]: Новый график на декабрь
+            - generic [ref=f10e707] [box=1516,1072,39,15]: Вчера
+        - generic [ref=f10e708] [box=1278,1117,277,19]: Открыть все сообщения
+      - generic [ref=f10e709] [box=266,871,536,267]:
+        - generic [ref=f10e710] [box=285,890,498,34]:
+          - generic [ref=f10e712] [box=285,895,137,23]:
+            - generic [ref=f10e713] [box=285,896,22,22]: □
+            - generic [ref=f10e714] [box=317,895,105,23]: Мои заявки
+          - generic [ref=f10e715] [box=737,890,46,34]: "2"
+        - generic [ref=f10e716] [box=285,942,498,140]:
+          - generic [ref=f10e717] [box=285,942,498,64]:
+            - generic [ref=f10e718] [box=300,955,374,38]:
+              - generic [ref=f10e719] [box=300,955,374,19]: Заявка на отпуск
+              - generic [ref=f10e720] [box=300,978,374,15]: с 10.12.2024 по 17.12.2024
+            - generic [ref=f10e721] [box=688,957,80,34]: Ожидает
+          - generic [ref=f10e722] [box=285,1018,498,64]:
+            - generic [ref=f10e723] [box=300,1031,367,38]:
+              - generic [ref=f10e724] [box=300,1031,367,19]: Заявка на обучение
+              - generic [ref=f10e725] [box=300,1054,367,15]: "Курс: Эффективная коммуникация"
+            - generic [ref=f10e726] [box=681,1033,87,34]: Одобрена
+        - generic [ref=f10e727] [box=285,1100,498,19]: Открыть все заявки
+      - generic [ref=f10e728] [box=818,871,425,347]:
+        - generic [ref=f10e729] [box=837,890,387,34]:
+          - generic [ref=f10e731] [box=837,895,174,23]:
+            - generic [ref=f10e732] [box=837,896,22,22]: ▤
+            - generic [ref=f10e733] [box=869,895,142,23]: Мои документы
+          - generic [ref=f10e734] [box=1178,890,46,34]: "1"
+        - generic [ref=f10e735] [box=837,942,387,220]:
+          - generic [ref=f10e736] [box=837,942,387,64]:
+            - generic [ref=f10e737] [box=852,955,330,38]:
+              - generic [ref=f10e738] [box=852,955,330,19]: Паспорт
+              - generic [ref=f10e739] [box=852,978,330,15]: Действует до 15.08.2030
+            - generic [ref=f10e740] [box=1196,961,13,26]: ✓
+          - generic [ref=f10e741] [box=837,1018,387,68]:
+            - generic [ref=f10e742] [box=852,1031,297,42]:
+              - generic [ref=f10e743] [box=852,1031,297,19]: Медицинская книжка
+              - generic [ref=f10e744] [box=852,1055,297,18]: Истекает 09.12.2024
+            - generic [ref=f10e745] [box=1163,1035,46,34]: "!"
+          - generic [ref=f10e746] [box=837,1098,387,64]:
+            - generic [ref=f10e747] [box=852,1111,330,38]:
+              - generic [ref=f10e748] [box=852,1111,330,19]: ИНН
+              - generic [ref=f10e749] [box=852,1134,330,15]: Действует бессрочно
+            - generic [ref=f10e750] [box=1196,1117,13,26]: ✓
+        - generic [ref=f10e751] [box=837,1180,387,19]: Открыть все документы

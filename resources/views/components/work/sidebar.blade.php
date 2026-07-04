@@ -11,16 +11,27 @@
 
     $mainItems = [
         ['label' => 'Календарь', 'icon' => '▣', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
-        ['label' => 'Задачи', 'icon' => '☑', 'url' => '#'],
+        ['label' => 'Задачи', 'icon' => '☑', 'url' => '#', 'badge' => '3'],
         ['label' => 'Заявки', 'icon' => '□', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
         ['label' => 'Документы', 'icon' => '▤', 'url' => '#employee-documents'],
-        ['label' => 'Сообщения', 'icon' => '○', 'url' => '#'],
+        ['label' => 'Сообщения', 'icon' => '○', 'url' => '#', 'badge' => '2'],
+        ['label' => 'Справочники', 'icon' => '▦', 'url' => '#'],
     ];
+
+    $initials = $user
+        ? collect(explode(' ', trim($user->name)))
+            ->filter()
+            ->take(2)
+            ->map(fn (string $part): string => mb_substr($part, 0, 1))
+            ->join('')
+        : 'N';
 @endphp
 
 <aside class="nik-work-sidebar" aria-label="Рабочая навигация">
     <a href="{{ \App\Filament\Pages\Workplace::getUrl() }}" class="nik-work-logo">
-        <span class="nik-work-logo-mark">N</span>
+        <span class="nik-work-logo-mark">
+            <img src="{{ asset('images/logo-icon.png') }}" alt="" />
+        </span>
         <span>Niktrade</span>
     </a>
 
@@ -39,7 +50,11 @@
             <a href="{{ $item['url'] }}" class="nik-work-nav-link">
                 <span class="nik-work-nav-icon">{{ $item['icon'] }}</span>
                 <span>{{ $item['label'] }}</span>
-                <span></span>
+                @if (isset($item['badge']))
+                    <span class="nik-work-nav-badge">{{ $item['badge'] }}</span>
+                @else
+                    <span></span>
+                @endif
             </a>
         @endforeach
 
@@ -63,4 +78,13 @@
             @endif
         @endif
     </nav>
+
+    <div class="nik-work-sidebar-user">
+        <div class="nik-work-sidebar-avatar">{{ $initials }}</div>
+        <div>
+            <div class="nik-work-sidebar-name">{{ $user?->name ?? 'Niktrade' }}</div>
+            <div class="nik-work-sidebar-role">Сотрудник</div>
+        </div>
+        <span aria-hidden="true">⌄</span>
+    </div>
 </aside>

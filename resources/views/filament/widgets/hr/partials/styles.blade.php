@@ -107,6 +107,18 @@
             border-style: dashed;
         }
 
+        .nt-hr-dashboard .border-gray-100 {
+            border-color: #f3f4f6;
+        }
+
+        .nt-hr-dashboard .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+
+        .nt-hr-dashboard .border-yellow-200 {
+            border-color: #fde68a;
+        }
+
         .nt-hr-dashboard.bg-white,
         .nt-hr-dashboard .bg-white {
             background: #ffffff;
@@ -386,6 +398,10 @@
 
         @media (min-width: 768px) {
             .nt-hr-dashboard.md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .nt-hr-dashboard .md\:grid-cols-2 {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 

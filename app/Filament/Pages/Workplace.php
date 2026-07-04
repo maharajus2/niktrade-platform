@@ -39,6 +39,10 @@ class Workplace extends BaseDashboard
 
     public function getSubheading(): string|Htmlable|null
     {
+        if (DashboardWidgetRegistry::contextKeyFor(auth()->user()) === DashboardWidgetRegistry::CONTEXT_EMPLOYEE) {
+            return 'Добро пожаловать, '.auth()->user()->name.' · '.now()->translatedFormat('d F Y');
+        }
+
         return 'Контекст: '.DashboardWidgetRegistry::contextLabelFor(auth()->user());
     }
 

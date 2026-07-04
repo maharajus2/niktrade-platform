@@ -3,6 +3,14 @@
 namespace App\Support\Dashboard;
 
 use App\Filament\Widgets\AnalyticsPlaceholderWidget;
+use App\Filament\Widgets\Employee\EmployeeAttentionWidget;
+use App\Filament\Widgets\Employee\EmployeeCalendarWidget;
+use App\Filament\Widgets\Employee\EmployeeDocumentsWidget;
+use App\Filament\Widgets\Employee\EmployeeMessagesWidget;
+use App\Filament\Widgets\Employee\EmployeeMyDayWidget;
+use App\Filament\Widgets\Employee\EmployeeQuickActionsWidget;
+use App\Filament\Widgets\Employee\EmployeeRequestsWidget;
+use App\Filament\Widgets\Employee\EmployeeTasksWidget;
 use App\Filament\Widgets\Hr\HrEmployeeAlertsWidget;
 use App\Filament\Widgets\Hr\HrHomeOverviewWidget;
 use App\Filament\Widgets\Hr\HrQuickActionsWidget;
@@ -19,6 +27,8 @@ use App\Models\User;
 class DashboardWidgetRegistry
 {
     public const CONTEXT_GENERIC = 'generic';
+
+    public const CONTEXT_EMPLOYEE = 'employee';
 
     public const CONTEXT_HR = 'hr';
 
@@ -64,6 +74,7 @@ class DashboardWidgetRegistry
     {
         return match (self::contextKeyFor($user)) {
             self::CONTEXT_HR => self::hrWorkspaceWidgets(),
+            self::CONTEXT_EMPLOYEE => self::employeeWorkspaceWidgets(),
             default => [
                 WorkplacePlaceholderWidget::class,
             ],
@@ -87,11 +98,11 @@ class DashboardWidgetRegistry
             return $user->dashboard_preference;
         }
 
-        if (array_key_exists(self::CONTEXT_HR, $available)) {
+        if (array_key_exists(self::CONTEXT_HR, $available) && ! $user->hasRole('super_admin')) {
             return self::CONTEXT_HR;
         }
 
-        return self::CONTEXT_GENERIC;
+        return self::CONTEXT_EMPLOYEE;
     }
 
     public static function canChooseDashboard(?User $user): bool
@@ -113,8 +124,12 @@ class DashboardWidgetRegistry
         }
 
         $contexts = [
-            self::CONTEXT_GENERIC => 'Общий',
+            self::CONTEXT_EMPLOYEE => 'Сотрудник',
         ];
+
+        if ($user->hasRole('super_admin')) {
+            $contexts[self::CONTEXT_GENERIC] = 'Общий';
+        }
 
         if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view')) {
             $contexts[self::CONTEXT_HR] = 'HR';
@@ -129,7 +144,7 @@ class DashboardWidgetRegistry
 
     public static function contextLabelFor(?User $user): string
     {
-        return self::availableContextsFor($user)[self::contextKeyFor($user)] ?? 'Общий';
+        return self::availableContextsFor($user)[self::contextKeyFor($user)] ?? 'Сотрудник';
     }
 
     private static function hrHomeWidgets(): array
@@ -149,6 +164,21 @@ class DashboardWidgetRegistry
             HrWorkflowWidget::class,
             HrQuickActionsWidget::class,
             ...(self::$registeredWidgets['hr.workspace'] ?? []),
+        ];
+    }
+
+    private static function employeeWorkspaceWidgets(): array
+    {
+        return [
+            EmployeeMyDayWidget::class,
+            EmployeeCalendarWidget::class,
+            EmployeeAttentionWidget::class,
+            EmployeeRequestsWidget::class,
+            EmployeeDocumentsWidget::class,
+            EmployeeTasksWidget::class,
+            EmployeeMessagesWidget::class,
+            EmployeeQuickActionsWidget::class,
+            ...(self::$registeredWidgets['employee.workspace'] ?? []),
         ];
     }
 

@@ -135,23 +135,12 @@
             gap: 1rem;
         }
 
-        .nt-workplace__widget,
-        .nt-workplace .fi-wi-widget > div,
-        .nt-workplace .fi-wi-widget > section {
+        .nt-workplace__widget {
             overflow: hidden;
             border: 1px solid rgba(148, 163, 184, .22) !important;
             border-radius: 18px !important;
             background: rgba(255, 255, 255, .92) !important;
             box-shadow: 0 18px 45px rgba(15, 23, 42, .07) !important;
-        }
-
-        .nt-workplace .fi-wi-widget {
-            height: 100%;
-        }
-
-        .nt-workplace .fi-wi-widget > div,
-        .nt-workplace .fi-wi-widget > section {
-            height: 100%;
         }
 
         .nt-workplace__placeholder {

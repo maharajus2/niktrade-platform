@@ -21,6 +21,24 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Niktrade Build Requirements
+
+The custom Work UI layer is built with Vite.
+
+Required runtime for frontend builds:
+
+- Node.js >= 22 LTS
+- npm compatible with the installed Node.js version
+
+After changing Work UI assets, run:
+
+```bash
+npm run build
+php artisan optimize:clear
+```
+
+The build must generate `public/build/manifest.json`, including the Work UI CSS entry.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

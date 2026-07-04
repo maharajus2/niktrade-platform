@@ -22,10 +22,11 @@ class EmployeeQuickActionsWidget extends Widget
     {
         return [
             'actions' => [
-                ['label' => 'Создать заявку', 'url' => EmployeeScheduleRequestResource::getUrl('create'), 'primary' => true],
-                ['label' => 'Открыть календарь', 'url' => MyCalendar::getUrl(), 'primary' => false],
-                ['label' => 'Открыть документы', 'url' => '#employee-documents', 'primary' => false],
-                ['label' => 'Написать сообщение', 'url' => '#employee-messages', 'primary' => false],
+                ['label' => 'Создать заявку', 'url' => EmployeeScheduleRequestResource::getUrl('create'), 'primary' => true, 'disabled' => false],
+                ['label' => 'Открыть календарь', 'url' => MyCalendar::getUrl(), 'primary' => false, 'disabled' => false],
+                ['label' => 'Открыть документы', 'url' => '#employee-documents', 'primary' => false, 'disabled' => false],
+                ['label' => 'Создать задачу', 'url' => null, 'primary' => false, 'disabled' => true],
+                ['label' => 'Написать сообщение', 'url' => null, 'primary' => false, 'disabled' => true],
             ],
         ];
     }

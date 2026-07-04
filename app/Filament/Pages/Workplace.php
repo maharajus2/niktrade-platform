@@ -7,13 +7,15 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
-use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 
-class Workplace extends BaseDashboard
+class Workplace extends Page
 {
     protected static string $routePath = '/workplace';
+
+    protected string $view = 'filament.pages.workplace';
 
     protected static ?string $title = 'Рабочее пространство';
 
@@ -22,15 +24,6 @@ class Workplace extends BaseDashboard
     protected static ?int $navigationSort = -1;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
-
-    public function getColumns(): array|int
-    {
-        return [
-            'default' => 1,
-            'md' => 2,
-            'xl' => 4,
-        ];
-    }
 
     public function getTitle(): string|Htmlable
     {
@@ -75,8 +68,24 @@ class Workplace extends BaseDashboard
         ];
     }
 
-    public function getWidgets(): array
+    public function getContextKey(): string
     {
-        return DashboardWidgetRegistry::workspaceWidgetsFor(auth()->user());
+        return DashboardWidgetRegistry::contextKeyFor(auth()->user());
+    }
+
+    public function getContextLabel(): string
+    {
+        return DashboardWidgetRegistry::contextLabelFor(auth()->user());
+    }
+
+    public function getGreeting(): string
+    {
+        $hour = (int) now()->format('H');
+
+        return match (true) {
+            $hour < 12 => 'Доброе утро',
+            $hour < 18 => 'Добрый день',
+            default => 'Добрый вечер',
+        };
     }
 }

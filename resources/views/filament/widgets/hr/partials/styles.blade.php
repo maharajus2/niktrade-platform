@@ -499,6 +499,18 @@
             color: #2563eb;
         }
 
+        .nt-action-link--primary {
+            border-color: #0ea5e9;
+            background: #0ea5e9;
+            color: #ffffff;
+        }
+
+        .nt-action-link--primary:hover {
+            border-color: #0284c7;
+            background: #0284c7;
+            color: #ffffff;
+        }
+
         .nt-action-disabled {
             background: #f8fafc;
             color: #94a3b8;
@@ -563,6 +575,48 @@
             font-size: .78rem;
         }
 
+        .nt-workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: .65rem;
+        }
+
+        .nt-alert-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .9rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            background: #fff;
+            padding: .85rem;
+            text-decoration: none;
+        }
+
+        .nt-alert-row:hover {
+            border-color: #fecaca;
+            background: #fff7f7;
+        }
+
+        .nt-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: .35rem;
+        }
+
+        .nt-danger-chip {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            background: #fee2e2;
+            padding: .28rem .55rem;
+            color: #dc2626;
+            font-size: .72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
         .nt-my-day-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
@@ -579,6 +633,18 @@
             .nt-my-day-grid,
             .nt-task-board {
                 grid-template-columns: 1fr;
+            }
+
+            .nt-workflow-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .nt-alert-row {
+                display: grid;
+            }
+
+            .nt-chip-list {
+                justify-content: flex-start;
             }
         }
 

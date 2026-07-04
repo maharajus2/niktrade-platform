@@ -1,9 +1,11 @@
 <x-filament-panels::page>
     <style>
         .nt-workplace {
-            margin: -1rem;
+            width: 100%;
+            max-width: none;
+            margin: -1.25rem;
             min-height: calc(100vh - 5rem);
-            padding: 1.5rem;
+            padding: 1.75rem;
             background:
                 radial-gradient(circle at top left, rgba(37, 99, 235, .08), transparent 26rem),
                 linear-gradient(135deg, #f8fbff 0%, #f4f7fb 46%, #f8fafc 100%);
@@ -113,7 +115,7 @@
         .nt-workplace__grid {
             display: grid;
             grid-template-columns: repeat(12, minmax(0, 1fr));
-            gap: 1rem;
+            gap: 1.25rem;
             align-items: start;
         }
 

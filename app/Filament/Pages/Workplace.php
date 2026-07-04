@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -16,6 +17,8 @@ class Workplace extends Page
     protected static string $routePath = '/workplace';
 
     protected string $view = 'filament.pages.workplace';
+
+    protected Width|string|null $maxContentWidth = Width::Full;
 
     protected static ?string $title = 'Рабочее пространство';
 

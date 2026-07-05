@@ -1278,6 +1278,135 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 @media (max-width: 900px) {
     .nik-work-app .nik-work-shell {
+        padding: 8px !important;
+    }
+
+    .nik-work-app .nik-work-layout {
+        gap: 14px !important;
+    }
+
+    .nik-work-app .nik-work-sidebar {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        gap: 12px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 12px !important;
+    }
+
+    .nik-work-app .nik-work-logo {
+        min-width: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nik-work-app .nik-work-brand-logo {
+        width: 118px !important;
+    }
+
+    .nik-work-app .nik-work-nav {
+        grid-column: 1 / -1 !important;
+        display: flex !important;
+        grid-template-columns: none !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding-bottom: 2px !important;
+        scrollbar-width: none;
+    }
+
+    .nik-work-app .nik-work-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nik-work-app .nik-work-nav-section {
+        display: none !important;
+    }
+
+    .nik-work-app .nik-work-nav-link {
+        flex: 0 0 auto !important;
+        min-height: 38px !important;
+        grid-template-columns: 20px auto auto !important;
+        padding: 9px 11px !important;
+        white-space: nowrap !important;
+    }
+
+    .nik-work-app .nik-work-sidebar-user {
+        width: auto !important;
+        min-width: 0 !important;
+        margin-top: 0 !important;
+        padding: 6px 8px 6px 6px !important;
+    }
+
+    .nik-work-app .nik-work-sidebar-role {
+        display: none !important;
+    }
+
+    .nik-work-app .nik-work-main {
+        padding-bottom: 18px !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .nik-work-app {
+        margin: 0 !important;
+    }
+
+    .nik-work-app .nik-work-title {
+        font-size: 28px !important;
+    }
+
+    .nik-work-app .nik-work-header {
+        gap: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .nik-work-app .nik-work-header-tools {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 46px 58px !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .nik-work-app .nik-work-search {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 46px !important;
+        flex: none !important;
+    }
+
+    .nik-work-app .nik-work-toolbar-divider {
+        display: none !important;
+    }
+
+    .nik-work-app .nik-work-icon-button {
+        width: 46px !important;
+        height: 46px !important;
+    }
+
+    .nik-work-app .nik-work-user-pill {
+        width: 58px !important;
+        height: 46px !important;
+        justify-content: center !important;
+        padding: 5px !important;
+    }
+
+    .nik-work-app .nik-work-user-chevron {
+        display: none !important;
+    }
+
+    .nik-work-app .nt-workplace__grid,
+    .nik-work-app .nik-work-grid {
+        gap: 10px !important;
+    }
+
+    .nik-work-app .nt-hr-card,
+    .nik-work-app .nik-work-card {
+        border-radius: 16px !important;
+        padding: 16px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .nik-work-app .nik-work-shell {
         padding: 8px;
     }
 

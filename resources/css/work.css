@@ -1323,6 +1323,20 @@ body:has(.nik-work-app) .nik-work-sidebar {
         grid-column: auto !important;
     }
 
+    .nik-work-app .nik-work-nav-link {
+        width: 100% !important;
+        grid-template-columns: 24px minmax(0, 1fr) auto !important;
+        white-space: normal !important;
+        overflow: hidden !important;
+    }
+
+    .nik-work-app .nik-work-nav-label {
+        min-width: 0 !important;
+        overflow: hidden !important;
+        overflow-wrap: anywhere !important;
+        line-height: 1.18 !important;
+    }
+
     .nik-work-app .nik-work-main {
         min-width: 0 !important;
         padding: 18px 0 28px !important;

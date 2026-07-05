@@ -1317,16 +1317,24 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .nt-workflow-grid,
 .nik-work-app .nt-kpi-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(104px, 100%), 1fr)) !important;
     gap: 10px !important;
+}
+
+.nik-work-app .nt-kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(104px, 100%), 1fr)) !important;
+}
+
+.nik-work-app .nt-workflow-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(86px, 100%), 1fr)) !important;
+    gap: 8px !important;
 }
 
 .nik-work-app .nt-workflow-grid .nt-kpi {
     display: flex;
-    min-height: 108px;
+    min-height: 96px;
     flex-direction: column;
     justify-content: space-between;
-    padding: clamp(10px, 1.05vw, 16px) !important;
+    padding: clamp(10px, .95vw, 14px) !important;
 }
 
 .nik-work-app .nt-kpi__label {

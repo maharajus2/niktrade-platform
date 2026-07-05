@@ -1405,6 +1405,153 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+.nik-work-app .nik-work-sidebar-toggle {
+    display: inline-flex;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    border: 1px solid rgba(255, 255, 255, .62);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .48);
+    padding: 0 13px;
+    color: #233047;
+    font-size: 13px;
+    font-weight: 760;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
+    backdrop-filter: blur(18px) saturate(1.12);
+    cursor: pointer;
+    transition: background .22s ease, box-shadow .22s ease, color .22s ease, transform .22s ease;
+}
+
+.nik-work-app .nik-work-sidebar-toggle:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, .68);
+    box-shadow: 0 14px 30px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .58);
+    color: #0b70f0;
+}
+
+.nik-work-app .nik-work-sidebar-toggle-icon {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.nik-work-app .nik-work-sidebar-toggle-icon--expand {
+    display: none;
+}
+
+.nik-work-app .nik-work-sidebar-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (min-width: 901px) {
+    .nik-work-app .nik-work-layout,
+    .nik-work-app .nik-work-sidebar,
+    .nik-work-app .nik-work-logo,
+    .nik-work-app .nik-work-brand-logo,
+    .nik-work-app .nik-work-nav-label,
+    .nik-work-app .nik-work-nav-badge,
+    .nik-work-app .nik-work-nav-section,
+    .nik-work-app .nik-work-sidebar-toggle-label {
+        transition:
+            width .24s ease,
+            max-width .24s ease,
+            grid-template-columns .24s ease,
+            opacity .16s ease,
+            transform .24s ease,
+            padding .24s ease,
+            margin .24s ease;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-layout {
+        grid-template-columns: 76px minmax(0, 1fr) !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-sidebar {
+        padding: 18px 10px !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-logo {
+        justify-content: center !important;
+        padding: 0 0 22px !important;
+        pointer-events: none;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-brand-logo {
+        width: 38px !important;
+        height: 38px !important;
+        object-fit: cover;
+        object-position: left center;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav {
+        gap: 8px !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-link {
+        display: flex !important;
+        width: 48px !important;
+        height: 48px !important;
+        min-height: 48px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-label,
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-badge,
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-trailing,
+    .nik-work-app.is-sidebar-collapsed .nik-work-nav-section {
+        display: none !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-sidebar-toggle {
+        width: 48px !important;
+        height: 48px !important;
+        min-height: 48px !important;
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-sidebar-toggle-label,
+    .nik-work-app.is-sidebar-collapsed .nik-work-sidebar-toggle-icon--collapse {
+        display: none !important;
+    }
+
+    .nik-work-app.is-sidebar-collapsed .nik-work-sidebar-toggle-icon--expand {
+        display: inline-flex !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .nik-work-app .nik-work-sidebar-toggle {
+        grid-column: 2;
+        grid-row: 1;
+        width: 46px !important;
+        min-height: 46px;
+        justify-content: center;
+        margin-top: 0;
+        padding: 0;
+    }
+
+    .nik-work-app .nik-work-sidebar-toggle-label {
+        display: none !important;
+    }
+}
+
 @media (max-width: 900px) {
     .nik-work-app .nik-work-shell {
         padding: 8px;

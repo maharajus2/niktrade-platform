@@ -34,23 +34,23 @@
 
     <nav class="nik-work-nav">
         @foreach ($items as $item)
-            <a href="{{ $item['url'] }}" class="nik-work-nav-link {{ $active === $item['key'] ? 'is-active' : '' }}">
+            <a href="{{ $item['url'] }}" class="nik-work-nav-link {{ $active === $item['key'] ? 'is-active' : '' }}" title="{{ $item['label'] }}">
                 <span class="nik-work-nav-icon"><x-work.icon :name="$item['icon']" /></span>
-                <span>{{ $item['label'] }}</span>
-                <span></span>
+                <span class="nik-work-nav-label">{{ $item['label'] }}</span>
+                <span class="nik-work-nav-trailing"></span>
             </a>
         @endforeach
 
         <div class="nik-work-nav-section">Основное</div>
 
         @foreach ($mainItems as $item)
-            <a href="{{ $item['url'] }}" class="nik-work-nav-link">
+            <a href="{{ $item['url'] }}" class="nik-work-nav-link" title="{{ $item['label'] }}">
                 <span class="nik-work-nav-icon"><x-work.icon :name="$item['icon']" /></span>
-                <span>{{ $item['label'] }}</span>
+                <span class="nik-work-nav-label">{{ $item['label'] }}</span>
                 @if (isset($item['badge']))
                     <span class="nik-work-nav-badge">{{ $item['badge'] }}</span>
                 @else
-                    <span></span>
+                    <span class="nik-work-nav-trailing"></span>
                 @endif
             </a>
         @endforeach
@@ -59,29 +59,30 @@
             <div class="nik-work-nav-section nik-work-sidebar-extra">Компания</div>
 
             @if (\App\Filament\Resources\AdminUsers\UserResource::canAccess())
-                <a href="{{ \App\Filament\Resources\AdminUsers\UserResource::getUrl('index') }}" class="nik-work-nav-link nik-work-sidebar-extra">
+                <a href="{{ \App\Filament\Resources\AdminUsers\UserResource::getUrl('index') }}" class="nik-work-nav-link nik-work-sidebar-extra" title="Сотрудники">
                     <span class="nik-work-nav-icon"><x-work.icon name="users" /></span>
-                    <span>Сотрудники</span>
-                    <span></span>
+                    <span class="nik-work-nav-label">Сотрудники</span>
+                    <span class="nik-work-nav-trailing"></span>
                 </a>
             @endif
 
             @if (\App\Filament\Resources\Departments\DepartmentResource::canAccess())
-                <a href="{{ \App\Filament\Resources\Departments\DepartmentResource::getUrl('index') }}" class="nik-work-nav-link nik-work-sidebar-extra">
+                <a href="{{ \App\Filament\Resources\Departments\DepartmentResource::getUrl('index') }}" class="nik-work-nav-link nik-work-sidebar-extra" title="Организация">
                     <span class="nik-work-nav-icon"><x-work.icon name="building" /></span>
-                    <span>Организация</span>
-                    <span></span>
+                    <span class="nik-work-nav-label">Организация</span>
+                    <span class="nik-work-nav-trailing"></span>
                 </a>
             @endif
         @endif
     </nav>
 
-    <div class="nik-work-sidebar-user">
-        <div class="nik-work-sidebar-avatar">{{ $initials }}</div>
-        <div>
-            <div class="nik-work-sidebar-name">{{ $user?->name ?? 'Niktrade' }}</div>
-            <div class="nik-work-sidebar-role">Сотрудник</div>
-        </div>
-        <span aria-hidden="true">⌄</span>
-    </div>
+    <button type="button" class="nik-work-sidebar-toggle" aria-label="Свернуть боковую панель" aria-expanded="true" data-sidebar-toggle>
+        <span class="nik-work-sidebar-toggle-icon nik-work-sidebar-toggle-icon--collapse">
+            <x-work.icon name="chevron-left" />
+        </span>
+        <span class="nik-work-sidebar-toggle-icon nik-work-sidebar-toggle-icon--expand">
+            <x-work.icon name="chevron-right" />
+        </span>
+        <span class="nik-work-sidebar-toggle-label">Свернуть меню</span>
+    </button>
 </aside>

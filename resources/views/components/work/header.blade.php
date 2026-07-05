@@ -22,7 +22,6 @@
         <div class="nik-work-search" aria-label="Поиск">
             <x-work.icon name="search" />
             <span>Поиск...</span>
-            <kbd>⌘K</kbd>
         </div>
 
         <span class="nik-work-toolbar-divider" aria-hidden="true"></span>

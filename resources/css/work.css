@@ -1902,17 +1902,6 @@ body:has(.nik-work-app) .nik-work-sidebar {
     color: rgba(31, 42, 68, .62);
 }
 
-.nik-work-app .nik-work-search kbd {
-    margin-left: auto;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .55);
-    padding: 4px 10px;
-    color: #111827;
-    font-size: 13px;
-    font-weight: 650;
-    line-height: 1;
-}
-
 .nik-work-app .nik-work-toolbar-divider {
     width: 1px;
     height: 32px;

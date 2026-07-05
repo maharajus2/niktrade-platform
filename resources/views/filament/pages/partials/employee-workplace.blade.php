@@ -11,8 +11,9 @@
     'user' => $employee,
     'active' => 'workplace',
     'showSidebar' => true,
+    'appClass' => 'nik-work-app--employee',
 ])
-    <main class="nik-work-grid">
+    <main class="nik-work-grid nik-work-desktop">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="clock">
             <x-slot:actions>
                 <x-work.badge>Сегодня</x-work.badge>
@@ -235,4 +236,6 @@
             </a>
         </x-work.card>
     </main>
+
+    @include('filament.pages.partials.employee-workplace-mobile', ['workspace' => $workspace])
 @endcomponent

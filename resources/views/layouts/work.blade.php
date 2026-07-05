@@ -4,6 +4,7 @@
     'user' => auth()->user(),
     'active' => 'workplace',
     'showSidebar' => true,
+    'appClass' => '',
 ])
 
 @php
@@ -31,7 +32,7 @@
     </style>
 @endonce
 
-<div class="nik-work-app">
+<div class="nik-work-app {{ $appClass }}">
     <div class="nik-work-shell">
         <div class="nik-work-layout {{ $showSidebar ? '' : 'nik-work-layout--no-sidebar' }}">
             @if ($showSidebar)

@@ -2,37 +2,19 @@
     $columns = [
         [
             'title' => 'Новые',
-            'count' => 2,
-            'items' => [
-                ['title' => 'Подготовить отчёт', 'meta' => 'До 28.11', 'tone' => 'red'],
-                ['title' => 'Обновить инструкцию', 'meta' => 'До 29.11', 'tone' => 'red'],
-            ],
-            'footer' => '+ Добавить задачу',
+            'count' => 0,
         ],
         [
             'title' => 'В работе',
-            'count' => 1,
-            'items' => [
-                ['title' => 'Проверить документы', 'meta' => 'До 30.11', 'tone' => 'amber'],
-            ],
-            'footer' => '+ Добавить задачу',
+            'count' => 0,
         ],
         [
             'title' => 'На проверке',
-            'count' => 1,
-            'items' => [
-                ['title' => 'Согласовать договор', 'meta' => 'До 26.11', 'tone' => 'green'],
-            ],
-            'footer' => '+ Добавить задачу',
+            'count' => 0,
         ],
         [
             'title' => 'Готово',
-            'count' => 2,
-            'items' => [
-                ['title' => 'Отчёт за неделю', 'meta' => '25.11', 'tone' => 'green', 'done' => true],
-                ['title' => 'План на месяц', 'meta' => '24.11', 'tone' => 'green', 'done' => true],
-            ],
-            'footer' => '+ Показать все',
+            'count' => 0,
         ],
     ];
 @endphp
@@ -45,20 +27,13 @@
                 <span>{{ $column['count'] }}</span>
             </div>
 
-            @foreach ($column['items'] as $item)
-                <div class="nik-work-task-card">
-                    <div>
-                        <div class="nik-work-row-title">{{ $item['title'] }}</div>
-                        <div class="nik-work-task-meta is-{{ $item['tone'] }}">{{ $item['meta'] }}</div>
-                    </div>
-
-                    @if ($item['done'] ?? false)
-                        <span class="nik-work-task-check" aria-hidden="true">✓</span>
-                    @endif
+            <div class="nik-work-task-placeholder">
+                <x-work.icon name="check-square" />
+                <div>
+                    Модуль задач будет<br>
+                    подключён позже.
                 </div>
-            @endforeach
-
-            <div class="nik-work-kanban-footer">{{ $column['footer'] }}</div>
+            </div>
         </div>
     @endforeach
 </div>

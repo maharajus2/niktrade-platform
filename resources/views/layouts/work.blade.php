@@ -43,6 +43,7 @@
                     :title="$title"
                     :subtitle="$subtitle"
                     :initials="$initials"
+                    :user="$user"
                 />
 
                 {{ $slot }}

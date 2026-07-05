@@ -1295,6 +1295,106 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+@media (min-width: 901px) and (max-width: 1280px) {
+    .nik-work-app .nik-work-shell {
+        padding: 16px 18px 24px !important;
+    }
+
+    .nik-work-app .nik-work-layout {
+        display: grid !important;
+        grid-template-columns: 204px minmax(0, 1fr) !important;
+        gap: 20px !important;
+        align-items: start !important;
+    }
+
+    .nik-work-app .nik-work-sidebar {
+        position: sticky !important;
+        top: 16px !important;
+        display: flex !important;
+        height: calc(100vh - 32px) !important;
+        min-height: 640px !important;
+        flex-direction: column !important;
+        padding: 22px 11px 16px !important;
+    }
+
+    .nik-work-app .nik-work-logo {
+        padding: 0 8px 28px !important;
+    }
+
+    .nik-work-app .nik-work-brand-logo {
+        width: 124px !important;
+    }
+
+    .nik-work-app .nik-work-nav {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 8px !important;
+        overflow: visible !important;
+        padding-bottom: 0 !important;
+    }
+
+    .nik-work-app .nik-work-nav-section {
+        display: block !important;
+        grid-column: auto !important;
+        margin: 18px 8px 8px !important;
+    }
+
+    .nik-work-app .nik-work-sidebar-extra {
+        display: revert !important;
+    }
+
+    .nik-work-app .nik-work-nav-link.nik-work-sidebar-extra {
+        display: grid !important;
+    }
+
+    .nik-work-app .nik-work-nav-link {
+        width: auto !important;
+        min-height: 42px !important;
+        grid-template-columns: 24px minmax(0, 1fr) auto !important;
+        gap: 10px !important;
+        padding: 10px 12px !important;
+        white-space: normal !important;
+    }
+
+    .nik-work-app .nik-work-main {
+        min-width: 0 !important;
+        padding: 18px 0 28px !important;
+    }
+
+    .nik-work-app .nik-work-header {
+        gap: 18px !important;
+    }
+
+    .nik-work-app .nik-work-search {
+        width: min(300px, 34vw) !important;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1080px) {
+    .nik-work-app .nik-work-layout {
+        grid-template-columns: 188px minmax(0, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    .nik-work-app .nik-work-title {
+        font-size: 28px !important;
+    }
+
+    .nik-work-app .nik-work-header {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .nik-work-app .nik-work-header-tools {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .nik-work-app .nik-work-search {
+        width: min(100%, 360px) !important;
+        flex: 1 1 260px !important;
+    }
+}
+
 .nik-work-app .nt-hr-card,
 .nik-work-app .nt-hr-card *,
 .nik-work-app .nt-kpi,

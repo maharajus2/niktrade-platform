@@ -1351,6 +1351,38 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+@media (max-width: 820px) {
+    .nik-work-app.nik-work-app--employee .nik-work-shell {
+        width: 100% !important;
+        min-height: 100vh !important;
+        padding: 0 !important;
+    }
+
+    .nik-work-app.nik-work-app--employee .nik-work-layout {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        gap: 0 !important;
+    }
+
+    .nik-work-app.nik-work-app--employee .nik-work-sidebar,
+    .nik-work-app.nik-work-app--employee .nik-work-main > .nik-work-header,
+    .nik-work-app.nik-work-app--employee .nik-work-desktop {
+        display: none !important;
+    }
+
+    .nik-work-app.nik-work-app--employee .nik-work-main {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nik-work-app.nik-work-app--employee .nik-work-mobile {
+        display: block !important;
+    }
+}
+
 .nik-work-app .nik-work-mobile {
     display: none;
 }

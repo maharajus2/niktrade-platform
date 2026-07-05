@@ -203,39 +203,14 @@
         }
     </style>
 
-    <div class="nt-workplace">
-        <header class="nt-workplace__header">
-            <div>
-                <div class="nt-workplace__eyebrow">
-                    <span>Рабочее пространство</span>
-                    <span>{{ $this->getContextLabel() }}</span>
-                </div>
-
-                <div class="nt-workplace__title">
-                    {{ $this->getGreeting() }}, {{ auth()->user()->name }}!
-                </div>
-
-                <div class="nt-workplace__date">
-                    {{ now()->translatedFormat('l, d F Y') }}
-                </div>
-            </div>
-
-            <div class="nt-workplace__tools" aria-label="Инструменты рабочего пространства">
-                <div class="nt-workplace__search" aria-label="Поиск">
-                    <span aria-hidden="true">⌕</span>
-                    <span>Поиск...</span>
-                </div>
-
-                <div class="nt-workplace__tool" aria-label="Уведомления">
-                    <span aria-hidden="true">!</span>
-                </div>
-
-                <div class="nt-workplace__avatar" aria-label="Профиль">
-                    {{ mb_substr(auth()->user()->name, 0, 1) }}
-                </div>
-            </div>
-        </header>
-
+    @component('layouts.work', [
+        'title' => $this->getGreeting().', '.auth()->user()->name.'! 👋',
+        'subtitle' => now()->translatedFormat('l, d F Y'),
+        'user' => auth()->user(),
+        'active' => 'workplace',
+        'showSidebar' => true,
+    ])
+    <div class="nt-workplace nt-workplace--hr">
         @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
             <div class="nt-workplace__grid">
                 <div class="nt-workplace__span-6">
@@ -267,5 +242,6 @@
             </div>
         @endif
     </div>
+    @endcomponent
     @endif
 </x-filament-panels::page>

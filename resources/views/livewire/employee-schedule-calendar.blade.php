@@ -50,6 +50,15 @@
                 : null,
         ])),
     ];
+
+    $mobileCalendarDays = collect($calendarDays)->values();
+    $todayIndex = $mobileCalendarDays->search(fn ($day) => $day['isToday']);
+    $fallbackIndex = $mobileCalendarDays->search(fn ($day) => $day['isCurrentMonth']);
+    $mobileStartIndex = $todayIndex === false ? ($fallbackIndex === false ? 0 : $fallbackIndex) : $todayIndex;
+    $mobileStartIndex = (int) floor($mobileStartIndex / 7) * 7;
+    $mobileStartIndex = max(0, min($mobileStartIndex, max(0, $mobileCalendarDays->count() - 7)));
+    $mobileCalendarStrip = $mobileCalendarDays->slice($mobileStartIndex, 7)->values();
+    $mobileWeekdays = [1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'];
 @endphp
 
 <div
@@ -139,6 +148,27 @@
                         <input type="checkbox" disabled>
                         <span>Показывать архив</span>
                     </label>
+                </div>
+
+                <div class="nik-calendar-mobile-strip">
+                    @foreach ($mobileCalendarStrip as $day)
+                        <button
+                            type="button"
+                            class="{{ $day['isCurrentMonth'] ? '' : 'is-muted' }} {{ $day['isToday'] ? 'is-active' : '' }}"
+                            data-nt-mobile-date="{{ $day['date']->toDateString() }}"
+                        >
+                            <span>{{ $mobileWeekdays[$day['date']->dayOfWeekIso] }}</span>
+                            <strong>{{ $day['date']->format('j') }}</strong>
+
+                            @if (count($day['events']) > 0)
+                                <i>
+                                    @foreach ($day['events']->take(3) as $event)
+                                        <b style="background: {{ $event->getCalendarColor() }}"></b>
+                                    @endforeach
+                                </i>
+                            @endif
+                        </button>
+                    @endforeach
                 </div>
 
                 <div

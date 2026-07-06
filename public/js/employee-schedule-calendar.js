@@ -126,6 +126,10 @@
                 day: 'numeric',
                 month: 'long',
             })
+
+            if (typeof syncMobileStripButtons === 'function') {
+                syncMobileStripButtons()
+            }
         }
 
         const filterValues = () => ({
@@ -258,6 +262,12 @@
         const syncViewButtons = (viewType) => {
             calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
                 button.classList.toggle('is-active', button.dataset.ntCalendarView === viewType)
+            })
+        }
+
+        const syncMobileStripButtons = () => {
+            calendarRoot?.querySelectorAll('[data-nt-mobile-date]').forEach((button) => {
+                button.classList.toggle('is-active', button.dataset.ntMobileDate === selectedDate)
             })
         }
 
@@ -740,6 +750,17 @@
                 calendarRoot?.querySelectorAll('[data-nt-filter]').forEach((filter) => {
                     filter.addEventListener('change', refetchWithFilters)
                 })
+
+                calendarRoot?.querySelectorAll('[data-nt-mobile-date]').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        selectedDate = button.dataset.ntMobileDate
+                        updateSelectedDayLabel()
+                        syncMobileStripButtons()
+                        renderAgenda(calendar.getEvents())
+                    })
+                })
+
+                syncMobileStripButtons()
 
                 calendarRoot?.querySelector('[data-nt-calendar-filter-toggle]')?.addEventListener('click', () => {
                     calendarRoot?.querySelector('[data-nt-calendar-filters]')?.classList.toggle('is-open')

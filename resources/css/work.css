@@ -1578,6 +1578,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .orders-work-mobile-statuses,
 .nik-work-app .orders-work-mobile-bottom,
+.nik-work-app .orders-work-mobile-head,
 .nik-work-app .orders-work-mobile-filter-button {
     display: none;
 }
@@ -1921,23 +1922,88 @@ body:has(.nik-work-app) .nik-work-sidebar {
         padding: max(14px, env(safe-area-inset-top)) 14px calc(116px + env(safe-area-inset-bottom));
     }
 
-    .nik-work-app.nik-work-app--orders .orders-work-toolbar {
-        grid-template-columns: minmax(0, 1fr) auto auto;
-        gap: 9px;
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: start;
     }
 
-    .nik-work-app.nik-work-app--orders .orders-work-search {
-        min-height: 46px;
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head img {
+        width: 132px;
+        max-width: 46vw;
+        height: auto;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head h1 {
+        margin: 22px 0 0;
+        color: #101828;
+        font-size: clamp(30px, 8vw, 38px);
+        font-weight: 840;
+        line-height: .98;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head p {
+        margin: 8px 0 0;
+        color: rgba(31, 42, 68, .68);
+        font-size: 14px;
+        font-weight: 560;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head > div:last-child {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head button,
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head > div:last-child > span {
+        position: relative;
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, .64);
         border-radius: 999px;
+        background: rgba(255, 255, 255, .62);
+        color: #111827;
+        box-shadow: 0 14px 30px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .62);
+        backdrop-filter: blur(20px) saturate(1.18);
     }
 
-    .nik-work-app.nik-work-app--orders .orders-work-search input {
-        display: none;
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head > div:last-child > span {
+        background: linear-gradient(135deg, #315985, #5f79a4);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 820;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-mobile-head button.has-badge span {
+        position: absolute;
+        top: -4px;
+        right: -2px;
+        display: inline-flex;
+        min-width: 18px;
+        height: 18px;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, .92);
+        border-radius: 999px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-toolbar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 9px;
     }
 
     .nik-work-app.nik-work-app--orders .orders-work-mobile-filter-button {
         display: inline-flex;
-        width: 46px;
+        min-width: 46px;
         height: 46px;
         padding: 0;
         border-radius: 999px;

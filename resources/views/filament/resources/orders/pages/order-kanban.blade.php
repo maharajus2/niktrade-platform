@@ -21,6 +21,19 @@
             x-data="{ mobileFilters: false, activeStatus: '{{ Order::STATUS_NEW }}' }"
             x-on:keydown.escape.window="mobileFilters = false"
         >
+            <header class="orders-work-mobile-head">
+                <div>
+                    <img src="{{ asset('images/logont.png') }}" alt="Никтрейд" />
+                    <h1>Заказы</h1>
+                    <p>Операционный центр обработки заказов</p>
+                </div>
+                <div>
+                    <button type="button" aria-label="Поиск"><x-work.icon name="search" /></button>
+                    <button type="button" aria-label="Уведомления" class="has-badge"><x-work.icon name="bell" /><span>3</span></button>
+                    <span>{{ $initials }}</span>
+                </div>
+            </header>
+
             <section class="orders-work-toolbar">
                 <label class="orders-work-search">
                     <x-work.icon name="search" />

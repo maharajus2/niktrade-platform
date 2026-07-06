@@ -181,7 +181,7 @@ class EmployeeScheduleCalendar extends Component
             'employee' => $employee,
             'canUpdate' => $canUpdate,
             'canEditPast' => $user instanceof User && $user->hasRole('super_admin'),
-            'canCreateShift' => $canUpdate && ($employee->isIndividualSchedule() || ($user instanceof User && $user->hasRole('super_admin'))),
+            'canCreateShift' => $canUpdate && ($employee->isIndividualSchedule() || (blank($employee->schedule_type) && $user instanceof User && $user->hasRole('super_admin'))),
             'isSuperAdmin' => $user instanceof User && $user->hasRole('super_admin'),
             'typeOptions' => EmployeeScheduleEntry::typeOptions(),
             'futureTypeOptions' => EmployeeScheduleEntry::futureTypeOptions(),
@@ -276,7 +276,7 @@ class EmployeeScheduleCalendar extends Component
     {
         $user = auth()->user();
 
-        if ($type === EmployeeScheduleEntry::TYPE_SHIFT && ! ($employee->isIndividualSchedule() || ($user instanceof User && $user->hasRole('super_admin')))) {
+        if ($type === EmployeeScheduleEntry::TYPE_SHIFT && ! ($employee->isIndividualSchedule() || (blank($employee->schedule_type) && $user instanceof User && $user->hasRole('super_admin')))) {
             $this->ensureIndividualSchedule($employee);
         }
 

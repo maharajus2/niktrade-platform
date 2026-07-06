@@ -11,7 +11,7 @@
         const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave', 'business_trip']
         const requestOnlyTypes = ['day_off', 'vacation', 'sick_leave']
         const calendarRoot = element.closest('.nik-calendar')
-        let selectedDate = formatDate(new Date())
+        let selectedDate = null
         let rawEventPayloads = []
         const typeDefaults = {
             shift: { allDay: false, visibility: 'manager' },
@@ -86,6 +86,8 @@
         const isPastDate = (date) => {
             return date < new Date(new Date().toDateString())
         }
+
+        selectedDate = formatDate(new Date())
 
         const errorMessage = (error) => {
             const errors = error?.response?.data?.errors
@@ -567,7 +569,9 @@
                     element._ntFullCalendar.destroy()
                 }
 
-                const calendar = new FullCalendar.Calendar(element, {
+                let calendar = null
+
+                calendar = new FullCalendar.Calendar(element, {
                     initialView: isMobile() ? 'listWeek' : 'dayGridMonth',
                     locale: 'ru',
                     firstDay: 1,
@@ -600,7 +604,11 @@
                             .then((events) => {
                                 rawEventPayloads = events
                                 successCallback(filteredPayloads(events))
-                                window.setTimeout(() => renderAgenda(calendar.getEvents()), 0)
+                                window.setTimeout(() => {
+                                    if (calendar) {
+                                        renderAgenda(calendar.getEvents())
+                                    }
+                                }, 0)
                             })
                             .catch((error) => {
                                 alert(errorMessage(error))
@@ -610,7 +618,7 @@
                     dateClick: (info) => {
                         selectedDate = formatDate(info.date)
                         updateSelectedDayLabel()
-                        renderAgenda(calendar.getEvents())
+                        renderAgenda(calendar ? calendar.getEvents() : [])
 
                         if (! canUpdate) {
                             return
@@ -641,7 +649,7 @@
                         const props = event.extendedProps || {}
                         selectedDate = props.date || formatDate(event.start)
                         updateSelectedDayLabel()
-                        renderAgenda(calendar.getEvents())
+                        renderAgenda(calendar ? calendar.getEvents() : [])
 
                         if (! canUpdate || ! props.editable) {
                             alert(`${event.title}`)
@@ -689,8 +697,10 @@
                     },
                     eventsSet: (events) => renderAgenda(events),
                     datesSet: () => {
-                        updateExternalTitle(calendar)
-                        syncViewButtons(calendar.view.type)
+                        if (calendar) {
+                            updateExternalTitle(calendar)
+                            syncViewButtons(calendar.view.type)
+                        }
                     },
                 })
 

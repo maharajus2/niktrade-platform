@@ -1641,7 +1641,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
 }
 
 .nik-work-app .orders-work-column-list {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     flex: 1;
     gap: 10px;
     min-height: 0;
@@ -1653,6 +1654,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .orders-work-order {
     display: grid;
+    flex: 0 0 auto;
     gap: 10px;
     min-width: 0;
     overflow: hidden;

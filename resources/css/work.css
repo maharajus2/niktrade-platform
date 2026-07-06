@@ -1607,6 +1607,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     padding-bottom: 4px;
 }
 
+.nik-work-app .orders-work-board-track {
+    display: contents;
+}
+
 .nik-work-app .orders-work-board.is-archive {
     grid-template-columns: repeat(2, minmax(280px, 1fr));
 }
@@ -2171,22 +2175,35 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app.nik-work-app--orders .orders-work-board {
         display: block;
-        overflow: visible;
+        overflow: hidden;
         padding: 0;
+        touch-action: pan-y;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-board-track {
+        display: flex;
+        gap: 0;
+        width: 100%;
+        min-width: 0;
+        transform: translateX(calc((var(--orders-work-active-index, 0) * -100%) + var(--orders-work-swipe-x, 0px)));
+        transition: transform .26s cubic-bezier(.22, 1, .36, 1);
+        will-change: transform;
+    }
+
+    .nik-work-app.nik-work-app--orders .orders-work-board.is-mobile-swiping .orders-work-board-track {
+        transition: none;
     }
 
     .nik-work-app.nik-work-app--orders .orders-work-column {
-        display: none;
+        display: block;
+        flex: 0 0 100%;
         min-width: 0;
+        width: 100%;
         max-height: none;
         border: 0;
         background: transparent;
         box-shadow: none;
         padding: 0;
-    }
-
-    .nik-work-app.nik-work-app--orders .orders-work-column.is-mobile-active {
-        display: block;
     }
 
     .nik-work-app.nik-work-app--orders .orders-work-board.is-mobile-dragging .orders-work-column.is-over {

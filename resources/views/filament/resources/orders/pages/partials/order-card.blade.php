@@ -100,15 +100,6 @@
                 return;
             }
 
-            const deltaX = this.touchLastX - this.touchStartX;
-            const deltaY = this.touchLastY - this.touchStartY;
-
-            if (Math.abs(deltaX) >= 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-                event.preventDefault();
-                this.touchGestureHandled = true;
-                shiftActiveStatus(deltaX < 0 ? 1 : -1);
-            }
-
             this.touchLongPressReady = false;
             $el.classList.remove('is-touch-dragging');
         },

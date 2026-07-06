@@ -53,6 +53,9 @@
                     const nextIndex = Math.min(Math.max(index + direction, 0), this.statusOrder.length - 1);
                     this.activeStatus = this.statusOrder[nextIndex] ?? this.activeStatus;
                 },
+                activeStatusIndex() {
+                    return Math.max(0, this.statusOrder.indexOf(this.activeStatus));
+                },
                 openSheet(sheet) { this.mobileFilters = false; this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); },
                 closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); },
             }"
@@ -186,6 +189,12 @@
                         overStatus: null,
                         mobileDragActive: false,
                         mobileDragElement: null,
+                        swipeStartX: 0,
+                        swipeStartY: 0,
+                        swipeDeltaX: 0,
+                        swipePointerId: null,
+                        swipeActive: false,
+                        swipeTracking: false,
                         dropOrder(targetStatus) {
                             if (! this.draggedOrderId || ! targetStatus || this.draggedStatus === targetStatus) {
                                 this.overStatus = null;
@@ -208,38 +217,108 @@
                         setMobileOverStatus(x, y) {
                             this.overStatus = this.mobileStatusFromPoint(x, y);
                         },
-                    }"
-                    x-bind:class="{ 'is-mobile-dragging': mobileDragActive }"
-                >
-                    @foreach ($this->columns as $status => $column)
-                        <section
-                            class="orders-work-column"
-                            data-status="{{ $status }}"
-                            x-bind:class="{ 'is-over': overStatus === '{{ $status }}', 'is-mobile-active': activeStatus === '{{ $status }}' }"
-                            x-on:dragover.prevent="if (draggedOrderId) overStatus = '{{ $status }}'"
-                            x-on:dragleave="if ($event.currentTarget === $event.target) overStatus = null"
-                            x-on:drop.prevent="dropOrder('{{ $status }}')"
-                        >
-                            <header>
-                                <div>
-                                    <h2>{{ $column['label'] }}</h2>
-                                    <p>{{ $column['orders']->count() }} заказов</p>
-                                </div>
-                                <span>{{ $column['orders']->count() }}</span>
-                            </header>
+                        isSwipeIgnoredTarget(target) {
+                            return Boolean(target.closest('button, input, select, textarea, [role=button], .orders-work-order-actions'));
+                        },
+                        startBoardSwipe(event) {
+                            if (event.pointerType !== 'touch' || this.mobileDragActive || this.isSwipeIgnoredTarget(event.target)) {
+                                return;
+                            }
 
-                            <div class="orders-work-column-list">
-                                @forelse ($column['orders'] as $order)
-                                    @include('filament.resources.orders.pages.partials.order-card', ['order' => $order, 'archiveMode' => $showArchive])
-                                @empty
-                                    <div class="orders-work-empty">
-                                        <strong>Нет заказов в этом статусе</strong>
-                                        <span>Заказы появятся здесь после оформления.</span>
+                            this.swipeStartX = event.clientX;
+                            this.swipeStartY = event.clientY;
+                            this.swipeDeltaX = 0;
+                            this.swipePointerId = event.pointerId;
+                            this.swipeTracking = true;
+                            this.swipeActive = false;
+                        },
+                        moveBoardSwipe(event) {
+                            if (! this.swipeTracking || event.pointerId !== this.swipePointerId || this.mobileDragActive) {
+                                return;
+                            }
+
+                            const deltaX = event.clientX - this.swipeStartX;
+                            const deltaY = event.clientY - this.swipeStartY;
+
+                            if (! this.swipeActive && Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+                                this.swipeActive = true;
+                                event.currentTarget.setPointerCapture?.(event.pointerId);
+                            }
+
+                            if (this.swipeActive) {
+                                event.preventDefault();
+                                const atFirst = activeStatusIndex() === 0 && deltaX > 0;
+                                const atLast = activeStatusIndex() === statusOrder.length - 1 && deltaX < 0;
+                                this.swipeDeltaX = atFirst || atLast ? deltaX * .32 : deltaX;
+                            }
+                        },
+                        finishBoardSwipe(event) {
+                            if (! this.swipeTracking || event.pointerId !== this.swipePointerId) {
+                                return;
+                            }
+
+                            if (this.swipeActive) {
+                                event.preventDefault();
+
+                                const threshold = Math.min(92, Math.max(54, event.currentTarget.clientWidth * .18));
+
+                                if (Math.abs(this.swipeDeltaX) > threshold) {
+                                    shiftActiveStatus(this.swipeDeltaX < 0 ? 1 : -1);
+                                }
+                            }
+
+                            this.swipeDeltaX = 0;
+                            this.swipePointerId = null;
+                            this.swipeTracking = false;
+                            this.swipeActive = false;
+                        },
+                        cancelBoardSwipe() {
+                            this.swipeDeltaX = 0;
+                            this.swipePointerId = null;
+                            this.swipeTracking = false;
+                            this.swipeActive = false;
+                        },
+                    }"
+                    x-bind:class="{ 'is-mobile-dragging': mobileDragActive, 'is-mobile-swiping': swipeActive }"
+                    x-on:pointerdown="startBoardSwipe($event)"
+                    x-on:pointermove="moveBoardSwipe($event)"
+                    x-on:pointerup="finishBoardSwipe($event)"
+                    x-on:pointercancel="cancelBoardSwipe()"
+                >
+                    <div
+                        class="orders-work-board-track"
+                        x-bind:style="`--orders-work-active-index: ${activeStatusIndex()}; --orders-work-swipe-x: ${swipeDeltaX}px;`"
+                    >
+                        @foreach ($this->columns as $status => $column)
+                            <section
+                                class="orders-work-column"
+                                data-status="{{ $status }}"
+                                x-bind:class="{ 'is-over': overStatus === '{{ $status }}', 'is-mobile-active': activeStatus === '{{ $status }}' }"
+                                x-on:dragover.prevent="if (draggedOrderId) overStatus = '{{ $status }}'"
+                                x-on:dragleave="if ($event.currentTarget === $event.target) overStatus = null"
+                                x-on:drop.prevent="dropOrder('{{ $status }}')"
+                            >
+                                <header>
+                                    <div>
+                                        <h2>{{ $column['label'] }}</h2>
+                                        <p>{{ $column['orders']->count() }} заказов</p>
                                     </div>
-                                @endforelse
-                            </div>
-                        </section>
-                    @endforeach
+                                    <span>{{ $column['orders']->count() }}</span>
+                                </header>
+
+                                <div class="orders-work-column-list">
+                                    @forelse ($column['orders'] as $order)
+                                        @include('filament.resources.orders.pages.partials.order-card', ['order' => $order, 'archiveMode' => $showArchive])
+                                    @empty
+                                        <div class="orders-work-empty">
+                                            <strong>Нет заказов в этом статусе</strong>
+                                            <span>Заказы появятся здесь после оформления.</span>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </section>
+                        @endforeach
+                    </div>
                 </section>
             @else
                 <section class="orders-work-list">

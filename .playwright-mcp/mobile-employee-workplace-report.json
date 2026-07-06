@@ -1,0 +1,67 @@
+[
+  {
+    "viewport": "390x844",
+    "mobileExpected": true,
+    "laravelError": false,
+    "desktopSidebarVisible": false,
+    "desktopGridVisible": false,
+    "mobileVisible": true,
+    "dockVisible": true,
+    "tabsVisible": true,
+    "horizontalOverflow": false,
+    "missing": [],
+    "screenshot": ".playwright-mcp/mobile-employee-workplace-390.png"
+  },
+  {
+    "viewport": "414x896",
+    "mobileExpected": true,
+    "laravelError": false,
+    "desktopSidebarVisible": false,
+    "desktopGridVisible": false,
+    "mobileVisible": true,
+    "dockVisible": true,
+    "tabsVisible": true,
+    "horizontalOverflow": false,
+    "missing": [],
+    "screenshot": ".playwright-mcp/mobile-employee-workplace-414.png"
+  },
+  {
+    "viewport": "430x932",
+    "mobileExpected": true,
+    "laravelError": false,
+    "desktopSidebarVisible": false,
+    "desktopGridVisible": false,
+    "mobileVisible": true,
+    "dockVisible": true,
+    "tabsVisible": true,
+    "horizontalOverflow": false,
+    "missing": [],
+    "screenshot": ".playwright-mcp/mobile-employee-workplace-430.png"
+  },
+  {
+    "viewport": "360x800",
+    "mobileExpected": true,
+    "laravelError": false,
+    "desktopSidebarVisible": false,
+    "desktopGridVisible": false,
+    "mobileVisible": true,
+    "dockVisible": true,
+    "tabsVisible": true,
+    "horizontalOverflow": false,
+    "missing": [],
+    "screenshot": ".playwright-mcp/mobile-employee-workplace-360.png"
+  },
+  {
+    "viewport": "1536x1024",
+    "mobileExpected": false,
+    "laravelError": false,
+    "desktopSidebarVisible": true,
+    "desktopGridVisible": true,
+    "mobileVisible": false,
+    "dockVisible": false,
+    "tabsVisible": false,
+    "horizontalOverflow": false,
+    "missing": [],
+    "screenshot": ".playwright-mcp/mobile-employee-workplace-desktop.png"
+  }
+]

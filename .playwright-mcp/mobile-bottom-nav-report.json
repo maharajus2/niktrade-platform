@@ -1,0 +1,110 @@
+{
+  "report": [
+    {
+      "viewport": "390x844",
+      "laravelError": false,
+      "horizontalOverflow": false,
+      "bottomBarVisible": true,
+      "oldDockVisible": false,
+      "oldTabsVisible": false,
+      "mobileVisible": true,
+      "sidebarVisible": false,
+      "desktopGridVisible": false,
+      "bottomButtonCount": 5,
+      "bottomLabels": [
+        "Главная",
+        "Мессенджер",
+        "Меню",
+        "Задачи",
+        "Заявки"
+      ]
+    },
+    {
+      "viewport": "430x932",
+      "laravelError": false,
+      "horizontalOverflow": false,
+      "bottomBarVisible": true,
+      "oldDockVisible": false,
+      "oldTabsVisible": false,
+      "mobileVisible": true,
+      "sidebarVisible": false,
+      "desktopGridVisible": false,
+      "bottomButtonCount": 5,
+      "bottomLabels": [
+        "Главная",
+        "Мессенджер",
+        "Меню",
+        "Задачи",
+        "Заявки"
+      ]
+    },
+    {
+      "viewport": "768x1024",
+      "laravelError": false,
+      "horizontalOverflow": false,
+      "bottomBarVisible": true,
+      "oldDockVisible": false,
+      "oldTabsVisible": false,
+      "mobileVisible": true,
+      "sidebarVisible": false,
+      "desktopGridVisible": false,
+      "bottomButtonCount": 5,
+      "bottomLabels": [
+        "Главная",
+        "Мессенджер",
+        "Меню",
+        "Задачи",
+        "Заявки"
+      ]
+    },
+    {
+      "viewport": "1536x1024",
+      "laravelError": false,
+      "horizontalOverflow": false,
+      "bottomBarVisible": false,
+      "oldDockVisible": false,
+      "oldTabsVisible": false,
+      "mobileVisible": false,
+      "sidebarVisible": true,
+      "desktopGridVisible": true,
+      "bottomButtonCount": 5,
+      "bottomLabels": [
+        "Главная",
+        "Мессенджер",
+        "Меню",
+        "Задачи",
+        "Заявки"
+      ]
+    }
+  ],
+  "clicks": [
+    {
+      "name": "messages",
+      "visibleSheets": 1,
+      "activeCount": 1,
+      "text": "Центр связи\nКоммуникации\nМессенджер\nПочта\nМессенджер\n\nКорпоративный мессенджер будет подключён позже.\n\nПочта\n\nПочтовый клиент будет подключён позже.",
+      "closed": true
+    },
+    {
+      "name": "menu",
+      "visibleSheets": 1,
+      "activeCount": 1,
+      "text": "Навигация\nМеню\nГЛАВНОЕ\nГлавная\nРабочее пространство\nМой календарь\nМои документы\nРАБОЧИЕ ИНСТРУМЕНТЫ\nЗадачи\n3\nКоммуникации\n2\nСправочники\nСкоро\nОРГАНИЗАЦИЯ\nСотрудники\nОрганизация\nМои заявки",
+      "closed": true
+    },
+    {
+      "name": "tasks",
+      "visibleSheets": 1,
+      "activeCount": 1,
+      "text": "Задачи\nМои задачи\nНовые\n0\n\nМодуль задач будет подключён позже.\n\nВ работе\n0\n\nМодуль задач будет подключён позже.\n\nНа проверке\n0\n\nМодуль задач будет подключён позже.\n\nГотово\n0\n\nМодуль задач будет подключён позже.",
+      "closed": true
+    },
+    {
+      "name": "requests",
+      "visibleSheets": 1,
+      "activeCount": 1,
+      "text": "Заявки сотрудников\nМои заявки\nОжидают 0\nОдобрены 0\nОтклонены 0\nВозвращены 0\nУ вас пока нет заявок.\nСоздать заявку\nОткрыть все заявки",
+      "closed": true
+    }
+  ]
+}

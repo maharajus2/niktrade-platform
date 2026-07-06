@@ -1,0 +1,28 @@
+- generic [ref=f17e1]:
+  - main [ref=f17e4]:
+    - generic [ref=f17e6]:
+      - generic [ref=f17e7]:
+        - img "Логотип Никтрейд" [ref=f17e8]
+        - heading "Войдите в свой аккаунт" [level=1] [ref=f17e9]
+      - generic [ref=f17e13]:
+        - generic [ref=f17e17]:
+          - generic [ref=f17e20]:
+            - generic [ref=f17e24]:
+              - text: Адрес электронной почты
+              - superscript [ref=f17e25]: "*"
+            - textbox "Адрес электронной почты*" [active] [ref=f17e29]
+          - generic [ref=f17e32]:
+            - generic [ref=f17e36]:
+              - text: Пароль
+              - superscript [ref=f17e37]: "*"
+            - generic [ref=f17e39]:
+              - textbox "Пароль*" [ref=f17e41]
+              - button "Показать пароль" [ref=f17e44] [cursor=pointer]:
+                - img [ref=f17e45]
+          - generic [ref=f17e53]:
+            - checkbox "Запомнить меня" [ref=f17e54]
+            - generic [ref=f17e55]: Запомнить меня
+        - button "Войти" [ref=f17e61] [cursor=pointer]:
+          - generic [ref=f17e62]: Войти
+  - generic:
+    - status

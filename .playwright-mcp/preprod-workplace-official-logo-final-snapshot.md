@@ -1,0 +1,103 @@
+- generic [active] [ref=f16e1] [box=0,0,1600,1212]:
+  - main [ref=f16e4] [box=0,0,1600,1212]:
+    - generic [ref=f16e11] [box=0,0,1600,1212]:
+      - complementary "Рабочая навигация" [ref=f16e12] [box=0,0,236,1000]:
+        - link "Никтрейд" [ref=f16e13] [cursor=pointer] [box=10,22,215,64]:
+          - /url: https://preprod.niktrade.ru/admin/workplace
+          - img "Никтрейд" [ref=f16e14] [box=26,26,132,32]
+        - navigation [ref=f16e15] [box=10,86,215,640]:
+          - link "Главная" [ref=f16e16] [cursor=pointer] [box=10,86,215,44]:
+            - /url: https://preprod.niktrade.ru/admin
+            - img [ref=f16e18] [box=26,99,18,18]
+            - generic [ref=f16e22] [box=58,98,117,21]: Главная
+          - link "Рабочее пространство" [ref=f16e23] [cursor=pointer] [box=10,136,215,62]:
+            - /url: https://preprod.niktrade.ru/admin/workplace
+            - img [ref=f16e25] [box=26,158,18,18]
+            - generic [ref=f16e30] [box=58,146,117,42]: Рабочее пространство
+          - generic [ref=f16e31] [box=24,234,187,18]: Основное
+          - link "Календарь" [ref=f16e32] [cursor=pointer] [box=10,268,215,44]:
+            - /url: https://preprod.niktrade.ru/admin/my-calendar
+            - img [ref=f16e34] [box=26,281,18,18]
+            - generic [ref=f16e36] [box=58,280,117,21]: Календарь
+          - link "Задачи 3" [ref=f16e37] [cursor=pointer] [box=10,318,215,44]:
+            - /url: "#"
+            - img [ref=f16e39] [box=26,331,18,18]
+            - generic [ref=f16e42] [box=58,330,117,21]: Задачи
+            - generic [ref=f16e43] [box=185,328,26,24]: "3"
+          - link "Заявки" [ref=f16e44] [cursor=pointer] [box=10,368,215,44]:
+            - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - img [ref=f16e46] [box=26,381,18,18]
+            - generic [ref=f16e49] [box=58,380,117,21]: Заявки
+          - link "Документы" [ref=f16e50] [cursor=pointer] [box=10,418,215,44]:
+            - /url: "#employee-documents"
+            - img [ref=f16e52] [box=26,431,18,18]
+            - generic [ref=f16e55] [box=58,430,117,21]: Документы
+          - link "Сообщения 2" [ref=f16e56] [cursor=pointer] [box=10,468,215,44]:
+            - /url: "#"
+            - img [ref=f16e58] [box=26,481,18,18]
+            - generic [ref=f16e60] [box=58,480,117,21]: Сообщения
+            - generic [ref=f16e61] [box=185,478,26,24]: "2"
+          - link "Справочники" [ref=f16e62] [cursor=pointer] [box=10,518,215,44]:
+            - /url: "#"
+            - img [ref=f16e64] [box=26,531,18,18]
+            - generic [ref=f16e67] [box=58,530,117,21]: Справочники
+          - generic [ref=f16e68] [box=24,598,187,18]: Компания
+          - link "Сотрудники" [ref=f16e69] [cursor=pointer] [box=10,632,215,44]:
+            - /url: https://preprod.niktrade.ru/admin/admin-users/users
+            - img [ref=f16e71] [box=26,645,18,18]
+            - generic [ref=f16e76] [box=58,644,117,21]: Сотрудники
+          - link "Организация" [ref=f16e77] [cursor=pointer] [box=10,682,215,44]:
+            - /url: https://preprod.niktrade.ru/admin/departments
+            - img [ref=f16e79] [box=26,695,18,18]
+            - generic [ref=f16e82] [box=58,694,117,21]: Организация
+        - generic [ref=f16e83] [box=10,918,215,66]:
+          - generic [ref=f16e84] [box=21,929,44,44]: C
+          - generic [ref=f16e85] [box=75,930,120,42]:
+            - generic [ref=f16e86] [box=75,930,120,21]: CODEX
+            - generic [ref=f16e87] [box=75,954,120,18]: Сотрудник
+          - generic [ref=f16e88] [box=205,939,9,24]: ⌄
+      - generic [ref=f16e89] [box=266,0,1334,1212]:
+        - generic [ref=f16e90] [box=266,28,1308,61]:
+          - generic [ref=f16e91] [box=266,28,860,61]:
+            - heading "Добрый день, CODEX! 👋" [level=1] [ref=f16e92] [box=266,28,860,31]
+            - generic [ref=f16e93] [box=266,67,860,23]: суббота, 04 июля 2026
+          - generic [ref=f16e94] [box=1150,37,424,44]:
+            - generic "Поиск" [ref=f16e95] [box=1150,37,312,44]
+            - button "Уведомления" [ref=f16e100] [cursor=pointer] [box=1474,37,44,44]
+            - button "Выйти" [ref=f16e104] [cursor=pointer] [box=1530,37,44,44]
+        - main [ref=f16e108] [box=266,115,1308,1063]:
+          - generic [ref=f16e109] [box=266,115,536,372]:
+            - generic [ref=f16e110] [box=285,134,498,28]
+            - generic [ref=f16e119] [box=285,180,498,288]
+          - generic [ref=f16e132] [box=818,115,425,414]:
+            - generic [ref=f16e133] [box=837,134,387,24]
+            - generic [ref=f16e145] [box=837,176,387,24]: июль 2026
+            - generic [ref=f16e146] [box=837,218,387,20]
+            - generic [ref=f16e154] [box=837,246,387,223]
+            - link "Открыть полный календарь" [ref=f16e225] [cursor=pointer] [box=837,489,387,21]:
+              - /url: https://preprod.niktrade.ru/admin/my-calendar
+          - complementary [ref=f16e226] [box=1259,115,315,460]:
+            - generic [ref=f16e227] [box=1259,115,315,152]
+            - generic [ref=f16e238] [box=1259,283,315,292]
+          - generic [ref=f16e271] [box=266,545,867,333]:
+            - generic [ref=f16e272] [box=285,564,829,28]
+            - generic [ref=f16e281] [box=285,610,829,249]
+          - generic [ref=f16e328] [box=1259,894,315,285]:
+            - generic [ref=f16e329] [box=1278,913,277,28]
+            - generic [ref=f16e337] [box=1278,959,277,162]
+            - link "Открыть все сообщения" [ref=f16e360] [cursor=pointer] [box=1278,1138,277,21]:
+              - /url: "#"
+          - generic [ref=f16e361] [box=266,894,536,218]:
+            - generic [ref=f16e362] [box=285,913,498,28]
+            - generic [ref=f16e371] [box=285,959,498,28]
+            - generic [ref=f16e378] [box=300,1016,468,21]: У вас пока нет заявок.
+            - link "Открыть все заявки" [ref=f16e379] [cursor=pointer] [box=285,1072,498,21]:
+              - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+          - generic [ref=f16e380] [box=818,894,425,230]:
+            - generic [ref=f16e381] [box=837,913,387,28]
+            - generic [ref=f16e391] [box=837,959,387,20]
+            - generic [ref=f16e397] [box=852,1027,357,21]: "Документы пока не загружены. Не хватает: 5."
+            - link "Открыть все документы" [ref=f16e398] [cursor=pointer] [box=837,1083,387,21]:
+              - /url: "#employee-documents"
+  - generic [box=0,1212,1600,0]:
+    - status [box=16,16,1568,968]

@@ -1,0 +1,182 @@
+- generic [active] [ref=f34e1] [box=0,0,1521,1367]:
+  - main [ref=f34e4] [box=0,0,1521,1367]:
+    - generic [ref=f34e11] [box=10,18,1481,1325]:
+      - complementary "Рабочая навигация" [ref=f34e12] [box=10,18,220,1024]:
+        - link "Никтрейд" [ref=f34e13] [cursor=pointer] [box=23,43,194,64]:
+          - /url: https://preprod.niktrade.ru/admin/workplace
+          - img "Никтрейд" [ref=f34e14] [box=33,43,132,32]
+        - navigation [ref=f34e15] [box=23,107,194,610]:
+          - link "Главная" [ref=f34e16] [cursor=pointer] [box=23,107,194,42]:
+            - /url: https://preprod.niktrade.ru/admin
+            - img [ref=f34e18] [box=39,119,18,18]
+            - generic [ref=f34e22] [box=71,118,96,21]: Главная
+          - link "Рабочее пространство" [ref=f34e23] [cursor=pointer] [box=23,155,194,62]:
+            - /url: https://preprod.niktrade.ru/admin/workplace
+            - img [ref=f34e25] [box=39,177,18,18]
+            - generic [ref=f34e30] [box=71,165,96,42]: Рабочее пространство
+          - generic [ref=f34e31] [box=37,245,166,18]: Основное
+          - link "Календарь" [ref=f34e32] [cursor=pointer] [box=23,279,194,42]:
+            - /url: https://preprod.niktrade.ru/admin/my-calendar
+            - img [ref=f34e34] [box=39,291,18,18]
+            - generic [ref=f34e36] [box=71,290,96,21]: Календарь
+          - link "Задачи 3" [ref=f34e37] [cursor=pointer] [box=23,327,194,44]:
+            - /url: "#"
+            - img [ref=f34e39] [box=39,340,18,18]
+            - generic [ref=f34e42] [box=71,339,96,21]: Задачи
+            - generic [ref=f34e43] [box=177,337,26,24]: "3"
+          - link "Заявки" [ref=f34e44] [cursor=pointer] [box=23,377,194,42]:
+            - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - img [ref=f34e46] [box=39,389,18,18]
+            - generic [ref=f34e49] [box=71,388,96,21]: Заявки
+          - link "Документы" [ref=f34e50] [cursor=pointer] [box=23,425,194,42]:
+            - /url: "#employee-documents"
+            - img [ref=f34e52] [box=39,437,18,18]
+            - generic [ref=f34e55] [box=71,436,96,21]: Документы
+          - link "Сообщения 2" [ref=f34e56] [cursor=pointer] [box=23,473,194,44]:
+            - /url: "#"
+            - img [ref=f34e58] [box=39,486,18,18]
+            - generic [ref=f34e60] [box=71,485,96,21]: Сообщения
+            - generic [ref=f34e61] [box=177,483,26,24]: "2"
+          - link "Справочники" [ref=f34e62] [cursor=pointer] [box=23,523,194,42]:
+            - /url: "#"
+            - img [ref=f34e64] [box=39,535,18,18]
+            - generic [ref=f34e67] [box=71,534,96,21]: Справочники
+          - generic [ref=f34e68] [box=37,593,166,18]: Компания
+          - link "Сотрудники" [ref=f34e69] [cursor=pointer] [box=23,627,194,42]:
+            - /url: https://preprod.niktrade.ru/admin/admin-users/users
+            - img [ref=f34e71] [box=39,639,18,18]
+            - generic [ref=f34e76] [box=71,638,96,21]: Сотрудники
+          - link "Организация" [ref=f34e77] [cursor=pointer] [box=23,675,194,42]:
+            - /url: https://preprod.niktrade.ru/admin/departments
+            - img [ref=f34e79] [box=39,687,18,18]
+            - generic [ref=f34e82] [box=71,686,96,21]: Организация
+        - generic [ref=f34e83] [box=23,957,194,66]:
+          - generic [ref=f34e84] [box=34,968,44,44]: C
+          - generic [ref=f34e85] [box=88,969,99,42]:
+            - generic [ref=f34e86] [box=88,969,99,21]: CODEX
+            - generic [ref=f34e87] [box=88,993,99,18]: Сотрудник
+          - generic [ref=f34e88] [box=197,978,9,24]: ⌄
+      - generic [ref=f34e89] [box=258,18,1233,1325]:
+        - generic [ref=f34e90] [box=258,43,1233,67]:
+          - generic [ref=f34e91] [box=258,43,722,67]:
+            - heading "Добрый вечер, CODEX! 👋" [level=1] [ref=f34e92] [box=258,43,722,34]
+            - generic [ref=f34e93] [box=258,86,722,24]: воскресенье, 05 июля 2026
+          - generic [ref=f34e94] [box=1004,47,487,58]:
+            - generic "Поиск" [ref=f34e95] [box=1004,50,308,52]:
+              - img [ref=f34e96] [box=1023,68,17,17]
+              - generic [ref=f34e99] [box=1050,66,52,21]: Поиск...
+              - generic [ref=f34e100] [box=1255,66,42,21]: ⌘K
+            - button "Уведомления" [ref=f34e102] [cursor=pointer] [box=1341,50,52,52]:
+              - img [ref=f34e103] [box=1358,67,19,19]
+              - generic [ref=f34e105] [box=1380,45,18,18]: "3"
+            - generic "Профиль" [ref=f34e106] [box=1407,47,84,58]:
+              - generic [ref=f34e107] [box=1415,54,44,44]: C
+              - generic [ref=f34e108] [box=1469,64,9,26]: ⌄
+        - generic [ref=f34e110] [box=258,136,1233,1175]:
+          - generic [ref=f34e113] [box=258,136,608,383]:
+            - generic [ref=f34e114] [box=259,137,606,86]:
+              - generic [ref=f34e115] [box=281,157,90,54]:
+                - generic [ref=f34e116] [box=281,157,90,27]: Сегодня
+                - generic [ref=f34e117] [box=281,190,90,21]: 05 июля 2026
+              - link "Открыть календарь" [ref=f34e118] [cursor=pointer] [box=702,168,141,31]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+            - generic [ref=f34e119] [box=259,223,606,295]:
+              - generic [ref=f34e120] [box=281,235,562,193]:
+                - generic [ref=f34e121] [box=281,235,275,91]
+                - generic [ref=f34e124] [box=568,235,275,91]
+                - generic [ref=f34e127] [box=281,337,275,91]
+                - generic [ref=f34e130] [box=568,337,275,91]
+              - generic [ref=f34e134] [box=281,444,562,52]: На сегодня нет кадровых событий в календаре.
+          - generic [ref=f34e137] [box=884,136,295,373]:
+            - generic [ref=f34e138] [box=885,137,293,107]:
+              - generic [ref=f34e139] [box=907,157,158,75]:
+                - generic [ref=f34e140] [box=907,157,158,27]: На согласовании
+                - generic [ref=f34e141] [box=907,190,158,42]: Заявки на график и кадровые отсутствия.
+              - link "Открыть" [ref=f34e142] [cursor=pointer] [box=1080,179,75,31]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - generic [ref=f34e144] [box=907,256,249,230]:
+              - link "Ожидают HR 0" [ref=f34e145] [cursor=pointer] [box=907,256,76,110]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f34e146] [box=924,273,42,39]: Ожидают HR
+                - generic [ref=f34e147] [box=924,316,42,33]: "0"
+              - link "Переданы HR 0" [ref=f34e148] [cursor=pointer] [box=993,256,76,110]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f34e149] [box=1010,273,42,39]: Переданы HR
+                - generic [ref=f34e150] [box=1010,316,42,33]: "0"
+              - link "Возвращены HR 0" [ref=f34e151] [cursor=pointer] [box=1079,256,76,110]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f34e152] [box=1096,273,42,39]: Возвращены HR
+                - generic [ref=f34e153] [box=1096,316,42,33]: "0"
+              - link "Одобрено сегодня 0" [ref=f34e154] [cursor=pointer] [box=907,376,76,110]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f34e155] [box=924,393,42,39]: Одобрено сегодня
+                - generic [ref=f34e156] [box=924,436,42,33]: "0"
+              - link "Отклонено сегодня 0" [ref=f34e157] [cursor=pointer] [box=993,376,76,110]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f34e158] [box=1010,393,42,39]: Отклонено сегодня
+                - generic [ref=f34e159] [box=1010,436,42,33]: "0"
+          - generic [ref=f34e162] [box=1196,136,295,443]:
+            - generic [ref=f34e164] [box=1219,157,249,75]:
+              - generic [ref=f34e165] [box=1219,157,249,27]: Быстрые действия
+              - generic [ref=f34e166] [box=1219,190,249,42]: Основные HR-переходы для ежедневной работы.
+            - generic [ref=f34e168] [box=1219,256,249,300]:
+              - link "Добавить сотрудника" [ref=f34e169] [cursor=pointer] [box=1219,256,249,52]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/create
+                - generic [ref=f34e170] [box=1234,271,149,21]: Добавить сотрудника
+                - generic [ref=f34e171] [box=1441,271,12,21]: →
+              - link "Создать отдел" [ref=f34e172] [cursor=pointer] [box=1219,318,249,52]:
+                - /url: https://preprod.niktrade.ru/admin/departments/create
+                - generic [ref=f34e173] [box=1234,333,98,21]: Создать отдел
+                - generic [ref=f34e174] [box=1441,333,12,21]: →
+              - link "Открыть календарь" [ref=f34e175] [cursor=pointer] [box=1219,380,249,52]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                - generic [ref=f34e176] [box=1234,395,136,21]: Открыть календарь
+                - generic [ref=f34e177] [box=1441,395,12,21]: →
+              - link "Создать заявку" [ref=f34e178] [cursor=pointer] [box=1219,442,249,52]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests/create
+                - generic [ref=f34e179] [box=1234,457,104,21]: Создать заявку
+                - generic [ref=f34e180] [box=1441,457,12,21]: →
+              - link "Документы" [ref=f34e181] [cursor=pointer] [box=1219,504,249,52]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                - generic [ref=f34e182] [box=1234,519,80,21]: Документы
+                - generic [ref=f34e183] [box=1441,519,12,21]: →
+          - generic [ref=f34e186] [box=258,597,608,714]:
+            - generic [ref=f34e188] [box=281,618,373,54]:
+              - generic [ref=f34e189] [box=281,618,373,27]: Требуют внимания
+              - generic [ref=f34e190] [box=281,651,373,21]: Профили сотрудников с незаполненными HR-данными.
+            - generic [ref=f34e192] [box=281,696,562,592]:
+              - link "Admin Без отдела Не назначен руководитель Не указан отдел Не указан тип трудоустройства Не хватает документов" [ref=f34e193] [cursor=pointer] [box=281,696,562,92]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/1
+                - generic [ref=f34e194] [box=298,711,47,62]
+                - generic [ref=f34e197] [box=360,711,466,62]
+              - link "CODEX Без отдела Не назначен руководитель Не указан отдел Не хватает документов" [ref=f34e202] [cursor=pointer] [box=281,799,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/8
+                - generic [ref=f34e203] [box=298,814,66,43]
+                - generic [ref=f34e206] [box=380,814,446,28]
+              - link "Головин Алексей Андреевич Информационные технологии Не хватает документов" [ref=f34e210] [cursor=pointer] [box=281,882,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/3
+                - generic [ref=f34e211] [box=298,897,198,43]
+                - generic [ref=f34e215] [box=675,897,151,28]: Не хватает документов
+              - link "Елена Алёшина Отдел Продаж Не хватает документов" [ref=f34e216] [cursor=pointer] [box=281,965,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/2
+                - generic [ref=f34e217] [box=298,980,107,43]
+                - generic [ref=f34e221] [box=675,980,151,28]: Не хватает документов
+              - link "Кочубей Дмитрий Олегович Информационные технологии Не хватает документов" [ref=f34e222] [cursor=pointer] [box=281,1049,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/6
+                - generic [ref=f34e223] [box=298,1064,195,43]
+                - generic [ref=f34e227] [box=675,1064,151,28]: Не хватает документов
+              - link "Мори Павел Гамлетович Руководящий состав Не назначен руководитель Не хватает документов" [ref=f34e228] [cursor=pointer] [box=281,1132,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/4
+                - generic [ref=f34e229] [box=298,1147,170,43]
+                - generic [ref=f34e232] [box=496,1147,329,28]
+              - link "Тестовый Кадровый Сотрудник Кадровое делопроизводство Не хватает документов" [ref=f34e235] [cursor=pointer] [box=281,1215,562,73]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/5
+                - generic [ref=f34e236] [box=298,1230,216,43]
+                - generic [ref=f34e240] [box=675,1230,151,28]: Не хватает документов
+          - generic [ref=f34e243] [box=884,597,608,174]:
+            - generic [ref=f34e245] [box=907,618,237,54]:
+              - generic [ref=f34e246] [box=907,618,237,27]: Ближайшие события
+              - generic [ref=f34e247] [box=907,651,237,21]: Напоминания HR на 7 дней вперед.
+            - generic [ref=f34e250] [box=907,696,562,52]: На ближайшую неделю нет срочных HR-событий.
+  - generic [box=0,1367,1521,0]:
+    - status [box=16,16,1489,992]

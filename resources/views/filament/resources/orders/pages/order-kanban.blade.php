@@ -5,6 +5,29 @@
     $initials = $user
         ? collect(explode(' ', trim($user->name)))->filter()->take(2)->map(fn (string $part): string => mb_substr($part, 0, 1))->join('')
         : 'N';
+
+    $mobileMenuGroups = [
+        'Главное' => [
+            ['label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Dashboard::getUrl()],
+            ['label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => \App\Filament\Pages\Workplace::getUrl()],
+            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('kanban'), 'active' => true],
+            ['label' => 'Мой календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
+        ],
+        'Рабочие инструменты' => array_values(array_filter([
+            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => '3', 'sheet' => 'tasks'],
+            ['label' => 'Коммуникации', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
+            \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::canAccess()
+                ? ['label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')]
+                : null,
+            ['label' => 'Справочники', 'icon' => 'book', 'url' => '#', 'badge' => 'Скоро', 'disabled' => true],
+        ])),
+        'Продажи' => array_values(array_filter([
+            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('kanban'), 'active' => true],
+            \App\Filament\Resources\Customers\CustomerResource::canAccess()
+                ? ['label' => 'Покупатели', 'icon' => 'users', 'url' => \App\Filament\Resources\Customers\CustomerResource::getUrl('index')]
+                : null,
+        ])),
+    ];
 @endphp
 
 <x-filament-panels::page>
@@ -19,8 +42,14 @@
         <div
             class="nik-orders-workspace"
             wire:key="orders-workspace-{{ $showArchive ? 'archive' : 'active' }}"
-            x-data="{ mobileFilters: false, activeStatus: '{{ $showArchive ? Order::STATUS_COMPLETED : Order::STATUS_NEW }}' }"
-            x-on:keydown.escape.window="mobileFilters = false"
+            x-data="{
+                mobileFilters: false,
+                activeStatus: '{{ $showArchive ? Order::STATUS_COMPLETED : Order::STATUS_NEW }}',
+                activeSheet: null,
+                openSheet(sheet) { this.mobileFilters = false; this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); },
+                closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); },
+            }"
+            x-on:keydown.escape.window="mobileFilters = false; closeSheet()"
         >
             <header class="orders-work-mobile-head">
                 <div>
@@ -295,13 +324,8 @@
                 </div>
             </section>
 
-            <nav class="orders-work-mobile-bottom" aria-label="Быстрая навигация">
-                <a class="is-active" href="{{ \App\Filament\Pages\Workplace::getUrl() }}"><x-work.icon name="home" /><span>Главная</span></a>
-                <button type="button"><x-work.icon name="message" /><span>Мессенджер</span></button>
-                <button type="button" class="orders-work-mobile-menu"><strong><x-work.icon name="grid" /></strong><span>Меню</span></button>
-                <button type="button"><x-work.icon name="check-square" /><span>Задачи</span></button>
-                <a href="{{ \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index') }}"><x-work.icon name="file" /><span>Заявки</span></a>
-            </nav>
+            <x-work.mobile-bottom-sheets :menu-groups="$mobileMenuGroups" />
+            <x-work.mobile-bottom-nav />
         </div>
 
         @if ($archiveOrderId !== null)

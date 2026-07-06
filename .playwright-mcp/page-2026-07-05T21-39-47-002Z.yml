@@ -1,0 +1,213 @@
+- generic [active] [ref=f22e1]:
+  - main [ref=f22e4]:
+    - generic [ref=f22e11]:
+      - complementary "Рабочая навигация" [ref=f22e12]:
+        - link "Никтрейд" [ref=f22e13] [cursor=pointer]:
+          - /url: https://preprod.niktrade.ru/admin/workplace
+          - img "Никтрейд" [ref=f22e14]
+        - navigation [ref=f22e15]:
+          - link "Главная" [ref=f22e16] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin
+            - img [ref=f22e18]
+            - generic [ref=f22e22]: Главная
+          - link "Рабочее пространство" [ref=f22e23] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin/workplace
+            - img [ref=f22e25]
+            - generic [ref=f22e30]: Рабочее пространство
+          - generic [ref=f22e31]: Основное
+          - link "Календарь" [ref=f22e32] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin/my-calendar
+            - img [ref=f22e34]
+            - generic [ref=f22e36]: Календарь
+          - link "Задачи 3" [ref=f22e37] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=f22e39]
+            - generic [ref=f22e42]: Задачи
+            - generic [ref=f22e43]: "3"
+          - link "Заявки" [ref=f22e44] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - img [ref=f22e46]
+            - generic [ref=f22e49]: Заявки
+          - link "Документы" [ref=f22e50] [cursor=pointer]:
+            - /url: "#employee-documents"
+            - img [ref=f22e52]
+            - generic [ref=f22e55]: Документы
+          - link "Сообщения 2" [ref=f22e56] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=f22e58]
+            - generic [ref=f22e60]: Сообщения
+            - generic [ref=f22e61]: "2"
+          - link "Справочники" [ref=f22e62] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=f22e64]
+            - generic [ref=f22e67]: Справочники
+          - generic [ref=f22e68]: Компания
+          - link "Сотрудники" [ref=f22e69] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin/admin-users/users
+            - img [ref=f22e71]
+            - generic [ref=f22e76]: Сотрудники
+          - link "Организация" [ref=f22e77] [cursor=pointer]:
+            - /url: https://preprod.niktrade.ru/admin/departments
+            - img [ref=f22e79]
+            - generic [ref=f22e82]: Организация
+        - generic [ref=f22e83]:
+          - generic [ref=f22e84]: C
+          - generic [ref=f22e85]:
+            - generic [ref=f22e86]: CODEX
+            - generic [ref=f22e87]: Сотрудник
+          - generic [ref=f22e88]: ⌄
+      - generic [ref=f22e89]:
+        - generic [ref=f22e90]:
+          - generic [ref=f22e91]:
+            - heading "Добрый вечер, CODEX! 👋" [level=1] [ref=f22e92]
+            - generic [ref=f22e93]: воскресенье, 05 июля 2026
+          - generic [ref=f22e94]:
+            - generic "Поиск" [ref=f22e95]:
+              - img [ref=f22e96]
+              - generic [ref=f22e99]: Поиск...
+              - generic [ref=f22e100]: ⌘K
+            - button "Уведомления" [ref=f22e102] [cursor=pointer]:
+              - img [ref=f22e103]
+              - generic [ref=f22e105]: "3"
+            - generic "Профиль" [ref=f22e106]:
+              - generic [ref=f22e107]: C
+              - generic [ref=f22e108]: ⌄
+        - generic [ref=f22e110]:
+          - generic [ref=f22e113]:
+            - generic [ref=f22e114]:
+              - generic [ref=f22e115]:
+                - generic [ref=f22e116]: Сегодня
+                - generic [ref=f22e117]: 05 июля 2026
+              - link "Открыть календарь" [ref=f22e118] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+            - generic [ref=f22e119]:
+              - generic [ref=f22e120]:
+                - generic [ref=f22e121]:
+                  - generic [ref=f22e122]: Работают
+                  - generic [ref=f22e123]: "0"
+                - generic [ref=f22e124]:
+                  - generic [ref=f22e125]: Отпуск
+                  - generic [ref=f22e126]: "0"
+                - generic [ref=f22e127]:
+                  - generic [ref=f22e128]: Больничный
+                  - generic [ref=f22e129]: "0"
+                - generic [ref=f22e130]:
+                  - generic [ref=f22e131]: Выходной
+                  - generic [ref=f22e132]: "0"
+              - generic [ref=f22e134]: На сегодня нет кадровых событий в календаре.
+          - generic [ref=f22e137]:
+            - generic [ref=f22e138]:
+              - generic [ref=f22e139]:
+                - generic [ref=f22e140]: На согласовании
+                - generic [ref=f22e141]: Заявки на график и кадровые отсутствия.
+              - link "Открыть" [ref=f22e142] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+            - generic [ref=f22e144]:
+              - link "Ожидают HR 0" [ref=f22e145] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f22e146]: Ожидают HR
+                - generic [ref=f22e147]: "0"
+              - link "Переданы HR 0" [ref=f22e148] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f22e149]: Переданы HR
+                - generic [ref=f22e150]: "0"
+              - link "Возвращены HR 0" [ref=f22e151] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f22e152]: Возвращены HR
+                - generic [ref=f22e153]: "0"
+              - link "Одобрено сегодня 0" [ref=f22e154] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f22e155]: Одобрено сегодня
+                - generic [ref=f22e156]: "0"
+              - link "Отклонено сегодня 0" [ref=f22e157] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f22e158]: Отклонено сегодня
+                - generic [ref=f22e159]: "0"
+          - generic [ref=f22e162]:
+            - generic [ref=f22e164]:
+              - generic [ref=f22e165]: Быстрые действия
+              - generic [ref=f22e166]: Основные HR-переходы для ежедневной работы.
+            - generic [ref=f22e168]:
+              - link "Добавить сотрудника" [ref=f22e169] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/create
+                - generic [ref=f22e170]: Добавить сотрудника
+                - generic [ref=f22e171]: →
+              - link "Создать отдел" [ref=f22e172] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/departments/create
+                - generic [ref=f22e173]: Создать отдел
+                - generic [ref=f22e174]: →
+              - link "Открыть календарь" [ref=f22e175] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                - generic [ref=f22e176]: Открыть календарь
+                - generic [ref=f22e177]: →
+              - link "Создать заявку" [ref=f22e178] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests/create
+                - generic [ref=f22e179]: Создать заявку
+                - generic [ref=f22e180]: →
+              - link "Документы" [ref=f22e181] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                - generic [ref=f22e182]: Документы
+                - generic [ref=f22e183]: →
+          - generic [ref=f22e186]:
+            - generic [ref=f22e188]:
+              - generic [ref=f22e189]: Требуют внимания
+              - generic [ref=f22e190]: Профили сотрудников с незаполненными HR-данными.
+            - generic [ref=f22e192]:
+              - link "Admin Без отдела Не назначен руководитель Не указан отдел Не указан тип трудоустройства Не хватает документов" [ref=f22e193] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/1
+                - generic [ref=f22e194]:
+                  - generic [ref=f22e195]: Admin
+                  - generic [ref=f22e196]: Без отдела
+                - generic [ref=f22e197]:
+                  - generic [ref=f22e198]: Не назначен руководитель
+                  - generic [ref=f22e199]: Не указан отдел
+                  - generic [ref=f22e200]: Не указан тип трудоустройства
+                  - generic [ref=f22e201]: Не хватает документов
+              - link "CODEX Без отдела Не назначен руководитель Не указан отдел Не хватает документов" [ref=f22e202] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/8
+                - generic [ref=f22e203]:
+                  - generic [ref=f22e204]: CODEX
+                  - generic [ref=f22e205]: Без отдела
+                - generic [ref=f22e206]:
+                  - generic [ref=f22e207]: Не назначен руководитель
+                  - generic [ref=f22e208]: Не указан отдел
+                  - generic [ref=f22e209]: Не хватает документов
+              - link "Головин Алексей Андреевич Информационные технологии Не хватает документов" [ref=f22e210] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/3
+                - generic [ref=f22e211]:
+                  - generic [ref=f22e212]: Головин Алексей Андреевич
+                  - generic [ref=f22e213]: Информационные технологии
+                - generic [ref=f22e215]: Не хватает документов
+              - link "Елена Алёшина Отдел Продаж Не хватает документов" [ref=f22e216] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/2
+                - generic [ref=f22e217]:
+                  - generic [ref=f22e218]: Елена Алёшина
+                  - generic [ref=f22e219]: Отдел Продаж
+                - generic [ref=f22e221]: Не хватает документов
+              - link "Кочубей Дмитрий Олегович Информационные технологии Не хватает документов" [ref=f22e222] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/6
+                - generic [ref=f22e223]:
+                  - generic [ref=f22e224]: Кочубей Дмитрий Олегович
+                  - generic [ref=f22e225]: Информационные технологии
+                - generic [ref=f22e227]: Не хватает документов
+              - link "Мори Павел Гамлетович Руководящий состав Не назначен руководитель Не хватает документов" [ref=f22e228] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/4
+                - generic [ref=f22e229]:
+                  - generic [ref=f22e230]: Мори Павел Гамлетович
+                  - generic [ref=f22e231]: Руководящий состав
+                - generic [ref=f22e232]:
+                  - generic [ref=f22e233]: Не назначен руководитель
+                  - generic [ref=f22e234]: Не хватает документов
+              - link "Тестовый Кадровый Сотрудник Кадровое делопроизводство Не хватает документов" [ref=f22e235] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users/5
+                - generic [ref=f22e236]:
+                  - generic [ref=f22e237]: Тестовый Кадровый Сотрудник
+                  - generic [ref=f22e238]: Кадровое делопроизводство
+                - generic [ref=f22e240]: Не хватает документов
+          - generic [ref=f22e243]:
+            - generic [ref=f22e245]:
+              - generic [ref=f22e246]: Ближайшие события
+              - generic [ref=f22e247]: Напоминания HR на 7 дней вперед.
+            - generic [ref=f22e250]: На ближайшую неделю нет срочных HR-событий.
+  - generic:
+    - status

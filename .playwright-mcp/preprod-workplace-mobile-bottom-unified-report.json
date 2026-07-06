@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "finalUrl": "https://preprod.niktrade.ru/admin/workplace",
+  "title": "Рабочее пространство - Никтрейд",
+  "hasWorkApp": true,
+  "hasMobileWorkplace": true,
+  "bottomBar": {
+    "controls": 5,
+    "labels": [
+      "Главная",
+      "Мессенджер",
+      "Меню",
+      "Задачи",
+      "Заявки"
+    ],
+    "box": {
+      "x": 14,
+      "y": 745.90625,
+      "width": 362,
+      "height": 84.09375
+    }
+  },
+  "openedSheets": [
+    "Коммуникации",
+    "Меню",
+    "Мои задачи",
+    "Мои заявки"
+  ],
+  "consoleMessages": [],
+  "failedRequests": []
+}

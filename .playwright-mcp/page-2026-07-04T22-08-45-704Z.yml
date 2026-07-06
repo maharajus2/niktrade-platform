@@ -1,0 +1,388 @@
+- generic [active] [ref=f13e1]:
+  - navigation [ref=f13e3]:
+    - link "Логотип Никтрейд" [ref=f13e5] [cursor=pointer]:
+      - /url: https://preprod.niktrade.ru/admin
+      - img "Логотип Никтрейд" [ref=f13e6]
+    - button "Меню пользователя" [ref=f13e10] [cursor=pointer]:
+      - img "Аватар CODEX" [ref=f13e11]
+  - generic [ref=f13e12]:
+    - complementary [ref=f13e14]:
+      - navigation [ref=f13e15]:
+        - list [ref=f13e16]:
+          - listitem [ref=f13e17]:
+            - list [ref=f13e18]:
+              - listitem [ref=f13e19]:
+                - link "Главная" [ref=f13e20] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin
+                  - img [ref=f13e21]
+                  - generic [ref=f13e23]: Главная
+              - listitem [ref=f13e24]:
+                - link "Рабочее пространство" [ref=f13e25] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/workplace
+                  - img [ref=f13e26]
+                  - generic [ref=f13e28]: Рабочее пространство
+          - listitem [ref=f13e29]:
+            - generic [ref=f13e30] [cursor=pointer]:
+              - generic [ref=f13e31]: Продажи
+              - button "Продажи" [expanded] [ref=f13e32]:
+                - img [ref=f13e33]
+            - list [ref=f13e35]:
+              - listitem [ref=f13e36]:
+                - link "Заказы" [ref=f13e37] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/orders
+                  - img [ref=f13e38]
+                  - generic [ref=f13e40]: Заказы
+              - listitem [ref=f13e41]:
+                - link "Покупатели" [ref=f13e42] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/customers
+                  - img [ref=f13e43]
+                  - generic [ref=f13e45]: Покупатели
+          - listitem [ref=f13e46]:
+            - generic [ref=f13e47] [cursor=pointer]:
+              - generic [ref=f13e48]: Каталог
+              - button "Каталог" [expanded] [ref=f13e49]:
+                - img [ref=f13e50]
+            - list [ref=f13e52]:
+              - listitem [ref=f13e53]:
+                - link "Товары" [ref=f13e54] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/products
+                  - img [ref=f13e55]
+                  - generic [ref=f13e57]: Товары
+              - listitem [ref=f13e58]:
+                - link "Категории" [ref=f13e59] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/categories
+                  - img [ref=f13e60]
+                  - generic [ref=f13e63]: Категории
+              - listitem [ref=f13e64]:
+                - link "Бренды" [ref=f13e65] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/brands
+                  - img [ref=f13e66]
+                  - generic [ref=f13e68]: Бренды
+              - listitem [ref=f13e69]:
+                - link "Линейки" [ref=f13e70] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/product-lines
+                  - img [ref=f13e71]
+                  - generic [ref=f13e73]: Линейки
+              - listitem [ref=f13e74]:
+                - link "Типы" [ref=f13e75] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/product-types
+                  - img [ref=f13e76]
+                  - generic [ref=f13e78]: Типы
+              - listitem [ref=f13e79]:
+                - link "Документация" [ref=f13e80] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/certificates
+                  - img [ref=f13e81]
+                  - generic [ref=f13e83]: Документация
+          - listitem [ref=f13e84]:
+            - generic [ref=f13e85] [cursor=pointer]:
+              - generic [ref=f13e86]: Справочники
+              - button "Справочники" [expanded] [ref=f13e87]:
+                - img [ref=f13e88]
+            - list [ref=f13e90]:
+              - listitem [ref=f13e91]:
+                - link "Склады" [ref=f13e92] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/warehouses
+                  - img [ref=f13e93]
+                  - generic [ref=f13e95]: Склады
+          - listitem [ref=f13e96]:
+            - generic [ref=f13e97] [cursor=pointer]:
+              - generic [ref=f13e98]: 🏢 Организация
+              - button "🏢 Организация" [expanded] [ref=f13e99]:
+                - img [ref=f13e100]
+            - list [ref=f13e102]:
+              - listitem [ref=f13e103]:
+                - link "Отделы" [ref=f13e104] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/departments
+                  - img [ref=f13e105]
+                  - generic [ref=f13e107]: Отделы
+              - listitem [ref=f13e108]:
+                - link "Сотрудники" [ref=f13e109] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                  - img [ref=f13e110]
+                  - generic [ref=f13e112]: Сотрудники
+              - listitem [ref=f13e113]:
+                - link "Заявки сотрудников" [ref=f13e114] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                  - img [ref=f13e115]
+                  - generic [ref=f13e117]: Заявки сотрудников
+    - main [ref=f13e119]:
+      - generic [ref=f13e121]:
+        - button "Выбрать контекст" [ref=f13e125] [cursor=pointer]:
+          - img [ref=f13e126]
+          - text: Выбрать контекст
+        - generic [ref=f13e132]:
+          - complementary "Рабочая навигация" [ref=f13e133]:
+            - link "Niktrade" [ref=f13e134] [cursor=pointer]:
+              - /url: https://preprod.niktrade.ru/admin/workplace
+              - generic [ref=f13e136]: Niktrade
+            - navigation [ref=f13e137]:
+              - link "⌂ Главная" [ref=f13e138] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin
+                - generic [ref=f13e139]: ⌂
+                - generic [ref=f13e140]: Главная
+              - link "▦ Рабочее пространство" [ref=f13e141] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/workplace
+                - generic [ref=f13e142]: ▦
+                - generic [ref=f13e143]: Рабочее пространство
+              - generic [ref=f13e144]: Основное
+              - link "▣ Календарь" [ref=f13e145] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/my-calendar
+                - generic [ref=f13e146]: ▣
+                - generic [ref=f13e147]: Календарь
+              - link "☑ Задачи 3" [ref=f13e148] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f13e149]: ☑
+                - generic [ref=f13e150]: Задачи
+                - generic [ref=f13e151]: "3"
+              - link "□ Заявки" [ref=f13e152] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+                - generic [ref=f13e153]: □
+                - generic [ref=f13e154]: Заявки
+              - link "▤ Документы" [ref=f13e155] [cursor=pointer]:
+                - /url: "#employee-documents"
+                - generic [ref=f13e156]: ▤
+                - generic [ref=f13e157]: Документы
+              - link "○ Сообщения 2" [ref=f13e158] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f13e159]: ○
+                - generic [ref=f13e160]: Сообщения
+                - generic [ref=f13e161]: "2"
+              - link "▦ Справочники" [ref=f13e162] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f13e163]: ▦
+                - generic [ref=f13e164]: Справочники
+              - generic [ref=f13e165]: Компания
+              - link "♙ Сотрудники" [ref=f13e166] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/admin-users/users
+                - generic [ref=f13e167]: ♙
+                - generic [ref=f13e168]: Сотрудники
+              - link "⌘ Организация" [ref=f13e169] [cursor=pointer]:
+                - /url: https://preprod.niktrade.ru/admin/departments
+                - generic [ref=f13e170]: ⌘
+                - generic [ref=f13e171]: Организация
+            - generic [ref=f13e172]:
+              - generic [ref=f13e173]: C
+              - generic [ref=f13e174]:
+                - generic [ref=f13e175]: CODEX
+                - generic [ref=f13e176]: Сотрудник
+              - generic [ref=f13e177]: ⌄
+          - generic [ref=f13e178]:
+            - generic [ref=f13e179]:
+              - generic [ref=f13e180]:
+                - heading "Добрый день, CODEX! 👋" [level=1] [ref=f13e181]
+                - generic [ref=f13e182]: суббота, 04 июля 2026
+              - generic [ref=f13e183]:
+                - generic "Поиск" [ref=f13e184]:
+                  - generic [ref=f13e185]: ⌕
+                  - generic [ref=f13e186]: Поиск...
+                - button "Уведомления" [ref=f13e187] [cursor=pointer]:
+                  - generic [ref=f13e188]: ♢
+                  - generic [ref=f13e189]: "3"
+                - button "Выйти" [ref=f13e190] [cursor=pointer]:
+                  - generic [ref=f13e191]: ↪
+            - main [ref=f13e192]:
+              - generic [ref=f13e193]:
+                - generic [ref=f13e194]:
+                  - generic [ref=f13e196]:
+                    - generic [ref=f13e197]: ◷
+                    - generic [ref=f13e198]: Мой день
+                  - generic [ref=f13e199]: Сегодня
+                - generic [ref=f13e200]:
+                  - generic [ref=f13e201]:
+                    - generic [ref=f13e202]: Ваша смена
+                    - generic [ref=f13e203]: Не назначена
+                    - generic [ref=f13e204]: Смен не назначено
+                    - generic [ref=f13e205]:
+                      - generic [ref=f13e206]: Рабочее время сегодня
+                      - generic [ref=f13e207]: 0,0 ч
+                      - generic [ref=f13e208]: из 8 ч
+                  - generic [ref=f13e212]: Сегодня смен и событий не назначено.
+              - generic [ref=f13e213]:
+                - generic [ref=f13e214]:
+                  - generic [ref=f13e216]:
+                    - generic [ref=f13e217]: ▣
+                    - generic [ref=f13e218]: Календарь
+                  - generic [ref=f13e219]:
+                    - generic [ref=f13e220]: ‹
+                    - generic [ref=f13e221]: ›
+                - generic [ref=f13e222]: июль 2026
+                - generic [ref=f13e223]:
+                  - generic [ref=f13e224]: Пн
+                  - generic [ref=f13e225]: Вт
+                  - generic [ref=f13e226]: Ср
+                  - generic [ref=f13e227]: Чт
+                  - generic [ref=f13e228]: Пт
+                  - generic [ref=f13e229]: Сб
+                  - generic [ref=f13e230]: Вс
+                - generic [ref=f13e231]:
+                  - generic [ref=f13e233]: "29"
+                  - generic [ref=f13e235]: "30"
+                  - generic [ref=f13e237]: "1"
+                  - generic [ref=f13e239]: "2"
+                  - generic [ref=f13e241]: "3"
+                  - generic [ref=f13e243]: "4"
+                  - generic [ref=f13e245]: "5"
+                  - generic [ref=f13e247]: "6"
+                  - generic [ref=f13e249]: "7"
+                  - generic [ref=f13e251]: "8"
+                  - generic [ref=f13e253]: "9"
+                  - generic [ref=f13e255]: "10"
+                  - generic [ref=f13e257]: "11"
+                  - generic [ref=f13e259]: "12"
+                  - generic [ref=f13e261]: "13"
+                  - generic [ref=f13e263]: "14"
+                  - generic [ref=f13e265]: "15"
+                  - generic [ref=f13e267]: "16"
+                  - generic [ref=f13e269]: "17"
+                  - generic [ref=f13e271]: "18"
+                  - generic [ref=f13e273]: "19"
+                  - generic [ref=f13e275]: "20"
+                  - generic [ref=f13e277]: "21"
+                  - generic [ref=f13e279]: "22"
+                  - generic [ref=f13e281]: "23"
+                  - generic [ref=f13e283]: "24"
+                  - generic [ref=f13e285]: "25"
+                  - generic [ref=f13e287]: "26"
+                  - generic [ref=f13e289]: "27"
+                  - generic [ref=f13e291]: "28"
+                  - generic [ref=f13e293]: "29"
+                  - generic [ref=f13e295]: "30"
+                  - generic [ref=f13e297]: "31"
+                  - generic [ref=f13e299]: "1"
+                  - generic [ref=f13e301]: "2"
+                - link "Открыть полный календарь" [ref=f13e302] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/my-calendar
+              - complementary [ref=f13e303]:
+                - generic [ref=f13e304]:
+                  - generic [ref=f13e307]:
+                    - generic [ref=f13e308]: "!"
+                    - generic [ref=f13e309]: Требует внимания
+                  - generic [ref=f13e312]: На сегодня нет важных уведомлений.
+                - generic [ref=f13e313]:
+                  - generic [ref=f13e316]:
+                    - generic [ref=f13e317]: +
+                    - generic [ref=f13e318]: Быстрые действия
+                  - generic [ref=f13e319]:
+                    - link "+ Создать заявку →" [ref=f13e320] [cursor=pointer]:
+                      - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests/create
+                      - generic [ref=f13e321]: +
+                      - generic [ref=f13e322]: Создать заявку
+                      - generic [ref=f13e323]: →
+                    - link "▣ Открыть календарь →" [ref=f13e324] [cursor=pointer]:
+                      - /url: https://preprod.niktrade.ru/admin/my-calendar
+                      - generic [ref=f13e325]: ▣
+                      - generic [ref=f13e326]: Открыть календарь
+                      - generic [ref=f13e327]: →
+                    - link "▤ Открыть документы →" [ref=f13e328] [cursor=pointer]:
+                      - /url: "#employee-documents"
+                      - generic [ref=f13e329]: ▤
+                      - generic [ref=f13e330]: Открыть документы
+                      - generic [ref=f13e331]: →
+                    - generic [ref=f13e332]:
+                      - generic [ref=f13e333]: ○
+                      - generic [ref=f13e334]: Написать сообщение
+                      - generic [ref=f13e335]: Скоро
+              - generic [ref=f13e336]:
+                - generic [ref=f13e337]:
+                  - generic [ref=f13e339]:
+                    - generic [ref=f13e340]: ☑
+                    - generic [ref=f13e341]: Мои задачи
+                  - generic [ref=f13e342]: Скоро
+                - generic [ref=f13e343]:
+                  - generic [ref=f13e344]:
+                    - generic [ref=f13e345]:
+                      - generic [ref=f13e346]: Новые
+                      - generic [ref=f13e347]: "2"
+                    - generic [ref=f13e349]:
+                      - generic [ref=f13e350]: Подготовить отчёт
+                      - generic [ref=f13e351]: До 28.11
+                    - generic [ref=f13e353]:
+                      - generic [ref=f13e354]: Обновить инструкцию
+                      - generic [ref=f13e355]: До 29.11
+                    - generic [ref=f13e356]: + Добавить задачу
+                  - generic [ref=f13e357]:
+                    - generic [ref=f13e358]:
+                      - generic [ref=f13e359]: В работе
+                      - generic [ref=f13e360]: "1"
+                    - generic [ref=f13e362]:
+                      - generic [ref=f13e363]: Проверить документы
+                      - generic [ref=f13e364]: До 30.11
+                    - generic [ref=f13e365]: + Добавить задачу
+                  - generic [ref=f13e366]:
+                    - generic [ref=f13e367]:
+                      - generic [ref=f13e368]: На проверке
+                      - generic [ref=f13e369]: "1"
+                    - generic [ref=f13e371]:
+                      - generic [ref=f13e372]: Согласовать договор
+                      - generic [ref=f13e373]: До 26.11
+                    - generic [ref=f13e374]: + Добавить задачу
+                  - generic [ref=f13e375]:
+                    - generic [ref=f13e376]:
+                      - generic [ref=f13e377]: Готово
+                      - generic [ref=f13e378]: "2"
+                    - generic [ref=f13e379]:
+                      - generic [ref=f13e380]:
+                        - generic [ref=f13e381]: Отчёт за неделю
+                        - generic [ref=f13e382]: "25.11"
+                      - generic [ref=f13e383]: ✓
+                    - generic [ref=f13e384]:
+                      - generic [ref=f13e385]:
+                        - generic [ref=f13e386]: План на месяц
+                        - generic [ref=f13e387]: "24.11"
+                      - generic [ref=f13e388]: ✓
+                    - generic [ref=f13e389]: + Показать все
+              - generic [ref=f13e390]:
+                - generic [ref=f13e391]:
+                  - generic [ref=f13e393]:
+                    - generic [ref=f13e394]: ○
+                    - generic [ref=f13e395]: Сообщения
+                  - generic [ref=f13e396]: "2"
+                - generic [ref=f13e397]:
+                  - generic [ref=f13e398]:
+                    - generic [ref=f13e399]: HR
+                    - generic [ref=f13e400]:
+                      - generic [ref=f13e401]: HR-отдел
+                      - generic [ref=f13e402]: Напоминаем о медосмотре...
+                    - generic [ref=f13e404]: 10:15
+                  - generic [ref=f13e406]:
+                    - generic [ref=f13e407]: IT
+                    - generic [ref=f13e408]:
+                      - generic [ref=f13e409]: IT-поддержка
+                      - generic [ref=f13e410]: "Ваш тикет #3456 обновлён"
+                    - generic [ref=f13e412]: 09:42
+                  - generic [ref=f13e414]:
+                    - generic [ref=f13e415]: OK
+                    - generic [ref=f13e416]:
+                      - generic [ref=f13e417]: Отдел кадров
+                      - generic [ref=f13e418]: Новый график на декабрь
+                    - generic [ref=f13e419]: Вчера
+                - link "Открыть все сообщения" [ref=f13e420] [cursor=pointer]:
+                  - /url: "#"
+              - generic [ref=f13e421]:
+                - generic [ref=f13e422]:
+                  - generic [ref=f13e424]:
+                    - generic [ref=f13e425]: □
+                    - generic [ref=f13e426]: Мои заявки
+                  - generic [ref=f13e427]: "0"
+                - generic [ref=f13e428]:
+                  - generic [ref=f13e429]: Ожидают 0
+                  - generic [ref=f13e430]: Одобрены 0
+                  - generic [ref=f13e431]: Отклонены 0
+                  - generic [ref=f13e432]: Возвращены 0
+                - generic [ref=f13e435]: У вас пока нет заявок.
+                - link "Открыть все заявки" [ref=f13e436] [cursor=pointer]:
+                  - /url: https://preprod.niktrade.ru/admin/employee-schedule-requests
+              - generic [ref=f13e437]:
+                - generic [ref=f13e438]:
+                  - generic [ref=f13e440]:
+                    - generic [ref=f13e441]: ▤
+                    - generic [ref=f13e442]: Мои документы
+                  - generic [ref=f13e443]: 0%
+                - generic [ref=f13e445]:
+                  - generic [ref=f13e446]: Комплектность
+                  - generic [ref=f13e447]: 0%
+                - generic [ref=f13e451]: "Документы пока не загружены. Не хватает: 5."
+                - link "Открыть все документы" [ref=f13e452] [cursor=pointer]:
+                  - /url: "#employee-documents"
+  - generic:
+    - status

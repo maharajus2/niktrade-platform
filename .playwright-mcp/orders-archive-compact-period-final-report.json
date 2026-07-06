@@ -1,0 +1,30 @@
+{
+  "columnTitles": [
+    "Завершён",
+    "Отменён"
+  ],
+  "badColumnVisible": false,
+  "dateInputs": 2,
+  "dateInputWidths": [
+    205,
+    205
+  ],
+  "cardCount": 22,
+  "collapsedHeight": 65,
+  "bodyVisibleBefore": false,
+  "expandedHeight": 389,
+  "bodyVisibleAfter": true,
+  "search": {
+    "firstOrderNumber": "ORD-20260706104025-2736",
+    "cardsAfterSearch": 1,
+    "columnsAfterSearch": [
+      "Завершён",
+      "Отменён"
+    ]
+  },
+  "mobileTabs": [
+    "Завершён",
+    "Отменён"
+  ],
+  "mobileCardCount": 22
+}

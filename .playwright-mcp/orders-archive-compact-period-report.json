@@ -1,0 +1,30 @@
+{
+  "url": "https://preprod.niktrade.ru/admin/orders/kanban?archive=true",
+  "desktop": {
+    "columnTitles": [
+      "Завершён",
+      "Отменён"
+    ],
+    "badColumnVisible": false,
+    "dateInputs": 2,
+    "cardCount": 22,
+    "collapsedHeight": 65,
+    "expandedHeight": 389,
+    "bodyVisibleBefore": false,
+    "bodyVisibleAfter": true
+  },
+  "search": {
+    "firstOrderNumber": "ORD-20260706104025-2736",
+    "columnsAfterSearch": [
+      "Завершён",
+      "Отменён"
+    ],
+    "cardsAfterSearch": 1
+  },
+  "mobile": {
+    "mobileTabs": [
+      "Завершён",
+      "Отменён"
+    ]
+  }
+}

@@ -1645,6 +1645,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     flex: 1;
     gap: 10px;
     min-height: 0;
+    overflow-x: hidden;
     overflow-y: auto;
     align-content: start;
     padding-right: 2px;
@@ -1653,6 +1654,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
 .nik-work-app .orders-work-order {
     display: grid;
     gap: 10px;
+    min-width: 0;
+    overflow: hidden;
     border-radius: 18px;
     padding: 12px;
     border-left: 3px solid transparent;
@@ -1683,6 +1686,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     color: #111827;
     font-size: 14px;
     font-weight: 820;
+    overflow-wrap: anywhere;
 }
 
 .nik-work-app .orders-work-order-main a small,
@@ -1697,11 +1701,15 @@ body:has(.nik-work-app) .nik-work-sidebar {
 .nik-work-app .orders-work-type,
 .nik-work-app .orders-work-sla {
     flex: 0 0 auto;
+    max-width: 46%;
+    overflow: hidden;
     border-radius: 999px;
     padding: 5px 8px;
     font-size: 11px;
     font-style: normal;
     font-weight: 760;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .nik-work-app .orders-work-type.is-delivery { background: rgba(226, 239, 255, .86); color: #0b70f0; }
@@ -1770,6 +1778,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .orders-work-order-actions button,
 .nik-work-app .orders-work-order-actions a {
+    max-width: 100%;
     border: 1px solid rgba(218, 228, 242, .74);
     border-radius: 10px;
     background: rgba(255, 255, 255, .62);
@@ -1777,7 +1786,9 @@ body:has(.nik-work-app) .nik-work-sidebar {
     color: #1f2a44;
     font-size: 12px;
     font-weight: 760;
+    overflow-wrap: anywhere;
     text-decoration: none;
+    white-space: normal;
 }
 
 .nik-work-app .orders-work-order-actions button:first-child {

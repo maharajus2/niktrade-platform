@@ -3,12 +3,24 @@
         const fullCalendarVersion = '6.1.21'
         const canUpdate = Boolean(options.canUpdate)
         const canEditPast = Boolean(options.canEditPast)
-        const typeLabels = {
-            shift: 'Смена',
-            day_off: 'Выходной',
-            vacation: 'Отпуск',
-            sick_leave: 'Больничный',
-            custom: 'Другое событие',
+        const canCreateShift = Boolean(options.canCreateShift)
+        const typeLabels = options.typeOptions || {}
+        const futureTypeLabels = options.futureTypeOptions || {}
+        const visibilityLabels = options.visibilityOptions || {}
+        const sourceLabels = options.sourceOptions || {}
+        const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave', 'business_trip']
+        const requestOnlyTypes = ['day_off', 'vacation', 'sick_leave']
+        const typeDefaults = {
+            shift: { allDay: false, visibility: 'manager' },
+            day_off: { allDay: true, visibility: 'manager' },
+            vacation: { allDay: true, visibility: 'hr' },
+            sick_leave: { allDay: true, visibility: 'hr' },
+            business_trip: { allDay: true, visibility: 'manager' },
+            training: { allDay: false, visibility: 'manager' },
+            medical_exam: { allDay: false, visibility: 'hr' },
+            document_reminder: { allDay: true, visibility: 'hr' },
+            workflow_event: { allDay: true, visibility: 'hr' },
+            custom: { allDay: false, visibility: 'private' },
         }
 
         const loadFullCalendar = () => {
@@ -86,10 +98,57 @@
             return error?.message || 'Не удалось сохранить график.'
         }
 
+        const isMobile = () => window.matchMedia('(max-width: 820px)').matches
+
         const refetch = () => {
             if (element._ntFullCalendar) {
                 element._ntFullCalendar.refetchEvents()
             }
+        }
+
+        const agendaContainer = () => element.closest('.nik-calendar')?.querySelector('[data-nt-calendar-agenda]')
+
+        const renderAgenda = (events) => {
+            const container = agendaContainer()
+
+            if (! container) {
+                return
+            }
+
+            const today = formatDate(new Date())
+            const todayEvents = events
+                .map((event) => ({
+                    title: event.title,
+                    start: event.start,
+                    allDay: event.allDay,
+                    props: event.extendedProps || {},
+                }))
+                .filter((event) => (event.props.date || (event.start ? formatDate(event.start) : null)) === today)
+                .sort((a, b) => String(a.props.starts_at || '').localeCompare(String(b.props.starts_at || '')))
+
+            if (todayEvents.length === 0) {
+                container.innerHTML = '<div class="nik-calendar-empty">На сегодня нет событий.</div>'
+
+                return
+            }
+
+            container.innerHTML = todayEvents.map((event) => {
+                const time = event.allDay ? 'Весь день' : `${event.props.starts_at || ''}${event.props.ends_at ? `–${event.props.ends_at}` : ''}`
+                const type = event.props.type || 'custom'
+                const typeLabel = event.props.type_label || typeLabels[type] || 'Событие'
+                const visibility = event.props.visibility_label || ''
+
+                return `
+                    <article class="nik-calendar-agenda-card is-${type}">
+                        <time>${time}</time>
+                        <div>
+                            <strong>${event.props.display_title || event.title}</strong>
+                            <span>${typeLabel}${event.props.source_label ? ` · ${event.props.source_label}` : ''}</span>
+                        </div>
+                        ${visibility ? `<em>${visibility}</em>` : ''}
+                    </article>
+                `
+            }).join('')
         }
 
         const ensureModal = () => {
@@ -139,7 +198,15 @@
                         </div>
 
                         <div class="nt-schedule-modal__hint" data-nt-edit-range-hint hidden>
-                            Редактирование диапазона будет добавлено позже. Сейчас редактируется выбранный день.
+                            Сейчас редактируется выбранный день. Редактирование всего периода будет добавлено позже.
+                        </div>
+
+                        <div class="nt-schedule-modal__hint" data-nt-request-hint hidden>
+                            Для отпуска, больничного или выходного создайте заявку, если у вас нет прав HR/руководителя.
+                        </div>
+
+                        <div class="nt-schedule-modal__hint" data-nt-shift-hint hidden>
+                            Ручные смены доступны только для индивидуального графика. Для 5/2, 2/2 и гибкого графика смены будут генерироваться позже.
                         </div>
 
                         <label class="nt-schedule-checkbox">
@@ -158,6 +225,16 @@
                                 <input type="time" name="ends_at" step="60">
                             </label>
                         </div>
+
+                        <label>
+                            <span>Видимость</span>
+                            <select name="visibility"></select>
+                        </label>
+
+                        <label>
+                            <span>Источник</span>
+                            <select name="source"></select>
+                        </label>
 
                         <label>
                             <span>Комментарий</span>
@@ -184,7 +261,34 @@
                 const option = document.createElement('option')
                 option.value = value
                 option.textContent = label
+                if (value === 'shift' && ! canCreateShift) {
+                    option.disabled = true
+                    option.textContent = `${label} · недоступно`
+                }
                 typeSelect.appendChild(option)
+            })
+            Object.entries(futureTypeLabels).forEach(([value, label]) => {
+                const option = document.createElement('option')
+                option.value = value
+                option.textContent = `${label} · скоро`
+                option.disabled = true
+                typeSelect.appendChild(option)
+            })
+
+            const visibilitySelect = modal.querySelector('[name="visibility"]')
+            Object.entries(visibilityLabels).forEach(([value, label]) => {
+                const option = document.createElement('option')
+                option.value = value
+                option.textContent = label
+                visibilitySelect.appendChild(option)
+            })
+
+            const sourceSelect = modal.querySelector('[name="source"]')
+            Object.entries(sourceLabels).forEach(([value, label]) => {
+                const option = document.createElement('option')
+                option.value = value
+                option.textContent = label
+                sourceSelect.appendChild(option)
             })
 
             modal.querySelectorAll('[data-nt-schedule-close]').forEach((closeButton) => {
@@ -217,18 +321,23 @@
             const timeFields = modal.querySelector('[data-nt-time-fields]')
             const startsAt = modal.querySelector('[name="starts_at"]')
             const endsAt = modal.querySelector('[name="ends_at"]')
-            const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave']
+            const visibility = modal.querySelector('[name="visibility"]')
+            const requestHint = modal.querySelector('[data-nt-request-hint]')
+            const shiftHint = modal.querySelector('[data-nt-shift-hint]')
             const isEditMode = modal.dataset.mode === 'edit'
 
             titleWrapper.hidden = type !== 'custom'
 
             if (typeChanged) {
+                visibility.value = typeDefaults[type]?.visibility || 'private'
                 if (forceAllDayTypes.includes(type)) {
                     allDayInput.checked = true
                 } else if (type === 'shift') {
                     allDayInput.checked = false
                     startsAt.value = startsAt.value || '09:00'
                     endsAt.value = endsAt.value || '18:00'
+                } else {
+                    allDayInput.checked = Boolean(typeDefaults[type]?.allDay)
                 }
             }
 
@@ -239,6 +348,8 @@
             timeFields.hidden = allDayInput.checked
             startsAt.required = ! allDayInput.checked
             endsAt.required = ! allDayInput.checked
+            requestHint.hidden = ! requestOnlyTypes.includes(type)
+            shiftHint.hidden = type !== 'shift' || canCreateShift
         }
 
         const closeModal = (modal) => {
@@ -254,6 +365,8 @@
                 is_all_day: modal.querySelector('[name="is_all_day"]').checked,
                 starts_at: modal.querySelector('[name="starts_at"]').value,
                 ends_at: modal.querySelector('[name="ends_at"]').value,
+                visibility: modal.querySelector('[name="visibility"]').value,
+                source: modal.querySelector('[name="source"]').value,
                 comment: modal.querySelector('[name="comment"]').value,
             }
         }
@@ -277,6 +390,8 @@
             modal.querySelector('[name="is_all_day"]').checked = Boolean(data.is_all_day)
             modal.querySelector('[name="starts_at"]').value = data.starts_at || '09:00'
             modal.querySelector('[name="ends_at"]').value = data.ends_at || '18:00'
+            modal.querySelector('[name="visibility"]').value = data.visibility || typeDefaults[data.type || 'custom']?.visibility || 'private'
+            modal.querySelector('[name="source"]').value = data.source || 'manual'
             modal.querySelector('[name="comment"]').value = data.comment || ''
             deleteButton.hidden = mode === 'create' || ! data.editable
             editRangeHint.hidden = mode !== 'edit'
@@ -339,7 +454,7 @@
                 }
 
                 const calendar = new FullCalendar.Calendar(element, {
-                    initialView: 'dayGridMonth',
+                    initialView: isMobile() ? 'listWeek' : 'dayGridMonth',
                     locale: 'ru',
                     firstDay: 1,
                     nowIndicator: true,
@@ -356,17 +471,26 @@
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
                     },
                     buttonText: {
                         today: 'Сегодня',
                         month: 'Месяц',
                         week: 'Неделя',
                         day: 'День',
+                        list: 'Список',
+                    },
+                    views: {
+                        listWeek: {
+                            buttonText: 'Список',
+                        },
                     },
                     events: (fetchInfo, successCallback, failureCallback) => {
                         wire.getCalendarEvents(fetchInfo.startStr, fetchInfo.endStr)
-                            .then((events) => successCallback(events))
+                            .then((events) => {
+                                successCallback(events)
+                                window.setTimeout(() => renderAgenda(calendar.getEvents()), 0)
+                            })
                             .catch((error) => {
                                 alert(errorMessage(error))
                                 failureCallback(error)
@@ -386,12 +510,14 @@
                         }
 
                         openModal('create', {
-                            type: 'shift',
+                            type: canCreateShift ? 'shift' : 'custom',
                             start_date: formatDate(clickedDate),
                             end_date: formatDate(clickedDate),
-                            is_all_day: false,
+                            is_all_day: ! canCreateShift,
                             starts_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '09:00' : formatTime(info.date),
                             ends_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '18:00' : formatTime(addMinutes(info.date, 60)),
+                            visibility: canCreateShift ? 'manager' : 'private',
+                            source: 'manual',
                             editable: true,
                         })
                     },
@@ -414,6 +540,8 @@
                             is_all_day: Boolean(props.is_all_day),
                             starts_at: props.starts_at || '',
                             ends_at: props.ends_at || '',
+                            visibility: props.visibility || 'hr',
+                            source: props.source || 'manual',
                             comment: props.comment || '',
                             editable: props.editable,
                         })
@@ -441,10 +569,26 @@
                     eventAllow: (dropInfo) => {
                         return canUpdate && (canEditPast || ! isPastDate(dropInfo.start))
                     },
+                    eventsSet: (events) => renderAgenda(events),
                 })
 
                 calendar.render()
                 element._ntFullCalendar = calendar
+
+                const addButton = element.closest('.nik-calendar')?.querySelector('[data-nt-calendar-add]')
+                if (addButton) {
+                    addButton.onclick = () => openModal('create', {
+                        type: canCreateShift ? 'shift' : 'custom',
+                        start_date: formatDate(new Date()),
+                        end_date: formatDate(new Date()),
+                        is_all_day: ! canCreateShift,
+                        starts_at: '09:00',
+                        ends_at: '18:00',
+                        visibility: canCreateShift ? 'manager' : 'private',
+                        source: 'manual',
+                        editable: true,
+                    })
+                }
             })
             .catch((error) => {
                 element.innerHTML = `<div class="rounded-lg border border-danger-200 bg-danger-50 p-4 text-sm text-danger-700">${error.message}</div>`

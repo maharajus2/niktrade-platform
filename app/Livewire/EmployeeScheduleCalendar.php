@@ -36,6 +36,8 @@ class EmployeeScheduleCalendar extends Component
 
         return $employee->scheduleEntries()
             ->whereBetween('date', [$startDate, $endDate])
+            ->whereNull('archived_at')
+            ->where(fn ($query) => $this->scopeVisibleToCurrentUser($query, $employee))
             ->orderBy('date')
             ->orderBy('starts_at')
             ->get()
@@ -53,9 +55,9 @@ class EmployeeScheduleCalendar extends Component
         $employee = $this->employee();
 
         $this->authorizeScheduleUpdate($employee);
-        $this->ensureIndividualSchedule($employee);
 
         $range = $this->normalizeRangePayload($payload);
+        $this->ensureTypeCanBeCreated($employee, $range['data']['type']);
         $created = 0;
         $skipped = 0;
 
@@ -101,10 +103,10 @@ class EmployeeScheduleCalendar extends Component
         $entry = $this->findEmployeeEntry($entryId);
 
         $this->authorizeScheduleUpdate($employee);
-        $this->ensureIndividualSchedule($employee);
         $this->ensureEditableDate($entry->date->toDateString());
 
         $data = $this->normalizeSinglePayload($payload);
+        $this->ensureTypeCanBeCreated($employee, $data['type']);
         $this->ensureEditableDate($data['date']);
         $this->ensureNoDuplicate($employee, $data, $entry->id);
 
@@ -136,6 +138,8 @@ class EmployeeScheduleCalendar extends Component
             'is_all_day' => $payload['is_all_day'] ?? $entry->is_all_day,
             'starts_at' => $payload['starts_at'] ?? $entry->starts_at,
             'ends_at' => $payload['ends_at'] ?? $entry->ends_at,
+            'visibility' => $entry->visibility,
+            'source' => $entry->source,
             'comment' => $entry->comment,
         ]);
     }
@@ -148,10 +152,13 @@ class EmployeeScheduleCalendar extends Component
         $this->authorizeScheduleUpdate($employee);
         $this->ensureEditableDate($entry->date->toDateString());
 
-        $entry->delete();
+        $entry->update([
+            'archived_at' => now(),
+            'updated_by' => auth()->id(),
+        ]);
 
         Notification::make()
-            ->title('Событие удалено.')
+            ->title('Событие перенесено в архив.')
             ->success()
             ->send();
     }
@@ -174,6 +181,12 @@ class EmployeeScheduleCalendar extends Component
             'employee' => $employee,
             'canUpdate' => $canUpdate,
             'canEditPast' => $user instanceof User && $user->hasRole('super_admin'),
+            'canCreateShift' => $canUpdate && ($employee->isIndividualSchedule() || ($user instanceof User && $user->hasRole('super_admin'))),
+            'isSuperAdmin' => $user instanceof User && $user->hasRole('super_admin'),
+            'typeOptions' => EmployeeScheduleEntry::typeOptions(),
+            'futureTypeOptions' => EmployeeScheduleEntry::futureTypeOptions(),
+            'visibilityOptions' => EmployeeScheduleEntry::visibilityOptions(),
+            'sourceOptions' => EmployeeScheduleEntry::sourceOptions(),
         ]);
     }
 
@@ -231,6 +244,10 @@ class EmployeeScheduleCalendar extends Component
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
                 'comment' => $entry->comment,
+                'visibility' => $entry->visibility ?? EmployeeScheduleEntry::VISIBILITY_HR,
+                'visibility_label' => EmployeeScheduleEntry::visibilityOptions()[$entry->visibility ?? EmployeeScheduleEntry::VISIBILITY_HR] ?? 'HR',
+                'source' => $entry->source ?? EmployeeScheduleEntry::SOURCE_MANUAL,
+                'source_label' => EmployeeScheduleEntry::sourceOptions()[$entry->source ?? EmployeeScheduleEntry::SOURCE_MANUAL] ?? 'Вручную',
                 'editable' => $isEditable,
                 'is_work_time' => $entry->isWorkTime(),
             ],
@@ -250,14 +267,29 @@ class EmployeeScheduleCalendar extends Component
     {
         if (! $employee->isIndividualSchedule()) {
             throw ValidationException::withMessages([
-                'schedule' => 'Календарь доступен только для индивидуального графика.',
+                'schedule' => 'Ручное создание смен доступно только для индивидуального графика.',
+            ]);
+        }
+    }
+
+    private function ensureTypeCanBeCreated(User $employee, string $type): void
+    {
+        $user = auth()->user();
+
+        if ($type === EmployeeScheduleEntry::TYPE_SHIFT && ! ($employee->isIndividualSchedule() || ($user instanceof User && $user->hasRole('super_admin')))) {
+            $this->ensureIndividualSchedule($employee);
+        }
+
+        if (in_array($type, array_keys(EmployeeScheduleEntry::futureTypeOptions()), true)) {
+            throw ValidationException::withMessages([
+                'type' => 'Этот тип события будет подключён позже.',
             ]);
         }
     }
 
     /**
      * @param  array<string, mixed>  $payload
-     * @return array{start_date: string, end_date: string, data: array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}}
+     * @return array{start_date: string, end_date: string, data: array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, visibility: string, source: string, comment: ?string}}
      */
     private function normalizeRangePayload(array $payload): array
     {
@@ -304,7 +336,7 @@ class EmployeeScheduleCalendar extends Component
 
     /**
      * @param  array<string, mixed>  $payload
-     * @return array{type: string, title: ?string, date: string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}
+     * @return array{type: string, title: ?string, date: string, is_all_day: bool, starts_at: ?string, ends_at: ?string, visibility: string, source: string, comment: ?string}
      */
     private function normalizeSinglePayload(array $payload): array
     {
@@ -317,7 +349,7 @@ class EmployeeScheduleCalendar extends Component
 
     /**
      * @param  array<string, mixed>  $payload
-     * @return array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, comment: ?string}
+     * @return array{type: string, title: ?string, is_all_day: bool, starts_at: ?string, ends_at: ?string, visibility: string, source: string, comment: ?string}
      */
     private function normalizeEventPayload(array $payload): array
     {
@@ -336,6 +368,7 @@ class EmployeeScheduleCalendar extends Component
             EmployeeScheduleEntry::TYPE_DAY_OFF,
             EmployeeScheduleEntry::TYPE_VACATION,
             EmployeeScheduleEntry::TYPE_SICK_LEAVE,
+            EmployeeScheduleEntry::TYPE_BUSINESS_TRIP,
         ], true)) {
             $isAllDay = true;
         }
@@ -374,8 +407,44 @@ class EmployeeScheduleCalendar extends Component
             'is_all_day' => $isAllDay,
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
+            'visibility' => $this->normalizeVisibility($payload['visibility'] ?? $this->defaultVisibilityForType($type)),
+            'source' => $this->normalizeSource($payload['source'] ?? EmployeeScheduleEntry::SOURCE_MANUAL),
             'comment' => blank($payload['comment'] ?? null) ? null : trim((string) $payload['comment']),
         ];
+    }
+
+    private function normalizeVisibility(mixed $visibility): string
+    {
+        $visibility = (string) $visibility;
+
+        return array_key_exists($visibility, EmployeeScheduleEntry::visibilityOptions())
+            ? $visibility
+            : EmployeeScheduleEntry::VISIBILITY_HR;
+    }
+
+    private function normalizeSource(mixed $source): string
+    {
+        $source = (string) $source;
+
+        return array_key_exists($source, EmployeeScheduleEntry::sourceOptions())
+            ? $source
+            : EmployeeScheduleEntry::SOURCE_MANUAL;
+    }
+
+    private function defaultVisibilityForType(string $type): string
+    {
+        return match ($type) {
+            EmployeeScheduleEntry::TYPE_VACATION,
+            EmployeeScheduleEntry::TYPE_SICK_LEAVE,
+            EmployeeScheduleEntry::TYPE_MEDICAL_EXAM,
+            EmployeeScheduleEntry::TYPE_DOCUMENT_REMINDER,
+            EmployeeScheduleEntry::TYPE_WORKFLOW_EVENT => EmployeeScheduleEntry::VISIBILITY_HR,
+            EmployeeScheduleEntry::TYPE_SHIFT,
+            EmployeeScheduleEntry::TYPE_DAY_OFF,
+            EmployeeScheduleEntry::TYPE_BUSINESS_TRIP,
+            EmployeeScheduleEntry::TYPE_TRAINING => EmployeeScheduleEntry::VISIBILITY_MANAGER,
+            default => EmployeeScheduleEntry::VISIBILITY_PRIVATE,
+        };
     }
 
     private function trimNullableTime(mixed $time): ?string
@@ -417,6 +486,36 @@ class EmployeeScheduleCalendar extends Component
 
         return ($user instanceof User && $user->hasRole('super_admin'))
             || ! Carbon::parse($date)->startOfDay()->lt(today());
+    }
+
+    private function scopeVisibleToCurrentUser($query, User $employee)
+    {
+        $user = auth()->user();
+
+        if (! $user instanceof User) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($employee->is($user) || $user->hasRole('super_admin')) {
+            return $query;
+        }
+
+        if ((int) $employee->manager_id === (int) $user->getKey()) {
+            return $query->where('visibility', '!=', EmployeeScheduleEntry::VISIBILITY_PRIVATE);
+        }
+
+        if (UserResource::canUseAnyPermission(['employees.hr.view', 'employees.hr.update', 'employees.schedule.view'])) {
+            return $query->where(function ($query): void {
+                $query
+                    ->where('visibility', EmployeeScheduleEntry::VISIBILITY_HR)
+                    ->orWhereIn('type', EmployeeScheduleEntry::hrVisibleTypes());
+            });
+        }
+
+        return $query->whereIn('visibility', [
+            EmployeeScheduleEntry::VISIBILITY_PUBLIC,
+            EmployeeScheduleEntry::VISIBILITY_DEPARTMENT,
+        ]);
     }
 
     /**

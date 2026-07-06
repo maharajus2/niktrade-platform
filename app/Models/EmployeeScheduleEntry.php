@@ -20,8 +20,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'comment',
     'visibility',
     'source',
+    'approved_request_id',
     'created_by',
     'updated_by',
+    'archived_at',
 ])]
 class EmployeeScheduleEntry extends Model
 {
@@ -37,13 +39,25 @@ class EmployeeScheduleEntry extends Model
 
     public const TYPE_BUSINESS_TRIP = 'business_trip';
 
+    public const TYPE_TRAINING = 'training';
+
     public const TYPE_PROBATION = 'probation';
 
     public const TYPE_MEDICAL_EXAM = 'medical_exam';
 
-    public const TYPE_DOCUMENT_EXPIRATION = 'document_expiration';
+    public const TYPE_DOCUMENT_REMINDER = 'document_reminder';
 
-    public const TYPE_EMPLOYMENT_EVENT = 'employment_event';
+    public const TYPE_DOCUMENT_EXPIRATION = self::TYPE_DOCUMENT_REMINDER;
+
+    public const TYPE_WORKFLOW_EVENT = 'workflow_event';
+
+    public const TYPE_EMPLOYMENT_EVENT = self::TYPE_WORKFLOW_EVENT;
+
+    public const TYPE_TASK = 'task';
+
+    public const TYPE_MEETING = 'meeting';
+
+    public const TYPE_PERSONAL = 'personal';
 
     public const VISIBILITY_PRIVATE = 'private';
 
@@ -55,7 +69,23 @@ class EmployeeScheduleEntry extends Model
 
     public const VISIBILITY_PUBLIC = 'public';
 
-    public const SOURCE_HR = 'hr';
+    public const SOURCE_MANUAL = 'manual';
+
+    public const SOURCE_REQUEST = 'request';
+
+    public const SOURCE_WORKFLOW = 'workflow';
+
+    public const SOURCE_DOCUMENT = 'document';
+
+    public const SOURCE_SYSTEM = 'system';
+
+    public const SOURCE_INTEGRATION = 'integration';
+
+    public const SOURCE_GEOVISION_FUTURE = 'geovision_future';
+
+    public const SOURCE_TASK_FUTURE = 'task_future';
+
+    public const SOURCE_HR = self::SOURCE_MANUAL;
 
     public const REASON_TIME_OFF = 'time_off';
 
@@ -68,7 +98,21 @@ class EmployeeScheduleEntry extends Model
             self::TYPE_DAY_OFF => 'Выходной',
             self::TYPE_VACATION => 'Отпуск',
             self::TYPE_SICK_LEAVE => 'Больничный',
+            self::TYPE_BUSINESS_TRIP => 'Командировка',
+            self::TYPE_TRAINING => 'Обучение',
+            self::TYPE_MEDICAL_EXAM => 'Медосмотр',
+            self::TYPE_DOCUMENT_REMINDER => 'Документ',
+            self::TYPE_WORKFLOW_EVENT => 'Согласование / заявка',
             self::TYPE_CUSTOM => 'Другое событие',
+        ];
+    }
+
+    public static function futureTypeOptions(): array
+    {
+        return [
+            self::TYPE_TASK => 'Задача',
+            self::TYPE_MEETING => 'Встреча',
+            self::TYPE_PERSONAL => 'Личное',
         ];
     }
 
@@ -91,6 +135,20 @@ class EmployeeScheduleEntry extends Model
         ];
     }
 
+    public static function sourceOptions(): array
+    {
+        return [
+            self::SOURCE_MANUAL => 'Вручную',
+            self::SOURCE_REQUEST => 'Заявка',
+            self::SOURCE_WORKFLOW => 'Согласование',
+            self::SOURCE_DOCUMENT => 'Документ',
+            self::SOURCE_SYSTEM => 'Система',
+            self::SOURCE_INTEGRATION => 'Интеграция',
+            self::SOURCE_GEOVISION_FUTURE => 'Geovision',
+            self::SOURCE_TASK_FUTURE => 'Задачи',
+        ];
+    }
+
     public static function hrVisibleTypes(): array
     {
         return [
@@ -99,10 +157,10 @@ class EmployeeScheduleEntry extends Model
             self::TYPE_VACATION,
             self::TYPE_SICK_LEAVE,
             self::TYPE_BUSINESS_TRIP,
-            self::TYPE_PROBATION,
+            self::TYPE_TRAINING,
             self::TYPE_MEDICAL_EXAM,
-            self::TYPE_DOCUMENT_EXPIRATION,
-            self::TYPE_EMPLOYMENT_EVENT,
+            self::TYPE_DOCUMENT_REMINDER,
+            self::TYPE_WORKFLOW_EVENT,
         ];
     }
 
@@ -181,8 +239,13 @@ class EmployeeScheduleEntry extends Model
             self::TYPE_DAY_OFF => '#6b7280',
             self::TYPE_VACATION => '#8b5cf6',
             self::TYPE_SICK_LEAVE => '#f97316',
-            self::TYPE_CUSTOM => '#ca8a04',
-            default => '#059669',
+            self::TYPE_BUSINESS_TRIP => '#06b6d4',
+            self::TYPE_TRAINING => '#22c55e',
+            self::TYPE_MEDICAL_EXAM => '#fb7185',
+            self::TYPE_DOCUMENT_REMINDER => '#f59e0b',
+            self::TYPE_WORKFLOW_EVENT => '#3b82f6',
+            self::TYPE_CUSTOM => '#64748b',
+            default => '#1677ff',
         };
     }
 
@@ -200,6 +263,7 @@ class EmployeeScheduleEntry extends Model
             'date' => 'date',
             'is_all_day' => 'boolean',
             'vacation_without_pay' => 'boolean',
+            'archived_at' => 'datetime',
         ];
     }
 }

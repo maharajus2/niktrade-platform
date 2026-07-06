@@ -365,6 +365,9 @@ class EmployeeScheduleRequest extends Model
                 'request_reason_type' => $this->request_reason_type,
                 'vacation_without_pay' => $this->vacation_without_pay,
                 'comment' => $this->reason,
+                'visibility' => EmployeeScheduleEntry::VISIBILITY_HR,
+                'source' => EmployeeScheduleEntry::SOURCE_REQUEST,
+                'approved_request_id' => $this->getKey(),
             ];
 
             $exists = EmployeeScheduleEntry::query()

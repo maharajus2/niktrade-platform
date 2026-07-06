@@ -1383,6 +1383,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+.nik-work-app .nik-work-mobile-bottom-bar {
+    display: none;
+}
+
 @media (max-width: 820px) {
     .nik-work-app [x-cloak] {
         display: none !important;

@@ -486,7 +486,7 @@
     </section>
 
     <nav class="nik-work-mobile-bottom-bar" aria-label="Быстрая навигация">
-        <a class="is-active" href="{{ \App\Filament\Pages\Workplace::getUrl() }}">
+        <a href="{{ \App\Filament\Pages\Workplace::getUrl() }}" x-bind:class="{ 'is-active': activeSheet === null }">
             <x-work.icon name="home" />
             <span>Главная</span>
         </a>

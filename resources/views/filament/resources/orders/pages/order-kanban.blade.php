@@ -45,7 +45,14 @@
             x-data="{
                 mobileFilters: false,
                 activeStatus: '{{ $showArchive ? Order::STATUS_COMPLETED : Order::STATUS_NEW }}',
+                statusOrder: @js(array_keys($this->columns)),
                 activeSheet: null,
+                setActiveStatus(status) { this.activeStatus = status; },
+                shiftActiveStatus(direction) {
+                    const index = this.statusOrder.indexOf(this.activeStatus);
+                    const nextIndex = Math.min(Math.max(index + direction, 0), this.statusOrder.length - 1);
+                    this.activeStatus = this.statusOrder[nextIndex] ?? this.activeStatus;
+                },
                 openSheet(sheet) { this.mobileFilters = false; this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); },
                 closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); },
             }"
@@ -152,7 +159,12 @@
 
             <section class="orders-work-mobile-statuses" aria-label="Статусы заказов">
                 @foreach ($this->columns as $status => $column)
-                    <button type="button" x-on:click="activeStatus = '{{ $status }}'" x-bind:class="{ 'is-active': activeStatus === '{{ $status }}' }">
+                    <button
+                        type="button"
+                        data-status="{{ $status }}"
+                        x-on:click="setActiveStatus('{{ $status }}')"
+                        x-bind:class="{ 'is-active': activeStatus === '{{ $status }}' }"
+                    >
                         <span>{{ match ($status) {
                             Order::STATUS_NEW => 'Новый',
                             Order::STATUS_ASSEMBLING => 'Сборка',
@@ -172,17 +184,32 @@
                         draggedOrderId: null,
                         draggedStatus: null,
                         overStatus: null,
+                        mobileDragActive: false,
+                        mobileDragElement: null,
                         dropOrder(targetStatus) {
                             if (! this.draggedOrderId || ! targetStatus || this.draggedStatus === targetStatus) {
                                 this.overStatus = null;
+                                this.mobileDragActive = false;
+                                this.mobileDragElement = null;
                                 return;
                             }
                             this.$wire.moveOrder(Number(this.draggedOrderId), targetStatus);
                             this.draggedOrderId = null;
                             this.draggedStatus = null;
                             this.overStatus = null;
+                            this.mobileDragActive = false;
+                            this.mobileDragElement = null;
+                        },
+                        mobileStatusFromPoint(x, y) {
+                            const element = document.elementFromPoint(x, y);
+                            const target = element?.closest('[data-status]');
+                            return target?.dataset.status ?? null;
+                        },
+                        setMobileOverStatus(x, y) {
+                            this.overStatus = this.mobileStatusFromPoint(x, y);
                         },
                     }"
+                    x-bind:class="{ 'is-mobile-dragging': mobileDragActive }"
                 >
                     @foreach ($this->columns as $status => $column)
                         <section

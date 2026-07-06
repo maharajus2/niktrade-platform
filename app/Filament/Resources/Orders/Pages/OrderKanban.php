@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Orders\Pages;
 
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
-use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Support\Enums\Width;
@@ -63,15 +62,6 @@ class OrderKanban extends Page
     public function getSubheading(): string|Htmlable|null
     {
         return null;
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('list')
-                ->label('CRUD список')
-                ->url(OrderResource::getUrl('index')),
-        ];
     }
 
     public function resetFilters(): void

@@ -10,7 +10,7 @@
         'Главное' => [
             ['label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Dashboard::getUrl()],
             ['label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => \App\Filament\Pages\Workplace::getUrl()],
-            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('kanban'), 'active' => true],
+            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('index'), 'active' => true],
             ['label' => 'Мой календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
         ],
         'Рабочие инструменты' => array_values(array_filter([
@@ -22,7 +22,7 @@
             ['label' => 'Справочники', 'icon' => 'book', 'url' => '#', 'badge' => 'Скоро', 'disabled' => true],
         ])),
         'Продажи' => array_values(array_filter([
-            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('kanban'), 'active' => true],
+            ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('index'), 'active' => true],
             \App\Filament\Resources\Customers\CustomerResource::canAccess()
                 ? ['label' => 'Покупатели', 'icon' => 'users', 'url' => \App\Filament\Resources\Customers\CustomerResource::getUrl('index')]
                 : null,

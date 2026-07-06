@@ -19,6 +19,17 @@
         ->take(4)
         ->get();
 
+    $eventLegend = [
+        'shift' => 'Смена',
+        'day_off' => 'Выходной',
+        'vacation' => 'Отпуск',
+        'sick_leave' => 'Больничный',
+        'business_trip' => 'Командировка',
+        'training' => 'Обучение',
+        'medical_exam' => 'Медосмотр',
+        'custom' => 'Другое',
+    ];
+
     $mobileMenuGroups = [
         'Главное' => [
             ['label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Workplace::getUrl()],
@@ -49,14 +60,23 @@
     <section class="nik-calendar-shell">
         <header class="nik-calendar-hero">
             <div>
-                <span>Универсальный календарь</span>
-                <h2>{{ $employee->name }}</h2>
+                @if (\App\Filament\Resources\AdminUsers\UserResource::canAccess())
+                    <a class="nik-calendar-back" href="{{ \App\Filament\Resources\AdminUsers\UserResource::getUrl('index') }}">
+                        <x-work.icon name="chevron-left" />
+                        <span>Сотрудники</span>
+                    </a>
+                @endif
+                <h2>Календарь сотрудника</h2>
                 <p>
-                    {{ $employee->getScheduleTypeLabel() }} · смены, отсутствия, медосмотры, документы и будущие рабочие события.
+                    {{ $employee->name }} · {{ $employee->position ?: 'Должность не указана' }} · {{ $employee->department?->name ?: 'Отдел не указан' }}
                 </p>
             </div>
 
             <div class="nik-calendar-hero-actions">
+                <button type="button" class="nik-calendar-filter-button" data-nt-calendar-filter-toggle>
+                    <x-work.icon name="filter" />
+                    <span>Фильтры</span>
+                </button>
                 @if ($canUpdate)
                     <button type="button" class="nik-calendar-add" data-nt-calendar-add>
                         <x-work.icon name="plus" />
@@ -68,27 +88,59 @@
             </div>
         </header>
 
-        <div class="nik-calendar-notices">
-            @if (! $employee->schedule_type)
-                <div class="is-amber">
-                    <strong>Тип графика не указан</strong>
-                    <span>Календарь доступен, но ручные смены отключены, кроме super admin.</span>
-                </div>
-            @elseif (! $canCreateShift)
-                <div>
-                    <strong>Смены создаются не вручную</strong>
-                    <span>{{ $employee->getScheduleTypeLabel() }}: ручное создание смен отключено. Остальные события доступны при наличии прав.</span>
-                </div>
-            @endif
-
-            <div>
-                <strong>Заявки остаются основным процессом</strong>
-                <span>Для отпуска, больничного или выходного сотрудник создаёт заявку. HR/руководитель может создавать события напрямую при наличии прав.</span>
-            </div>
-        </div>
-
         <div class="nik-calendar-grid">
             <div class="nik-calendar-main-card">
+                <div class="nik-calendar-toolbar">
+                    <div class="nik-calendar-view-switch" aria-label="Режим календаря">
+                        <button type="button" class="is-active" data-nt-calendar-view="dayGridMonth">Месяц</button>
+                        <button type="button" data-nt-calendar-view="timeGridWeek">Неделя</button>
+                        <button type="button" data-nt-calendar-view="timeGridDay">День</button>
+                        <button type="button" data-nt-calendar-view="listWeek">Список</button>
+                    </div>
+
+                    <div class="nik-calendar-navigation">
+                        <button type="button" data-nt-calendar-prev aria-label="Предыдущий период"><x-work.icon name="chevron-left" /></button>
+                        <button type="button" data-nt-calendar-next aria-label="Следующий период"><x-work.icon name="chevron-right" /></button>
+                        <button type="button" data-nt-calendar-today>Сегодня</button>
+                    </div>
+
+                    <strong data-nt-calendar-title>{{ $monthLabel }}</strong>
+                </div>
+
+                <div class="nik-calendar-filters" data-nt-calendar-filters>
+                    <label>
+                        <span>Тип события</span>
+                        <select data-nt-filter="type">
+                            <option value="">Все</option>
+                            @foreach ($typeOptions as $type => $label)
+                                <option value="{{ $type }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label>
+                        <span>Видимость</span>
+                        <select data-nt-filter="visibility">
+                            <option value="">Все</option>
+                            @foreach ($visibilityOptions as $visibility => $label)
+                                <option value="{{ $visibility }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label>
+                        <span>Источник</span>
+                        <select data-nt-filter="source">
+                            <option value="">Все</option>
+                            @foreach ($sourceOptions as $source => $label)
+                                <option value="{{ $source }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label class="nik-calendar-archive-toggle">
+                        <input type="checkbox" disabled>
+                        <span>Показывать архив</span>
+                    </label>
+                </div>
+
                 <div
                     wire:ignore
                     x-data
@@ -122,7 +174,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260706-unified'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260706-reference'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -130,7 +182,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260706-unified'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260706-reference'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script
@@ -153,13 +205,31 @@
                     "
                     class="nt-fullcalendar nik-calendar-fullcalendar"
                 ></div>
+
+                <div class="nik-calendar-legend">
+                    @foreach ($eventLegend as $type => $label)
+                        <span class="is-{{ $type }}">{{ $label }}</span>
+                    @endforeach
+                </div>
             </div>
 
             <aside class="nik-calendar-side">
+                <section class="nik-calendar-mini-card">
+                    <div class="nik-calendar-side-head">
+                        <span>{{ $monthLabel }}</span>
+                        <strong>Мини-календарь</strong>
+                    </div>
+                    <x-work.calendar-mini
+                        :month-label="$monthLabel"
+                        :days="$calendarDays"
+                        :url="\App\Filament\Pages\MyCalendar::getUrl()"
+                    />
+                </section>
+
                 <section>
                     <div class="nik-calendar-side-head">
-                        <span>Сегодня</span>
-                        <strong>Повестка дня</strong>
+                        <span data-nt-selected-day-label>Сегодня</span>
+                        <strong>События дня</strong>
                     </div>
                     <div class="nik-calendar-agenda" data-nt-calendar-agenda>
                         <div class="nik-calendar-empty">События загружаются...</div>
@@ -168,25 +238,44 @@
 
                 <section>
                     <div class="nik-calendar-side-head">
-                        <span>Фильтры</span>
-                        <strong>Типы событий</strong>
+                        <span>Тип графика</span>
+                        <strong>{{ $employee->getScheduleTypeLabel() }}</strong>
                     </div>
-                    <div class="nik-calendar-type-legend">
-                        @foreach ($typeOptions as $type => $label)
-                            <span class="is-{{ $type }}">{{ $label }}</span>
-                        @endforeach
+                    <div class="nik-calendar-schedule-state {{ $canCreateShift ? 'is-green' : '' }}">
+                        @if (! $employee->schedule_type)
+                            <strong>Тип графика не указан</strong>
+                            <span>Ручные смены отключены, кроме super admin.</span>
+                        @elseif ($canCreateShift)
+                            <strong>Ручное назначение смен доступно</strong>
+                            <span>Можно создавать и редактировать смены.</span>
+                        @else
+                            <strong>Смены создаются не вручную</strong>
+                            <span>Остальные события доступны при наличии прав.</span>
+                        @endif
                     </div>
                 </section>
 
                 <section>
                     <div class="nik-calendar-side-head">
-                        <span>Интеграции</span>
-                        <strong>Будущие источники</strong>
+                        <span>Действия</span>
+                        <strong>Быстрые действия</strong>
                     </div>
-                    <div class="nik-calendar-future-list">
-                        <span>Geovision: факт прихода и ухода</span>
-                        <span>Задачи: дедлайны</span>
-                        <span>Документы: напоминания о сроках</span>
+                    <div class="nik-calendar-quick-actions">
+                        <a href="{{ \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('create') }}">
+                            <x-work.icon name="plus" />
+                            <span>Создать заявку</span>
+                            <small>На отпуск, отгул или больничный</small>
+                        </a>
+                        <a href="{{ \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index') }}">
+                            <x-work.icon name="link" />
+                            <span>Посмотреть мои заявки</span>
+                            <small>Открыть список заявок</small>
+                        </a>
+                        <span>
+                            <x-work.icon name="calendar" />
+                            <span>Geovision и задачи</span>
+                            <small>Будущие интеграции</small>
+                        </span>
                     </div>
                 </section>
             </aside>

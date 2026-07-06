@@ -10,6 +10,9 @@
         const sourceLabels = options.sourceOptions || {}
         const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave', 'business_trip']
         const requestOnlyTypes = ['day_off', 'vacation', 'sick_leave']
+        const calendarRoot = element.closest('.nik-calendar')
+        let selectedDate = formatDate(new Date())
+        let rawEventPayloads = []
         const typeDefaults = {
             shift: { allDay: false, visibility: 'manager' },
             day_off: { allDay: true, visibility: 'manager' },
@@ -106,7 +109,40 @@
             }
         }
 
-        const agendaContainer = () => element.closest('.nik-calendar')?.querySelector('[data-nt-calendar-agenda]')
+        const agendaContainer = () => calendarRoot?.querySelector('[data-nt-calendar-agenda]')
+
+        const updateSelectedDayLabel = () => {
+            const label = calendarRoot?.querySelector('[data-nt-selected-day-label]')
+
+            if (! label) {
+                return
+            }
+
+            const date = new Date(`${selectedDate}T12:00:00`)
+            label.textContent = date.toLocaleDateString('ru-RU', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+            })
+        }
+
+        const filterValues = () => ({
+            type: calendarRoot?.querySelector('[data-nt-filter="type"]')?.value || '',
+            visibility: calendarRoot?.querySelector('[data-nt-filter="visibility"]')?.value || '',
+            source: calendarRoot?.querySelector('[data-nt-filter="source"]')?.value || '',
+        })
+
+        const filteredPayloads = (events) => {
+            const filters = filterValues()
+
+            return events.filter((event) => {
+                const props = event.extendedProps || {}
+
+                return (! filters.type || props.type === filters.type)
+                    && (! filters.visibility || props.visibility === filters.visibility)
+                    && (! filters.source || props.source === filters.source)
+            })
+        }
 
         const renderAgenda = (events) => {
             const container = agendaContainer()
@@ -115,7 +151,65 @@
                 return
             }
 
-            const today = formatDate(new Date())
+            if (isMobile()) {
+                const upcoming = events
+                    .map((event) => ({
+                        title: event.title,
+                        start: event.start,
+                        allDay: event.allDay,
+                        props: event.extendedProps || {},
+                    }))
+                    .sort((a, b) => String(a.props.date || '').localeCompare(String(b.props.date || ''))
+                        || String(a.props.starts_at || '').localeCompare(String(b.props.starts_at || '')))
+
+                if (upcoming.length === 0) {
+                    container.innerHTML = '<div class="nik-calendar-empty">В выбранном периоде нет событий.</div>'
+
+                    return
+                }
+
+                const groups = upcoming.reduce((carry, event) => {
+                    const key = event.props.date || (event.start ? formatDate(event.start) : selectedDate)
+                    carry[key] = carry[key] || []
+                    carry[key].push(event)
+
+                    return carry
+                }, {})
+
+                container.innerHTML = Object.entries(groups).map(([dateKey, group]) => {
+                    const date = new Date(`${dateKey}T12:00:00`)
+                    const label = date.toLocaleDateString('ru-RU', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                    })
+
+                    return `
+                        <section class="nik-calendar-agenda-group">
+                            <h3>${label}</h3>
+                            ${group.map((event) => {
+                                const time = event.allDay ? 'Весь день' : `${event.props.starts_at || ''}${event.props.ends_at ? `–${event.props.ends_at}` : ''}`
+                                const type = event.props.type || 'custom'
+                                const typeLabel = event.props.type_label || typeLabels[type] || 'Событие'
+
+                                return `
+                                    <article class="nik-calendar-agenda-card is-${type}">
+                                        <time>${time}</time>
+                                        <div>
+                                            <strong>${event.props.display_title || event.title}</strong>
+                                            <span>${typeLabel}${event.props.source_label ? ` · ${event.props.source_label}` : ''}</span>
+                                        </div>
+                                        ${event.props.visibility_label ? `<em>${event.props.visibility_label}</em>` : ''}
+                                    </article>
+                                `
+                            }).join('')}
+                        </section>
+                    `
+                }).join('')
+
+                return
+            }
+
             const todayEvents = events
                 .map((event) => ({
                     title: event.title,
@@ -123,11 +217,11 @@
                     allDay: event.allDay,
                     props: event.extendedProps || {},
                 }))
-                .filter((event) => (event.props.date || (event.start ? formatDate(event.start) : null)) === today)
+                .filter((event) => (event.props.date || (event.start ? formatDate(event.start) : null)) === selectedDate)
                 .sort((a, b) => String(a.props.starts_at || '').localeCompare(String(b.props.starts_at || '')))
 
             if (todayEvents.length === 0) {
-                container.innerHTML = '<div class="nik-calendar-empty">На сегодня нет событий.</div>'
+                container.innerHTML = '<div class="nik-calendar-empty">На выбранный день нет событий.</div>'
 
                 return
             }
@@ -149,6 +243,26 @@
                     </article>
                 `
             }).join('')
+        }
+
+        const updateExternalTitle = (calendar) => {
+            const title = calendarRoot?.querySelector('[data-nt-calendar-title]')
+
+            if (title) {
+                title.textContent = calendar.view.title
+            }
+        }
+
+        const syncViewButtons = (viewType) => {
+            calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
+                button.classList.toggle('is-active', button.dataset.ntCalendarView === viewType)
+            })
+        }
+
+        const refetchWithFilters = () => {
+            if (element._ntFullCalendar) {
+                element._ntFullCalendar.refetchEvents()
+            }
         }
 
         const ensureModal = () => {
@@ -468,11 +582,7 @@
                     allDaySlot: true,
                     slotMinTime: '00:00:00',
                     slotMaxTime: '24:00:00',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-                    },
+                    headerToolbar: false,
                     buttonText: {
                         today: 'Сегодня',
                         month: 'Месяц',
@@ -488,7 +598,8 @@
                     events: (fetchInfo, successCallback, failureCallback) => {
                         wire.getCalendarEvents(fetchInfo.startStr, fetchInfo.endStr)
                             .then((events) => {
-                                successCallback(events)
+                                rawEventPayloads = events
+                                successCallback(filteredPayloads(events))
                                 window.setTimeout(() => renderAgenda(calendar.getEvents()), 0)
                             })
                             .catch((error) => {
@@ -497,6 +608,10 @@
                             })
                     },
                     dateClick: (info) => {
+                        selectedDate = formatDate(info.date)
+                        updateSelectedDayLabel()
+                        renderAgenda(calendar.getEvents())
+
                         if (! canUpdate) {
                             return
                         }
@@ -524,6 +639,9 @@
                     eventClick: (info) => {
                         const event = info.event
                         const props = event.extendedProps || {}
+                        selectedDate = props.date || formatDate(event.start)
+                        updateSelectedDayLabel()
+                        renderAgenda(calendar.getEvents())
 
                         if (! canUpdate || ! props.editable) {
                             alert(`${event.title}`)
@@ -570,12 +688,54 @@
                         return canUpdate && (canEditPast || ! isPastDate(dropInfo.start))
                     },
                     eventsSet: (events) => renderAgenda(events),
+                    datesSet: () => {
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                    },
                 })
 
                 calendar.render()
                 element._ntFullCalendar = calendar
 
-                const addButton = element.closest('.nik-calendar')?.querySelector('[data-nt-calendar-add]')
+                updateSelectedDayLabel()
+                updateExternalTitle(calendar)
+                syncViewButtons(calendar.view.type)
+
+                calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        calendar.changeView(button.dataset.ntCalendarView)
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                    })
+                })
+
+                calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
+                    calendar.prev()
+                    updateExternalTitle(calendar)
+                })
+
+                calendarRoot?.querySelector('[data-nt-calendar-next]')?.addEventListener('click', () => {
+                    calendar.next()
+                    updateExternalTitle(calendar)
+                })
+
+                calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
+                    calendar.today()
+                    selectedDate = formatDate(new Date())
+                    updateSelectedDayLabel()
+                    updateExternalTitle(calendar)
+                    renderAgenda(calendar.getEvents())
+                })
+
+                calendarRoot?.querySelectorAll('[data-nt-filter]').forEach((filter) => {
+                    filter.addEventListener('change', refetchWithFilters)
+                })
+
+                calendarRoot?.querySelector('[data-nt-calendar-filter-toggle]')?.addEventListener('click', () => {
+                    calendarRoot?.querySelector('[data-nt-calendar-filters]')?.classList.toggle('is-open')
+                })
+
+                const addButton = calendarRoot?.querySelector('[data-nt-calendar-add]')
                 if (addButton) {
                     addButton.onclick = () => openModal('create', {
                         type: canCreateShift ? 'shift' : 'custom',

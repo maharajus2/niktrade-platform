@@ -176,6 +176,16 @@ class EmployeeScheduleCalendar extends Component
         $employee = $this->employee();
         $canUpdate = UserResource::canUpdateEmployeeSchedule($employee);
         $user = auth()->user();
+        $today = today();
+        $monthStart = $today->copy()->startOfMonth();
+        $monthEnd = $today->copy()->endOfMonth();
+        $monthEntries = $employee->scheduleEntries()
+            ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+            ->whereNull('archived_at')
+            ->where(fn ($query) => $this->scopeVisibleToCurrentUser($query, $employee))
+            ->orderBy('date')
+            ->get()
+            ->groupBy(fn (EmployeeScheduleEntry $entry): string => $entry->date->toDateString());
 
         return view('livewire.employee-schedule-calendar', [
             'employee' => $employee,
@@ -187,6 +197,8 @@ class EmployeeScheduleCalendar extends Component
             'futureTypeOptions' => EmployeeScheduleEntry::futureTypeOptions(),
             'visibilityOptions' => EmployeeScheduleEntry::visibilityOptions(),
             'sourceOptions' => EmployeeScheduleEntry::sourceOptions(),
+            'monthLabel' => $monthStart->translatedFormat('F Y'),
+            'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
         ]);
     }
 
@@ -516,6 +528,27 @@ class EmployeeScheduleCalendar extends Component
             EmployeeScheduleEntry::VISIBILITY_PUBLIC,
             EmployeeScheduleEntry::VISIBILITY_DEPARTMENT,
         ]);
+    }
+
+    private function calendarDays($monthStart, $monthEnd, Collection $entries): array
+    {
+        $days = [];
+        $cursor = $monthStart->copy()->startOfWeek();
+        $last = $monthEnd->copy()->endOfWeek();
+
+        while ($cursor->lte($last)) {
+            $key = $cursor->toDateString();
+            $days[] = [
+                'date' => $cursor->copy(),
+                'isCurrentMonth' => $cursor->month === $monthStart->month,
+                'isToday' => $cursor->isToday(),
+                'events' => $entries->get($key, collect())->take(4)->values(),
+            ];
+
+            $cursor->addDay();
+        }
+
+        return $days;
     }
 
     /**

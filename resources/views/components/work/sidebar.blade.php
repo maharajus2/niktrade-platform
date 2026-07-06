@@ -10,6 +10,7 @@
     ];
 
     $mainItems = [
+        ['key' => 'orders', 'label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('kanban')],
         ['label' => 'Календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
         ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => '3'],
         ['label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
@@ -44,7 +45,7 @@
         <div class="nik-work-nav-section">Основное</div>
 
         @foreach ($mainItems as $item)
-            <a href="{{ $item['url'] }}" class="nik-work-nav-link" title="{{ $item['label'] }}">
+            <a href="{{ $item['url'] }}" class="nik-work-nav-link {{ ($item['key'] ?? null) === $active ? 'is-active' : '' }}" title="{{ $item['label'] }}">
                 <span class="nik-work-nav-icon"><x-work.icon :name="$item['icon']" /></span>
                 <span class="nik-work-nav-label">{{ $item['label'] }}</span>
                 @if (isset($item['badge']))

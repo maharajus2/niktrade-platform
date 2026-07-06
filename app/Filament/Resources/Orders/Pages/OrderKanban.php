@@ -7,6 +7,8 @@ use App\Models\Order;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
+use Filament\Support\Enums\Width;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -18,7 +20,15 @@ class OrderKanban extends Page
 
     protected string $view = 'filament.resources.orders.pages.order-kanban';
 
-    protected static ?string $title = 'Доска заказов';
+    protected Width|string|null $maxContentWidth = Width::Full;
+
+    protected static ?string $title = 'Заказы';
+
+    #[Url(as: 'q')]
+    public string $search = '';
+
+    #[Url(as: 'view')]
+    public string $viewMode = 'board';
 
     #[Url(as: 'fulfillment')]
     public string $fulfillmentMethod = 'all';
@@ -34,26 +44,47 @@ class OrderKanban extends Page
 
     public ?int $archiveOrderId = null;
 
-    public function getHeading(): string
+    public function getTitle(): string|Htmlable
     {
-        return 'Доска заказов';
+        return 'Заказы';
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return null;
     }
 
     protected function getHeaderActions(): array
     {
         return [
             Action::make('list')
-                ->label('Список')
+                ->label('CRUD список')
                 ->url(OrderResource::getUrl('index')),
         ];
     }
 
     public function resetFilters(): void
     {
+        $this->search = '';
         $this->fulfillmentMethod = 'all';
         $this->paymentStatus = 'all';
         $this->sla = 'all';
         $this->showArchive = false;
+    }
+
+    public function showBoard(): void
+    {
+        $this->viewMode = 'board';
+    }
+
+    public function showList(): void
+    {
+        $this->viewMode = 'list';
     }
 
     public function moveToStatus(int $orderId, string $status): void
@@ -69,10 +100,7 @@ class OrderKanban extends Page
     private function updateOrderStatus(int $orderId, string $status, bool $withBody = false): void
     {
         if (! array_key_exists($status, $this->statusColumns())) {
-            Notification::make()
-                ->title('Не удалось обновить статус заказа.')
-                ->danger()
-                ->send();
+            Notification::make()->title('Не удалось обновить статус заказа.')->danger()->send();
 
             return;
         }
@@ -80,28 +108,19 @@ class OrderKanban extends Page
         $order = Order::query()->find($orderId);
 
         if (! $order) {
-            Notification::make()
-                ->title('Заказ не найден.')
-                ->danger()
-                ->send();
+            Notification::make()->title('Заказ не найден.')->danger()->send();
 
             return;
         }
 
         if ($order->isArchived()) {
-            Notification::make()
-                ->title('Архивный заказ нельзя переместить.')
-                ->danger()
-                ->send();
+            Notification::make()->title('Архивный заказ нельзя переместить.')->danger()->send();
 
             return;
         }
 
-        if (method_exists(OrderResource::class, 'canEdit') && ! OrderResource::canEdit($order)) {
-            Notification::make()
-                ->title('Недостаточно прав для изменения заказа.')
-                ->danger()
-                ->send();
+        if (! $this->canMoveOrder($order)) {
+            Notification::make()->title('Недостаточно прав для изменения заказа.')->danger()->send();
 
             return;
         }
@@ -122,7 +141,7 @@ class OrderKanban extends Page
 
         $notification->send();
 
-        unset($this->columns);
+        unset($this->columns, $this->listOrders, $this->kpis, $this->analytics);
     }
 
     public function confirmArchive(int $orderId): void
@@ -156,15 +175,11 @@ class OrderKanban extends Page
         }
 
         $order->update(['archived_at' => now()]);
-
         $this->archiveOrderId = null;
 
-        Notification::make()
-            ->title('Заказ перемещён в архив.')
-            ->success()
-            ->send();
+        Notification::make()->title('Заказ перемещён в архив.')->success()->send();
 
-        unset($this->columns);
+        unset($this->columns, $this->listOrders, $this->kpis, $this->analytics);
     }
 
     #[Computed]
@@ -184,6 +199,55 @@ class OrderKanban extends Page
         }
 
         return $columns;
+    }
+
+    #[Computed]
+    public function listOrders(): Collection
+    {
+        return $this->baseQuery()
+            ->latest()
+            ->limit(80)
+            ->get();
+    }
+
+    #[Computed]
+    public function kpis(): array
+    {
+        $active = Order::query()->whereNull('archived_at');
+        $completedToday = (clone $active)
+            ->where('status', Order::STATUS_COMPLETED)
+            ->whereDate('delivered_at', today())
+            ->count();
+        $overdue = Order::applySlaFilter((clone $active), Order::SLA_STATE_OVERDUE)->count();
+
+        return [
+            ['label' => 'Новые', 'value' => (clone $active)->where('status', Order::STATUS_NEW)->count(), 'delta' => '+' . (clone $active)->where('status', Order::STATUS_NEW)->whereDate('created_at', today())->count() . ' за сегодня', 'icon' => 'file', 'tone' => 'blue'],
+            ['label' => 'Собираются', 'value' => (clone $active)->where('status', Order::STATUS_ASSEMBLING)->count(), 'delta' => '+' . (clone $active)->where('status', Order::STATUS_ASSEMBLING)->whereDate('assembling_at', today())->count() . ' за сегодня', 'icon' => 'package', 'tone' => 'amber'],
+            ['label' => 'Готовы к отгрузке', 'value' => (clone $active)->where('status', Order::STATUS_READY_FOR_DISPATCH)->count(), 'delta' => '+' . (clone $active)->where('status', Order::STATUS_READY_FOR_DISPATCH)->whereDate('ready_for_dispatch_at', today())->count() . ' за сегодня', 'icon' => 'truck', 'tone' => 'violet'],
+            ['label' => 'Завершены сегодня', 'value' => $completedToday, 'delta' => '+' . $completedToday . ' за сегодня', 'icon' => 'check-circle', 'tone' => 'green'],
+            ['label' => 'Просрочены по SLA', 'value' => $overdue, 'delta' => 'Требуют внимания', 'icon' => 'alert', 'tone' => 'red'],
+        ];
+    }
+
+    #[Computed]
+    public function analytics(): array
+    {
+        $query = $this->baseQuery();
+        $total = (clone $query)->count();
+        $paid = (clone $query)->where('payment_status', Order::PAYMENT_STATUS_PAID)->count();
+        $delivery = (clone $query)->where('fulfillment_method', Order::FULFILLMENT_DELIVERY)->count();
+        $pickup = (clone $query)->where('fulfillment_method', Order::FULFILLMENT_PICKUP)->count();
+        $overdue = Order::applySlaFilter((clone $query), Order::SLA_STATE_OVERDUE)->count();
+        $ok = max(0, $total - $overdue);
+
+        return [
+            'total' => $total,
+            'overdue' => $overdue,
+            'slaPercent' => $total > 0 ? (int) round(($ok / $total) * 100) : 0,
+            'paidPercent' => $total > 0 ? (int) round(($paid / $total) * 100) : 0,
+            'deliveryPercent' => $total > 0 ? (int) round(($delivery / $total) * 100) : 0,
+            'pickupPercent' => $total > 0 ? (int) round(($pickup / $total) * 100) : 0,
+        ];
     }
 
     public function statusColumns(): array
@@ -219,17 +283,29 @@ class OrderKanban extends Page
     {
         return [
             'all' => 'Все',
-            Order::SLA_STATE_OVERDUE => 'Просроченные',
-            Order::SLA_STATE_WARNING => 'Скоро просрочатся',
             Order::SLA_STATE_OK => 'В срок',
+            Order::SLA_STATE_WARNING => 'Скоро просрочка',
+            Order::SLA_STATE_OVERDUE => 'Просрочен',
+        ];
+    }
+
+    public function archiveOptions(): array
+    {
+        return [
+            false => 'Только активные',
+            true => 'Показать архив',
         ];
     }
 
     public function getQuickActions(Order $order): array
     {
+        if (! $this->canMoveOrder($order)) {
+            return [];
+        }
+
         return match ($order->status) {
             Order::STATUS_NEW => [
-                Order::STATUS_ASSEMBLING => 'Взять в сборку',
+                Order::STATUS_ASSEMBLING => 'В сборку',
                 Order::STATUS_CANCELLED => 'Отменить',
             ],
             Order::STATUS_ASSEMBLING => [
@@ -244,10 +320,21 @@ class OrderKanban extends Page
         };
     }
 
+    public function canMoveOrder(Order $order): bool
+    {
+        $user = auth()->user();
+
+        return ! $order->isArchived()
+            && ($user?->hasRole('super_admin') || $user?->can('orders.status.update'));
+    }
+
     public function canShowArchiveAction(Order $order): bool
     {
+        $user = auth()->user();
+
         return in_array($order->status, [Order::STATUS_COMPLETED, Order::STATUS_CANCELLED], true)
-            && $order->canBeArchived();
+            && $order->canBeArchived()
+            && ($user?->hasRole('super_admin') || $user?->can('orders.archive'));
     }
 
     public function viewOrderUrl(Order $order): string
@@ -258,6 +345,11 @@ class OrderKanban extends Page
     public function editOrderUrl(Order $order): string
     {
         return OrderResource::getUrl('edit', ['record' => $order]);
+    }
+
+    public function listUrl(): string
+    {
+        return OrderResource::getUrl('index');
     }
 
     public function paymentStatusLabel(Order $order): string
@@ -272,7 +364,19 @@ class OrderKanban extends Page
 
     public function money(float|string|null $value): string
     {
-        return number_format((float) $value, 2, ',', ' ') . ' ₽';
+        return number_format((float) $value, 0, ',', ' ') . ' ₽';
+    }
+
+    public function customerName(Order $order): string
+    {
+        return trim($order->customer_first_name . ' ' . $order->customer_last_name) ?: 'Покупатель';
+    }
+
+    public function locationLabel(Order $order): string
+    {
+        return $order->fulfillment_method === Order::FULFILLMENT_PICKUP
+            ? ($order->warehouse_name_snapshot ?: 'Пункт самовывоза не указан')
+            : ($order->city ?: 'Город не указан');
     }
 
     private function baseQuery(): Builder
@@ -294,6 +398,20 @@ class OrderKanban extends Page
 
         if ($this->sla !== 'all') {
             Order::applySlaFilter($query, $this->sla);
+        }
+
+        $search = trim($this->search);
+
+        if ($search !== '') {
+            $query->where(function (Builder $query) use ($search): void {
+                $query
+                    ->where('order_number', 'like', "%{$search}%")
+                    ->orWhere('customer_first_name', 'like', "%{$search}%")
+                    ->orWhere('customer_last_name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%");
+            });
         }
 
         return $query;

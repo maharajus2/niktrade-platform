@@ -1424,16 +1424,16 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-bar::before {
         content: "";
         position: absolute;
-        top: -14px;
+        top: -18px;
         left: 50%;
-        z-index: -1;
-        width: 88px;
-        height: 66px;
-        border: 1px solid rgba(255, 255, 255, .66);
-        border-bottom-color: transparent;
-        border-radius: 44px 44px 30px 30px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, .84), rgba(246, 250, 255, .72));
-        box-shadow: 0 -12px 34px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .78);
+        z-index: 0;
+        width: 112px;
+        height: 78px;
+        border: 0;
+        border-radius: 999px 999px 32px 32px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, .82), rgba(246, 250, 255, .70));
+        box-shadow: none;
+        pointer-events: none;
         transform: translateX(-50%);
         backdrop-filter: blur(28px) saturate(1.35);
     }
@@ -1476,7 +1476,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu {
         position: relative;
         min-height: 64px !important;
-        transform: translateY(-5px);
+        transform: translateY(-2px);
         color: #0b70f0 !important;
         overflow: visible;
     }

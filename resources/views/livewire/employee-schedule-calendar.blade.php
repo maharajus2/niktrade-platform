@@ -66,7 +66,7 @@
                         <span>Сотрудники</span>
                     </a>
                 @endif
-                <h2>Календарь сотрудника</h2>
+                <h1>Календарь сотрудника</h1>
                 <p>
                     {{ $employee->name }} · {{ $employee->position ?: 'Должность не указана' }} · {{ $employee->department?->name ?: 'Отдел не указан' }}
                 </p>

@@ -42,6 +42,12 @@ class OrderKanban extends Page
     #[Url(as: 'archive')]
     public bool $showArchive = false;
 
+    #[Url(as: 'archived_from')]
+    public ?string $archivedFrom = null;
+
+    #[Url(as: 'archived_to')]
+    public ?string $archivedTo = null;
+
     public ?int $archiveOrderId = null;
 
     public function getTitle(): string|Htmlable
@@ -75,6 +81,8 @@ class OrderKanban extends Page
         $this->paymentStatus = 'all';
         $this->sla = 'all';
         $this->showArchive = false;
+        $this->archivedFrom = null;
+        $this->archivedTo = null;
     }
 
     public function showBoard(): void
@@ -191,7 +199,7 @@ class OrderKanban extends Page
 
         $columns = [];
 
-        foreach ($this->statusColumns() as $status => $label) {
+        foreach ($this->visibleStatusColumns() as $status => $label) {
             $columns[$status] = [
                 'label' => $label,
                 'orders' => $this->sortColumnOrders($orders->get($status, collect()), $status),
@@ -268,6 +276,18 @@ class OrderKanban extends Page
             Order::FULFILLMENT_DELIVERY => 'Доставка',
             Order::FULFILLMENT_PICKUP => 'Самовывоз',
         ];
+    }
+
+    public function visibleStatusColumns(): array
+    {
+        if ($this->showArchive) {
+            return [
+                Order::STATUS_COMPLETED => 'Завершён',
+                Order::STATUS_CANCELLED => 'Отменён',
+            ];
+        }
+
+        return $this->statusColumns();
     }
 
     public function paymentStatusOptions(): array
@@ -382,9 +402,19 @@ class OrderKanban extends Page
     private function baseQuery(): Builder
     {
         $query = Order::query()
-            ->whereIn('status', array_keys($this->statusColumns()));
+            ->whereIn('status', array_keys($this->visibleStatusColumns()));
 
-        if (! $this->showArchive) {
+        if ($this->showArchive) {
+            $query->whereNotNull('archived_at');
+
+            if ($this->archivedFrom !== null && $this->archivedFrom !== '') {
+                $query->whereDate('archived_at', '>=', $this->archivedFrom);
+            }
+
+            if ($this->archivedTo !== null && $this->archivedTo !== '') {
+                $query->whereDate('archived_at', '<=', $this->archivedTo);
+            }
+        } else {
             $query->whereNull('archived_at');
         }
 

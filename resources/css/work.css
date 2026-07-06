@@ -1536,7 +1536,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .orders-work-filters {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 10px;
     align-items: end;
     border-radius: 22px;
@@ -1558,7 +1558,9 @@ body:has(.nik-work-app) .nik-work-sidebar {
 }
 
 .nik-work-app .orders-work-filters select,
-.nik-work-app .orders-work-sheet-fields select {
+.nik-work-app .orders-work-filters input[type="date"],
+.nik-work-app .orders-work-sheet-fields select,
+.nik-work-app .orders-work-sheet-fields input[type="date"] {
     width: 100%;
     min-height: 42px;
     border: 1px solid rgba(218, 228, 242, .72);
@@ -1569,6 +1571,17 @@ body:has(.nik-work-app) .nik-work-sidebar {
     font: inherit;
     font-size: 13px;
     font-weight: 680;
+}
+
+.nik-work-app .orders-work-period {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+}
+
+.nik-work-app .orders-work-filters .orders-work-period {
+    grid-column: span 2;
 }
 
 .nik-work-app .orders-work-filters button {
@@ -1583,6 +1596,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     display: none;
 }
 
+.nik-work-app [x-cloak] {
+    display: none !important;
+}
+
 .nik-work-app .orders-work-board {
     display: grid;
     grid-template-columns: repeat(5, minmax(230px, 1fr));
@@ -1590,6 +1607,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     min-width: 0;
     overflow-x: auto;
     padding-bottom: 4px;
+}
+
+.nik-work-app .orders-work-board.is-archive {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
 }
 
 .nik-work-app .orders-work-column {
@@ -1667,6 +1688,11 @@ body:has(.nik-work-app) .nik-work-sidebar {
 .nik-work-app .orders-work-order.is-warning { border-left-color: #f59e0b; }
 .nik-work-app .orders-work-order.is-ok { border-left-color: #22c55e; }
 
+.nik-work-app .orders-work-order.is-archive-compact {
+    gap: 0;
+    padding: 10px 11px;
+}
+
 .nik-work-app .orders-work-order-main,
 .nik-work-app .orders-work-order-meta {
     display: flex;
@@ -1698,6 +1724,42 @@ body:has(.nik-work-app) .nik-work-sidebar {
     color: rgba(51, 65, 85, .64);
     font-size: 12px;
     font-weight: 580;
+}
+
+.nik-work-app .orders-work-archive-expand {
+    appearance: none;
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(218, 228, 242, .72);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .62);
+    color: #52617a;
+    transition: transform .18s ease, background .18s ease, color .18s ease;
+}
+
+.nik-work-app .orders-work-archive-expand[aria-expanded="true"] {
+    transform: rotate(90deg);
+    background: rgba(226, 239, 255, .90);
+    color: #0b70f0;
+}
+
+.nik-work-app .orders-work-archive-body {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.nik-work-app .orders-work-order.is-archive-compact .orders-work-archive-body {
+    margin-top: 10px;
+}
+
+.nik-work-app .orders-work-order.is-archive-compact .orders-work-type {
+    justify-self: start;
+    max-width: 100%;
 }
 
 .nik-work-app .orders-work-type,

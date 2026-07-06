@@ -18,7 +18,8 @@
     ])
         <div
             class="nik-orders-workspace"
-            x-data="{ mobileFilters: false, activeStatus: '{{ Order::STATUS_NEW }}' }"
+            wire:key="orders-workspace-{{ $showArchive ? 'archive' : 'active' }}"
+            x-data="{ mobileFilters: false, activeStatus: '{{ $showArchive ? Order::STATUS_COMPLETED : Order::STATUS_NEW }}' }"
             x-on:keydown.escape.window="mobileFilters = false"
         >
             <header class="orders-work-mobile-head">
@@ -104,6 +105,19 @@
                     </select>
                 </label>
 
+                @if ($showArchive)
+                    <div class="orders-work-period">
+                        <label>
+                            <span>Архив с</span>
+                            <input type="date" wire:model.live="archivedFrom" />
+                        </label>
+                        <label>
+                            <span>по</span>
+                            <input type="date" wire:model.live="archivedTo" />
+                        </label>
+                    </div>
+                @endif
+
                 <button type="button" wire:click="resetFilters">Сбросить</button>
             </section>
 
@@ -124,7 +138,7 @@
 
             @if ($viewMode === 'board')
                 <section
-                    class="orders-work-board"
+                    class="orders-work-board {{ $showArchive ? 'is-archive' : '' }}"
                     x-data="{
                         draggedOrderId: null,
                         draggedStatus: null,
@@ -160,7 +174,7 @@
 
                             <div class="orders-work-column-list">
                                 @forelse ($column['orders'] as $order)
-                                    @include('filament.resources.orders.pages.partials.order-card', ['order' => $order])
+                                    @include('filament.resources.orders.pages.partials.order-card', ['order' => $order, 'archiveMode' => $showArchive])
                                 @empty
                                     <div class="orders-work-empty">
                                         <strong>Нет заказов в этом статусе</strong>
@@ -265,6 +279,18 @@
                         <input type="checkbox" wire:model.live="showArchive" />
                         <span>Показывать архив</span>
                     </label>
+                    @if ($showArchive)
+                        <div class="orders-work-period">
+                            <label>
+                                <span>Архив с</span>
+                                <input type="date" wire:model.live="archivedFrom" />
+                            </label>
+                            <label>
+                                <span>по</span>
+                                <input type="date" wire:model.live="archivedTo" />
+                            </label>
+                        </div>
+                    @endif
                     <button type="button" wire:click="resetFilters" x-on:click="mobileFilters = false">Сбросить</button>
                 </div>
             </section>

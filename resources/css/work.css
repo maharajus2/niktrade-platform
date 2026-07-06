@@ -1409,12 +1409,12 @@ body:has(.nik-work-app) .nik-work-sidebar {
         z-index: 50;
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
-        align-items: end;
-        min-height: 76px;
+        align-items: center;
+        min-height: 72px;
         border: 1px solid rgba(255, 255, 255, .66);
         border-radius: 30px;
         background: linear-gradient(135deg, rgba(255, 255, 255, .82), rgba(246, 250, 255, .70));
-        padding: 8px 8px 10px;
+        padding: 8px;
         box-shadow: 0 24px 64px rgba(31, 52, 86, .20), inset 0 1px 0 rgba(255, 255, 255, .78);
         backdrop-filter: blur(28px) saturate(1.35);
     }
@@ -1424,9 +1424,9 @@ body:has(.nik-work-app) .nik-work-sidebar {
         appearance: none;
         display: grid;
         min-width: 0;
-        min-height: 58px;
+        min-height: 56px;
         place-items: center;
-        gap: 4px;
+        gap: 5px;
         border: 0;
         border-radius: 21px;
         background: transparent;
@@ -1454,31 +1454,32 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu {
         position: relative;
-        transform: translateY(-14px);
+        min-height: 64px !important;
+        transform: translateY(-7px);
         color: #0b70f0 !important;
         overflow: visible;
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu strong {
         display: inline-flex;
-        width: 62px;
-        height: 62px;
+        width: 52px;
+        height: 52px;
         align-items: center;
         justify-content: center;
-        border: 7px solid rgba(255, 255, 255, .82);
+        border: 1px solid rgba(255, 255, 255, .78);
         border-radius: 999px;
         background: linear-gradient(135deg, #1f86ff, #075fe8);
         color: #fff;
-        box-shadow: 0 18px 34px rgba(22, 119, 255, .34), inset 0 1px 0 rgba(255, 255, 255, .32);
+        box-shadow: 0 12px 24px rgba(22, 119, 255, .30), 0 0 0 8px rgba(22, 119, 255, .08), inset 0 1px 0 rgba(255, 255, 255, .32);
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu .nik-work-svg {
-        width: 27px;
-        height: 27px;
+        width: 25px;
+        height: 25px;
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu span {
-        margin-top: -2px;
+        margin-top: -1px;
         color: #0b70f0;
     }
 
@@ -1803,8 +1804,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-bottom-menu strong {
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
     }
 }
 

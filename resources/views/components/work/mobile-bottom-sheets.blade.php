@@ -24,6 +24,7 @@
     class="nik-work-mobile-sheet"
     x-cloak
     x-show="activeSheet === 'messages'"
+    x-bind:style="activeSheet === 'messages' ? 'transform: translateY(0); opacity: 1;' : null"
     x-transition:enter="nik-work-sheet-enter"
     x-transition:enter-start="nik-work-sheet-enter-start"
     x-transition:enter-end="nik-work-sheet-enter-end"
@@ -66,6 +67,7 @@
     class="nik-work-mobile-sheet nik-work-mobile-sheet--large"
     x-cloak
     x-show="activeSheet === 'menu'"
+    x-bind:style="activeSheet === 'menu' ? 'transform: translateY(0); opacity: 1;' : null"
     x-transition:enter="nik-work-sheet-enter"
     x-transition:enter-start="nik-work-sheet-enter-start"
     x-transition:enter-end="nik-work-sheet-enter-end"
@@ -130,6 +132,7 @@
     class="nik-work-mobile-sheet"
     x-cloak
     x-show="activeSheet === 'tasks'"
+    x-bind:style="activeSheet === 'tasks' ? 'transform: translateY(0); opacity: 1;' : null"
     x-transition:enter="nik-work-sheet-enter"
     x-transition:enter-start="nik-work-sheet-enter-start"
     x-transition:enter-end="nik-work-sheet-enter-end"
@@ -165,6 +168,7 @@
     class="nik-work-mobile-sheet"
     x-cloak
     x-show="activeSheet === 'requests'"
+    x-bind:style="activeSheet === 'requests' ? 'transform: translateY(0); opacity: 1;' : null"
     x-transition:enter="nik-work-sheet-enter"
     x-transition:enter-start="nik-work-sheet-enter-start"
     x-transition:enter-end="nik-work-sheet-enter-end"

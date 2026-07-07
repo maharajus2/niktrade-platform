@@ -149,8 +149,9 @@
                     @foreach ($mobileCalendarStrip as $day)
                         <button
                             type="button"
-                            class="{{ $day['isCurrentMonth'] ? '' : 'is-muted' }} {{ $day['isToday'] ? 'is-active' : '' }}"
+                            class="{{ $day['isCurrentMonth'] ? '' : 'is-muted' }} {{ $day['isToday'] ? 'is-active' : '' }} {{ $day['isWeekend'] ? 'is-weekend is-non-working' : '' }} {{ $day['holidayLabel'] ? 'is-holiday is-non-working' : '' }}"
                             data-nt-mobile-date="{{ $day['date']->toDateString() }}"
+                            @if ($day['holidayLabel']) title="{{ $day['holidayLabel'] }}" @endif
                         >
                             <span>{{ $mobileWeekdays[$day['date']->dayOfWeekIso] }}</span>
                             <strong>{{ $day['date']->format('j') }}</strong>
@@ -199,7 +200,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-month-scroll'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-holidays'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -207,7 +208,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-month-scroll'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-holidays'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script
@@ -224,6 +225,7 @@
                                 futureTypeOptions: @js($futureTypeOptions),
                                 visibilityOptions: @js($visibilityOptions),
                                 sourceOptions: @js($sourceOptions),
+                                productionCalendar: @js($productionCalendar),
                                 requestCreateUrl: @js(\App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('create')),
                             })
                         })()

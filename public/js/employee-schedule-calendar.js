@@ -8,6 +8,8 @@
         const futureTypeLabels = options.futureTypeOptions || {}
         const visibilityLabels = options.visibilityOptions || {}
         const sourceLabels = options.sourceOptions || {}
+        const productionCalendar = options.productionCalendar || {}
+        const holidayLabels = productionCalendar.holidays || {}
         const forceAllDayTypes = ['day_off', 'vacation', 'sick_leave', 'business_trip']
         const requestOnlyTypes = ['day_off', 'vacation', 'sick_leave']
         const calendarRoot = element.closest('.nik-calendar')
@@ -88,6 +90,19 @@
         }
 
         selectedDate = formatDate(new Date())
+
+        const escapeHtml = (value) => String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;')
+
+        const isWeekendDate = (date) => [0, 6].includes(date.getDay())
+
+        const holidayLabel = (dateKey) => holidayLabels[dateKey] || ''
+
+        const isHolidayDate = (dateKey) => Boolean(holidayLabel(dateKey))
 
         const errorMessage = (error) => {
             const errors = error?.response?.data?.errors
@@ -310,13 +325,16 @@
                 const classes = [
                     date.getMonth() === currentStart.getMonth() ? '' : 'is-muted',
                     dateKey === selectedDate ? 'is-active' : '',
+                    isWeekendDate(date) ? 'is-weekend is-non-working' : '',
+                    isHolidayDate(dateKey) ? 'is-holiday is-non-working' : '',
                 ].filter(Boolean).join(' ')
+                const title = holidayLabel(dateKey)
                 const dots = dayEvents.length > 0
                     ? `<i>${dayEvents.map((event) => `<b style="background: ${event.backgroundColor || event.borderColor || '#1677ff'}"></b>`).join('')}</i>`
                     : ''
 
                 return `
-                    <button type="button" class="${classes}" data-nt-mobile-date="${dateKey}">
+                    <button type="button" class="${classes}" data-nt-mobile-date="${dateKey}"${title ? ` title="${escapeHtml(title)}"` : ''}>
                         <span>${weekdays[date.getDay() === 0 ? 6 : date.getDay() - 1]}</span>
                         <strong>${date.getDate()}</strong>
                         ${dots}
@@ -659,6 +677,17 @@
                     slotMinTime: '00:00:00',
                     slotMaxTime: '24:00:00',
                     headerToolbar: false,
+                    dayCellClassNames: (info) => {
+                        const dateKey = formatDate(info.date)
+
+                        return [
+                            isWeekendDate(info.date) ? 'nt-calendar-day-weekend' : '',
+                            isHolidayDate(dateKey) ? 'nt-calendar-day-holiday' : '',
+                        ].filter(Boolean)
+                    },
+                    dayHeaderClassNames: (info) => {
+                        return isWeekendDate(info.date) ? ['nt-calendar-day-header-weekend'] : []
+                    },
                     buttonText: {
                         today: 'Сегодня',
                         month: 'Месяц',

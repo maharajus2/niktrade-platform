@@ -200,6 +200,7 @@ class EmployeeScheduleCalendar extends Component
             'sourceOptions' => EmployeeScheduleEntry::sourceOptions(),
             'monthLabel' => $monthStart->translatedFormat('F Y'),
             'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
+            'productionCalendar' => $this->productionCalendar(),
         ]);
     }
 
@@ -543,6 +544,8 @@ class EmployeeScheduleCalendar extends Component
                 'date' => $cursor->copy(),
                 'isCurrentMonth' => $cursor->month === $monthStart->month,
                 'isToday' => $cursor->isToday(),
+                'isWeekend' => $cursor->isWeekend(),
+                'holidayLabel' => $this->productionCalendar()['holidays'][$key] ?? null,
                 'events' => $entries->get($key, collect())->take(4)->values(),
             ];
 
@@ -550,6 +553,34 @@ class EmployeeScheduleCalendar extends Component
         }
 
         return $days;
+    }
+
+    private function productionCalendar(): array
+    {
+        return [
+            'country' => 'RU',
+            'years' => [2026],
+            'holidays' => [
+                '2026-01-01' => 'Новогодние каникулы',
+                '2026-01-02' => 'Новогодние каникулы',
+                '2026-01-03' => 'Новогодние каникулы',
+                '2026-01-04' => 'Новогодние каникулы',
+                '2026-01-05' => 'Новогодние каникулы',
+                '2026-01-06' => 'Новогодние каникулы',
+                '2026-01-07' => 'Рождество Христово',
+                '2026-01-08' => 'Новогодние каникулы',
+                '2026-01-09' => 'Перенос выходного с 3 января',
+                '2026-02-23' => 'День защитника Отечества',
+                '2026-03-08' => 'Международный женский день',
+                '2026-03-09' => 'Перенос выходного дня',
+                '2026-05-01' => 'Праздник Весны и Труда',
+                '2026-05-09' => 'День Победы',
+                '2026-05-11' => 'Перенос выходного дня',
+                '2026-06-12' => 'День России',
+                '2026-11-04' => 'День народного единства',
+                '2026-12-31' => 'Перенос выходного с 4 января',
+            ],
+        ];
     }
 
     /**

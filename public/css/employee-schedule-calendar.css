@@ -501,6 +501,21 @@
     text-decoration: none;
 }
 
+.nt-fullcalendar .fc-day-sat .fc-daygrid-day-number,
+.nt-fullcalendar .fc-day-sun .fc-daygrid-day-number,
+.nt-fullcalendar .nt-calendar-day-header-weekend .fc-col-header-cell-cushion {
+    color: #dc2626;
+}
+
+.nt-fullcalendar .nt-calendar-day-holiday {
+    background: rgba(254, 226, 226, .42);
+}
+
+.nt-fullcalendar .nt-calendar-day-holiday .fc-daygrid-day-number {
+    color: #dc2626;
+    font-weight: 860;
+}
+
 .nt-fullcalendar .fc-event {
     border: 0;
     border-radius: 10px;
@@ -874,10 +889,27 @@
         opacity: .48;
     }
 
+    .nik-calendar-mobile-strip button.is-weekend span,
+    .nik-calendar-mobile-strip button.is-weekend strong,
+    .nik-calendar-mobile-strip button.is-holiday span,
+    .nik-calendar-mobile-strip button.is-holiday strong {
+        color: #dc2626;
+    }
+
+    .nik-calendar-mobile-strip button.is-holiday {
+        background: rgba(254, 226, 226, .58);
+        border-color: rgba(248, 113, 113, .26);
+    }
+
     .nik-calendar-mobile-strip button.is-active {
         background: #1677ff;
         color: #fff;
         box-shadow: 0 14px 30px rgba(22, 119, 255, .28);
+    }
+
+    .nik-calendar-mobile-strip button.is-active span,
+    .nik-calendar-mobile-strip button.is-active strong {
+        color: #fff;
     }
 
     .nik-calendar-mobile-strip span {

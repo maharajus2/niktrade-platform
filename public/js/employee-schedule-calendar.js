@@ -635,6 +635,7 @@
         }
 
         const openModal = (mode, data) => {
+            hideDayPopover()
             const modal = ensureModal()
             const form = modal.querySelector('form')
             const error = modal.querySelector('[data-nt-schedule-error]')
@@ -697,6 +698,135 @@
 
             modal.classList.remove('is-hidden')
             modal.querySelector('[name="type"]').focus()
+        }
+
+        const createPayloadForDate = (date) => ({
+            type: canCreateShift ? 'shift' : 'custom',
+            start_date: formatDate(date),
+            end_date: formatDate(date),
+            is_all_day: ! canCreateShift,
+            starts_at: date.getHours() === 0 && date.getMinutes() === 0 ? '09:00' : formatTime(date),
+            ends_at: date.getHours() === 0 && date.getMinutes() === 0 ? '18:00' : formatTime(addMinutes(date, 60)),
+            visibility: canCreateShift ? 'manager' : 'private',
+            source: 'manual',
+            editable: true,
+        })
+
+        const editPayloadForEvent = (event) => {
+            const props = event.extendedProps || {}
+
+            return {
+                id: event.id,
+                type: props.type || 'shift',
+                title: props.title || '',
+                start_date: props.date || formatDate(event.start),
+                end_date: props.date || formatDate(event.start),
+                is_all_day: Boolean(props.is_all_day),
+                starts_at: props.starts_at || '',
+                ends_at: props.ends_at || '',
+                visibility: props.visibility || 'hr',
+                source: props.source || 'manual',
+                comment: props.comment || '',
+                editable: props.editable,
+            }
+        }
+
+        const hideDayPopover = () => {
+            calendarRoot?.querySelector('.nik-calendar-day-popover')?.remove()
+        }
+
+        const showDayPopover = (info, dayEvents) => {
+            hideDayPopover()
+
+            if (! calendarRoot) {
+                return
+            }
+
+            const clickedDate = new Date(info.date)
+            const dateKey = formatDate(clickedDate)
+            const label = clickedDate.toLocaleDateString('ru-RU', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+            })
+            const canCreate = canUpdate && (canEditPast || ! isPastDate(clickedDate))
+            const holiday = holidayLabel(dateKey)
+            const popover = document.createElement('section')
+            popover.className = 'nik-calendar-day-popover'
+            popover.setAttribute('role', 'dialog')
+            popover.setAttribute('aria-label', 'События дня')
+            popover.innerHTML = `
+                <div class="nik-calendar-day-popover-head">
+                    <div>
+                        <span>${escapeHtml(label)}</span>
+                        <strong>События дня</strong>
+                    </div>
+                    <button type="button" data-nt-day-popover-close aria-label="Закрыть">×</button>
+                </div>
+                ${holiday ? `<div class="nik-calendar-day-popover-holiday">${escapeHtml(holiday)}</div>` : ''}
+                <div class="nik-calendar-day-popover-list">
+                    ${dayEvents.length > 0 ? dayEvents.map((event) => {
+                        const props = event.extendedProps || {}
+                        const time = event.allDay ? 'Весь день' : `${props.starts_at || ''}${props.ends_at ? `–${props.ends_at}` : ''}`
+                        const type = props.type || 'custom'
+                        const typeLabel = props.type_label || typeLabels[type] || 'Событие'
+                        const visibility = props.visibility_label || ''
+
+                        return `
+                            <button type="button" class="is-${type}" data-nt-day-event-id="${event.id}">
+                                <time>${escapeHtml(time)}</time>
+                                <span>
+                                    <strong>${escapeHtml(props.display_title || event.title)}</strong>
+                                    <small>${escapeHtml(typeLabel)}${visibility ? ` · ${escapeHtml(visibility)}` : ''}</small>
+                                </span>
+                            </button>
+                        `
+                    }).join('') : '<div class="nik-calendar-day-popover-empty">На выбранный день нет событий.</div>'}
+                </div>
+                <div class="nik-calendar-day-popover-actions">
+                    <button type="button" data-nt-day-create ${canCreate ? '' : 'disabled'}>${canCreate ? 'Создать событие' : 'Создание недоступно'}</button>
+                </div>
+            `
+            calendarRoot.appendChild(popover)
+
+            const rootRect = calendarRoot.getBoundingClientRect()
+            const targetRect = info.dayEl.getBoundingClientRect()
+            const popoverRect = popover.getBoundingClientRect()
+            const left = targetRect.left - rootRect.left + targetRect.width - popoverRect.width
+            const top = targetRect.top - rootRect.top + 12
+
+            popover.style.left = `${Math.max(12, Math.min(left, rootRect.width - popoverRect.width - 12))}px`
+            popover.style.top = `${Math.max(12, top)}px`
+
+            popover.querySelector('[data-nt-day-popover-close]')?.addEventListener('click', hideDayPopover)
+            popover.querySelector('[data-nt-day-create]')?.addEventListener('click', () => {
+                if (! canCreate) {
+                    return
+                }
+
+                hideDayPopover()
+                openModal('create', createPayloadForDate(clickedDate))
+            })
+            popover.querySelectorAll('[data-nt-day-event-id]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const event = dayEvents.find((item) => String(item.id) === button.dataset.ntDayEventId)
+                    const props = event?.extendedProps || {}
+
+                    if (! event) {
+                        return
+                    }
+
+                    hideDayPopover()
+
+                    if (! canUpdate || ! props.editable) {
+                        alert(`${event.title}`)
+
+                        return
+                    }
+
+                    openModal('edit', editPayloadForEvent(event))
+                })
+            })
         }
 
         const eventMovePayload = (event) => {
@@ -797,11 +927,22 @@
                         updateSelectedDayLabel()
                         renderAgenda(calendar ? calendar.getEvents() : [])
 
-                        if (! canUpdate) {
+                        const clickedDate = new Date(info.date)
+                        const dayEvents = calendar ? calendar.getEvents().filter((event) => {
+                            const props = event.extendedProps || {}
+
+                            return (props.date || (event.start ? formatDate(event.start) : null)) === selectedDate
+                        }) : []
+
+                        if (! isMobile() && calendar.view.type === 'dayGridMonth') {
+                            showDayPopover(info, dayEvents)
+
                             return
                         }
 
-                        const clickedDate = new Date(info.date)
+                        if (! canUpdate) {
+                            return
+                        }
 
                         if (! canEditPast && isPastDate(clickedDate)) {
                             alert('Нельзя изменять прошедшие события.')
@@ -809,17 +950,7 @@
                             return
                         }
 
-                        openModal('create', {
-                            type: canCreateShift ? 'shift' : 'custom',
-                            start_date: formatDate(clickedDate),
-                            end_date: formatDate(clickedDate),
-                            is_all_day: ! canCreateShift,
-                            starts_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '09:00' : formatTime(info.date),
-                            ends_at: info.date.getHours() === 0 && info.date.getMinutes() === 0 ? '18:00' : formatTime(addMinutes(info.date, 60)),
-                            visibility: canCreateShift ? 'manager' : 'private',
-                            source: 'manual',
-                            editable: true,
-                        })
+                        openModal('create', createPayloadForDate(clickedDate))
                     },
                     eventClick: (info) => {
                         const event = info.event
@@ -834,20 +965,7 @@
                             return
                         }
 
-                        openModal('edit', {
-                            id: event.id,
-                            type: props.type || 'shift',
-                            title: props.title || '',
-                            start_date: props.date || formatDate(event.start),
-                            end_date: props.date || formatDate(event.start),
-                            is_all_day: Boolean(props.is_all_day),
-                            starts_at: props.starts_at || '',
-                            ends_at: props.ends_at || '',
-                            visibility: props.visibility || 'hr',
-                            source: props.source || 'manual',
-                            comment: props.comment || '',
-                            editable: props.editable,
-                        })
+                        openModal('edit', editPayloadForEvent(event))
                     },
                     eventDrop: (info) => {
                         const event = info.event
@@ -1034,6 +1152,7 @@
                 syncPeriodPicker(calendar)
 
                 const navigatePeriod = (direction) => {
+                    hideDayPopover()
                     const syncAfterNavigation = () => {
                         updateExternalTitle(calendar)
                         syncViewButtons(calendar.view.type)
@@ -1117,6 +1236,7 @@
                     const nextButton = event.target.closest('[data-nt-calendar-next]')
 
                     if (viewButton && calendarRoot.contains(viewButton)) {
+                        hideDayPopover()
                         pendingMobileMonthDate = null
                         calendar.changeView(viewButton.dataset.ntCalendarView)
                         if (calendar.view.type === 'dayGridMonth') {
@@ -1146,6 +1266,7 @@
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
+                    hideDayPopover()
                     pendingMobileMonthDate = monthStart(new Date())
                     calendar.today()
                     selectedDate = formatDate(new Date())

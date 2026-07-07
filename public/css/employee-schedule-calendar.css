@@ -343,6 +343,153 @@
     transform: translateX(-50%) rotate(45deg);
 }
 
+.nik-calendar-day-popover {
+    position: absolute;
+    z-index: 62;
+    display: grid;
+    width: min(340px, calc(100vw - 32px));
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, .68);
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, .9), rgba(239, 247, 255, .76)),
+        radial-gradient(circle at 12% 0%, rgba(255, 255, 255, .94), transparent 42%);
+    padding: 14px;
+    box-shadow: 0 24px 58px rgba(31, 52, 86, .2), inset 0 1px 0 rgba(255, 255, 255, .84);
+    backdrop-filter: blur(26px) saturate(1.22);
+}
+
+.nik-calendar-day-popover-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.nik-calendar-day-popover-head span {
+    color: rgba(51, 65, 85, .68);
+    font-size: 12px;
+    font-weight: 760;
+    text-transform: capitalize;
+}
+
+.nik-calendar-day-popover-head strong {
+    display: block;
+    margin-top: 2px;
+    color: #111827;
+    font-size: 17px;
+    font-weight: 860;
+}
+
+.nik-calendar-day-popover-head button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(218, 228, 242, .72);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .64);
+    color: rgba(31, 42, 68, .72);
+    font-size: 24px;
+    line-height: 1;
+}
+
+.nik-calendar-day-popover-holiday {
+    width: fit-content;
+    max-width: 100%;
+    border: 1px solid rgba(248, 113, 113, .24);
+    border-radius: 999px;
+    background: rgba(254, 226, 226, .62);
+    padding: 5px 9px;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 820;
+}
+
+.nik-calendar-day-popover-list {
+    display: grid;
+    gap: 8px;
+}
+
+.nik-calendar-day-popover-list button {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    border: 1px solid rgba(218, 228, 242, .72);
+    border-left: 4px solid #1677ff;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .56);
+    padding: 9px 10px;
+    text-align: left;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .66);
+}
+
+.nik-calendar-day-popover-list button:hover {
+    background: rgba(255, 255, 255, .86);
+    box-shadow: 0 10px 24px rgba(31, 52, 86, .1), inset 0 1px 0 rgba(255, 255, 255, .82);
+}
+
+.nik-calendar-day-popover-list time {
+    color: #0b70f0;
+    font-size: 12px;
+    font-weight: 820;
+    line-height: 1.35;
+}
+
+.nik-calendar-day-popover-list strong {
+    display: block;
+    overflow-wrap: break-word;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 820;
+    line-height: 1.25;
+}
+
+.nik-calendar-day-popover-list small {
+    display: block;
+    margin-top: 3px;
+    color: rgba(51, 65, 85, .64);
+    font-size: 12px;
+    font-weight: 680;
+}
+
+.nik-calendar-day-popover-list .is-vacation { border-left-color: #8b5cf6; }
+.nik-calendar-day-popover-list .is-sick_leave { border-left-color: #f97316; }
+.nik-calendar-day-popover-list .is-day_off { border-left-color: #64748b; }
+.nik-calendar-day-popover-list .is-business_trip { border-left-color: #06b6d4; }
+.nik-calendar-day-popover-list .is-training { border-left-color: #22c55e; }
+.nik-calendar-day-popover-list .is-medical_exam { border-left-color: #fb7185; }
+.nik-calendar-day-popover-list .is-document_reminder { border-left-color: #f59e0b; }
+.nik-calendar-day-popover-list .is-workflow_event { border-left-color: #3b82f6; }
+
+.nik-calendar-day-popover-empty {
+    border: 1px dashed rgba(148, 163, 184, .42);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .46);
+    padding: 12px;
+    color: rgba(51, 65, 85, .66);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.nik-calendar-day-popover-actions button {
+    width: 100%;
+    min-height: 42px;
+    border: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #1677ff, #4aa3ff);
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 840;
+    box-shadow: 0 14px 30px rgba(22, 119, 255, .24);
+}
+
+.nik-calendar-day-popover-actions button:disabled {
+    background: rgba(226, 232, 240, .7);
+    color: rgba(71, 85, 105, .64);
+    box-shadow: none;
+}
+
 .nik-calendar-side {
     display: grid;
     gap: 16px;

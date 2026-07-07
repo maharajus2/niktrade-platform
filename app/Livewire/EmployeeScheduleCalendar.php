@@ -26,6 +26,8 @@ class EmployeeScheduleCalendar extends Component
      */
     public function getCalendarEvents(string $start, string $end): array
     {
+        $this->skipRender();
+
         $employee = $this->employee();
 
         if (! UserResource::canViewEmployeeSchedule($employee)) {

@@ -115,6 +115,10 @@
             year: 'numeric',
         })
 
+        const monthButtonLabel = (monthIndex) => new Date(2026, monthIndex, 1, 12, 0, 0)
+            .toLocaleDateString('ru-RU', { month: 'short' })
+            .replace('.', '')
+
         const errorMessage = (error) => {
             const errors = error?.response?.data?.errors
 
@@ -859,9 +863,85 @@
                             updateExternalTitle(calendar)
                             syncViewButtons(calendar.view.type)
                             renderMobileStrip(calendar)
+                            syncPeriodPicker(calendar)
                         }
                     },
                 })
+
+                function closePeriodPicker() {
+                    const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
+
+                    if (picker) {
+                        picker.hidden = true
+                    }
+                }
+
+                function syncPeriodPicker(targetCalendar) {
+                    const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
+                    const months = calendarRoot?.querySelector('[data-nt-period-months]')
+                    const yearSelect = calendarRoot?.querySelector('[data-nt-period-year]')
+
+                    if (! picker || ! months || ! yearSelect || ! targetCalendar) {
+                        return
+                    }
+
+                    const baseDate = monthStart(mobileMonthDate || targetCalendar.getDate())
+                    const currentYear = baseDate.getFullYear()
+                    const currentMonth = baseDate.getMonth()
+                    const yearStart = currentYear - 4
+                    const yearEnd = currentYear + 5
+
+                    months.innerHTML = Array.from({ length: 12 }, (_, monthIndex) => `
+                        <button type="button" data-nt-period-month="${monthIndex}" class="${monthIndex === currentMonth ? 'is-active' : ''}">
+                            ${monthButtonLabel(monthIndex)}
+                        </button>
+                    `).join('')
+
+                    yearSelect.innerHTML = Array.from({ length: yearEnd - yearStart + 1 }, (_, index) => {
+                        const year = yearStart + index
+
+                        return `<option value="${year}"${year === currentYear ? ' selected' : ''}>${year}</option>`
+                    }).join('')
+                }
+
+                function syncAfterPeriodChange() {
+                    updateSelectedDayLabel()
+                    updateExternalTitle(calendar)
+                    syncViewButtons(calendar.view.type)
+                    renderMobileStrip(calendar)
+                    renderAgenda(calendar.getEvents())
+                    syncPeriodPicker(calendar)
+                    window.setTimeout(() => calendar.updateSize(), 0)
+                }
+
+                function goToMobileMonth(targetDate) {
+                    const target = monthStart(targetDate)
+
+                    mobileMonthDate = target
+                    selectedDate = formatDate(target)
+                    calendar.changeView('dayGridMonth')
+                    calendar.gotoDate(target)
+                    syncAfterPeriodChange()
+                    window.setTimeout(syncAfterPeriodChange, 250)
+                }
+
+                function setMobileCalendarExpanded(expanded) {
+                    const button = calendarRoot?.querySelector('[data-nt-mobile-calendar-expand]')
+
+                    calendarRoot?.classList.toggle('is-mobile-calendar-expanded', expanded)
+
+                    if (button) {
+                        button.setAttribute('aria-expanded', expanded ? 'true' : 'false')
+                        const label = button.querySelector('span')
+
+                        if (label) {
+                            label.textContent = expanded ? 'Свернуть календарь' : 'Развернуть календарь'
+                        }
+                    }
+
+                    window.setTimeout(() => calendar.updateSize(), 0)
+                    window.setTimeout(() => calendar.updateSize(), 250)
+                }
 
                 calendar.render()
                 element._ntFullCalendar = calendar
@@ -870,6 +950,7 @@
                 updateExternalTitle(calendar)
                 syncViewButtons(calendar.view.type)
                 renderMobileStrip(calendar)
+                syncPeriodPicker(calendar)
 
                 const navigatePeriod = (direction) => {
                     const syncAfterNavigation = () => {
@@ -877,6 +958,7 @@
                         syncViewButtons(calendar.view.type)
                         renderMobileStrip(calendar)
                         renderAgenda(calendar.getEvents())
+                        syncPeriodPicker(calendar)
                     }
 
                     if (calendar.view.type === 'dayGridMonth') {
@@ -913,6 +995,7 @@
                             }
 
                             renderMobileStrip(calendar)
+                            syncPeriodPicker(calendar)
                         }
                     })
                 }
@@ -955,10 +1038,14 @@
                         calendar.changeView(viewButton.dataset.ntCalendarView)
                         if (calendar.view.type === 'dayGridMonth') {
                             mobileMonthDate = monthStart(calendar.getDate())
+                        } else {
+                            closePeriodPicker()
+                            setMobileCalendarExpanded(false)
                         }
                         updateExternalTitle(calendar)
                         syncViewButtons(calendar.view.type)
                         renderMobileStrip(calendar)
+                        syncPeriodPicker(calendar)
                         window.setTimeout(() => calendar.updateSize(), 0)
 
                         return
@@ -984,6 +1071,58 @@
                     syncViewButtons(calendar.view.type)
                     renderAgenda(calendar.getEvents())
                     renderMobileStrip(calendar)
+                    syncPeriodPicker(calendar)
+                })
+
+                calendarRoot?.querySelector('[data-nt-mobile-calendar-expand]')?.addEventListener('click', () => {
+                    if (calendar.view.type !== 'dayGridMonth') {
+                        return
+                    }
+
+                    setMobileCalendarExpanded(! calendarRoot.classList.contains('is-mobile-calendar-expanded'))
+                })
+
+                calendarRoot?.querySelector('[data-nt-calendar-title-toggle]')?.addEventListener('click', (event) => {
+                    if (! isMobile() || calendar.view.type !== 'dayGridMonth') {
+                        return
+                    }
+
+                    event.preventDefault()
+                    event.stopPropagation()
+                    syncPeriodPicker(calendar)
+                    const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
+
+                    if (picker) {
+                        picker.hidden = ! picker.hidden
+                    }
+                })
+
+                calendarRoot?.querySelector('[data-nt-period-months]')?.addEventListener('click', (event) => {
+                    const button = event.target.closest('[data-nt-period-month]')
+
+                    if (! button) {
+                        return
+                    }
+
+                    const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
+                    const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
+                    const month = Number(button.dataset.ntPeriodMonth)
+
+                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                    closePeriodPicker()
+                })
+
+                calendarRoot?.querySelector('[data-nt-period-year]')?.addEventListener('change', (event) => {
+                    const month = (mobileMonthDate || calendar.getDate()).getMonth()
+                    const year = Number(event.target.value)
+
+                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                })
+
+                document.addEventListener('click', (event) => {
+                    if (! calendarRoot?.contains(event.target)) {
+                        closePeriodPicker()
+                    }
                 })
 
                 calendarRoot?.querySelectorAll('[data-nt-filter]').forEach((filter) => {

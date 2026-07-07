@@ -105,9 +105,19 @@
 
                     <div class="nik-calendar-navigation">
                         <button type="button" data-nt-calendar-prev aria-label="Предыдущий период"><x-work.icon name="chevron-left" /></button>
-                        <strong data-nt-calendar-title>{{ $monthLabel }}</strong>
+                        <button type="button" class="nik-calendar-title-button" data-nt-calendar-title-toggle aria-label="Выбрать месяц и год">
+                            <strong data-nt-calendar-title>{{ $monthLabel }}</strong>
+                        </button>
                         <button type="button" data-nt-calendar-next aria-label="Следующий период"><x-work.icon name="chevron-right" /></button>
                         <button type="button" data-nt-calendar-today>Сегодня</button>
+                    </div>
+
+                    <div class="nik-calendar-period-picker" data-nt-period-picker hidden>
+                        <div class="nik-calendar-period-months" data-nt-period-months></div>
+                        <label>
+                            <span>Год</span>
+                            <select data-nt-period-year></select>
+                        </label>
                     </div>
                 </div>
 
@@ -167,6 +177,11 @@
                     @endforeach
                 </div>
 
+                <button type="button" class="nik-calendar-mobile-expand" data-nt-mobile-calendar-expand aria-expanded="false">
+                    <span>Развернуть календарь</span>
+                    <x-work.icon name="chevron-down" />
+                </button>
+
                 <div
                     wire:ignore
                     x-data
@@ -200,7 +215,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-holiday-tooltip'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-month-picker'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -208,7 +223,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-holiday-tooltip'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-month-picker'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

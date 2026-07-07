@@ -1051,18 +1051,18 @@
                     const periodMonthButton = event.target.closest('[data-nt-period-month]')
 
                     if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                        event.stopImmediatePropagation?.()
+                        lastPeriodMonthPointerAt = Date.now()
+                        selectPeriodMonth(periodMonthButton, event)
                     }
                 }, true)
 
                 calendarRoot?.addEventListener('pointerup', (event) => {
                     const periodMonthButton = event.target.closest('[data-nt-period-month]')
 
-                    if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
-                        lastPeriodMonthPointerAt = Date.now()
-                        selectPeriodMonth(periodMonthButton, event)
+                    if (periodMonthButton && calendarRoot.contains(periodMonthButton) && Date.now() - lastPeriodMonthPointerAt < 500) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        event.stopImmediatePropagation?.()
                     }
                 }, true)
 

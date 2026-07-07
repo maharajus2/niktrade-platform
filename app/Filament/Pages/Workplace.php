@@ -17,6 +17,7 @@ use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class Workplace extends Page
@@ -261,6 +262,13 @@ class Workplace extends Page
 
                 return $periods;
             }, collect());
+    }
+
+    private function nextBirthday(User $employee): Carbon
+    {
+        $birthday = Carbon::parse($employee->date_of_birth)->year((int) today()->format('Y'));
+
+        return $birthday->isBefore(today()) ? $birthday->addYear() : $birthday;
     }
 
     private function employeeWorkspaceData(): array

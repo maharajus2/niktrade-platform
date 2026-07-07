@@ -862,6 +862,35 @@
                     }, 0)
                 }
 
+                let lastNavigationAt = 0
+                const guardedNavigatePeriod = (direction, event = null) => {
+                    const now = Date.now()
+
+                    if (now - lastNavigationAt < 280) {
+                        return
+                    }
+
+                    lastNavigationAt = now
+                    event?.preventDefault()
+                    event?.stopPropagation()
+                    navigatePeriod(direction)
+                }
+
+                const bindNavigationButton = (selector, direction) => {
+                    const button = calendarRoot?.querySelector(selector)
+
+                    if (! button) {
+                        return
+                    }
+
+                    ;['pointerup', 'touchend', 'click'].forEach((eventName) => {
+                        button.addEventListener(eventName, (event) => guardedNavigatePeriod(direction, event))
+                    })
+                }
+
+                bindNavigationButton('[data-nt-calendar-prev]', -1)
+                bindNavigationButton('[data-nt-calendar-next]', 1)
+
                 calendarRoot?.addEventListener('click', (event) => {
                     const viewButton = event.target.closest('[data-nt-calendar-view]')
                     const previousButton = event.target.closest('[data-nt-calendar-prev]')
@@ -881,13 +910,13 @@
                     }
 
                     if (previousButton && calendarRoot.contains(previousButton)) {
-                        navigatePeriod(-1)
+                        guardedNavigatePeriod(-1, event)
 
                         return
                     }
 
                     if (nextButton && calendarRoot.contains(nextButton)) {
-                        navigatePeriod(1)
+                        guardedNavigatePeriod(1, event)
                     }
                 })
 

@@ -398,9 +398,9 @@
 
 .nik-calendar-agenda-card {
     display: grid;
-    grid-template-columns: 62px minmax(0, 1fr) auto;
+    grid-template-columns: 62px minmax(0, 1fr);
     gap: 10px;
-    align-items: center;
+    align-items: start;
     border: 1px solid rgba(218, 228, 242, .72);
     border-left: 4px solid #1677ff;
     border-radius: 16px;
@@ -409,17 +409,24 @@
 }
 
 .nik-calendar-agenda-card time {
+    grid-row: 1 / span 2;
     color: #0b70f0;
     font-size: 12px;
     font-weight: 780;
+    line-height: 1.35;
+}
+
+.nik-calendar-agenda-card > div {
+    min-width: 0;
 }
 
 .nik-calendar-agenda-card strong {
     display: block;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     color: #111827;
     font-size: 13px;
     font-weight: 780;
+    line-height: 1.25;
 }
 
 .nik-calendar-agenda-card span {
@@ -430,6 +437,8 @@
 }
 
 .nik-calendar-agenda-card em {
+    grid-column: 2;
+    justify-self: start;
     border-radius: 999px;
     background: rgba(241, 245, 249, .84);
     padding: 5px 8px;

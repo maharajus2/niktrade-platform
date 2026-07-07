@@ -1113,10 +1113,13 @@
                 })
 
                 calendarRoot?.querySelector('[data-nt-period-year]')?.addEventListener('change', (event) => {
-                    const month = (mobileMonthDate || calendar.getDate()).getMonth()
                     const year = Number(event.target.value)
+                    const activeMonth = (mobileMonthDate || calendar.getDate()).getMonth()
 
-                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                    calendarRoot?.querySelectorAll('[data-nt-period-month]').forEach((button) => {
+                        button.classList.toggle('is-active', Number(button.dataset.ntPeriodMonth) === activeMonth)
+                    })
+                    event.target.value = String(year)
                 })
 
                 document.addEventListener('click', (event) => {

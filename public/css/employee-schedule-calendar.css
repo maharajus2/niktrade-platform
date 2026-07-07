@@ -806,6 +806,10 @@
         display: none;
     }
 
+    .nik-calendar-side section:first-child {
+        margin-bottom: calc(92px + env(safe-area-inset-bottom));
+    }
+
     .nik-calendar-mobile-strip {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));

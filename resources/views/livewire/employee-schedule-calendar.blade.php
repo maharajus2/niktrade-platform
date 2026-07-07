@@ -58,7 +58,7 @@
 @endphp
 
 <div
-    class="nik-calendar is-calendar-month"
+    class="nik-calendar is-calendar-month {{ $embedded ? 'is-embedded' : '' }}"
     x-data="{ activeSheet: null, openSheet(sheet) { this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); }, closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); } }"
     x-on:keydown.escape.window="closeSheet()"
 >
@@ -312,12 +312,14 @@
         </div>
     </section>
 
-    <x-work.mobile-bottom-sheets
-        :menu-groups="$mobileMenuGroups"
-        :request-counts="$requestCounts"
-        :recent-requests="$recentRequests"
-        :create-request-url="\App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('create')"
-        :requests-url="\App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')"
-    />
-    <x-work.mobile-bottom-nav />
+    @unless ($embedded)
+        <x-work.mobile-bottom-sheets
+            :menu-groups="$mobileMenuGroups"
+            :request-counts="$requestCounts"
+            :recent-requests="$recentRequests"
+            :create-request-url="\App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('create')"
+            :requests-url="\App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')"
+        />
+        <x-work.mobile-bottom-nav />
+    @endunless
 </div>

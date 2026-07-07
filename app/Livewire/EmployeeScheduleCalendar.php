@@ -16,9 +16,12 @@ class EmployeeScheduleCalendar extends Component
 {
     public int $employeeId;
 
-    public function mount(int $employeeId): void
+    public bool $embedded = false;
+
+    public function mount(int $employeeId, bool $embedded = false): void
     {
         $this->employeeId = $employeeId;
+        $this->embedded = $embedded;
     }
 
     /**
@@ -203,6 +206,7 @@ class EmployeeScheduleCalendar extends Component
             'monthLabel' => $monthStart->translatedFormat('F Y'),
             'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
             'productionCalendar' => $this->productionCalendar(),
+            'embedded' => $this->embedded,
         ]);
     }
 

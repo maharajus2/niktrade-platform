@@ -742,6 +742,25 @@
                             isHolidayDate(dateKey) ? 'nt-calendar-day-holiday' : '',
                         ].filter(Boolean)
                     },
+                    dayCellDidMount: (info) => {
+                        const dateKey = formatDate(info.date)
+                        const label = holidayLabel(dateKey)
+
+                        if (! label || info.el.querySelector('.nt-calendar-holiday-label')) {
+                            return
+                        }
+
+                        const frame = info.el.querySelector('.fc-daygrid-day-frame')
+
+                        if (! frame) {
+                            return
+                        }
+
+                        const badge = document.createElement('div')
+                        badge.className = 'nt-calendar-holiday-label'
+                        badge.textContent = label
+                        frame.appendChild(badge)
+                    },
                     dayHeaderClassNames: (info) => {
                         return isWeekendDate(info.date) ? ['nt-calendar-day-header-weekend'] : []
                     },
@@ -1148,7 +1167,7 @@
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-title-toggle]')?.addEventListener('click', (event) => {
-                    if (! isMobile() || calendar.view.type !== 'dayGridMonth') {
+                    if (calendar.view.type !== 'dayGridMonth') {
                         return
                     }
 

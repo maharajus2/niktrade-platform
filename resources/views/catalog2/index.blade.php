@@ -112,15 +112,17 @@
             --liquid-blue-deep: #006eea;
             --liquid-green: #21c98b;
             --liquid-ink: #10223f;
-            --liquid-border: rgba(255, 255, 255, .68);
-            --liquid-shadow: 0 28px 80px rgba(20, 82, 148, .16), 0 10px 26px rgba(10, 132, 255, .10);
+            --liquid-border: rgba(255, 255, 255, .78);
+            --liquid-shadow: 0 36px 96px rgba(20, 82, 148, .20), 0 16px 42px rgba(10, 132, 255, .13), 0 1px 0 rgba(255, 255, 255, .70);
             min-height: 100vh;
             overflow-x: hidden;
             background:
-                radial-gradient(circle at 11% 7%, rgba(10, 132, 255, .26), transparent 25rem),
-                radial-gradient(circle at 86% 12%, rgba(33, 201, 139, .20), transparent 23rem),
-                radial-gradient(circle at 68% 88%, rgba(125, 211, 252, .22), transparent 28rem),
+                radial-gradient(circle at 11% 7%, rgba(10, 132, 255, .30), transparent 25rem),
+                radial-gradient(circle at 86% 12%, rgba(33, 201, 139, .24), transparent 23rem),
+                radial-gradient(circle at 68% 88%, rgba(125, 211, 252, .25), transparent 28rem),
+                linear-gradient(112deg, transparent 0 18%, rgba(255,255,255,.46) 30%, transparent 43% 100%),
                 linear-gradient(135deg, #f7fcff 0%, #e6f5ff 42%, #f7fcff 100%);
+            background-attachment: fixed;
             color: #10223f;
             font-family: Inter, Arial, sans-serif;
             letter-spacing: 0;
@@ -159,7 +161,8 @@
                 radial-gradient(circle at 62% 36%, rgba(255,255,255,.34) 0 54px, transparent 56px),
                 radial-gradient(circle at 96% 18%, rgba(255,255,255,.62) 0 22px, transparent 23px),
                 radial-gradient(circle at 34% 38%, rgba(255,255,255,.42) 0 13px, transparent 14px),
-                linear-gradient(118deg, rgba(255,255,255,.28), transparent 22%, rgba(33,201,139,.08) 64%, transparent);
+                linear-gradient(118deg, rgba(255,255,255,.28), transparent 22%, rgba(33,201,139,.10) 64%, transparent),
+                repeating-linear-gradient(105deg, rgba(255,255,255,.12) 0 1px, transparent 1px 42px);
             opacity: .95;
         }
 
@@ -187,17 +190,24 @@
             overflow: hidden;
             border: 1px solid var(--liquid-border);
             background:
-                radial-gradient(circle at 18% 0%, rgba(255,255,255,.72), transparent 34%),
-                radial-gradient(circle at 88% 100%, rgba(10,132,255,.16), transparent 38%),
-                linear-gradient(135deg, rgba(255, 255, 255, .58), rgba(233, 247, 255, .34) 48%, rgba(255, 255, 255, .46));
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.52), transparent 35%),
+                radial-gradient(circle at 88% 100%, rgba(10,132,255,.20), transparent 42%),
+                radial-gradient(circle at 0% 100%, rgba(33,201,139,.12), transparent 34%),
+                linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(226, 246, 255, .16) 48%, rgba(255, 255, 255, .25));
+            background-attachment: fixed;
+            background-clip: padding-box;
             box-shadow:
                 var(--liquid-shadow),
-                inset 0 1px 0 rgba(255,255,255,.94),
-                inset 1px 0 0 rgba(255,255,255,.42),
-                inset 0 -1px 0 rgba(89, 162, 230, .16);
-            backdrop-filter: blur(28px) saturate(170%);
-            -webkit-backdrop-filter: blur(28px) saturate(170%);
+                0 0 0 1px rgba(255,255,255,.24),
+                inset 0 1px 0 rgba(255,255,255,.98),
+                inset 1px 0 0 rgba(255,255,255,.52),
+                inset 0 -22px 42px rgba(10,132,255,.10),
+                inset 0 0 38px rgba(255,255,255,.20);
+            backdrop-filter: blur(36px) saturate(205%) contrast(1.07);
+            -webkit-backdrop-filter: blur(36px) saturate(205%) contrast(1.07);
             isolation: isolate;
+            transform: translateZ(0);
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
         }
 
         .nik-catalog2-glass::before,
@@ -212,18 +222,36 @@
 
         .nik-catalog2-glass::before {
             background:
-                linear-gradient(135deg, rgba(255,255,255,.82) 0%, rgba(255,255,255,.22) 31%, rgba(255,255,255,0) 58%),
-                linear-gradient(315deg, rgba(10,132,255,.10), transparent 42%);
-            opacity: .88;
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.92), transparent 19%),
+                linear-gradient(126deg, rgba(255,255,255,.74) 0 7%, rgba(255,255,255,.30) 8% 18%, rgba(255,255,255,0) 42%),
+                linear-gradient(112deg, transparent 0 45%, rgba(255,255,255,.30) 48%, transparent 56%),
+                linear-gradient(315deg, rgba(10,132,255,.13), transparent 44%);
+            mix-blend-mode: screen;
+            opacity: .92;
         }
 
         .nik-catalog2-glass::after {
             inset: 1px;
             background:
-                radial-gradient(ellipse at 50% 100%, rgba(10,132,255,.14), transparent 50%),
-                linear-gradient(to top, rgba(255,255,255,.30), rgba(255,255,255,0) 38%),
-                linear-gradient(90deg, rgba(255,255,255,.14), transparent 18%, transparent 82%, rgba(78, 169, 255, .10));
-            opacity: .78;
+                radial-gradient(ellipse at 50% 106%, rgba(10,132,255,.19), transparent 51%),
+                linear-gradient(to top, rgba(255,255,255,.34), rgba(255,255,255,0) 40%),
+                linear-gradient(90deg, rgba(255,255,255,.24), transparent 18%, transparent 82%, rgba(78, 169, 255, .18));
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,.22),
+                inset 0 0 32px rgba(255,255,255,.24),
+                inset 0 -28px 52px rgba(10,132,255,.12);
+            opacity: .86;
+        }
+
+        .nik-catalog2-glass:hover {
+            border-color: rgba(255,255,255,.92);
+            box-shadow:
+                0 42px 112px rgba(20,82,148,.22),
+                0 18px 46px rgba(10,132,255,.15),
+                0 1px 0 rgba(255,255,255,.76),
+                inset 0 1px 0 rgba(255,255,255,1),
+                inset 0 -24px 44px rgba(10,132,255,.12),
+                inset 0 0 42px rgba(255,255,255,.24);
         }
 
         .nik-catalog2-glass > * {
@@ -534,15 +562,19 @@
             overflow: hidden;
             border-radius: 28px;
             background:
-                radial-gradient(circle at 86% 50%, rgba(10,132,255,.24), transparent 42%),
-                linear-gradient(135deg, rgba(235,248,255,.58), rgba(255,255,255,.34));
+                radial-gradient(circle at 86% 50%, rgba(10,132,255,.28), transparent 42%),
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.46), transparent 36%),
+                linear-gradient(135deg, rgba(235,248,255,.30), rgba(255,255,255,.16));
+            background-attachment: fixed;
             padding: 30px;
         }
 
         .nik-catalog2-brand-card.is-arvetera {
             background:
-                radial-gradient(circle at 86% 52%, rgba(33,201,139,.26), transparent 42%),
-                linear-gradient(135deg, rgba(225,255,241,.54), rgba(255,255,255,.32));
+                radial-gradient(circle at 86% 52%, rgba(33,201,139,.30), transparent 42%),
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.44), transparent 36%),
+                linear-gradient(135deg, rgba(225,255,241,.28), rgba(255,255,255,.16));
+            background-attachment: fixed;
         }
 
         .nik-catalog2-brand-card h3 {
@@ -851,8 +883,10 @@
             border-radius: 20px;
             padding: 14px;
             background:
-                radial-gradient(circle at 9% 0%, rgba(255,255,255,.74), transparent 26%),
-                linear-gradient(135deg, rgba(255,255,255,.48), rgba(230,247,255,.28));
+                radial-gradient(circle at 9% 0%, rgba(255,255,255,.50), transparent 28%),
+                radial-gradient(circle at 96% 100%, rgba(10,132,255,.14), transparent 34%),
+                linear-gradient(135deg, rgba(255,255,255,.28), rgba(230,247,255,.16));
+            background-attachment: fixed;
         }
 
         .nik-catalog2-advantage {
@@ -880,20 +914,26 @@
 
         .nik-catalog2-promo.is-sale {
             background:
-                radial-gradient(circle at 76% 50%, rgba(255, 187, 64, .22), transparent 46%),
-                linear-gradient(135deg, rgba(255, 242, 221, .50), rgba(255,255,255,.30));
+                radial-gradient(circle at 76% 50%, rgba(255, 187, 64, .26), transparent 46%),
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.42), transparent 36%),
+                linear-gradient(135deg, rgba(255, 242, 221, .28), rgba(255,255,255,.15));
+            background-attachment: fixed;
         }
 
         .nik-catalog2-promo.is-new {
             background:
-                radial-gradient(circle at 78% 52%, rgba(33, 201, 139, .20), transparent 46%),
-                linear-gradient(135deg, rgba(219, 255, 249, .48), rgba(255,255,255,.30));
+                radial-gradient(circle at 78% 52%, rgba(33, 201, 139, .25), transparent 46%),
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.42), transparent 36%),
+                linear-gradient(135deg, rgba(219, 255, 249, .27), rgba(255,255,255,.15));
+            background-attachment: fixed;
         }
 
         .nik-catalog2-promo.is-b2b {
             background:
-                radial-gradient(circle at 78% 52%, rgba(10,132,255,.22), transparent 46%),
-                linear-gradient(135deg, rgba(224, 241, 255, .50), rgba(255,255,255,.30));
+                radial-gradient(circle at 78% 52%, rgba(10,132,255,.27), transparent 46%),
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.42), transparent 36%),
+                linear-gradient(135deg, rgba(224, 241, 255, .28), rgba(255,255,255,.15));
+            background-attachment: fixed;
         }
 
         .nik-catalog2-promo span {
@@ -1220,6 +1260,31 @@
 
             .nik-catalog2-advantages {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1480px) and (min-width: 1181px) {
+            .nik-catalog2-header {
+                grid-template-columns: 220px minmax(0, 1fr) auto;
+                gap: 12px;
+            }
+
+            .nik-catalog2-nav {
+                gap: 8px;
+            }
+
+            .nik-catalog2-nav a {
+                min-height: 42px;
+                padding: 0 12px;
+                font-size: 13px;
+            }
+
+            .nik-catalog2-catalog-btn {
+                min-width: 126px;
+            }
+
+            .nik-catalog2-phone {
+                font-size: 14px;
             }
         }
 

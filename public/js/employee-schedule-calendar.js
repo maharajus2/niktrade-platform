@@ -846,6 +846,11 @@
                         calendar.gotoDate(target)
                         selectedDate = formatDate(target)
                         updateSelectedDayLabel()
+                        const title = calendarRoot?.querySelector('[data-nt-calendar-title]')
+
+                        if (title) {
+                            title.textContent = monthTitle(target)
+                        }
                     } else if (direction < 0) {
                         calendar.prev()
                     } else {
@@ -860,6 +865,18 @@
                         renderMobileStrip(calendar)
                         renderAgenda(calendar.getEvents())
                     }, 0)
+
+                    window.requestAnimationFrame(() => {
+                        if (calendar.view.type === 'dayGridMonth') {
+                            const title = calendarRoot?.querySelector('[data-nt-calendar-title]')
+
+                            if (title && mobileMonthDate) {
+                                title.textContent = monthTitle(mobileMonthDate)
+                            }
+
+                            renderMobileStrip(calendar)
+                        }
+                    })
                 }
 
                 let lastNavigationAt = 0

@@ -62,7 +62,7 @@
 @endphp
 
 <div
-    class="nik-calendar"
+    class="nik-calendar is-calendar-month"
     x-data="{ activeSheet: null, openSheet(sheet) { this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); }, closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); } }"
     x-on:keydown.escape.window="closeSheet()"
 >
@@ -203,7 +203,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-views'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-views-2'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -211,7 +211,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-views'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-views-2'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

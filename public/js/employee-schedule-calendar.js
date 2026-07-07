@@ -801,13 +801,23 @@
                 calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
                     calendar.prev()
                     updateExternalTitle(calendar)
-                    renderMobileStrip(calendar)
+                    syncViewButtons(calendar.view.type)
+                    window.setTimeout(() => {
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                        renderMobileStrip(calendar)
+                    }, 0)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-next]')?.addEventListener('click', () => {
                     calendar.next()
                     updateExternalTitle(calendar)
-                    renderMobileStrip(calendar)
+                    syncViewButtons(calendar.view.type)
+                    window.setTimeout(() => {
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                        renderMobileStrip(calendar)
+                    }, 0)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
@@ -815,6 +825,7 @@
                     selectedDate = formatDate(new Date())
                     updateSelectedDayLabel()
                     updateExternalTitle(calendar)
+                    syncViewButtons(calendar.view.type)
                     renderAgenda(calendar.getEvents())
                     renderMobileStrip(calendar)
                 })

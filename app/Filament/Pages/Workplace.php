@@ -195,6 +195,7 @@ class Workplace extends Page
             ->map(fn (User $employee): array => [
                 'employee' => $employee->name,
                 'date' => $this->nextBirthday($employee),
+                'age' => $employee->age_label,
                 'url' => UserResource::getUrl('view', ['record' => $employee]),
             ])
             ->filter(fn (array $birthday): bool => $birthday['date']->betweenIncluded($today, $weekEnd))

@@ -278,6 +278,31 @@ class User extends Authenticatable
         return self::employeeStatusOptions()[$this->employment_status ?? $this->employee_status] ?? 'Не указан';
     }
 
+    public function getAgeAttribute(): ?int
+    {
+        return $this->date_of_birth?->age;
+    }
+
+    public function getAgeLabelAttribute(): string
+    {
+        if ($this->age === null) {
+            return 'Не указан';
+        }
+
+        $age = $this->age;
+        $lastTwo = $age % 100;
+        $last = $age % 10;
+
+        $suffix = match (true) {
+            $lastTwo >= 11 && $lastTwo <= 14 => 'лет',
+            $last === 1 => 'год',
+            $last >= 2 && $last <= 4 => 'года',
+            default => 'лет',
+        };
+
+        return "{$age} {$suffix}";
+    }
+
     public function getScheduleTypeLabel(): string
     {
         return self::scheduleTypeOptions()[$this->schedule_type] ?? 'Не указан';

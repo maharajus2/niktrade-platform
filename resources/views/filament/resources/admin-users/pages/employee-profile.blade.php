@@ -15,6 +15,9 @@
 
     $value = fn ($state): string => filled($state) ? (string) $state : 'Не указано';
     $dateValue = fn ($date): string => $date ? $date->format('d.m.Y') : 'Не указано';
+    $birthDateValue = $employee->date_of_birth
+        ? $employee->date_of_birth->format('d.m.Y').' ('.$employee->age_label.')'
+        : $dateValue(null);
     $statusTone = match ($profile['statusColor']) {
         'success' => 'green',
         'danger' => 'red',
@@ -111,7 +114,7 @@
 
                     <dl class="nik-employee-profile-fields">
                         <div><dt>Email</dt><dd>{{ $value($employee->email) }}</dd></div>
-                        <div><dt>Дата рождения</dt><dd>{{ $dateValue($employee->date_of_birth) }}</dd></div>
+                        <div><dt>Дата рождения</dt><dd>{{ $birthDateValue }}</dd></div>
                         <div><dt>Телефон</dt><dd>{{ $value($employee->phone) }}</dd></div>
                         <div><dt>Дата найма</dt><dd>{{ $dateValue($employee->hire_date) }}</dd></div>
                         <div><dt>Должность</dt><dd>{{ $value($employee->position) }}</dd></div>
@@ -411,7 +414,7 @@
                 <div class="nik-employee-mobile-facts">
                     <div><span>Email</span><strong>{{ $value($employee->email) }}</strong></div>
                     <div><span>Телефон</span><strong>{{ $value($employee->phone) }}</strong></div>
-                    <div><span>Дата рождения</span><strong>{{ $dateValue($employee->date_of_birth) }}</strong></div>
+                    <div><span>Дата рождения</span><strong>{{ $birthDateValue }}</strong></div>
                     <div><span>Дата найма</span><strong>{{ $dateValue($employee->hire_date) }}</strong></div>
                     <div><span>Руководитель</span><strong>{{ $value($manager?->name) }}</strong></div>
                     <div><span>Роль</span><strong>{{ $profile['roleLabel'] }}</strong></div>

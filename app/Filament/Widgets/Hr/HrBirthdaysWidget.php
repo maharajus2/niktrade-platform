@@ -33,7 +33,7 @@ class HrBirthdaysWidget extends Widget
                     'department' => $employee->department?->name,
                     'avatar_path' => $employee->avatar_path,
                     'date' => $birthday,
-                    'age' => Carbon::parse($employee->date_of_birth)->age,
+                    'age' => $employee->age_label,
                     'url' => UserResource::getUrl('view', ['record' => $employee]),
                 ];
             })

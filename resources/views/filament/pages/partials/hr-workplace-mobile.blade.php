@@ -154,7 +154,7 @@
                         <span class="nik-work-hr-mobile-avatar">{{ mb_substr($birthday['employee'], 0, 1) }}</span>
                         <div>
                             <strong>{{ $birthday['employee'] }}</strong>
-                            <small>{{ $birthday['date']->translatedFormat('d F') }}</small>
+                            <small>{{ $birthday['date']->translatedFormat('d F') }} · {{ $birthday['age'] }}</small>
                         </div>
                         <i>›</i>
                     </a>

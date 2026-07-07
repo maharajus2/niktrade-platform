@@ -115,6 +115,15 @@ class UserForm
                             ->tel()
                             ->maxLength(255),
 
+                        DatePicker::make('date_of_birth')
+                            ->label('Дата рождения')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Укажите дату рождения.',
+                            ])
+                            ->maxDate(today())
+                            ->native(false),
+
                         TextInput::make('password')
                             ->label('Пароль')
                             ->password()

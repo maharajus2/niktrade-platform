@@ -806,7 +806,7 @@
         display: none;
     }
 
-    .nik-calendar-side section:first-child {
+    .nik-calendar-side section:nth-child(2) {
         margin-bottom: calc(150px + env(safe-area-inset-bottom));
     }
 

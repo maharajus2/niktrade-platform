@@ -204,7 +204,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-spacing-2'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-spacing-3'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link

@@ -813,14 +813,27 @@
 
     .nik-calendar-navigation {
         display: grid;
-        grid-template-columns: 42px minmax(0, 1fr) 42px auto;
+        grid-template-columns: 52px minmax(0, 1fr) 52px auto;
         width: 100%;
         overflow: visible;
     }
 
     .nik-calendar-navigation button {
+        position: relative;
         min-width: 0;
         padding: 0 10px;
+    }
+
+    .nik-calendar-navigation button[data-nt-calendar-prev],
+    .nik-calendar-navigation button[data-nt-calendar-next] {
+        min-height: 44px;
+    }
+
+    .nik-calendar-navigation button[data-nt-calendar-prev]::before,
+    .nik-calendar-navigation button[data-nt-calendar-next]::before {
+        content: "";
+        position: absolute;
+        inset: -6px;
     }
 
     .nik-calendar-navigation strong {

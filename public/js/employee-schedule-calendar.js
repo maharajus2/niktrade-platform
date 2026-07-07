@@ -823,16 +823,6 @@
                 syncViewButtons(calendar.view.type)
                 renderMobileStrip(calendar)
 
-                calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
-                    button.addEventListener('click', () => {
-                        calendar.changeView(button.dataset.ntCalendarView)
-                        updateExternalTitle(calendar)
-                        syncViewButtons(calendar.view.type)
-                        renderMobileStrip(calendar)
-                        window.setTimeout(() => calendar.updateSize(), 0)
-                    })
-                })
-
                 const navigatePeriod = (direction) => {
                     if (calendar.view.type === 'dayGridMonth') {
                         const target = new Date(calendar.view.currentStart)
@@ -857,12 +847,30 @@
                     }, 0)
                 }
 
-                calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
-                    navigatePeriod(-1)
-                })
+                calendarRoot?.addEventListener('click', (event) => {
+                    const viewButton = event.target.closest('[data-nt-calendar-view]')
+                    const previousButton = event.target.closest('[data-nt-calendar-prev]')
+                    const nextButton = event.target.closest('[data-nt-calendar-next]')
 
-                calendarRoot?.querySelector('[data-nt-calendar-next]')?.addEventListener('click', () => {
-                    navigatePeriod(1)
+                    if (viewButton && calendarRoot.contains(viewButton)) {
+                        calendar.changeView(viewButton.dataset.ntCalendarView)
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                        renderMobileStrip(calendar)
+                        window.setTimeout(() => calendar.updateSize(), 0)
+
+                        return
+                    }
+
+                    if (previousButton && calendarRoot.contains(previousButton)) {
+                        navigatePeriod(-1)
+
+                        return
+                    }
+
+                    if (nextButton && calendarRoot.contains(nextButton)) {
+                        navigatePeriod(1)
+                    }
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {

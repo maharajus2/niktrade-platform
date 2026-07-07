@@ -1031,8 +1031,22 @@
 
                 calendarRoot?.addEventListener('click', (event) => {
                     const viewButton = event.target.closest('[data-nt-calendar-view]')
+                    const periodMonthButton = event.target.closest('[data-nt-period-month]')
                     const previousButton = event.target.closest('[data-nt-calendar-prev]')
                     const nextButton = event.target.closest('[data-nt-calendar-next]')
+
+                    if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
+                        const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
+                        const month = Number(periodMonthButton.dataset.ntPeriodMonth)
+
+                        goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                        closePeriodPicker()
+
+                        return
+                    }
 
                     if (viewButton && calendarRoot.contains(viewButton)) {
                         calendar.changeView(viewButton.dataset.ntCalendarView)
@@ -1095,21 +1109,6 @@
                     if (picker) {
                         picker.hidden = ! picker.hidden
                     }
-                })
-
-                calendarRoot?.querySelector('[data-nt-period-months]')?.addEventListener('click', (event) => {
-                    const button = event.target.closest('[data-nt-period-month]')
-
-                    if (! button) {
-                        return
-                    }
-
-                    const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
-                    const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
-                    const month = Number(button.dataset.ntPeriodMonth)
-
-                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
-                    closePeriodPicker()
                 })
 
                 calendarRoot?.querySelector('[data-nt-period-year]')?.addEventListener('change', (event) => {

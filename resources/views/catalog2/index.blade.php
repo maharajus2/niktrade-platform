@@ -108,15 +108,24 @@
         }
 
         .nik-catalog2 {
+            --liquid-blue: #0a84ff;
+            --liquid-blue-deep: #006eea;
+            --liquid-green: #21c98b;
+            --liquid-ink: #10223f;
+            --liquid-border: rgba(255, 255, 255, .68);
+            --liquid-shadow: 0 28px 80px rgba(20, 82, 148, .16), 0 10px 26px rgba(10, 132, 255, .10);
             min-height: 100vh;
             overflow-x: hidden;
             background:
-                radial-gradient(circle at 10% 6%, rgba(0, 142, 255, .20), transparent 24rem),
-                radial-gradient(circle at 88% 7%, rgba(11, 188, 199, .17), transparent 22rem),
-                linear-gradient(180deg, #eaf7ff 0%, #f5fbff 36%, #e8f6ff 100%);
+                radial-gradient(circle at 11% 7%, rgba(10, 132, 255, .26), transparent 25rem),
+                radial-gradient(circle at 86% 12%, rgba(33, 201, 139, .20), transparent 23rem),
+                radial-gradient(circle at 68% 88%, rgba(125, 211, 252, .22), transparent 28rem),
+                linear-gradient(135deg, #f7fcff 0%, #e6f5ff 42%, #f7fcff 100%);
             color: #10223f;
             font-family: Inter, Arial, sans-serif;
             letter-spacing: 0;
+            position: relative;
+            isolation: isolate;
         }
 
         .nik-catalog2 a {
@@ -145,17 +154,24 @@
             z-index: 0;
             background:
                 radial-gradient(circle at 2% 12%, rgba(255,255,255,.86) 0 18px, transparent 19px),
+                radial-gradient(circle at 14% 70%, rgba(255,255,255,.52) 0 36px, transparent 37px),
                 radial-gradient(circle at 46% 7%, rgba(255,255,255,.64) 0 16px, transparent 17px),
+                radial-gradient(circle at 62% 36%, rgba(255,255,255,.34) 0 54px, transparent 56px),
                 radial-gradient(circle at 96% 18%, rgba(255,255,255,.62) 0 22px, transparent 23px),
-                radial-gradient(circle at 34% 38%, rgba(255,255,255,.42) 0 13px, transparent 14px);
-            opacity: .82;
+                radial-gradient(circle at 34% 38%, rgba(255,255,255,.42) 0 13px, transparent 14px),
+                linear-gradient(118deg, rgba(255,255,255,.28), transparent 22%, rgba(33,201,139,.08) 64%, transparent);
+            opacity: .95;
         }
 
         .nik-catalog2::after {
             z-index: 0;
             background-image:
-                linear-gradient(120deg, rgba(255,255,255,.28), transparent 18%),
-                radial-gradient(circle at 50% 0%, rgba(255,255,255,.68), transparent 28rem);
+                radial-gradient(ellipse at 24% 18%, rgba(255,255,255,.76), transparent 23rem),
+                radial-gradient(ellipse at 78% 27%, rgba(10,132,255,.18), transparent 26rem),
+                radial-gradient(ellipse at 58% 64%, rgba(33,201,139,.14), transparent 30rem),
+                linear-gradient(120deg, rgba(255,255,255,.36), transparent 18%);
+            filter: blur(18px);
+            opacity: .92;
         }
 
         .nik-catalog2-shell {
@@ -167,10 +183,52 @@
         }
 
         .nik-catalog2-glass {
-            border: 1px solid rgba(255, 255, 255, .72);
-            background: rgba(255, 255, 255, .48);
-            box-shadow: 0 24px 70px rgba(33, 105, 168, .15), inset 0 1px 0 rgba(255,255,255,.78);
-            backdrop-filter: blur(24px) saturate(1.18);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--liquid-border);
+            background:
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.72), transparent 34%),
+                radial-gradient(circle at 88% 100%, rgba(10,132,255,.16), transparent 38%),
+                linear-gradient(135deg, rgba(255, 255, 255, .58), rgba(233, 247, 255, .34) 48%, rgba(255, 255, 255, .46));
+            box-shadow:
+                var(--liquid-shadow),
+                inset 0 1px 0 rgba(255,255,255,.94),
+                inset 1px 0 0 rgba(255,255,255,.42),
+                inset 0 -1px 0 rgba(89, 162, 230, .16);
+            backdrop-filter: blur(28px) saturate(170%);
+            -webkit-backdrop-filter: blur(28px) saturate(170%);
+            isolation: isolate;
+        }
+
+        .nik-catalog2-glass::before,
+        .nik-catalog2-glass::after {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            content: "";
+        }
+
+        .nik-catalog2-glass::before {
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.82) 0%, rgba(255,255,255,.22) 31%, rgba(255,255,255,0) 58%),
+                linear-gradient(315deg, rgba(10,132,255,.10), transparent 42%);
+            opacity: .88;
+        }
+
+        .nik-catalog2-glass::after {
+            inset: 1px;
+            background:
+                radial-gradient(ellipse at 50% 100%, rgba(10,132,255,.14), transparent 50%),
+                linear-gradient(to top, rgba(255,255,255,.30), rgba(255,255,255,0) 38%),
+                linear-gradient(90deg, rgba(255,255,255,.14), transparent 18%, transparent 82%, rgba(78, 169, 255, .10));
+            opacity: .78;
+        }
+
+        .nik-catalog2-glass > * {
+            position: relative;
+            z-index: 1;
         }
 
         .nik-catalog2-header {
@@ -201,6 +259,12 @@
             align-items: center;
             gap: 12px;
             min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nik-catalog2-nav::-webkit-scrollbar {
+            display: none;
         }
 
         .nik-catalog2-catalog-btn,
@@ -212,22 +276,33 @@
             justify-content: center;
             border: 1px solid rgba(255,255,255,.68);
             border-radius: 18px;
-            background: rgba(255,255,255,.52);
+            background:
+                radial-gradient(circle at 22% 0%, rgba(255,255,255,.88), transparent 48%),
+                linear-gradient(135deg, rgba(255,255,255,.62), rgba(232,247,255,.38));
             color: #10223f;
             font-size: 14px;
             font-weight: 800;
-            box-shadow: 0 12px 30px rgba(39, 99, 159, .10), inset 0 1px 0 rgba(255,255,255,.78);
-            backdrop-filter: blur(18px);
+            box-shadow:
+                0 12px 30px rgba(39, 99, 159, .12),
+                inset 0 1px 0 rgba(255,255,255,.88),
+                inset 0 -1px 0 rgba(80, 160, 232, .13);
+            backdrop-filter: blur(20px) saturate(165%);
+            -webkit-backdrop-filter: blur(20px) saturate(165%);
         }
 
         .nik-catalog2-catalog-btn {
             min-width: 136px;
             min-height: 48px;
             gap: 12px;
-            border-color: rgba(0, 127, 255, .28);
-            background: linear-gradient(135deg, #0b86ff, #006eea);
+            border-color: rgba(255, 255, 255, .45);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255,255,255,.50), transparent 34%),
+                linear-gradient(180deg, rgba(42, 157, 255, .98), rgba(0, 110, 234, .94));
             color: #fff;
-            box-shadow: 0 16px 36px rgba(0, 112, 235, .26);
+            box-shadow:
+                0 18px 38px rgba(0, 112, 235, .30),
+                inset 0 1px 0 rgba(255,255,255,.52),
+                inset 0 -1px 0 rgba(0, 61, 170, .20);
         }
 
         .nik-catalog2-catalog-btn span {
@@ -296,10 +371,13 @@
             justify-content: center;
             border: 2px solid rgba(255,255,255,.9);
             border-radius: 999px;
-            background: #0b86ff;
+            background:
+                radial-gradient(circle at 30% 18%, rgba(255,255,255,.48), transparent 34%),
+                linear-gradient(180deg, #2a9dff, #006eea);
             color: #fff;
             font-size: 10px;
             font-weight: 900;
+            box-shadow: 0 8px 18px rgba(0, 112, 235, .30);
         }
 
         .nik-catalog2-hero-grid {
@@ -320,10 +398,14 @@
         .nik-catalog2-hero::before {
             position: absolute;
             inset: 0;
+            z-index: 0;
             background:
-                radial-gradient(circle at 72% 42%, rgba(0, 132, 255, .18), transparent 19rem),
-                radial-gradient(circle at 18% 12%, rgba(255,255,255,.88), transparent 18rem);
+                linear-gradient(135deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.18) 36%, transparent 58%),
+                radial-gradient(circle at 72% 42%, rgba(0, 132, 255, .23), transparent 19rem),
+                radial-gradient(circle at 18% 12%, rgba(255,255,255,.70), transparent 18rem),
+                radial-gradient(circle at 58% 108%, rgba(33,201,139,.14), transparent 16rem);
             content: "";
+            opacity: .96;
         }
 
         .nik-catalog2-hero-copy {
@@ -383,8 +465,16 @@
             align-items: center;
             justify-content: center;
             border-radius: 13px;
-            background: rgba(0, 132, 255, .10);
+            border: 1px solid rgba(255,255,255,.62);
+            background:
+                radial-gradient(circle at 28% 10%, rgba(255,255,255,.85), transparent 40%),
+                linear-gradient(135deg, rgba(185,225,255,.66), rgba(255,255,255,.28));
             color: #0b86ff;
+            box-shadow:
+                0 10px 22px rgba(10,132,255,.13),
+                inset 0 1px 0 rgba(255,255,255,.88);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
         }
 
         .nik-catalog2-actions {
@@ -399,10 +489,15 @@
         }
 
         .nik-catalog2-action.is-primary {
-            border-color: rgba(0, 127, 255, .24);
-            background: linear-gradient(135deg, #0b86ff, #006eea);
+            border-color: rgba(255, 255, 255, .42);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255,255,255,.50), transparent 34%),
+                linear-gradient(180deg, rgba(42,157,255,.98), rgba(0,110,234,.94));
             color: #fff;
-            box-shadow: 0 18px 38px rgba(0, 112, 235, .26);
+            box-shadow:
+                0 18px 38px rgba(0, 112, 235, .30),
+                inset 0 1px 0 rgba(255,255,255,.50),
+                inset 0 -1px 0 rgba(0,61,170,.20);
         }
 
         .nik-catalog2-hero-product {
@@ -438,11 +533,16 @@
             min-height: 168px;
             overflow: hidden;
             border-radius: 28px;
+            background:
+                radial-gradient(circle at 86% 50%, rgba(10,132,255,.24), transparent 42%),
+                linear-gradient(135deg, rgba(235,248,255,.58), rgba(255,255,255,.34));
             padding: 30px;
         }
 
         .nik-catalog2-brand-card.is-arvetera {
-            background: linear-gradient(135deg, rgba(228, 255, 241, .74), rgba(255,255,255,.48));
+            background:
+                radial-gradient(circle at 86% 52%, rgba(33,201,139,.26), transparent 42%),
+                linear-gradient(135deg, rgba(225,255,241,.54), rgba(255,255,255,.32));
         }
 
         .nik-catalog2-brand-card h3 {
@@ -474,12 +574,18 @@
             align-items: center;
             border: 1px solid rgba(255,255,255,.76);
             border-radius: 14px;
-            background: rgba(255,255,255,.66);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255,255,255,.92), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.62), rgba(235,248,255,.34));
             padding: 0 22px;
             color: #10223f;
             font-size: 13px;
             font-weight: 900;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+            box-shadow:
+                0 10px 24px rgba(39,99,159,.10),
+                inset 0 1px 0 rgba(255,255,255,.88);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
         }
 
         .nik-catalog2-brand-card img {
@@ -516,6 +622,18 @@
             border-radius: 22px;
             padding: 16px;
             text-align: center;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+        }
+
+        .nik-catalog2-category-card:hover,
+        .nik-catalog2-product-card:hover,
+        .nik-catalog2-promo:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,.86);
+            box-shadow:
+                0 30px 82px rgba(20, 82, 148, .18),
+                0 12px 30px rgba(10,132,255,.13),
+                inset 0 1px 0 rgba(255,255,255,.96);
         }
 
         .nik-catalog2-category-card img {
@@ -565,6 +683,7 @@
             overflow: hidden;
             border-radius: 22px;
             padding: 14px;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
         }
 
         .nik-catalog2-product-image {
@@ -573,6 +692,15 @@
             height: 145px;
             align-items: center;
             justify-content: center;
+            margin: -2px -2px 8px;
+            border: 1px solid rgba(255,255,255,.42);
+            border-radius: 18px;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(255,255,255,.58), transparent 45%),
+                linear-gradient(180deg, rgba(255,255,255,.25), rgba(168,219,255,.12));
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.68),
+                inset 0 -1px 0 rgba(10,132,255,.09);
         }
 
         .nik-catalog2-product-image img {
@@ -616,11 +744,16 @@
             right: 13px;
             width: 32px;
             height: 32px;
-            border: 0;
+            border: 1px solid rgba(255,255,255,.62);
             border-radius: 999px;
-            background: rgba(255,255,255,.58);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255,255,255,.88), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.58), rgba(229,246,255,.34));
             color: #477096;
             cursor: pointer;
+            box-shadow: 0 10px 22px rgba(39,99,159,.12), inset 0 1px 0 rgba(255,255,255,.82);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
         }
 
         .nik-catalog2-dots {
@@ -698,12 +831,17 @@
             height: 42px;
             align-items: center;
             justify-content: center;
-            border: 0;
+            border: 1px solid rgba(255,255,255,.42);
             border-radius: 13px;
-            background: linear-gradient(135deg, #0b86ff, #006eea);
+            background:
+                radial-gradient(circle at 30% 10%, rgba(255,255,255,.52), transparent 36%),
+                linear-gradient(180deg, rgba(42,157,255,.98), rgba(0,110,234,.94));
             color: #fff;
             cursor: pointer;
-            box-shadow: 0 14px 24px rgba(0, 112, 235, .28);
+            box-shadow:
+                0 14px 28px rgba(0, 112, 235, .30),
+                inset 0 1px 0 rgba(255,255,255,.48),
+                inset 0 -1px 0 rgba(0,61,170,.20);
         }
 
         .nik-catalog2-advantages {
@@ -712,6 +850,9 @@
             gap: 10px;
             border-radius: 20px;
             padding: 14px;
+            background:
+                radial-gradient(circle at 9% 0%, rgba(255,255,255,.74), transparent 26%),
+                linear-gradient(135deg, rgba(255,255,255,.48), rgba(230,247,255,.28));
         }
 
         .nik-catalog2-advantage {
@@ -734,18 +875,25 @@
             overflow: hidden;
             border-radius: 22px;
             padding: 24px;
+            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
         }
 
         .nik-catalog2-promo.is-sale {
-            background: linear-gradient(135deg, rgba(255, 242, 221, .72), rgba(255,255,255,.54));
+            background:
+                radial-gradient(circle at 76% 50%, rgba(255, 187, 64, .22), transparent 46%),
+                linear-gradient(135deg, rgba(255, 242, 221, .50), rgba(255,255,255,.30));
         }
 
         .nik-catalog2-promo.is-new {
-            background: linear-gradient(135deg, rgba(219, 255, 249, .72), rgba(255,255,255,.54));
+            background:
+                radial-gradient(circle at 78% 52%, rgba(33, 201, 139, .20), transparent 46%),
+                linear-gradient(135deg, rgba(219, 255, 249, .48), rgba(255,255,255,.30));
         }
 
         .nik-catalog2-promo.is-b2b {
-            background: linear-gradient(135deg, rgba(224, 241, 255, .74), rgba(255,255,255,.54));
+            background:
+                radial-gradient(circle at 78% 52%, rgba(10,132,255,.22), transparent 46%),
+                linear-gradient(135deg, rgba(224, 241, 255, .50), rgba(255,255,255,.30));
         }
 
         .nik-catalog2-promo span {
@@ -770,10 +918,15 @@
             align-items: center;
             border: 1px solid rgba(255,255,255,.74);
             border-radius: 12px;
-            background: rgba(255,255,255,.58);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255,255,255,.88), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.58), rgba(235,248,255,.28));
             padding: 0 16px;
             font-size: 12px;
             font-weight: 900;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
         }
 
         .nik-catalog2-promo img {
@@ -809,7 +962,15 @@
             overflow: hidden;
             border-radius: 18px;
             padding: 20px;
-            background: rgba(255,255,255,.42);
+            border: 1px solid rgba(255,255,255,.54);
+            background:
+                radial-gradient(circle at 88% 52%, rgba(10,132,255,.16), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.46), rgba(232,247,255,.24));
+            box-shadow:
+                0 14px 32px rgba(39,99,159,.10),
+                inset 0 1px 0 rgba(255,255,255,.76);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
         }
 
         .nik-catalog2-brand-mini strong {
@@ -853,9 +1014,15 @@
             align-items: flex-end;
             justify-content: flex-end;
             margin-top: 10px;
+            border: 1px solid rgba(255,255,255,.56);
             border-radius: 18px;
-            background: linear-gradient(135deg, rgba(221, 244, 255, .72), rgba(255,255,255,.52));
+            background:
+                radial-gradient(circle at 78% 20%, rgba(10,132,255,.18), transparent 42%),
+                linear-gradient(135deg, rgba(221,244,255,.46), rgba(255,255,255,.26));
             padding: 12px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.76);
+            backdrop-filter: blur(16px) saturate(155%);
+            -webkit-backdrop-filter: blur(16px) saturate(155%);
         }
 
         .nik-catalog2-about-visual img {
@@ -897,8 +1064,16 @@
             display: grid;
             gap: 8px;
             border-radius: 18px;
-            background: rgba(255,255,255,.42);
+            border: 1px solid rgba(255,255,255,.52);
+            background:
+                radial-gradient(circle at 18% 0%, rgba(255,255,255,.68), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.42), rgba(232,247,255,.24));
             padding: 12px;
+            box-shadow:
+                0 14px 32px rgba(39,99,159,.10),
+                inset 0 1px 0 rgba(255,255,255,.78);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
         }
 
         .nik-catalog2-news-card img {
@@ -906,7 +1081,9 @@
             height: 86px;
             object-fit: contain;
             border-radius: 13px;
-            background: rgba(255,255,255,.45);
+            background:
+                radial-gradient(circle at 50% 20%, rgba(255,255,255,.56), transparent 45%),
+                linear-gradient(180deg, rgba(255,255,255,.26), rgba(168,219,255,.12));
         }
 
         .nik-catalog2-news-card time,
@@ -941,20 +1118,48 @@
             min-height: 44px;
             border: 1px solid rgba(255,255,255,.72);
             border-radius: 14px;
-            background: rgba(255,255,255,.62);
+            background:
+                radial-gradient(circle at 20% 0%, rgba(255,255,255,.86), transparent 42%),
+                linear-gradient(135deg, rgba(255,255,255,.58), rgba(232,247,255,.32));
             padding: 0 14px;
             color: #10223f;
             outline: 0;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.82),
+                inset 0 -1px 0 rgba(10,132,255,.08);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
         }
 
         .nik-catalog2-subscribe button {
             min-height: 44px;
-            border: 0;
+            border: 1px solid rgba(255,255,255,.42);
             border-radius: 14px;
-            background: linear-gradient(135deg, #0b86ff, #006eea);
+            background:
+                radial-gradient(circle at 28% 0%, rgba(255,255,255,.50), transparent 36%),
+                linear-gradient(180deg, rgba(42,157,255,.98), rgba(0,110,234,.94));
             padding: 0 20px;
             color: #fff;
             font-weight: 900;
+            box-shadow:
+                0 14px 30px rgba(0,112,235,.28),
+                inset 0 1px 0 rgba(255,255,255,.46);
+        }
+
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .nik-catalog2-glass,
+            .nik-catalog2-catalog-btn,
+            .nik-catalog2-nav a,
+            .nik-catalog2-icon-link,
+            .nik-catalog2-action,
+            .nik-catalog2-brand-card a,
+            .nik-catalog2-promo a,
+            .nik-catalog2-brand-mini,
+            .nik-catalog2-about-visual,
+            .nik-catalog2-news-card,
+            .nik-catalog2-subscribe input {
+                background: rgba(255,255,255,.86);
+            }
         }
 
         .nik-catalog2-footer-links {

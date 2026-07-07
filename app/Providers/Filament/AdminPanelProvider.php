@@ -7,9 +7,11 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Resources\AdminUsers\Pages\EditUser;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -34,6 +36,11 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logont.png'))
             ->brandLogoHeight('2rem')
             ->login()
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn () => view('filament.resources.admin-users.pages.employee-edit-styles'),
+                scopes: EditUser::class,
+            )
             ->colors([
                 'primary' => Color::Sky,
             ])

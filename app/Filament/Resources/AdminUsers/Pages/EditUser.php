@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Support\EmployeeRequiredDocuments;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Width;
 use Illuminate\Validation\ValidationException;
 
 class EditUser extends EditRecord
@@ -16,6 +17,12 @@ class EditUser extends EditRecord
     protected static ?string $title = 'Редактирование сотрудника';
 
     protected static ?string $breadcrumb = 'Редактирование сотрудника';
+
+    protected Width|string|null $maxContentWidth = Width::Full;
+
+    protected array $extraBodyAttributes = [
+        'class' => 'nik-employee-edit-page',
+    ];
 
     protected function getHeaderActions(): array
     {

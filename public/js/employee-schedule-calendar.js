@@ -833,26 +833,36 @@
                     })
                 })
 
-                calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
-                    calendar.prev()
+                const navigatePeriod = (direction) => {
+                    if (calendar.view.type === 'dayGridMonth') {
+                        const target = new Date(calendar.view.currentStart)
+                        target.setMonth(target.getMonth() + direction, 1)
+                        target.setHours(12, 0, 0, 0)
+                        calendar.gotoDate(target)
+                        selectedDate = formatDate(target)
+                        updateSelectedDayLabel()
+                    } else if (direction < 0) {
+                        calendar.prev()
+                    } else {
+                        calendar.next()
+                    }
+
                     updateExternalTitle(calendar)
                     syncViewButtons(calendar.view.type)
                     window.setTimeout(() => {
                         updateExternalTitle(calendar)
                         syncViewButtons(calendar.view.type)
                         renderMobileStrip(calendar)
+                        renderAgenda(calendar.getEvents())
                     }, 0)
+                }
+
+                calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
+                    navigatePeriod(-1)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-next]')?.addEventListener('click', () => {
-                    calendar.next()
-                    updateExternalTitle(calendar)
-                    syncViewButtons(calendar.view.type)
-                    window.setTimeout(() => {
-                        updateExternalTitle(calendar)
-                        syncViewButtons(calendar.view.type)
-                        renderMobileStrip(calendar)
-                    }, 0)
+                    navigatePeriod(1)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {

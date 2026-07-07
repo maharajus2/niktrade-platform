@@ -208,7 +208,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-holidays'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-holidays-2'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

@@ -33,15 +33,18 @@ class HrUpcomingEventsWidget extends Widget
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->whereIn('type', [EmployeeScheduleEntry::TYPE_VACATION, EmployeeScheduleEntry::TYPE_SICK_LEAVE, EmployeeScheduleEntry::TYPE_DAY_OFF])
             ->orderBy('date')
-            ->limit(12)
             ->get()
-            ->each(fn (EmployeeScheduleEntry $entry) => $events->push([
-                'date' => $entry->date,
-                'label' => $entry->getDisplayTitle(),
-                'description' => $entry->employee?->name,
-                'url' => $entry->employee ? UserResource::getUrl('view', ['record' => $entry->employee]) : null,
-                'color' => $entry->type === EmployeeScheduleEntry::TYPE_VACATION ? 'purple' : 'warning',
-            ]));
+            ->groupBy(fn (EmployeeScheduleEntry $entry): string => implode('|', [
+                $entry->employee_id,
+                $entry->type,
+                $entry->getDisplayTitle(),
+                (int) $entry->vacation_without_pay,
+                $entry->request_reason_type,
+            ]))
+            ->each(function ($entries) use ($events): void {
+                $this->continuousSchedulePeriods($entries)
+                    ->each(fn (array $period) => $events->push($period));
+            });
 
         User::query()
             ->whereNotNull('probation_ends_at')
@@ -51,6 +54,7 @@ class HrUpcomingEventsWidget extends Widget
             ->get()
             ->each(fn (User $employee) => $events->push([
                 'date' => $employee->probation_ends_at,
+                'endDate' => null,
                 'label' => 'Окончание испытательного срока',
                 'description' => $employee->name,
                 'url' => UserResource::getUrl('view', ['record' => $employee]),
@@ -67,6 +71,7 @@ class HrUpcomingEventsWidget extends Widget
             ->get()
             ->each(fn (EmployeeDocument $document) => $events->push([
                 'date' => $document->expires_at,
+                'endDate' => null,
                 'label' => 'Истекает документ: '.$document->getCategoryLabel(),
                 'description' => $document->employee?->name,
                 'url' => $document->employee ? UserResource::getUrl('view', ['record' => $document->employee]) : null,
@@ -81,6 +86,7 @@ class HrUpcomingEventsWidget extends Widget
             ->get()
             ->each(fn (User $employee) => $events->push([
                 'date' => $employee->hire_date,
+                'endDate' => null,
                 'label' => 'Выход сотрудника',
                 'description' => $employee->name,
                 'url' => UserResource::getUrl('view', ['record' => $employee]),
@@ -94,6 +100,7 @@ class HrUpcomingEventsWidget extends Widget
             ->take(5)
             ->each(fn (User $employee) => $events->push([
                 'date' => $this->nextBirthday($employee),
+                'endDate' => null,
                 'label' => 'День рождения',
                 'description' => $employee->name,
                 'url' => UserResource::getUrl('view', ['record' => $employee]),
@@ -107,6 +114,36 @@ class HrUpcomingEventsWidget extends Widget
                 ->values()
                 ->all(),
         ];
+    }
+
+    private function continuousSchedulePeriods($entries)
+    {
+        return $entries
+            ->sortBy('date')
+            ->values()
+            ->reduce(function ($periods, EmployeeScheduleEntry $entry) {
+                $date = $entry->date->copy()->startOfDay();
+                $lastIndex = $periods->count() - 1;
+                $last = $lastIndex >= 0 ? $periods->get($lastIndex) : null;
+
+                if ($last && $last['endDate']->copy()->addDay()->isSameDay($date)) {
+                    $last['endDate'] = $date;
+                    $periods->put($lastIndex, $last);
+
+                    return $periods;
+                }
+
+                $periods->push([
+                    'date' => $date,
+                    'endDate' => $date,
+                    'label' => $entry->getDisplayTitle(),
+                    'description' => $entry->employee?->name,
+                    'url' => $entry->employee ? UserResource::getUrl('view', ['record' => $entry->employee]) : null,
+                    'color' => $entry->type === EmployeeScheduleEntry::TYPE_VACATION ? 'purple' : 'warning',
+                ]);
+
+                return $periods;
+            }, collect());
     }
 
     private function nextBirthday(User $employee): Carbon

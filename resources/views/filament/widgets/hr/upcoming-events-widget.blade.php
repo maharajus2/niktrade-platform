@@ -18,7 +18,13 @@
                             <div class="nt-mini-row__meta">{{ $event['description'] }}</div>
                         </div>
 
-                        <span class="nt-pill">{{ $event['date']->format('d.m') }}</span>
+                        <span class="nt-pill">
+                            @if (($event['endDate'] ?? null) && ! $event['date']->isSameDay($event['endDate']))
+                                {{ $event['date']->format('d.m') }}-{{ $event['endDate']->format('d.m') }}
+                            @else
+                                {{ $event['date']->format('d.m') }}
+                            @endif
+                        </span>
                     </a>
                 @empty
                     <div class="nt-empty">На ближайшую неделю нет срочных HR-событий.</div>

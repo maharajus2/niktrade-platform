@@ -4,6 +4,7 @@
 }
 
 .nik-calendar {
+    position: relative;
     color: #111827;
 }
 
@@ -221,6 +222,37 @@
 
 .nik-calendar-mobile-strip {
     display: none;
+}
+
+.nik-calendar-holiday-tooltip {
+    position: absolute;
+    z-index: 58;
+    max-width: min(280px, calc(100vw - 32px));
+    border: 1px solid rgba(248, 113, 113, .24);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .86);
+    padding: 10px 12px;
+    color: #991b1b;
+    font-size: 13px;
+    font-weight: 820;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 18px 40px rgba(31, 52, 86, .16), inset 0 1px 0 rgba(255, 255, 255, .74);
+    backdrop-filter: blur(18px) saturate(1.14);
+    pointer-events: none;
+}
+
+.nik-calendar-holiday-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    border-right: 1px solid rgba(248, 113, 113, .24);
+    border-bottom: 1px solid rgba(248, 113, 113, .24);
+    background: rgba(255, 255, 255, .86);
+    transform: translateX(-50%) rotate(45deg);
 }
 
 .nik-calendar-side {

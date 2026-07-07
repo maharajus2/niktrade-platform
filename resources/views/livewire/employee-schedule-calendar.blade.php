@@ -200,7 +200,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-holidays-3'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-holiday-tooltip'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -208,7 +208,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-month-nav-4'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-holiday-tooltip'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

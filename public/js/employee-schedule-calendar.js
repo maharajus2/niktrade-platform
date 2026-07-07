@@ -364,6 +364,38 @@
             }
         }
 
+        const hideHolidayTooltip = () => {
+            calendarRoot?.querySelector('.nik-calendar-holiday-tooltip')?.remove()
+        }
+
+        const showHolidayTooltip = (button) => {
+            const dateKey = button?.dataset.ntMobileDate
+            const label = dateKey ? holidayLabel(dateKey) : ''
+
+            hideHolidayTooltip()
+
+            if (! label || ! calendarRoot) {
+                return
+            }
+
+            const tooltip = document.createElement('div')
+            tooltip.className = 'nik-calendar-holiday-tooltip'
+            tooltip.textContent = label
+            calendarRoot.appendChild(tooltip)
+
+            const rootRect = calendarRoot.getBoundingClientRect()
+            const buttonRect = button.getBoundingClientRect()
+            const tooltipRect = tooltip.getBoundingClientRect()
+            const left = buttonRect.left - rootRect.left + (buttonRect.width / 2) - (tooltipRect.width / 2)
+            const top = buttonRect.top - rootRect.top - tooltipRect.height - 10
+
+            tooltip.style.left = `${Math.max(12, Math.min(left, rootRect.width - tooltipRect.width - 12))}px`
+            tooltip.style.top = `${Math.max(12, top)}px`
+
+            window.clearTimeout(calendarRoot._ntHolidayTooltipTimer)
+            calendarRoot._ntHolidayTooltipTimer = window.setTimeout(hideHolidayTooltip, 3200)
+        }
+
         const refetchWithFilters = () => {
             if (element._ntFullCalendar) {
                 element._ntFullCalendar.refetchEvents()
@@ -966,6 +998,7 @@
                         updateSelectedDayLabel()
                         syncMobileStripButtons()
                         renderAgenda(calendar.getEvents())
+                        showHolidayTooltip(button)
                     }
                 })
 

@@ -5,6 +5,8 @@
 @source '../views/filament/pages/partials/employee-workplace.blade.php';
 @source '../views/filament/pages/partials/employee-workplace-mobile.blade.php';
 @source '../views/filament/pages/partials/hr-workplace-mobile.blade.php';
+@source '../views/filament/resources/admin-users/pages/employee-list.blade.php';
+@source '../views/filament/resources/departments/pages/department-list.blade.php';
 @source '../views/filament/resources/orders/pages/order-kanban.blade.php';
 @source '../views/filament/resources/orders/pages/partials/*.blade.php';
 
@@ -15,6 +17,879 @@
     font-display: swap;
     src: url("/fonts/filament/filament/inter/inter-cyrillic-wght-normal-JEOLYBOO.woff2") format("woff2-variations");
     unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+.nik-work-app .nik-employee-list,
+.nik-work-app .nik-department-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.nik-work-app .nik-directory-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px) auto auto;
+    gap: 14px;
+    align-items: start;
+}
+
+.nik-work-app .nik-directory-head span,
+.nik-work-app .nik-directory-side h2,
+.nik-work-app .nik-directory-mobile-card small,
+.nik-work-app .nik-directory-kpis small {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.nik-work-app .nik-directory-head h1 {
+    margin: 4px 0 6px;
+    color: #0f172a;
+    font-size: 34px;
+    line-height: 1.05;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-head p {
+    margin: 0;
+    max-width: 660px;
+    color: #53657d;
+    font-size: 15px;
+}
+
+.nik-work-app .nik-directory-search,
+.nik-work-app .nik-directory-filter-button,
+.nik-work-app .nik-directory-primary,
+.nik-work-app .nik-directory-tabs,
+.nik-work-app .nik-directory-panel,
+.nik-work-app .nik-directory-side section,
+.nik-work-app .nik-directory-kpis article,
+.nik-work-app .nik-directory-mobile-card,
+.nik-work-app .nik-department-card,
+.nik-work-app .nik-directory-mobile-kpis article,
+.nik-work-app .nik-directory-mobile-search {
+    background: rgba(255, 255, 255, .72);
+    border: 1px solid rgba(255, 255, 255, .65);
+    box-shadow: 0 20px 55px rgba(31, 80, 143, .10);
+    backdrop-filter: blur(22px);
+}
+
+.nik-work-app .nik-directory-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 18px;
+}
+
+.nik-work-app .nik-directory-search .nik-work-svg,
+.nik-work-app .nik-directory-mobile-search .nik-work-svg {
+    width: 18px;
+    height: 18px;
+    color: #44618a;
+}
+
+.nik-work-app .nik-directory-search input,
+.nik-work-app .nik-directory-mobile-search input {
+    min-width: 0;
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.nik-work-app .nik-directory-filter-button,
+.nik-work-app .nik-directory-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 18px;
+    color: #0b64d8;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-primary {
+    background: linear-gradient(135deg, #1d7cf2, #0b64d8);
+    border-color: rgba(29, 124, 242, .55);
+    color: #fff;
+    box-shadow: 0 18px 36px rgba(29, 124, 242, .24);
+}
+
+.nik-work-app .nik-directory-filter-button .nik-work-svg,
+.nik-work-app .nik-directory-primary .nik-work-svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nik-work-app .nik-directory-kpis {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.nik-work-app .nik-directory-kpis article {
+    display: flex;
+    gap: 12px;
+    min-height: 112px;
+    padding: 18px;
+    border-radius: 24px;
+}
+
+.nik-work-app .nik-directory-kpis article > span {
+    display: grid;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 16px;
+    background: rgba(29, 124, 242, .12);
+    color: #0b64d8;
+}
+
+.nik-work-app .nik-directory-kpis article.is-cyan > span { background: rgba(6, 182, 212, .13); color: #0891b2; }
+.nik-work-app .nik-directory-kpis article.is-violet > span { background: rgba(139, 92, 246, .13); color: #7c3aed; }
+.nik-work-app .nik-directory-kpis article.is-red,
+.nik-work-app .nik-directory-kpis article.is-rose { color: inherit; }
+.nik-work-app .nik-directory-kpis article.is-red > span,
+.nik-work-app .nik-directory-kpis article.is-rose > span { background: rgba(239, 68, 68, .12); color: #ef4444; }
+.nik-work-app .nik-directory-kpis article.is-amber > span { background: rgba(245, 158, 11, .16); color: #d97706; }
+.nik-work-app .nik-directory-kpis article.is-green > span { background: rgba(34, 197, 94, .13); color: #16a34a; }
+
+.nik-work-app .nik-directory-kpis .nik-work-svg {
+    width: 21px;
+    height: 21px;
+}
+
+.nik-work-app .nik-directory-kpis strong {
+    display: block;
+    margin-top: 8px;
+    color: #0f172a;
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-kpis em {
+    display: block;
+    margin-top: 8px;
+    color: #11a35d;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-directory-kpis article.is-muted {
+    opacity: .72;
+}
+
+.nik-work-app .nik-directory-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 18px;
+    align-items: start;
+}
+
+.nik-work-app .nik-directory-panel,
+.nik-work-app .nik-directory-side section {
+    border-radius: 28px;
+}
+
+.nik-work-app .nik-directory-panel {
+    min-width: 0;
+    padding: 16px;
+}
+
+.nik-work-app .nik-directory-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px;
+    border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.62);
+}
+
+.nik-work-app .nik-directory-tabs a,
+.nik-work-app .nik-directory-viewbar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 14px;
+    color: #52647c;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.nik-work-app .nik-directory-tabs a.is-active,
+.nik-work-app .nik-directory-viewbar a.is-active {
+    background: rgba(29, 124, 242, .12);
+    color: #0b64d8;
+    box-shadow: inset 0 0 0 1px rgba(29, 124, 242, .12);
+}
+
+.nik-work-app .nik-directory-tabs span {
+    color: inherit;
+    font-size: 12px;
+    opacity: .75;
+}
+
+.nik-work-app .nik-directory-filters {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 20px;
+    background: rgba(239, 246, 255, .58);
+}
+
+.nik-work-app .nik-directory-filters form {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.nik-work-app .nik-directory-filters label span {
+    display: block;
+    margin-bottom: 6px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-directory-filters select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgba(148, 163, 184, .25);
+    border-radius: 14px;
+    background: rgba(255,255,255,.82);
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.nik-work-app .nik-directory-filters button,
+.nik-work-app .nik-directory-filters a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 14px;
+    background: #0b64d8;
+    color: #fff;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-filters a {
+    background: rgba(15, 23, 42, .06);
+    color: #52647c;
+}
+
+.nik-work-app .nik-directory-viewbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 4px 10px;
+}
+
+.nik-work-app .nik-directory-viewbar strong {
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-viewbar div {
+    display: flex;
+    gap: 6px;
+}
+
+.nik-work-app .nik-directory-viewbar .nik-work-svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nik-work-app .nik-directory-table {
+    display: grid;
+    gap: 6px;
+}
+
+.nik-work-app .nik-directory-table-head,
+.nik-work-app .nik-directory-row {
+    display: grid;
+    grid-template-columns: minmax(240px, 1.4fr) minmax(120px, .75fr) minmax(110px, .7fr) minmax(120px, .7fr) minmax(110px, .65fr) minmax(90px, .45fr) 38px;
+    gap: 12px;
+    align-items: center;
+}
+
+.nik-work-app .nik-directory-table--departments .nik-directory-table-head,
+.nik-work-app .nik-directory-table--departments .nik-directory-row {
+    grid-template-columns: minmax(220px, 1.35fr) 80px minmax(130px, .8fr) minmax(140px, .9fr) minmax(120px, .8fr) 80px 100px;
+}
+
+.nik-work-app .nik-directory-table-head {
+    padding: 12px 14px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-row {
+    min-height: 70px;
+    padding: 10px 14px;
+    border: 1px solid rgba(226, 232, 240, .78);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .62);
+    color: #23324a;
+    text-decoration: none;
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+.nik-work-app .nik-directory-row:hover,
+.nik-work-app .nik-employee-card:hover,
+.nik-work-app .nik-department-card:hover,
+.nik-work-app .nik-directory-mobile-card:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,.86);
+    box-shadow: 0 18px 42px rgba(31, 80, 143, .12);
+}
+
+.nik-work-app .nik-directory-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.nik-work-app .nik-directory-avatar {
+    display: grid;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #dbeafe, #eef2ff);
+    color: #0b64d8;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-avatar.is-small {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+}
+
+.nik-work-app .nik-directory-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nik-work-app .nik-directory-row strong,
+.nik-work-app .nik-employee-card strong,
+.nik-work-app .nik-department-card strong,
+.nik-work-app .nik-directory-mobile-card strong {
+    display: block;
+    color: #0f172a;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-row small,
+.nik-work-app .nik-employee-card small,
+.nik-work-app .nik-department-card small {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.nik-work-app .nik-directory-pill {
+    display: inline-flex;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(29, 124, 242, .10);
+    color: #0b64d8;
+    font-style: normal;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-actions {
+    display: flex;
+    gap: 10px;
+    color: #315581;
+}
+
+.nik-work-app .nik-directory-actions .nik-work-svg {
+    width: 17px;
+    height: 17px;
+}
+
+.nik-work-app .nik-directory-more {
+    color: #64748b;
+    font-size: 24px;
+    text-align: right;
+}
+
+.nik-work-app .nik-employee-card-grid,
+.nik-work-app .nik-department-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.nik-work-app .nik-employee-card,
+.nik-work-app .nik-department-card {
+    display: grid;
+    gap: 12px;
+    min-height: 190px;
+    padding: 16px;
+    border-radius: 22px;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-department-card {
+    min-height: 224px;
+}
+
+.nik-work-app .nik-department-card-main {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: start;
+    color: inherit;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-department-card-main > span {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 16px;
+    background: rgba(29, 124, 242, .12);
+    color: #0b64d8;
+}
+
+.nik-work-app .nik-department-card dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+}
+
+.nik-work-app .nik-department-card dt {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-department-card dd {
+    margin: 2px 0 0;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-department-card > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nik-work-app .nik-department-card > div:last-child a {
+    padding: 7px 10px;
+    border-radius: 12px;
+    background: rgba(29, 124, 242, .10);
+    color: #0b64d8;
+    font-size: 12px;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-side {
+    display: grid;
+    gap: 14px;
+}
+
+.nik-work-app .nik-directory-side section {
+    padding: 18px;
+}
+
+.nik-work-app .nik-directory-side h2 {
+    margin: 0 0 14px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-donut {
+    display: grid;
+    width: 128px;
+    height: 128px;
+    margin: 4px auto 18px;
+    place-items: center;
+    border-radius: 999px;
+    background: conic-gradient(#1d7cf2, #20c997, #f59e0b, #ef4444, #8b5cf6, #1d7cf2);
+    color: #0f172a;
+    position: relative;
+}
+
+.nik-work-app .nik-directory-donut::before {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: inherit;
+    background: rgba(255,255,255,.9);
+}
+
+.nik-work-app .nik-directory-donut strong,
+.nik-work-app .nik-directory-donut span {
+    position: relative;
+    grid-area: 1 / 1;
+}
+
+.nik-work-app .nik-directory-donut strong {
+    margin-top: -12px;
+    font-size: 28px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-donut span {
+    margin-top: 34px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-directory-bars,
+.nik-work-app .nik-directory-mini-list,
+.nik-work-app .nik-directory-quick {
+    display: grid;
+    gap: 10px;
+}
+
+.nik-work-app .nik-directory-bars a {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    overflow: hidden;
+    padding: 10px;
+    border-radius: 14px;
+    background: rgba(241, 245, 249, .72);
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-bars i {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    border-radius: 999px;
+    background: #1d7cf2;
+}
+
+.nik-work-app .nik-directory-side-link {
+    display: block;
+    margin-top: 14px;
+    color: #0b64d8;
+    font-weight: 850;
+    text-align: center;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-mini-list a {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-mini-list em,
+.nik-work-app .nik-directory-quick em {
+    color: #64748b;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-directory-quick a,
+.nik-work-app .nik-directory-quick span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 38px;
+    padding: 0 10px;
+    border-radius: 14px;
+    background: rgba(239, 246, 255, .7);
+    color: #0b64d8;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-quick span {
+    color: #64748b;
+}
+
+.nik-work-app .nik-directory-empty {
+    padding: 24px;
+    border: 1px dashed rgba(148, 163, 184, .45);
+    border-radius: 18px;
+    color: #64748b;
+    text-align: center;
+    font-weight: 800;
+}
+
+.nik-work-app .nik-directory-pagination {
+    padding: 16px 4px 0;
+}
+
+.nik-work-app .nik-directory-structure {
+    display: grid;
+    gap: 12px;
+    padding: 12px 4px 0;
+}
+
+.nik-work-app .nik-directory-structure h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 850;
+}
+
+.nik-work-app .nik-directory-structure article {
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.66);
+    border: 1px solid rgba(226,232,240,.78);
+}
+
+.nik-work-app .nik-directory-structure article > span {
+    display: block;
+    margin-top: 4px;
+    color: #64748b;
+    font-weight: 750;
+}
+
+.nik-work-app .nik-directory-structure article div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.nik-work-app .nik-directory-structure article a {
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(29,124,242,.1);
+    color: #0b64d8;
+    font-weight: 850;
+    text-decoration: none;
+}
+
+.nik-work-app .nik-directory-mobile {
+    display: none;
+}
+
+@media (max-width: 1180px) {
+    .nik-work-app .nik-directory-head {
+        grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+    }
+
+    .nik-work-app .nik-directory-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .nik-work-app .nik-directory-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .nik-work-app .nik-directory-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .nik-work-app.nik-work-app--employees .nik-work-desktop,
+    .nik-work-app.nik-work-app--departments .nik-work-desktop {
+        display: none;
+    }
+
+    .nik-work-app.nik-work-app--employees .nik-directory-mobile,
+    .nik-work-app.nik-work-app--departments .nik-directory-mobile {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        gap: 18px;
+        padding: 18px 14px 128px;
+        background:
+            radial-gradient(circle at top left, rgba(29, 124, 242, .16), transparent 34%),
+            linear-gradient(180deg, #eef7ff 0%, #f8fbff 52%, #edf5ff 100%);
+    }
+
+    .nik-work-app .nik-directory-mobile-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .nik-work-app .nik-directory-mobile-top a,
+    .nik-work-app .nik-directory-mobile-top div,
+    .nik-work-app .nik-directory-mobile-top button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nik-work-app .nik-directory-mobile-top a {
+        color: #0f172a;
+        font-weight: 850;
+        text-decoration: none;
+    }
+
+    .nik-work-app .nik-directory-mobile-top img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .nik-work-app .nik-directory-mobile-top button {
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: 0;
+        border-radius: 16px;
+        background: rgba(255,255,255,.72);
+        color: #0f172a;
+        box-shadow: 0 12px 28px rgba(31, 80, 143, .12);
+    }
+
+    .nik-work-app .nik-directory-mobile h1 {
+        margin: 2px 0 -4px;
+        color: #0f172a;
+        font-size: 30px;
+        font-weight: 850;
+        line-height: 1;
+    }
+
+    .nik-work-app .nik-directory-mobile-kpis {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .nik-work-app .nik-directory-mobile-kpis article {
+        min-height: 94px;
+        padding: 14px;
+        border-radius: 20px;
+    }
+
+    .nik-work-app .nik-directory-mobile-kpis strong {
+        display: block;
+        margin-top: 8px;
+        color: #0f172a;
+        font-size: 24px;
+        font-weight: 850;
+    }
+
+    .nik-work-app .nik-directory-mobile-kpis em {
+        display: block;
+        margin-top: 5px;
+        color: #11a35d;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 850;
+    }
+
+    .nik-work-app .nik-directory-mobile-tabs {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        margin-inline: -14px;
+        padding: 0 14px 4px;
+    }
+
+    .nik-work-app .nik-directory-mobile-tabs a {
+        flex: 0 0 auto;
+        padding: 10px 12px;
+        border-radius: 14px;
+        color: #52647c;
+        font-size: 13px;
+        font-weight: 850;
+        text-decoration: none;
+    }
+
+    .nik-work-app .nik-directory-mobile-tabs a.is-active {
+        background: rgba(29,124,242,.12);
+        color: #0b64d8;
+    }
+
+    .nik-work-app .nik-directory-mobile-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 14px;
+        border-radius: 18px;
+    }
+
+    .nik-work-app .nik-directory-mobile-search a,
+    .nik-work-app .nik-directory-mobile-search button {
+        display: grid;
+        flex: 0 0 38px;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 0;
+        border-radius: 14px;
+        background: rgba(29,124,242,.1);
+        color: #0b64d8;
+    }
+
+    .nik-work-app .nik-directory-mobile-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .nik-work-app .nik-directory-mobile-card {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        min-height: 76px;
+        padding: 12px;
+        border-radius: 22px;
+        color: #0f172a;
+        text-decoration: none;
+    }
+
+    .nik-work-app .nik-directory-mobile-card .nik-work-badge {
+        max-width: 96px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 @font-face {

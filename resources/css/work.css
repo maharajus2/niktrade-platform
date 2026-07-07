@@ -3154,6 +3154,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
         backdrop-filter: blur(30px) saturate(1.28);
     }
 
+    .nik-work-app .nik-work-mobile-sheet[hidden] {
+        display: none !important;
+    }
+
     .nik-work-app .nik-work-mobile-sheet--large {
         max-height: 88vh;
     }

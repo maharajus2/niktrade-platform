@@ -14,6 +14,7 @@
         const requestOnlyTypes = ['day_off', 'vacation', 'sick_leave']
         const calendarRoot = element.closest('.nik-calendar')
         let selectedDate = null
+        let mobileMonthDate = null
         let rawEventPayloads = []
         const typeDefaults = {
             shift: { allDay: false, visibility: 'manager' },
@@ -90,6 +91,7 @@
         }
 
         selectedDate = formatDate(new Date())
+        mobileMonthDate = new Date(`${selectedDate.slice(0, 7)}-01T12:00:00`)
 
         const escapeHtml = (value) => String(value)
             .replaceAll('&', '&amp;')
@@ -103,6 +105,15 @@
         const holidayLabel = (dateKey) => holidayLabels[dateKey] || ''
 
         const isHolidayDate = (dateKey) => Boolean(holidayLabel(dateKey))
+
+        const monthStart = (date) => new Date(date.getFullYear(), date.getMonth(), 1, 12, 0, 0)
+
+        const addMonths = (date, months) => new Date(date.getFullYear(), date.getMonth() + months, 1, 12, 0, 0)
+
+        const monthTitle = (date) => date.toLocaleDateString('ru-RU', {
+            month: 'long',
+            year: 'numeric',
+        })
 
         const errorMessage = (error) => {
             const errors = error?.response?.data?.errors
@@ -270,7 +281,9 @@
             const title = calendarRoot?.querySelector('[data-nt-calendar-title]')
 
             if (title) {
-                title.textContent = calendar.view.title
+                title.textContent = isMobile() && calendar.view.type === 'dayGridMonth' && mobileMonthDate
+                    ? monthTitle(mobileMonthDate)
+                    : calendar.view.title
             }
         }
 
@@ -298,8 +311,8 @@
                 return
             }
 
-            const currentStart = new Date(calendar.view.currentStart)
-            const currentEnd = new Date(calendar.view.currentEnd)
+            const currentStart = monthStart(mobileMonthDate || calendar.getDate())
+            const currentEnd = addMonths(currentStart, 1)
             const selected = new Date(`${selectedDate}T12:00:00`)
             const selectedInMonth = selected >= currentStart && selected < currentEnd
             const events = calendar.getEvents()
@@ -800,10 +813,13 @@
                     datesSet: () => {
                         if (calendar) {
                             if (calendar.view.type === 'dayGridMonth') {
+                                mobileMonthDate = mobileMonthDate || monthStart(calendar.getDate())
                                 const selected = new Date(`${selectedDate}T12:00:00`)
+                                const currentStart = monthStart(mobileMonthDate)
+                                const currentEnd = addMonths(currentStart, 1)
 
-                                if (selected < calendar.view.currentStart || selected >= calendar.view.currentEnd) {
-                                    selectedDate = formatDate(calendar.view.currentStart)
+                                if (selected < currentStart || selected >= currentEnd) {
+                                    selectedDate = formatDate(currentStart)
                                     updateSelectedDayLabel()
                                 }
                             }
@@ -825,9 +841,8 @@
 
                 const navigatePeriod = (direction) => {
                     if (calendar.view.type === 'dayGridMonth') {
-                        const target = new Date(calendar.view.currentStart)
-                        target.setMonth(target.getMonth() + direction, 1)
-                        target.setHours(12, 0, 0, 0)
+                        const target = addMonths(mobileMonthDate || calendar.getDate(), direction)
+                        mobileMonthDate = target
                         calendar.gotoDate(target)
                         selectedDate = formatDate(target)
                         updateSelectedDayLabel()
@@ -854,6 +869,9 @@
 
                     if (viewButton && calendarRoot.contains(viewButton)) {
                         calendar.changeView(viewButton.dataset.ntCalendarView)
+                        if (calendar.view.type === 'dayGridMonth') {
+                            mobileMonthDate = monthStart(calendar.getDate())
+                        }
                         updateExternalTitle(calendar)
                         syncViewButtons(calendar.view.type)
                         renderMobileStrip(calendar)
@@ -876,6 +894,7 @@
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
                     calendar.today()
                     selectedDate = formatDate(new Date())
+                    mobileMonthDate = monthStart(new Date())
                     updateSelectedDayLabel()
                     updateExternalTitle(calendar)
                     syncViewButtons(calendar.view.type)

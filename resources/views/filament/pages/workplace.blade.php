@@ -207,14 +207,15 @@
     </style>
 
     @component('layouts.work', [
-        'title' => $this->getGreeting().', '.auth()->user()->name.'! 👋',
-        'subtitle' => now()->translatedFormat('l, d F Y'),
+        'title' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'HR рабочее пространство' : $this->getGreeting().', '.auth()->user()->name.'! 👋',
+        'subtitle' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'Обзор ключевых показателей и текущих задач' : now()->translatedFormat('l, d F Y'),
         'user' => auth()->user(),
         'active' => 'workplace',
         'showSidebar' => true,
+        'appClass' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'nik-work-app--hr' : '',
         'actions' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
     ])
-    <div class="nt-workplace nt-workplace--hr">
+    <div class="nt-workplace nt-workplace--hr nik-work-hr-desktop">
         @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
             <div class="nt-workplace__grid">
                 <div class="nt-workplace__span-6">
@@ -246,6 +247,13 @@
             </div>
         @endif
     </div>
+
+    @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
+        @include('filament.pages.partials.hr-workplace-mobile', [
+            'workspace' => $hrWorkspace,
+            'contextAction' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
+        ])
+    @endif
     @endcomponent
     @endif
 </x-filament-panels::page>

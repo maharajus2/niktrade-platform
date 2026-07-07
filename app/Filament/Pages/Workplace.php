@@ -108,7 +108,157 @@ class Workplace extends Page
             'employeeWorkspace' => $this->getContextKey() === DashboardWidgetRegistry::CONTEXT_EMPLOYEE
                 ? $this->employeeWorkspaceData()
                 : [],
+            'hrWorkspace' => $this->getContextKey() === DashboardWidgetRegistry::CONTEXT_HR
+                ? $this->hrWorkspaceData()
+                : [],
         ];
+    }
+
+    private function hrWorkspaceData(): array
+    {
+        $today = today();
+        $weekEnd = $today->copy()->addDays(7);
+
+        $activeRequestStatuses = [
+            EmployeeScheduleRequest::STATUS_PENDING,
+            EmployeeScheduleRequest::STATUS_IN_REVIEW,
+            EmployeeScheduleRequest::STATUS_FORWARDED,
+        ];
+
+        $todayEntries = EmployeeScheduleEntry::query()
+            ->hrVisible()
+            ->with('employee.department')
+            ->whereDate('date', $today)
+            ->get();
+
+        $employeesCount = User::query()
+            ->whereNull('archived_at')
+            ->count();
+
+        $newEmployeesCount = User::query()
+            ->whereNull('archived_at')
+            ->whereDate('created_at', '>=', $today->copy()->startOfMonth())
+            ->count();
+
+        $pendingRequestsCount = EmployeeScheduleRequest::query()
+            ->whereNull('deleted_at')
+            ->whereIn('status', $activeRequestStatuses)
+            ->count();
+
+        $expiringDocumentsCount = EmployeeDocument::query()
+            ->whereNull('archived_at')
+            ->whereNotNull('expires_at')
+            ->whereBetween('expires_at', [$today->toDateString(), $today->copy()->addDays(30)->toDateString()])
+            ->count();
+
+        $requests = EmployeeScheduleRequest::query()
+            ->with('employee')
+            ->whereNull('deleted_at')
+            ->whereIn('status', $activeRequestStatuses)
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(fn (EmployeeScheduleRequest $request): array => [
+                'employee' => $request->employee?->name ?? 'Сотрудник',
+                'type' => $request->getTypeLabel(),
+                'period' => $request->getDateRangeLabel(),
+                'status' => $request->getStatusLabel(),
+                'url' => EmployeeScheduleRequestResource::getUrl('index'),
+            ])
+            ->all();
+
+        $upcomingEvents = EmployeeScheduleEntry::query()
+            ->hrVisible()
+            ->with('employee')
+            ->whereBetween('date', [$today->toDateString(), $weekEnd->toDateString()])
+            ->whereIn('type', [EmployeeScheduleEntry::TYPE_VACATION, EmployeeScheduleEntry::TYPE_SICK_LEAVE, EmployeeScheduleEntry::TYPE_DAY_OFF])
+            ->orderBy('date')
+            ->take(24)
+            ->get()
+            ->groupBy(fn (EmployeeScheduleEntry $entry): string => implode('|', [
+                $entry->employee_id,
+                $entry->type,
+                $entry->getDisplayTitle(),
+                (int) $entry->vacation_without_pay,
+                $entry->request_reason_type,
+            ]))
+            ->flatMap(fn (Collection $entries): Collection => $this->continuousHrPeriods($entries))
+            ->sortBy('date')
+            ->take(4)
+            ->values()
+            ->all();
+
+        $birthdays = User::query()
+            ->whereNotNull('date_of_birth')
+            ->get()
+            ->map(fn (User $employee): array => [
+                'employee' => $employee->name,
+                'date' => $this->nextBirthday($employee),
+                'url' => UserResource::getUrl('view', ['record' => $employee]),
+            ])
+            ->filter(fn (array $birthday): bool => $birthday['date']->betweenIncluded($today, $weekEnd))
+            ->sortBy('date')
+            ->take(3)
+            ->values()
+            ->all();
+
+        return [
+            'employee' => auth()->user(),
+            'dateLabel' => now()->translatedFormat('l, d F Y'),
+            'kpis' => [
+                ['label' => 'Сотрудники', 'value' => $employeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'blue', 'icon' => 'users'],
+                ['label' => 'Новые', 'value' => $newEmployeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'cyan', 'icon' => 'plus'],
+                ['label' => 'Отпуска', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_VACATION)->count(), 'delta' => '+0', 'tone' => 'amber', 'icon' => 'calendar'],
+                ['label' => 'Больничные', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_SICK_LEAVE)->count(), 'delta' => '-0', 'tone' => 'red', 'icon' => 'alert'],
+                ['label' => 'Заявки', 'value' => $pendingRequestsCount, 'delta' => '+0', 'tone' => 'violet', 'icon' => 'link'],
+                ['label' => 'Документы', 'value' => $expiringDocumentsCount, 'delta' => '!', 'tone' => 'rose', 'icon' => 'file'],
+            ],
+            'requests' => $requests,
+            'upcomingEvents' => $upcomingEvents,
+            'birthdays' => $birthdays,
+            'urls' => [
+                'employees' => UserResource::getUrl('index'),
+                'createEmployee' => UserResource::getUrl('create'),
+                'calendar' => MyCalendar::getUrl(),
+                'requests' => EmployeeScheduleRequestResource::getUrl('index'),
+                'createRequest' => EmployeeScheduleRequestResource::getUrl('create'),
+                'departments' => \App\Filament\Resources\Departments\DepartmentResource::getUrl('index'),
+            ],
+        ];
+    }
+
+    private function continuousHrPeriods(Collection $entries): Collection
+    {
+        return $entries
+            ->sortBy('date')
+            ->values()
+            ->reduce(function (Collection $periods, EmployeeScheduleEntry $entry): Collection {
+                $date = $entry->date->copy()->startOfDay();
+                $lastIndex = $periods->count() - 1;
+                $last = $lastIndex >= 0 ? $periods->get($lastIndex) : null;
+
+                if ($last && $last['endDate']->copy()->addDay()->isSameDay($date)) {
+                    $last['endDate'] = $date;
+                    $periods->put($lastIndex, $last);
+
+                    return $periods;
+                }
+
+                $periods->push([
+                    'date' => $date,
+                    'endDate' => $date,
+                    'label' => $entry->getDisplayTitle(),
+                    'employee' => $entry->employee?->name ?? 'Сотрудник',
+                    'url' => $entry->employee ? UserResource::getUrl('view', ['record' => $entry->employee]) : null,
+                    'tone' => match ($entry->type) {
+                        EmployeeScheduleEntry::TYPE_VACATION => 'violet',
+                        EmployeeScheduleEntry::TYPE_SICK_LEAVE => 'red',
+                        default => 'amber',
+                    },
+                ]);
+
+                return $periods;
+            }, collect());
     }
 
     private function employeeWorkspaceData(): array

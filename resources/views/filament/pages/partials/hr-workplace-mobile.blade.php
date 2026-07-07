@@ -44,7 +44,7 @@
         <div class="nik-work-hr-mobile-actions">
             <button type="button" aria-label="Поиск"><x-work.icon name="search" /></button>
             <button type="button" class="has-badge" aria-label="Уведомления"><x-work.icon name="bell" /><span>3</span></button>
-            <div aria-label="Профиль">{{ $initials }}</div>
+            <x-work.user-menu :user="$employee" :initials="$initials" button-class="nik-work-hr-mobile-avatar" :show-chevron="false" />
         </div>
     </header>
 

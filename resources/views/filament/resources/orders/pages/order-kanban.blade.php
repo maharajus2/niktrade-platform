@@ -69,7 +69,7 @@
                 <div>
                     <button type="button" aria-label="Поиск"><x-work.icon name="search" /></button>
                     <button type="button" aria-label="Уведомления" class="has-badge"><x-work.icon name="bell" /><span>3</span></button>
-                    <span>{{ $initials }}</span>
+                    <x-work.user-menu class="orders-work-mobile-user" :user="$user" :initials="$initials" button-class="orders-work-mobile-avatar" :show-chevron="false" />
                 </div>
             </header>
 

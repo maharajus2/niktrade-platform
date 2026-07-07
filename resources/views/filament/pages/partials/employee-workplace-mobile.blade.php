@@ -52,7 +52,7 @@
                 <x-work.icon name="bell" />
                 <span>3</span>
             </button>
-            <div class="nik-work-mobile-avatar" aria-label="Профиль">{{ $initials }}</div>
+            <x-work.user-menu :user="$employee" :initials="$initials" button-class="nik-work-mobile-avatar" :show-chevron="false" />
         </div>
     </header>
 

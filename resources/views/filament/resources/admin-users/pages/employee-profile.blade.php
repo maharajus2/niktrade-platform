@@ -350,7 +350,7 @@
             <div class="nik-work-mobile-top-actions">
                 <button type="button" class="nik-work-mobile-icon-button" aria-label="Поиск"><x-work.icon name="search" /></button>
                 <button type="button" class="nik-work-mobile-icon-button has-badge" aria-label="Уведомления"><x-work.icon name="bell" /><span>3</span></button>
-                <div class="nik-work-mobile-avatar" aria-label="Профиль">{{ $initials ?: 'N' }}</div>
+                <x-work.user-menu :user="auth()->user()" button-class="nik-work-mobile-avatar" :show-chevron="false" />
             </div>
         </header>
 

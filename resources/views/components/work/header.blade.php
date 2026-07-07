@@ -6,10 +6,6 @@
     'actions' => null,
 ])
 
-@php
-    $avatarUrl = $user?->avatar_path ? asset('storage/'.$user->avatar_path) : null;
-@endphp
-
 <header class="nik-work-header">
     <div>
         <h1 class="nik-work-title">{{ $title }}</h1>
@@ -37,13 +33,7 @@
             <x-work.icon name="bell" />
             <span class="nik-work-notification-count">3</span>
         </button>
-        <div class="nik-work-user-pill" aria-label="Профиль">
-            @if ($avatarUrl)
-                <img src="{{ $avatarUrl }}" alt="" />
-            @else
-                <span>{{ $initials }}</span>
-            @endif
-            <span class="nik-work-user-chevron">⌄</span>
-        </div>
+
+        <x-work.user-menu :user="$user" :initials="$initials" />
     </div>
 </header>

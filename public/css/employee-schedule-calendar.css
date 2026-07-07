@@ -807,7 +807,7 @@
     }
 
     .nik-calendar-side section:first-child {
-        margin-bottom: calc(92px + env(safe-area-inset-bottom));
+        margin-bottom: calc(150px + env(safe-area-inset-bottom));
     }
 
     .nik-calendar-mobile-strip {

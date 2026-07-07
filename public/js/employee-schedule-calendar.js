@@ -1029,6 +1029,53 @@
                 bindNavigationButton('[data-nt-calendar-prev]', -1)
                 bindNavigationButton('[data-nt-calendar-next]', 1)
 
+                let lastPeriodMonthPointerAt = 0
+                const selectPeriodMonth = (button, event = null) => {
+                    event?.preventDefault()
+                    event?.stopPropagation()
+                    event?.stopImmediatePropagation?.()
+
+                    if (! button || ! calendarRoot.contains(button)) {
+                        return
+                    }
+
+                    const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
+                    const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
+                    const month = Number(button.dataset.ntPeriodMonth)
+
+                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                    closePeriodPicker()
+                }
+
+                calendarRoot?.addEventListener('pointerdown', (event) => {
+                    const periodMonthButton = event.target.closest('[data-nt-period-month]')
+
+                    if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        event.stopImmediatePropagation?.()
+                    }
+                }, true)
+
+                calendarRoot?.addEventListener('pointerup', (event) => {
+                    const periodMonthButton = event.target.closest('[data-nt-period-month]')
+
+                    if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
+                        lastPeriodMonthPointerAt = Date.now()
+                        selectPeriodMonth(periodMonthButton, event)
+                    }
+                }, true)
+
+                calendarRoot?.addEventListener('click', (event) => {
+                    const periodMonthButton = event.target.closest('[data-nt-period-month]')
+
+                    if (periodMonthButton && calendarRoot.contains(periodMonthButton) && Date.now() - lastPeriodMonthPointerAt < 500) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                        event.stopImmediatePropagation?.()
+                    }
+                }, true)
+
                 calendarRoot?.addEventListener('click', (event) => {
                     const viewButton = event.target.closest('[data-nt-calendar-view]')
                     const periodMonthButton = event.target.closest('[data-nt-period-month]')
@@ -1036,14 +1083,7 @@
                     const nextButton = event.target.closest('[data-nt-calendar-next]')
 
                     if (periodMonthButton && calendarRoot.contains(periodMonthButton)) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                        const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
-                        const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
-                        const month = Number(periodMonthButton.dataset.ntPeriodMonth)
-
-                        goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
-                        closePeriodPicker()
+                        selectPeriodMonth(periodMonthButton, event)
 
                         return
                     }

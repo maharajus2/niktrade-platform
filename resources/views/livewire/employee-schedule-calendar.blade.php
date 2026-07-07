@@ -51,13 +51,9 @@
         ])),
     ];
 
-    $mobileCalendarDays = collect($calendarDays)->values();
-    $todayIndex = $mobileCalendarDays->search(fn ($day) => $day['isToday']);
-    $fallbackIndex = $mobileCalendarDays->search(fn ($day) => $day['isCurrentMonth']);
-    $mobileStartIndex = $todayIndex === false ? ($fallbackIndex === false ? 0 : $fallbackIndex) : $todayIndex;
-    $mobileStartIndex = (int) floor($mobileStartIndex / 7) * 7;
-    $mobileStartIndex = max(0, min($mobileStartIndex, max(0, $mobileCalendarDays->count() - 7)));
-    $mobileCalendarStrip = $mobileCalendarDays->slice($mobileStartIndex, 7)->values();
+    $mobileCalendarStrip = collect($calendarDays)
+        ->filter(fn ($day) => $day['isCurrentMonth'])
+        ->values();
     $mobileWeekdays = [1 => 'Пн', 2 => 'Вт', 3 => 'Ср', 4 => 'Чт', 5 => 'Пт', 6 => 'Сб', 7 => 'Вс'];
 @endphp
 
@@ -203,7 +199,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-views-2'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-month-scroll'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -211,7 +207,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-views-2'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-month-scroll'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

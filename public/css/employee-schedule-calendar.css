@@ -834,13 +834,24 @@
 
     .nik-calendar-mobile-strip {
         display: none;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-auto-flow: column;
+        grid-auto-columns: 58px;
         gap: 5px;
         margin: 0 0 12px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding: 0 2px 8px;
+        scroll-padding-inline: 14px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
     }
 
     .nik-calendar.is-calendar-month .nik-calendar-mobile-strip {
         display: grid;
+    }
+
+    .nik-calendar-mobile-strip::-webkit-scrollbar {
+        display: none;
     }
 
     .nik-calendar-mobile-strip button {
@@ -856,6 +867,7 @@
         color: rgba(31, 42, 68, .78);
         font: inherit;
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, .68);
+        scroll-snap-align: center;
     }
 
     .nik-calendar-mobile-strip button.is-muted {

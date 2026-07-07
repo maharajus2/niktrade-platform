@@ -276,15 +276,6 @@
             })
         }
 
-        const startOfWeek = (date) => {
-            const result = new Date(date)
-            const day = result.getDay() || 7
-            result.setDate(result.getDate() - day + 1)
-            result.setHours(12, 0, 0, 0)
-
-            return result
-        }
-
         const renderMobileStrip = (calendar) => {
             const strip = calendarRoot?.querySelector('.nik-calendar-mobile-strip')
 
@@ -295,14 +286,21 @@
             const currentStart = new Date(calendar.view.currentStart)
             const currentEnd = new Date(calendar.view.currentEnd)
             const selected = new Date(`${selectedDate}T12:00:00`)
-            const anchor = selected >= currentStart && selected < currentEnd ? selected : currentStart
-            const weekStart = startOfWeek(anchor)
+            const selectedInMonth = selected >= currentStart && selected < currentEnd
             const events = calendar.getEvents()
             const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+            const dates = []
 
-            strip.innerHTML = Array.from({ length: 7 }, (_, index) => {
-                const date = new Date(weekStart)
-                date.setDate(weekStart.getDate() + index)
+            for (const date = new Date(currentStart); date < currentEnd; date.setDate(date.getDate() + 1)) {
+                dates.push(new Date(date))
+            }
+
+            if (! selectedInMonth && dates[0]) {
+                selectedDate = formatDate(dates[0])
+                updateSelectedDayLabel()
+            }
+
+            strip.innerHTML = dates.map((date) => {
                 const dateKey = formatDate(date)
                 const dayEvents = events.filter((event) => {
                     const props = event.extendedProps || {}
@@ -319,12 +317,20 @@
 
                 return `
                     <button type="button" class="${classes}" data-nt-mobile-date="${dateKey}">
-                        <span>${weekdays[index]}</span>
+                        <span>${weekdays[date.getDay() === 0 ? 6 : date.getDay() - 1]}</span>
                         <strong>${date.getDate()}</strong>
                         ${dots}
                     </button>
                 `
             }).join('')
+
+            const active = strip.querySelector('.is-active')
+
+            if (active && isMobile()) {
+                window.requestAnimationFrame(() => {
+                    active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+                })
+            }
         }
 
         const refetchWithFilters = () => {

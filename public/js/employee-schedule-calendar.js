@@ -15,6 +15,7 @@
         const calendarRoot = element.closest('.nik-calendar')
         let selectedDate = null
         let mobileMonthDate = null
+        let pendingMobileMonthDate = null
         let rawEventPayloads = []
         const typeDefaults = {
             shift: { allDay: false, visibility: 'manager' },
@@ -109,6 +110,13 @@
         const monthStart = (date) => new Date(date.getFullYear(), date.getMonth(), 1, 12, 0, 0)
 
         const addMonths = (date, months) => new Date(date.getFullYear(), date.getMonth() + months, 1, 12, 0, 0)
+
+        const isSameMonth = (left, right) => {
+            return left
+                && right
+                && left.getFullYear() === right.getFullYear()
+                && left.getMonth() === right.getMonth()
+        }
 
         const monthTitle = (date) => date.toLocaleDateString('ru-RU', {
             month: 'long',
@@ -849,7 +857,21 @@
                     datesSet: () => {
                         if (calendar) {
                             if (calendar.view.type === 'dayGridMonth') {
-                                mobileMonthDate = mobileMonthDate || monthStart(calendar.getDate())
+                                const calendarMonth = monthStart(calendar.getDate())
+
+                                if (pendingMobileMonthDate && ! isSameMonth(calendarMonth, pendingMobileMonthDate)) {
+                                    calendar.gotoDate(pendingMobileMonthDate)
+
+                                    return
+                                }
+
+                                if (pendingMobileMonthDate && isSameMonth(calendarMonth, pendingMobileMonthDate)) {
+                                    mobileMonthDate = pendingMobileMonthDate
+                                    pendingMobileMonthDate = null
+                                } else {
+                                    mobileMonthDate = calendarMonth
+                                }
+
                                 const selected = new Date(`${selectedDate}T12:00:00`)
                                 const currentStart = monthStart(mobileMonthDate)
                                 const currentEnd = addMonths(currentStart, 1)
@@ -917,12 +939,15 @@
                 function goToMobileMonth(targetDate) {
                     const target = monthStart(targetDate)
 
+                    pendingMobileMonthDate = target
                     mobileMonthDate = target
                     selectedDate = formatDate(target)
-                    calendar.changeView('dayGridMonth')
+                    if (calendar.view.type !== 'dayGridMonth') {
+                        calendar.changeView('dayGridMonth')
+                    }
                     calendar.gotoDate(target)
                     syncAfterPeriodChange()
-                    window.setTimeout(syncAfterPeriodChange, 250)
+                    window.requestAnimationFrame(syncAfterPeriodChange)
                 }
 
                 function setMobileCalendarExpanded(expanded) {
@@ -963,6 +988,7 @@
 
                     if (calendar.view.type === 'dayGridMonth') {
                         const target = addMonths(mobileMonthDate || calendar.getDate(), direction)
+                        pendingMobileMonthDate = target
                         mobileMonthDate = target
                         calendar.gotoDate(target)
                         selectedDate = formatDate(target)
@@ -1046,8 +1072,6 @@
 
                     goToMobileMonth(targetDate)
                     closePeriodPicker()
-                    window.setTimeout(() => goToMobileMonth(targetDate), 80)
-                    window.setTimeout(() => goToMobileMonth(targetDate), 260)
                 }
 
                 calendarRoot?.addEventListener('pointerdown', (event) => {
@@ -1092,6 +1116,7 @@
                     }
 
                     if (viewButton && calendarRoot.contains(viewButton)) {
+                        pendingMobileMonthDate = null
                         calendar.changeView(viewButton.dataset.ntCalendarView)
                         if (calendar.view.type === 'dayGridMonth') {
                             mobileMonthDate = monthStart(calendar.getDate())
@@ -1120,6 +1145,7 @@
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
+                    pendingMobileMonthDate = monthStart(new Date())
                     calendar.today()
                     selectedDate = formatDate(new Date())
                     mobileMonthDate = monthStart(new Date())

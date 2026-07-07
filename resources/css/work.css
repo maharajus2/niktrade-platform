@@ -26,6 +26,11 @@
     gap: 22px;
 }
 
+.nik-work-app.nik-work-app--employees .nik-work-header,
+.nik-work-app.nik-work-app--departments .nik-work-header {
+    display: none;
+}
+
 .nik-work-app .nik-directory-head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(260px, 360px) auto auto;

@@ -1042,9 +1042,12 @@
                     const fallbackYear = (mobileMonthDate || calendar.getDate()).getFullYear()
                     const year = Number(calendarRoot?.querySelector('[data-nt-period-year]')?.value || fallbackYear)
                     const month = Number(button.dataset.ntPeriodMonth)
+                    const targetDate = new Date(year, month, 1, 12, 0, 0)
 
-                    goToMobileMonth(new Date(year, month, 1, 12, 0, 0))
+                    goToMobileMonth(targetDate)
                     closePeriodPicker()
+                    window.setTimeout(() => goToMobileMonth(targetDate), 80)
+                    window.setTimeout(() => goToMobileMonth(targetDate), 260)
                 }
 
                 calendarRoot?.addEventListener('pointerdown', (event) => {

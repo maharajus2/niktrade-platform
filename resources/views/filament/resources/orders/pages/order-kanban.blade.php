@@ -8,7 +8,6 @@
 
     $mobileMenuGroups = [
         'Главное' => [
-            ['label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Dashboard::getUrl()],
             ['label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => \App\Filament\Pages\Workplace::getUrl()],
             ['label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('index'), 'active' => true],
             ['label' => 'Мой календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],

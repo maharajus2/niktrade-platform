@@ -11,6 +11,10 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class Dashboard extends BaseDashboard
 {
+    protected static string $routePath = '/dashboard';
+
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $title = 'Главная';
 
     protected static ?string $navigationLabel = 'Главная';
@@ -22,6 +26,11 @@ class Dashboard extends BaseDashboard
             'md' => 2,
             'xl' => 4,
         ];
+    }
+
+    public function mount(): void
+    {
+        $this->redirect(Workplace::getUrl());
     }
 
     public function getTitle(): string|Htmlable

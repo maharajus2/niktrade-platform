@@ -5,7 +5,6 @@
 
 @php
     $items = [
-        ['key' => 'home', 'label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Dashboard::getUrl()],
         ['key' => 'workplace', 'label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => \App\Filament\Pages\Workplace::getUrl()],
     ];
 

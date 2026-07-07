@@ -1,6 +1,9 @@
 <x-filament-panels::page>
     @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_EMPLOYEE)
-        @include('filament.pages.partials.employee-workplace', ['workspace' => $employeeWorkspace])
+        @include('filament.pages.partials.employee-workplace', [
+            'workspace' => $employeeWorkspace,
+            'contextAction' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
+        ])
     @else
     <style>
         .nt-workplace {
@@ -209,6 +212,7 @@
         'user' => auth()->user(),
         'active' => 'workplace',
         'showSidebar' => true,
+        'actions' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
     ])
     <div class="nt-workplace nt-workplace--hr">
         @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)

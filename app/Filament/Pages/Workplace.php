@@ -51,31 +51,34 @@ class Workplace extends Page
 
     protected function getHeaderActions(): array
     {
-        return [
-            Action::make('chooseDashboard')
-                ->label('Выбрать контекст')
-                ->icon('heroicon-o-squares-2x2')
-                ->visible(fn (): bool => DashboardWidgetRegistry::canChooseDashboard(auth()->user()))
-                ->form([
-                    Select::make('dashboard_preference')
-                        ->label('Рабочий контекст')
-                        ->options(fn (): array => DashboardWidgetRegistry::availableContextsFor(auth()->user()))
-                        ->default(fn (): string => DashboardWidgetRegistry::contextKeyFor(auth()->user()))
-                        ->required(),
-                ])
-                ->action(function (array $data): void {
-                    auth()->user()?->update([
-                        'dashboard_preference' => $data['dashboard_preference'],
-                    ]);
+        return [];
+    }
 
-                    Notification::make()
-                        ->title('Рабочий контекст обновлён.')
-                        ->success()
-                        ->send();
+    public function chooseDashboardAction(): Action
+    {
+        return Action::make('chooseDashboard')
+            ->label('Выбрать контекст')
+            ->icon('heroicon-o-squares-2x2')
+            ->visible(fn (): bool => DashboardWidgetRegistry::canChooseDashboard(auth()->user()))
+            ->form([
+                Select::make('dashboard_preference')
+                    ->label('Рабочий контекст')
+                    ->options(fn (): array => DashboardWidgetRegistry::availableContextsFor(auth()->user()))
+                    ->default(fn (): string => DashboardWidgetRegistry::contextKeyFor(auth()->user()))
+                    ->required(),
+            ])
+            ->action(function (array $data): void {
+                auth()->user()?->update([
+                    'dashboard_preference' => $data['dashboard_preference'],
+                ]);
 
-                    $this->redirect(static::getUrl());
-                }),
-        ];
+                Notification::make()
+                    ->title('Рабочий контекст обновлён.')
+                    ->success()
+                    ->send();
+
+                $this->redirect(static::getUrl());
+            });
     }
 
     public function getContextKey(): string

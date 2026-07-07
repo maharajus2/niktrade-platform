@@ -12,7 +12,6 @@
 
     $mobileMenuGroups = [
         'Главное' => [
-            ['label' => 'Главная', 'icon' => 'home', 'url' => \App\Filament\Pages\Dashboard::getUrl()],
             ['label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => \App\Filament\Pages\Workplace::getUrl(), 'active' => true],
             ['label' => 'Мой календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
             ['label' => 'Мои документы', 'icon' => 'file', 'url' => '#employee-documents-mobile'],

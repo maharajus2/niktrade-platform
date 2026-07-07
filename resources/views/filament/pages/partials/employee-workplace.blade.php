@@ -12,6 +12,7 @@
     'active' => 'workplace',
     'showSidebar' => true,
     'appClass' => 'nik-work-app--employee',
+    'actions' => $contextAction ?? null,
 ])
     <main class="nik-work-grid nik-work-desktop">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="clock">

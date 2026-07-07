@@ -98,7 +98,7 @@ class DashboardWidgetRegistry
             return $user->dashboard_preference;
         }
 
-        if (array_key_exists(self::CONTEXT_HR, $available) && ! $user->hasRole('super_admin')) {
+        if (array_key_exists(self::CONTEXT_HR, $available) && ! self::isContextAdmin($user)) {
             return self::CONTEXT_HR;
         }
 
@@ -107,7 +107,7 @@ class DashboardWidgetRegistry
 
     public static function canChooseDashboard(?User $user): bool
     {
-        return $user instanceof User && $user->hasRole('super_admin');
+        return $user instanceof User && self::isContextAdmin($user);
     }
 
     public static function availableDashboardsFor(?User $user): array
@@ -127,15 +127,15 @@ class DashboardWidgetRegistry
             self::CONTEXT_EMPLOYEE => 'Сотрудник',
         ];
 
-        if ($user->hasRole('super_admin')) {
+        if (self::isContextAdmin($user)) {
             $contexts[self::CONTEXT_GENERIC] = 'Общий';
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('hr') || $user->can('dashboard.hr.view')) {
+        if (self::isContextAdmin($user) || $user->hasRole('hr') || $user->can('dashboard.hr.view')) {
             $contexts[self::CONTEXT_HR] = 'HR';
         }
 
-        if ($user->hasRole('super_admin')) {
+        if (self::isContextAdmin($user)) {
             $contexts[self::CONTEXT_ORDERS] = 'Менеджер заказов';
         }
 
@@ -192,5 +192,10 @@ class DashboardWidgetRegistry
             AnalyticsPlaceholderWidget::class,
             ...(self::$registeredWidgets['generic.home'] ?? []),
         ];
+    }
+
+    private static function isContextAdmin(User $user): bool
+    {
+        return $user->hasAnyRole(['admin', 'super_admin']);
     }
 }

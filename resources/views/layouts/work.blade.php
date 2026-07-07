@@ -5,6 +5,7 @@
     'active' => 'workplace',
     'showSidebar' => true,
     'appClass' => '',
+    'actions' => null,
 ])
 
 @php
@@ -45,6 +46,7 @@
                     :subtitle="$subtitle"
                     :initials="$initials"
                     :user="$user"
+                    :actions="$actions"
                 />
 
                 {{ $slot }}

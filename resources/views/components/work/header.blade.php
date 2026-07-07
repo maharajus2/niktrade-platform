@@ -3,6 +3,7 @@
     'subtitle' => null,
     'initials' => 'N',
     'user' => null,
+    'actions' => null,
 ])
 
 @php
@@ -23,6 +24,12 @@
             <x-work.icon name="search" />
             <span>Поиск...</span>
         </div>
+
+        @if ($actions)
+            <div class="nik-work-header-actions">
+                {{ $actions }}
+            </div>
+        @endif
 
         <span class="nik-work-toolbar-divider" aria-hidden="true"></span>
 

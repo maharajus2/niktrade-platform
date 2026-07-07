@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->homeUrl(fn (): string => \App\Filament\Pages\Workplace::getUrl())
             ->sidebarWidth('16rem')
             //->brandLogo(fn () => view('filament.brand'))
             ->brandName('Никтрейд')

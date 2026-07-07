@@ -164,6 +164,22 @@
     gap: 12px;
 }
 
+.nik-work-app .nik-work-header-actions {
+    display: inline-flex;
+    align-items: center;
+}
+
+.nik-work-app .nik-work-header-actions .fi-btn {
+    min-height: 48px;
+    border: 1px solid rgba(148, 163, 184, .28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .05);
+    color: #2563eb;
+    font-weight: 800;
+    backdrop-filter: blur(18px);
+}
+
 .nik-work-app .nik-work-search {
     display: flex;
     width: min(330px, 32vw);

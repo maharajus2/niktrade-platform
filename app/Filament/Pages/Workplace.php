@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\AdminUsers\UserResource;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use App\Models\EmployeeDocument;
 use App\Models\EmployeeScheduleEntry;

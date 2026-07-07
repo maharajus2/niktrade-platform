@@ -8,9 +8,104 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class CatalogController extends Controller
 {
+    public function catalog2(Request $request): View
+    {
+        $products = Product::query()
+            ->where('is_active', true)
+            ->whereHas('images')
+            ->with([
+                'brand',
+                'category',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_main')
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
+            ->orderByDesc('is_featured')
+            ->orderByDesc('is_best_seller')
+            ->orderByDesc('is_new')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(18)
+            ->get();
+
+        $products = $this->withExistingCatalogImages($products);
+
+        if ($products->count() < 8) {
+            $products = Product::query()
+                ->where('is_active', true)
+                ->with([
+                    'brand',
+                    'category',
+                    'images' => fn ($query) => $query
+                        ->orderByDesc('is_main')
+                        ->orderBy('sort_order')
+                        ->orderBy('id'),
+                ])
+                ->orderByDesc('is_featured')
+                ->orderByDesc('is_best_seller')
+                ->orderByDesc('is_new')
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->limit(18)
+                ->get();
+
+            $products = $this->withExistingCatalogImages($products);
+        }
+
+        $brands = Brand::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        $categories = Category::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        $categoryProducts = $products
+            ->filter(fn (Product $product): bool => $product->category_id !== null && $product->images->isNotEmpty())
+            ->groupBy('category_id')
+            ->map(fn (Collection $items): ?Product => $items->first());
+
+        $brandProducts = $products
+            ->filter(fn (Product $product): bool => $product->brand_id !== null && $product->images->isNotEmpty())
+            ->groupBy(fn (Product $product): string => mb_strtolower((string) $product->brand?->name))
+            ->map(fn (Collection $items): Collection => $items->take(4)->values());
+
+        return view('catalog2.index', [
+            'products' => $products,
+            'heroProduct' => $products->first(fn (Product $product): bool => $product->images->isNotEmpty()),
+            'brands' => $brands,
+            'categories' => $categories,
+            'categoryProducts' => $categoryProducts,
+            'brandProducts' => $brandProducts,
+            'cartProductItems' => $this->getCartProductItems($request, $products->pluck('id')->all()),
+        ]);
+    }
+
+    private function withExistingCatalogImages(Collection $products): Collection
+    {
+        return $products
+            ->map(function (Product $product): Product {
+                $product->setRelation(
+                    'images',
+                    $product->images
+                        ->filter(fn ($image): bool => filled($image->file_path) && Storage::disk('public')->exists($image->file_path))
+                        ->values()
+                );
+
+                return $product;
+            })
+            ->filter(fn (Product $product): bool => $product->images->isNotEmpty())
+            ->values();
+    }
+
     public function index(Request $request): View
     {
         $brandId = $request->integer('brand') ?: null;

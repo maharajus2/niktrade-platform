@@ -124,7 +124,7 @@
 
 .nik-calendar-toolbar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(160px, auto);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, auto);
     align-items: center;
     gap: 14px;
     margin-bottom: 14px;
@@ -165,11 +165,13 @@
     height: 17px;
 }
 
-.nik-calendar-toolbar > strong {
+.nik-calendar-navigation strong {
+    min-width: 138px;
     color: #111827;
     font-size: 21px;
     font-weight: 820;
-    text-align: right;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .nik-calendar-filters {
@@ -784,14 +786,34 @@
     }
 
     .nik-calendar-toolbar {
+        grid-template-columns: minmax(0, 1fr);
         gap: 8px;
     }
 
-    .nik-calendar-view-switch,
-    .nik-calendar-navigation {
+    .nik-calendar-view-switch {
         width: 100%;
         justify-content: space-between;
         overflow-x: auto;
+    }
+
+    .nik-calendar-navigation {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) 42px auto;
+        width: 100%;
+        overflow: visible;
+    }
+
+    .nik-calendar-navigation button {
+        min-width: 0;
+        padding: 0 10px;
+    }
+
+    .nik-calendar-navigation strong {
+        min-width: 0;
+        align-self: center;
+        overflow: hidden;
+        font-size: 18px;
+        text-overflow: ellipsis;
     }
 
     .nik-calendar-filters {
@@ -811,10 +833,14 @@
     }
 
     .nik-calendar-mobile-strip {
-        display: grid;
+        display: none;
         grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 5px;
         margin: 0 0 12px;
+    }
+
+    .nik-calendar.is-calendar-month .nik-calendar-mobile-strip {
+        display: grid;
     }
 
     .nik-calendar-mobile-strip button {
@@ -872,13 +898,23 @@
         background: #fff !important;
     }
 
-    .nik-calendar-fullcalendar {
+    .nik-calendar.is-calendar-month .nik-calendar-fullcalendar {
         position: absolute;
         width: 1px;
         height: 1px;
         overflow: hidden;
         opacity: 0;
         pointer-events: none;
+    }
+
+    .nik-calendar:not(.is-calendar-month) .nik-calendar-fullcalendar {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 10px 0 14px;
+        overflow: visible;
+        opacity: 1;
+        pointer-events: auto;
     }
 
     .nt-fullcalendar .fc-header-toolbar {

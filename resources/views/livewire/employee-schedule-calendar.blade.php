@@ -109,11 +109,10 @@
 
                     <div class="nik-calendar-navigation">
                         <button type="button" data-nt-calendar-prev aria-label="Предыдущий период"><x-work.icon name="chevron-left" /></button>
+                        <strong data-nt-calendar-title>{{ $monthLabel }}</strong>
                         <button type="button" data-nt-calendar-next aria-label="Следующий период"><x-work.icon name="chevron-right" /></button>
                         <button type="button" data-nt-calendar-today>Сегодня</button>
                     </div>
-
-                    <strong data-nt-calendar-title>{{ $monthLabel }}</strong>
                 </div>
 
                 <div class="nik-calendar-filters" data-nt-calendar-filters>
@@ -204,7 +203,7 @@
                             await loadAsset('link[data-nt-employee-schedule-css]', () => {
                                 const link = document.createElement('link')
                                 link.rel = 'stylesheet'
-                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-spacing-3'
+                                link.href = '{{ asset('css/employee-schedule-calendar.css') }}?v=20260707-mobile-views'
                                 link.dataset.ntEmployeeScheduleCss = 'true'
 
                                 return link
@@ -212,7 +211,7 @@
 
                             await loadAsset('script[data-nt-employee-schedule-js]', () => {
                                 const script = document.createElement('script')
-                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260706-reference'
+                                script.src = '{{ asset('js/employee-schedule-calendar.js') }}?v=20260707-mobile-views'
                                 script.dataset.ntEmployeeScheduleJs = 'true'
 
                                 return script

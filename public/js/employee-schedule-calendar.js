@@ -263,12 +263,68 @@
             calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
                 button.classList.toggle('is-active', button.dataset.ntCalendarView === viewType)
             })
+
+            calendarRoot?.classList.toggle('is-calendar-month', viewType === 'dayGridMonth')
+            calendarRoot?.classList.toggle('is-calendar-week', viewType === 'timeGridWeek')
+            calendarRoot?.classList.toggle('is-calendar-day', viewType === 'timeGridDay')
+            calendarRoot?.classList.toggle('is-calendar-list', viewType === 'listWeek')
         }
 
         const syncMobileStripButtons = () => {
             calendarRoot?.querySelectorAll('[data-nt-mobile-date]').forEach((button) => {
                 button.classList.toggle('is-active', button.dataset.ntMobileDate === selectedDate)
             })
+        }
+
+        const startOfWeek = (date) => {
+            const result = new Date(date)
+            const day = result.getDay() || 7
+            result.setDate(result.getDate() - day + 1)
+            result.setHours(12, 0, 0, 0)
+
+            return result
+        }
+
+        const renderMobileStrip = (calendar) => {
+            const strip = calendarRoot?.querySelector('.nik-calendar-mobile-strip')
+
+            if (! strip || ! calendar || calendar.view.type !== 'dayGridMonth') {
+                return
+            }
+
+            const currentStart = new Date(calendar.view.currentStart)
+            const currentEnd = new Date(calendar.view.currentEnd)
+            const selected = new Date(`${selectedDate}T12:00:00`)
+            const anchor = selected >= currentStart && selected < currentEnd ? selected : currentStart
+            const weekStart = startOfWeek(anchor)
+            const events = calendar.getEvents()
+            const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+
+            strip.innerHTML = Array.from({ length: 7 }, (_, index) => {
+                const date = new Date(weekStart)
+                date.setDate(weekStart.getDate() + index)
+                const dateKey = formatDate(date)
+                const dayEvents = events.filter((event) => {
+                    const props = event.extendedProps || {}
+
+                    return (props.date || (event.start ? formatDate(event.start) : null)) === dateKey
+                }).slice(0, 3)
+                const classes = [
+                    date.getMonth() === currentStart.getMonth() ? '' : 'is-muted',
+                    dateKey === selectedDate ? 'is-active' : '',
+                ].filter(Boolean).join(' ')
+                const dots = dayEvents.length > 0
+                    ? `<i>${dayEvents.map((event) => `<b style="background: ${event.backgroundColor || event.borderColor || '#1677ff'}"></b>`).join('')}</i>`
+                    : ''
+
+                return `
+                    <button type="button" class="${classes}" data-nt-mobile-date="${dateKey}">
+                        <span>${weekdays[index]}</span>
+                        <strong>${date.getDate()}</strong>
+                        ${dots}
+                    </button>
+                `
+            }).join('')
         }
 
         const refetchWithFilters = () => {
@@ -582,7 +638,7 @@
                 let calendar = null
 
                 calendar = new FullCalendar.Calendar(element, {
-                    initialView: isMobile() ? 'listWeek' : 'dayGridMonth',
+                    initialView: 'dayGridMonth',
                     locale: 'ru',
                     firstDay: 1,
                     nowIndicator: true,
@@ -708,8 +764,18 @@
                     eventsSet: (events) => renderAgenda(events),
                     datesSet: () => {
                         if (calendar) {
+                            if (calendar.view.type === 'dayGridMonth') {
+                                const selected = new Date(`${selectedDate}T12:00:00`)
+
+                                if (selected < calendar.view.currentStart || selected >= calendar.view.currentEnd) {
+                                    selectedDate = formatDate(calendar.view.currentStart)
+                                    updateSelectedDayLabel()
+                                }
+                            }
+
                             updateExternalTitle(calendar)
                             syncViewButtons(calendar.view.type)
+                            renderMobileStrip(calendar)
                         }
                     },
                 })
@@ -720,23 +786,28 @@
                 updateSelectedDayLabel()
                 updateExternalTitle(calendar)
                 syncViewButtons(calendar.view.type)
+                renderMobileStrip(calendar)
 
                 calendarRoot?.querySelectorAll('[data-nt-calendar-view]').forEach((button) => {
                     button.addEventListener('click', () => {
                         calendar.changeView(button.dataset.ntCalendarView)
                         updateExternalTitle(calendar)
                         syncViewButtons(calendar.view.type)
+                        renderMobileStrip(calendar)
+                        window.setTimeout(() => calendar.updateSize(), 0)
                     })
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-prev]')?.addEventListener('click', () => {
                     calendar.prev()
                     updateExternalTitle(calendar)
+                    renderMobileStrip(calendar)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-next]')?.addEventListener('click', () => {
                     calendar.next()
                     updateExternalTitle(calendar)
+                    renderMobileStrip(calendar)
                 })
 
                 calendarRoot?.querySelector('[data-nt-calendar-today]')?.addEventListener('click', () => {
@@ -745,19 +816,22 @@
                     updateSelectedDayLabel()
                     updateExternalTitle(calendar)
                     renderAgenda(calendar.getEvents())
+                    renderMobileStrip(calendar)
                 })
 
                 calendarRoot?.querySelectorAll('[data-nt-filter]').forEach((filter) => {
                     filter.addEventListener('change', refetchWithFilters)
                 })
 
-                calendarRoot?.querySelectorAll('[data-nt-mobile-date]').forEach((button) => {
-                    button.addEventListener('click', () => {
+                calendarRoot?.querySelector('.nik-calendar-mobile-strip')?.addEventListener('click', (event) => {
+                    const button = event.target.closest('[data-nt-mobile-date]')
+
+                    if (button) {
                         selectedDate = button.dataset.ntMobileDate
                         updateSelectedDayLabel()
                         syncMobileStripButtons()
                         renderAgenda(calendar.getEvents())
-                    })
+                    }
                 })
 
                 syncMobileStripButtons()

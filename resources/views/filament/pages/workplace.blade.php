@@ -217,6 +217,19 @@
     ])
     <div class="nt-workplace nt-workplace--hr nik-work-hr-desktop">
         @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)
+            <section class="nik-work-hr-desktop-kpis" aria-label="Ключевые показатели HR">
+                @foreach ($hrWorkspace['kpis'] as $kpi)
+                    <article class="is-{{ $kpi['tone'] }}">
+                        <span><x-work.icon :name="$kpi['icon']" /></span>
+                        <div>
+                            <small>{{ $kpi['label'] }}</small>
+                            <strong>{{ $kpi['value'] }}</strong>
+                            <em>{{ $kpi['delta'] }}</em>
+                        </div>
+                    </article>
+                @endforeach
+            </section>
+
             <div class="nt-workplace__grid">
                 <div class="nt-workplace__span-6">
                     @livewire(\App\Filament\Widgets\Hr\HrTodayWidget::class, key('workplace-hr-today'))

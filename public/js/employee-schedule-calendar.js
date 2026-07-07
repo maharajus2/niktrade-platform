@@ -840,6 +840,13 @@
                 renderMobileStrip(calendar)
 
                 const navigatePeriod = (direction) => {
+                    const syncAfterNavigation = () => {
+                        updateExternalTitle(calendar)
+                        syncViewButtons(calendar.view.type)
+                        renderMobileStrip(calendar)
+                        renderAgenda(calendar.getEvents())
+                    }
+
                     if (calendar.view.type === 'dayGridMonth') {
                         const target = addMonths(mobileMonthDate || calendar.getDate(), direction)
                         mobileMonthDate = target
@@ -860,11 +867,10 @@
                     updateExternalTitle(calendar)
                     syncViewButtons(calendar.view.type)
                     window.setTimeout(() => {
-                        updateExternalTitle(calendar)
-                        syncViewButtons(calendar.view.type)
-                        renderMobileStrip(calendar)
-                        renderAgenda(calendar.getEvents())
+                        syncAfterNavigation()
                     }, 0)
+                    window.setTimeout(syncAfterNavigation, 250)
+                    window.setTimeout(syncAfterNavigation, 800)
 
                     window.requestAnimationFrame(() => {
                         if (calendar.view.type === 'dayGridMonth') {

@@ -23,12 +23,29 @@
         .background {
             position: fixed;
             inset: 0;
-            background-image: url('/images/homepage/niktrade-preview.png');
-            background-size: cover;
-            background-position: top center;
+            overflow: hidden;
+        }
+
+        .background-fallback,
+        .background-frame {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             filter: blur(2px) saturate(1.08) contrast(1.06);
             transform: scale(1.01);
             opacity: 1;
+        }
+
+        .background-fallback {
+            background-image: url('/images/homepage/niktrade-preview.png');
+            background-size: cover;
+            background-position: top center;
+        }
+
+        .background-frame {
+            border: 0;
+            pointer-events: none;
         }
 
         .overlay {
@@ -243,7 +260,16 @@
 </head>
 <body>
 
-<div class="background"></div>
+<div class="background" aria-hidden="true">
+    <div class="background-fallback"></div>
+    <iframe
+        class="background-frame"
+        src="{{ route('catalog.preview') }}"
+        title="Превью страницы catalog2"
+        tabindex="-1"
+        scrolling="no"
+    ></iframe>
+</div>
 <div class="overlay"></div>
 
 <div class="content">

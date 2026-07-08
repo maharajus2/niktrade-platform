@@ -26,27 +26,25 @@
             background-image: url('/images/homepage/niktrade-preview.png');
             background-size: cover;
             background-position: top center;
-            filter: blur(16px) saturate(1.08);
-            transform: scale(1.08);
-            opacity: 0.72;
+            filter: blur(5px) saturate(1.08) contrast(1.03);
+            transform: scale(1.025);
+            opacity: 0.96;
         }
 
         .overlay {
             position: fixed;
             inset: 0;
             background:
-                linear-gradient(118deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .56) 42%, rgba(235, 246, 255, .80) 100%),
-                radial-gradient(circle at 18% 12%, rgba(40, 125, 242, .18), transparent 28rem),
-                radial-gradient(circle at 86% 78%, rgba(47, 159, 109, .14), transparent 26rem);
+                linear-gradient(118deg, rgba(255, 255, 255, .48) 0%, rgba(255, 255, 255, .18) 42%, rgba(235, 246, 255, .38) 100%),
+                radial-gradient(circle at 18% 12%, rgba(40, 125, 242, .08), transparent 28rem),
+                radial-gradient(circle at 86% 78%, rgba(47, 159, 109, .06), transparent 26rem);
         }
 
         .overlay::after {
             content: "";
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, .36);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, .08);
         }
 
         .content {
@@ -61,7 +59,7 @@
 
         .hero {
             width: 100%;
-            max-width: 1040px;
+            max-width: 860px;
         }
 
         .hero-card {
@@ -71,15 +69,15 @@
             overflow: hidden;
             border: 1px solid rgba(211, 226, 246, .92);
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(246, 251, 255, .80) 58%, rgba(239, 247, 255, .72));
+                linear-gradient(145deg, rgba(255, 255, 255, .90), rgba(246, 251, 255, .78) 58%, rgba(239, 247, 255, .70));
             box-shadow:
                 0 28px 76px rgba(39, 88, 145, .16),
                 0 6px 18px rgba(39, 88, 145, .08),
                 inset 0 1px 0 rgba(255, 255, 255, .96),
                 inset 0 -1px 0 rgba(40, 125, 242, .10);
-            padding: 42px 48px;
-            backdrop-filter: blur(20px) saturate(1.28);
-            -webkit-backdrop-filter: blur(20px) saturate(1.28);
+            padding: 38px 44px;
+            backdrop-filter: blur(12px) saturate(1.18);
+            -webkit-backdrop-filter: blur(12px) saturate(1.18);
         }
 
         .hero-card::before,
@@ -137,7 +135,7 @@
 
         .hero-title {
             margin-top: 28px;
-            font-size: clamp(2.15rem, 4vw, 3.7rem);
+            font-size: clamp(2.05rem, 3.5vw, 3.25rem);
             line-height: 1.02;
             letter-spacing: 0;
             color: #0f1b33;

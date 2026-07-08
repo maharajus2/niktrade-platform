@@ -26,25 +26,25 @@
             background-image: url('/images/homepage/niktrade-preview.png');
             background-size: cover;
             background-position: top center;
-            filter: blur(5px) saturate(1.08) contrast(1.03);
-            transform: scale(1.025);
-            opacity: 0.96;
+            filter: blur(2px) saturate(1.08) contrast(1.06);
+            transform: scale(1.01);
+            opacity: 1;
         }
 
         .overlay {
             position: fixed;
             inset: 0;
             background:
-                linear-gradient(118deg, rgba(255, 255, 255, .48) 0%, rgba(255, 255, 255, .18) 42%, rgba(235, 246, 255, .38) 100%),
-                radial-gradient(circle at 18% 12%, rgba(40, 125, 242, .08), transparent 28rem),
-                radial-gradient(circle at 86% 78%, rgba(47, 159, 109, .06), transparent 26rem);
+                linear-gradient(118deg, rgba(255, 255, 255, .28) 0%, rgba(255, 255, 255, .08) 42%, rgba(235, 246, 255, .22) 100%),
+                radial-gradient(circle at 18% 12%, rgba(40, 125, 242, .05), transparent 28rem),
+                radial-gradient(circle at 86% 78%, rgba(47, 159, 109, .04), transparent 26rem);
         }
 
         .overlay::after {
             content: "";
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .02);
         }
 
         .content {
@@ -69,15 +69,15 @@
             overflow: hidden;
             border: 1px solid rgba(211, 226, 246, .92);
             background:
-                linear-gradient(145deg, rgba(255, 255, 255, .90), rgba(246, 251, 255, .78) 58%, rgba(239, 247, 255, .70));
+                linear-gradient(145deg, rgba(255, 255, 255, .88), rgba(246, 251, 255, .74) 58%, rgba(239, 247, 255, .64));
             box-shadow:
                 0 28px 76px rgba(39, 88, 145, .16),
                 0 6px 18px rgba(39, 88, 145, .08),
                 inset 0 1px 0 rgba(255, 255, 255, .96),
                 inset 0 -1px 0 rgba(40, 125, 242, .10);
             padding: 38px 44px;
-            backdrop-filter: blur(12px) saturate(1.18);
-            -webkit-backdrop-filter: blur(12px) saturate(1.18);
+            backdrop-filter: blur(10px) saturate(1.18);
+            -webkit-backdrop-filter: blur(10px) saturate(1.18);
         }
 
         .hero-card::before,

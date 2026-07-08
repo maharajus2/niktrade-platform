@@ -576,6 +576,17 @@
         background-attachment: fixed !important;
     }
 
+    .nik-work-app.nik-work-app--hr,
+    .nik-work-app.nik-work-app--employee,
+    .nik-work-app.nik-work-app--orders,
+    .nik-work-app.nik-work-app--calendar,
+    .nik-work-app.nik-work-app--order-detail {
+        background:
+            linear-gradient(125deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .22) 42%, rgba(234, 245, 255, .52) 100%),
+            linear-gradient(180deg, #fbfdff 0%, #eef7ff 50%, #f9fcff 100%) !important;
+        background-attachment: fixed !important;
+    }
+
     .nik-work-app .nik-work-mobile-bottom-bar,
     .nik-work-app .nik-work-mobile-sheet {
         border-color: rgba(218, 231, 247, .96) !important;

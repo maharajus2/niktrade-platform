@@ -14,9 +14,9 @@
 
         body {
             min-height: 100vh;
-            background: #0b1112;
+            background: #eef6ff;
             font-family: Inter, Arial, sans-serif;
-            color: #0f172a;
+            color: #0f1b33;
             overflow-x: hidden;
         }
 
@@ -25,16 +25,28 @@
             inset: 0;
             background-image: url('/images/homepage/niktrade-preview.png');
             background-size: cover;
-            background-position: center;
-            filter: blur(3px);
-            transform: scale(1.05);
-            opacity: 0.55;
+            background-position: top center;
+            filter: blur(16px) saturate(1.08);
+            transform: scale(1.08);
+            opacity: 0.72;
         }
 
         .overlay {
             position: fixed;
             inset: 0;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.12), rgba(15, 23, 42, 0.55));
+            background:
+                linear-gradient(118deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .56) 42%, rgba(235, 246, 255, .80) 100%),
+                radial-gradient(circle at 18% 12%, rgba(40, 125, 242, .18), transparent 28rem),
+                radial-gradient(circle at 86% 78%, rgba(47, 159, 109, .14), transparent 26rem);
+        }
+
+        .overlay::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, .36);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         .content {
@@ -54,32 +66,81 @@
 
         .hero-card {
             border-radius: 30px;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1px solid rgba(16, 185, 129, 0.15);
-            box-shadow: 0 40px 80px rgba(15, 23, 42, 0.16);
-            padding: 40px 48px;
-            backdrop-filter: blur(14px);
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            border: 1px solid rgba(211, 226, 246, .92);
+            background:
+                linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(246, 251, 255, .80) 58%, rgba(239, 247, 255, .72));
+            box-shadow:
+                0 28px 76px rgba(39, 88, 145, .16),
+                0 6px 18px rgba(39, 88, 145, .08),
+                inset 0 1px 0 rgba(255, 255, 255, .96),
+                inset 0 -1px 0 rgba(40, 125, 242, .10);
+            padding: 42px 48px;
+            backdrop-filter: blur(20px) saturate(1.28);
+            -webkit-backdrop-filter: blur(20px) saturate(1.28);
+        }
+
+        .hero-card::before,
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .hero-card::before {
+            background: linear-gradient(138deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .20) 38%, rgba(255, 255, 255, 0) 62%);
+            opacity: .82;
+        }
+
+        .hero-card::after {
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, .72),
+                inset 0 -22px 42px rgba(40, 125, 242, .06);
+        }
+
+        .hero-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .hero-brand img {
+            width: min(210px, 56vw);
+            height: auto;
+            filter: drop-shadow(0 10px 18px rgba(39, 88, 145, .12));
         }
 
         .hero-top {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 18px;
+            padding: 11px 16px;
             border-radius: 999px;
-            background: #ecfdf5;
-            color: #166534;
-            font-weight: 700;
+            background: linear-gradient(145deg, rgba(232, 243, 255, .96), rgba(255, 255, 255, .76));
+            color: #287df2;
+            font-weight: 850;
             font-size: 0.95rem;
-            border: 1px solid #bbf7d0;
+            border: 1px solid rgba(218, 231, 247, .94);
+            box-shadow: 0 10px 24px rgba(40, 125, 242, .10), inset 0 1px 0 rgba(255, 255, 255, .92);
         }
 
         .hero-title {
-            margin-top: 24px;
-            font-size: clamp(2.2rem, 4vw, 3.8rem);
+            margin-top: 28px;
+            font-size: clamp(2.15rem, 4vw, 3.7rem);
             line-height: 1.02;
-            letter-spacing: -0.03em;
-            color: #09191f;
+            letter-spacing: 0;
+            color: #0f1b33;
             max-width: 760px;
         }
 
@@ -88,7 +149,7 @@
             max-width: 680px;
             font-size: 1.05rem;
             line-height: 1.75;
-            color: #334155;
+            color: rgba(15, 27, 51, .68);
         }
 
         .hero-actions {
@@ -104,31 +165,57 @@
             justify-content: center;
             padding: 16px 30px;
             border-radius: 999px;
-            background: #16a34a;
+            background: linear-gradient(180deg, #5aa4ff 0%, #287df2 56%, #0b70f0 100%);
             color: #ffffff;
-            font-weight: 700;
+            font-weight: 850;
             font-size: 1rem;
             text-decoration: none;
             transition: transform 0.18s ease, box-shadow 0.18s ease;
-            box-shadow: 0 18px 45px rgba(22, 163, 74, 0.22);
+            box-shadow:
+                0 18px 38px rgba(40, 125, 242, .28),
+                inset 0 1px 0 rgba(255, 255, 255, .46),
+                inset 0 -1px 0 rgba(4, 76, 179, .24);
         }
 
         .hero-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 24px 54px rgba(22, 163, 74, 0.30);
+            box-shadow:
+                0 24px 52px rgba(40, 125, 242, .34),
+                inset 0 1px 0 rgba(255, 255, 255, .48),
+                inset 0 -1px 0 rgba(4, 76, 179, .24);
         }
 
         .hero-note {
             margin-top: 22px;
-            color: #475569;
+            color: rgba(15, 27, 51, .58);
             font-size: 0.98rem;
             line-height: 1.7;
             max-width: 680px;
         }
 
+        .hero-preview-note {
+            margin-top: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(218, 231, 247, .92);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, .86), rgba(246, 251, 255, .72));
+            padding: 10px 14px;
+            color: rgba(15, 27, 51, .64);
+            font-size: .9rem;
+            font-weight: 760;
+            box-shadow: 0 10px 24px rgba(39, 88, 145, .08), inset 0 1px 0 rgba(255, 255, 255, .92);
+        }
+
         @media (max-width: 820px) {
             .hero-card {
                 padding: 28px 26px;
+            }
+
+            .hero-brand {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
             .hero-title {
@@ -164,7 +251,10 @@
 <div class="content">
     <div class="hero">
         <div class="hero-card">
-            <div class="hero-top">Сайт находится в разработке</div>
+            <div class="hero-brand">
+                <img src="{{ asset('images/logont.png') }}" alt="НИКТРЕЙД">
+                <div class="hero-top">Сайт находится в разработке</div>
+            </div>
 
             <h1 class="hero-title">Пока мы готовим полноценный каталог, товары НИКТРЕЙД доступны на OZON.</h1>
 
@@ -175,6 +265,7 @@
             </div>
 
             <p class="hero-note">Это временная страница, пока мы готовим полный каталог и карточки товаров. Благодарим за терпение.</p>
+            <div class="hero-preview-note">На фоне — текущий дизайн будущего каталога НИКТРЕЙД</div>
         </div>
     </div>
 </div>

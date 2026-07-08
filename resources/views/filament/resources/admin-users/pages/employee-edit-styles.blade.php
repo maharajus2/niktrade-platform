@@ -184,5 +184,79 @@
                 justify-content: stretch;
             }
         }
+
+        body.nik-employee-edit-page {
+            background:
+                radial-gradient(circle at 78% 18%, rgba(244, 183, 126, .30), transparent 21rem),
+                radial-gradient(circle at 92% 42%, rgba(114, 176, 237, .36), transparent 25rem),
+                radial-gradient(circle at 10% 84%, rgba(73, 148, 226, .30), transparent 27rem),
+                linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, .46) 30%, transparent 43% 100%),
+                linear-gradient(135deg, #f7fbff 0%, #eef6ff 46%, #f7fbff 100%);
+            background-attachment: fixed;
+        }
+
+        body.nik-employee-edit-page .fi-header,
+        body.nik-employee-edit-page .fi-section,
+        body.nik-employee-edit-page .fi-form-actions,
+        body.nik-employee-edit-page .fi-sidebar {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            border-color: rgba(255, 255, 255, .78);
+            background:
+                radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .52), transparent 35%),
+                radial-gradient(circle at 92% 100%, rgba(22, 119, 255, .18), transparent 42%),
+                radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
+                linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(226, 246, 255, .16) 48%, rgba(255, 255, 255, .25));
+            background-attachment: fixed;
+            box-shadow:
+                0 34px 92px rgba(20, 82, 148, .18),
+                0 14px 38px rgba(22, 119, 255, .12),
+                inset 0 1px 0 rgba(255, 255, 255, .96),
+                inset 0 -22px 42px rgba(22, 119, 255, .10);
+            backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+            -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+        }
+
+        body.nik-employee-edit-page .fi-header::before,
+        body.nik-employee-edit-page .fi-section::before,
+        body.nik-employee-edit-page .fi-form-actions::before,
+        body.nik-employee-edit-page .fi-sidebar::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .92), transparent 19%),
+                linear-gradient(126deg, rgba(255, 255, 255, .76) 0 7%, rgba(255, 255, 255, .30) 8% 18%, rgba(255, 255, 255, 0) 42%),
+                linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .28) 48%, transparent 56%);
+            mix-blend-mode: screen;
+            opacity: .90;
+        }
+
+        body.nik-employee-edit-page .fi-header > *,
+        body.nik-employee-edit-page .fi-section > *,
+        body.nik-employee-edit-page .fi-form-actions > *,
+        body.nik-employee-edit-page .fi-sidebar > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        body.nik-employee-edit-page .fi-input-wrp,
+        body.nik-employee-edit-page .fi-select-input,
+        body.nik-employee-edit-page .fi-ta-ctn {
+            border-color: rgba(255, 255, 255, .62);
+            background:
+                radial-gradient(circle at 24% 0%, rgba(255, 255, 255, .78), transparent 42%),
+                linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(232, 247, 255, .20));
+            background-attachment: fixed;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, .82),
+                inset 0 -1px 0 rgba(22, 119, 255, .08);
+            backdrop-filter: blur(22px) saturate(170%);
+            -webkit-backdrop-filter: blur(22px) saturate(170%);
+        }
     </style>
 @endonce

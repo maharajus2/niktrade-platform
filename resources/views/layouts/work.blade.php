@@ -31,6 +31,9 @@
             })
             ->implode('') !!}
     </style>
+    <style>
+        {!! file_get_contents(resource_path('css/work-liquid.css')) !!}
+    </style>
 @endonce
 
 <div class="nik-work-app {{ $appClass }}">

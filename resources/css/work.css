@@ -2278,6 +2278,634 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+/* Final guard: keep custom admin pages on true fixed-background Liquid Glass. */
+.nik-work-app {
+    background:
+        radial-gradient(circle at 78% 18%, rgba(244, 183, 126, .30), transparent 21rem),
+        radial-gradient(circle at 92% 42%, rgba(114, 176, 237, .36), transparent 25rem),
+        radial-gradient(circle at 10% 84%, rgba(73, 148, 226, .30), transparent 27rem),
+        linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, .46) 30%, transparent 43% 100%),
+        linear-gradient(135deg, #f7fbff 0%, #eef6ff 46%, #f7fbff 100%);
+    background-attachment: fixed;
+}
+
+.nik-work-app::before {
+    position: fixed;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+) {
+    border-color: rgba(255, 255, 255, .78);
+    background:
+        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .52), transparent 35%),
+        radial-gradient(circle at 92% 100%, rgba(22, 119, 255, .18), transparent 42%),
+        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
+        linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(226, 246, 255, .16) 48%, rgba(255, 255, 255, .25));
+    background-attachment: fixed;
+    box-shadow:
+        0 34px 92px rgba(20, 82, 148, .18),
+        0 14px 38px rgba(22, 119, 255, .12),
+        0 1px 0 rgba(255, 255, 255, .70),
+        inset 0 1px 0 rgba(255, 255, 255, .96),
+        inset 1px 0 0 rgba(255, 255, 255, .46),
+        inset 0 -22px 42px rgba(22, 119, 255, .10),
+        inset 0 0 38px rgba(255, 255, 255, .18);
+    backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+    -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+}
+
+@media (max-width: 820px) {
+    .nik-work-app .nik-work-mobile-bottom-bar,
+    .nik-work-app .nik-work-mobile-sheet {
+        background:
+            radial-gradient(circle at 50% -18%, rgba(255, 255, 255, .72), transparent 40%),
+            radial-gradient(circle at 90% 100%, rgba(22, 119, 255, .16), transparent 42%),
+            linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .24));
+        background-attachment: fixed;
+        backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+        -webkit-backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+    }
+}
+
+/* Apple-inspired Liquid Glass material layer for custom Work UI pages only. */
+.nik-work-app {
+    --nik-liquid-blue: #1677ff;
+    --nik-liquid-cyan: #7dd3fc;
+    --nik-liquid-green: #22c55e;
+    --nik-liquid-border: rgba(255, 255, 255, .78);
+    --nik-liquid-bg:
+        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .52), transparent 35%),
+        radial-gradient(circle at 92% 100%, rgba(22, 119, 255, .18), transparent 42%),
+        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
+        linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(226, 246, 255, .16) 48%, rgba(255, 255, 255, .25));
+    --nik-liquid-shadow:
+        0 34px 92px rgba(20, 82, 148, .18),
+        0 14px 38px rgba(22, 119, 255, .12),
+        0 1px 0 rgba(255, 255, 255, .70),
+        inset 0 1px 0 rgba(255, 255, 255, .96),
+        inset 1px 0 0 rgba(255, 255, 255, .46),
+        inset 0 -22px 42px rgba(22, 119, 255, .10),
+        inset 0 0 38px rgba(255, 255, 255, .18);
+    background:
+        radial-gradient(circle at 78% 18%, rgba(244, 183, 126, .30), transparent 21rem),
+        radial-gradient(circle at 92% 42%, rgba(114, 176, 237, .36), transparent 25rem),
+        radial-gradient(circle at 10% 84%, rgba(73, 148, 226, .30), transparent 27rem),
+        linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, .46) 30%, transparent 43% 100%),
+        linear-gradient(135deg, #f7fbff 0%, #eef6ff 46%, #f7fbff 100%);
+    background-attachment: fixed;
+}
+
+.nik-work-app::before {
+    position: fixed;
+    background:
+        radial-gradient(circle at 10% 8%, rgba(255, 255, 255, .78) 0 20px, transparent 21px),
+        radial-gradient(circle at 61% 14%, rgba(255, 255, 255, .46) 0 42px, transparent 44px),
+        radial-gradient(circle at 92% 72%, rgba(255, 255, 255, .58), transparent 18rem),
+        repeating-linear-gradient(105deg, rgba(255, 255, 255, .12) 0 1px, transparent 1px 42px),
+        linear-gradient(115deg, rgba(255, 255, 255, .32), transparent 42%);
+    opacity: .95;
+}
+
+.nik-work-app::after {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 26% 18%, rgba(255, 255, 255, .72), transparent 23rem),
+        radial-gradient(ellipse at 78% 28%, rgba(22, 119, 255, .16), transparent 26rem),
+        radial-gradient(ellipse at 58% 72%, rgba(34, 197, 94, .10), transparent 30rem);
+    filter: blur(18px);
+    opacity: .86;
+    content: "";
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-color: var(--nik-liquid-border);
+    background: var(--nik-liquid-bg);
+    background-attachment: fixed;
+    background-clip: padding-box;
+    box-shadow: var(--nik-liquid-shadow);
+    backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+    -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+    transform: translateZ(0);
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::before,
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::after {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    content: "";
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::before {
+    background:
+        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .92), transparent 19%),
+        linear-gradient(126deg, rgba(255, 255, 255, .76) 0 7%, rgba(255, 255, 255, .30) 8% 18%, rgba(255, 255, 255, 0) 42%),
+        linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .28) 48%, transparent 56%),
+        linear-gradient(315deg, rgba(22, 119, 255, .12), transparent 44%);
+    mix-blend-mode: screen;
+    opacity: .90;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::after {
+    inset: 1px;
+    background:
+        radial-gradient(ellipse at 50% 106%, rgba(22, 119, 255, .17), transparent 51%),
+        linear-gradient(to top, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 40%),
+        linear-gradient(90deg, rgba(255, 255, 255, .22), transparent 18%, transparent 82%, rgba(78, 169, 255, .17));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .22),
+        inset 0 0 32px rgba(255, 255, 255, .22),
+        inset 0 -28px 52px rgba(22, 119, 255, .11);
+    opacity: .84;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-search,
+    .nik-directory-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+) > * {
+    position: relative;
+    z-index: 1;
+}
+
+.nik-work-app :is(
+    .nik-work-card,
+    .nik-employee-glass-card,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .orders-work-kpi,
+    .orders-work-order,
+    .nik-work-mobile-card,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event
+):hover {
+    border-color: rgba(255, 255, 255, .92);
+    box-shadow:
+        0 42px 112px rgba(20, 82, 148, .22),
+        0 18px 46px rgba(22, 119, 255, .15),
+        0 1px 0 rgba(255, 255, 255, .76),
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 -24px 44px rgba(22, 119, 255, .12),
+        inset 0 0 42px rgba(255, 255, 255, .24);
+}
+
+.nik-work-app :is(
+    .nik-work-search,
+    .nik-work-icon-button,
+    .nik-work-user-pill,
+    .nik-work-user-menu-panel,
+    .nik-work-sidebar-user,
+    .nik-work-shift-card,
+    .nik-work-row,
+    .nik-work-task-card,
+    .nik-work-designed-empty,
+    .nik-work-action,
+    .nik-work-task-placeholder,
+    .nik-directory-filter-button,
+    .nik-directory-viewbar a,
+    .nik-directory-filters,
+    .nik-directory-filters select,
+    .nik-directory-filters button,
+    .nik-directory-filters a,
+    .nik-directory-row,
+    .nik-directory-mini-list a,
+    .nik-directory-quick a,
+    .nik-directory-quick span,
+    .orders-work-tool-button,
+    .orders-work-view-switch button,
+    .orders-work-filters button,
+    .orders-work-filters select,
+    .orders-work-filters input[type="date"],
+    .orders-work-sheet-fields select,
+    .orders-work-sheet-fields input[type="date"],
+    .orders-work-archive-expand,
+    .orders-work-order-icons span,
+    .orders-work-order-icons button,
+    .orders-work-order-actions button,
+    .orders-work-order-actions a,
+    .nik-work-mobile-icon-button,
+    .nik-work-mobile-avatar,
+    .nik-work-mobile-card-head > a,
+    .nik-work-mobile-card-head > small,
+    .nik-work-mobile-card-head > button,
+    .nik-work-mobile-link,
+    .nik-work-mobile-shift,
+    .nik-work-mobile-notice,
+    .nik-work-mobile-actions a,
+    .nik-work-mobile-actions span,
+    .nik-work-mobile-row,
+    .nik-work-mobile-group-list a,
+    .nik-work-mobile-group-list span,
+    .nik-work-mobile-sheet-head button,
+    .nik-work-mobile-sheet-tabs span,
+    .nik-work-mobile-sheet-actions a + a,
+    .nik-work-hr-mobile-actions button,
+    .nik-work-hr-mobile-actions div,
+    .nik-work-hr-mobile-calendar-strip a,
+    .nik-work-hr-mobile-card-head a,
+    .nik-work-hr-mobile-gift
+) {
+    border-color: rgba(255, 255, 255, .64);
+    background:
+        radial-gradient(circle at 24% 0%, rgba(255, 255, 255, .78), transparent 42%),
+        linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(232, 247, 255, .20));
+    background-attachment: fixed;
+    box-shadow:
+        0 14px 34px rgba(31, 52, 86, .11),
+        inset 0 1px 0 rgba(255, 255, 255, .82),
+        inset 0 -1px 0 rgba(22, 119, 255, .08);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+}
+
+.nik-work-app :is(
+    .nik-directory-primary,
+    .nik-work-action.is-primary,
+    .orders-work-order-actions button:first-child,
+    .orders-work-sheet-fields button,
+    .orders-work-modal button,
+    .nik-work-mobile-sheet-actions a:first-child,
+    .nik-work-mobile-bottom-menu strong
+) {
+    border: 1px solid rgba(255, 255, 255, .44);
+    background:
+        radial-gradient(circle at 30% 10%, rgba(255, 255, 255, .50), transparent 36%),
+        linear-gradient(180deg, rgba(42, 157, 255, .98), rgba(0, 110, 234, .94));
+    color: #fff;
+    box-shadow:
+        0 16px 34px rgba(22, 119, 255, .30),
+        inset 0 1px 0 rgba(255, 255, 255, .48),
+        inset 0 -1px 0 rgba(0, 61, 170, .20);
+}
+
+@media (max-width: 820px) {
+    .nik-work-app,
+    .nik-work-app.nik-work-app--orders,
+    .nik-work-app--employee,
+    .nik-work-app.nik-work-app--hr {
+        background-attachment: fixed;
+    }
+
+    .nik-work-app .nik-work-mobile-bottom-bar {
+        border-color: rgba(255, 255, 255, .74);
+        background:
+            radial-gradient(circle at 50% -18%, rgba(255, 255, 255, .72), transparent 40%),
+            radial-gradient(circle at 90% 100%, rgba(22, 119, 255, .16), transparent 42%),
+            linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .24));
+        background-attachment: fixed;
+        box-shadow:
+            0 -26px 76px rgba(31, 52, 86, .24),
+            0 1px 0 rgba(255, 255, 255, .72),
+            inset 0 1px 0 rgba(255, 255, 255, .92),
+            inset 0 -18px 38px rgba(22, 119, 255, .10);
+        backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+        -webkit-backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+    }
+
+    .nik-work-app .nik-work-mobile-bottom-bar::before {
+        background:
+            radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .70), transparent 45%),
+            linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .22));
+        background-attachment: fixed;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, .86),
+            inset 0 -18px 34px rgba(22, 119, 255, .08);
+        backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+        -webkit-backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
+    }
+
+    .nik-work-app .nik-work-mobile-sheet {
+        background:
+            radial-gradient(circle at 50% -12%, rgba(255, 255, 255, .72), transparent 38%),
+            radial-gradient(circle at 95% 100%, rgba(22, 119, 255, .18), transparent 44%),
+            linear-gradient(145deg, rgba(255, 255, 255, .40), rgba(239, 247, 255, .22));
+        background-attachment: fixed;
+        box-shadow:
+            0 -32px 86px rgba(31, 52, 86, .26),
+            inset 0 1px 0 rgba(255, 255, 255, .92),
+            inset 0 -26px 52px rgba(22, 119, 255, .10);
+        backdrop-filter: blur(38px) saturate(210%) contrast(1.06);
+        -webkit-backdrop-filter: blur(38px) saturate(210%) contrast(1.06);
+    }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nik-work-app :is(
+        .nik-work-sidebar,
+        .nik-work-card,
+        .nik-employee-glass-card,
+        .nik-directory-panel,
+        .nik-directory-side section,
+        .orders-work-column,
+        .orders-work-order,
+        .nik-work-mobile-card,
+        .nik-work-hr-mobile-card,
+        .nik-work-mobile-bottom-bar,
+        .nik-work-mobile-sheet
+    ) {
+        background: rgba(255, 255, 255, .86);
+    }
+}
+
 .nik-work-app .nik-employee-profile {
     display: grid;
     gap: 18px;

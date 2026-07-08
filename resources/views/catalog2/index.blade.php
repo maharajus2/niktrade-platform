@@ -88,6 +88,59 @@
     })->values();
 
     $promoImages = $products->filter(fn (Product $product): bool => $product->images->isNotEmpty())->values();
+
+    $serviceLinks = [
+        ['label' => 'Новости', 'url' => '#news'],
+        ['label' => 'Как заказать', 'url' => '#footer'],
+        ['label' => 'Купить оптом', 'url' => '#business'],
+        ['label' => 'Дилерам', 'url' => '#business'],
+        ['label' => 'Где купить', 'url' => '#footer'],
+    ];
+
+    $directionLabels = [
+        ['label' => 'Для дома', 'caption' => 'стирка, уборка, кухня', 'needle' => ['дом', 'стир', 'уборк', 'посуд']],
+        ['label' => 'Для авто', 'caption' => 'автохимия и уход', 'needle' => ['авто', 'машин', 'стекл']],
+        ['label' => 'Для бизнеса', 'caption' => 'HoReCa и опт', 'needle' => ['horeca', 'бизнес', 'проф']],
+        ['label' => 'Дезинфекция', 'caption' => 'санитарные решения', 'needle' => ['дез', 'санит']],
+        ['label' => 'Промо', 'caption' => 'акции и новинки', 'needle' => ['акц', 'нов']],
+        ['label' => 'Все товары', 'caption' => 'полный каталог', 'needle' => []],
+    ];
+
+    $catalogDirections = collect($directionLabels)->map(function (array $direction, int $index) use ($categories, $products, $imageUrl, $visualImage) {
+        $category = $categories->first(function ($category) use ($direction): bool {
+            $name = mb_strtolower((string) $category->name);
+
+            return collect($direction['needle'])->contains(fn (string $needle): bool => str_contains($name, $needle));
+        });
+
+        $product = $products->first(function (Product $product) use ($direction): bool {
+            $haystack = mb_strtolower((string) $product->name . ' ' . (string) $product->category?->name);
+
+            return $direction['needle'] !== []
+                && collect($direction['needle'])->contains(fn (string $needle): bool => str_contains($haystack, $needle));
+        }) ?? $products->get($index);
+
+        return [
+            'label' => $direction['label'],
+            'caption' => $direction['caption'],
+            'url' => $category ? route('catalog.index', ['category' => $category->id]) : route('catalog.index'),
+            'image' => $imageUrl($product?->images?->first()?->file_path ?? $visualImage($index)),
+        ];
+    });
+
+    $saleProducts = $products
+        ->filter(fn (Product $product): bool => $product->discounted_price !== null && (float) $product->discounted_price < (float) $product->price)
+        ->values();
+    $newProducts = $products->filter(fn (Product $product): bool => $product->is_new)->values();
+    $businessProducts = $products
+        ->filter(fn (Product $product): bool => $product->direction === 'professional' || str_contains(mb_strtolower((string) $product->category?->name), 'horeca'))
+        ->values();
+    $productTabs = [
+        ['label' => 'Рекомендуем', 'count' => $featured->count(), 'url' => '#products', 'active' => true],
+        ['label' => 'Мега выгода', 'count' => $saleProducts->count(), 'url' => '#products', 'active' => false],
+        ['label' => 'Новинки', 'count' => $newProducts->count(), 'url' => '#products', 'active' => false],
+        ['label' => 'Для бизнеса', 'count' => $businessProducts->count(), 'url' => '#business', 'active' => false],
+    ];
 @endphp
 
 <!DOCTYPE html>
@@ -1590,6 +1643,10 @@
             border-radius: 22px;
         }
 
+        .nik-catalog2-product-card {
+            min-height: 318px;
+        }
+
         .nik-catalog2-category-card:hover,
         .nik-catalog2-product-card:hover,
         .nik-catalog2-promo:hover {
@@ -1630,6 +1687,263 @@
             background-attachment: fixed;
         }
 
+        .nik-catalog2-servicebar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 34px;
+            padding: 0 4px;
+            color: rgba(15,27,51,.62);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .nik-catalog2-servicebar > div,
+        .nik-catalog2-servicebar nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nik-catalog2-servicebar a {
+            color: rgba(15,27,51,.66);
+            transition: color .18s ease;
+        }
+
+        .nik-catalog2-servicebar a:hover {
+            color: #287df2;
+        }
+
+        .nik-catalog2-mega-strip {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 16px;
+            align-items: stretch;
+            margin-bottom: 18px;
+            border-radius: 26px;
+            padding: 14px;
+        }
+
+        .nik-catalog2-mega-copy {
+            display: flex;
+            min-height: 94px;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 20px;
+            padding: 18px;
+            background: linear-gradient(145deg, rgba(232,243,255,.96), rgba(255,255,255,.72));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.94), inset 0 -1px 0 rgba(40,125,242,.08);
+        }
+
+        .nik-catalog2-mega-copy span {
+            color: #287df2;
+            font-size: 12px;
+            font-weight: 950;
+            text-transform: uppercase;
+        }
+
+        .nik-catalog2-mega-copy strong {
+            margin-top: 6px;
+            color: #0f1b33;
+            font-size: 21px;
+            font-weight: 950;
+            line-height: 1.1;
+        }
+
+        .nik-catalog2-mega-links {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .nik-catalog2-mega-links a {
+            display: grid;
+            min-width: 0;
+            min-height: 94px;
+            grid-template-columns: 50px minmax(0, 1fr);
+            grid-template-rows: 1fr auto;
+            gap: 4px 10px;
+            align-items: center;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(246,251,255,.72));
+            padding: 12px;
+            box-shadow: 0 10px 26px rgba(39,88,145,.08), inset 0 1px 0 rgba(255,255,255,.94);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .nik-catalog2-mega-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 40px rgba(39,88,145,.12), inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .nik-catalog2-mega-links img {
+            grid-row: 1 / 3;
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 14px rgba(39,88,145,.12));
+        }
+
+        .nik-catalog2-mega-links span {
+            overflow: hidden;
+            color: #0f1b33;
+            font-size: 13px;
+            font-weight: 950;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .nik-catalog2-mega-links small {
+            overflow: hidden;
+            color: rgba(15,27,51,.58);
+            font-size: 11px;
+            font-weight: 760;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .nik-catalog2-product-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0 0 14px;
+        }
+
+        .nik-catalog2-product-tabs a {
+            display: inline-flex;
+            min-height: 38px;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(246,251,255,.72));
+            padding: 0 14px;
+            color: rgba(15,27,51,.72);
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(39,88,145,.08), inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
+        .nik-catalog2-product-tabs a.is-active {
+            background: linear-gradient(145deg, rgba(232,243,255,.96), rgba(255,255,255,.74));
+            color: #287df2;
+        }
+
+        .nik-catalog2-product-tabs span {
+            display: inline-flex;
+            min-width: 24px;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(40,125,242,.10);
+            padding: 3px 7px;
+            font-size: 11px;
+        }
+
+        .nik-catalog2-product-facts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .nik-catalog2-product-facts span {
+            display: inline-flex;
+            min-height: 23px;
+            align-items: center;
+            border-radius: 999px;
+            background: rgba(235,243,252,.78);
+            padding: 0 8px;
+            color: rgba(15,27,51,.58);
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .nik-catalog2-product-facts .is-stock {
+            background: rgba(34,197,94,.12);
+            color: #16834f;
+        }
+
+        .nik-catalog2-product-facts .is-wait {
+            background: rgba(245,158,11,.13);
+            color: #b66b00;
+        }
+
+        .nik-catalog2-cart-btn {
+            position: relative;
+        }
+
+        .nik-catalog2-cart-btn > span {
+            position: absolute;
+            top: -6px;
+            right: -5px;
+            display: inline-flex;
+            min-width: 18px;
+            height: 18px;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,.92);
+            border-radius: 999px;
+            background: #0f1b33;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 950;
+        }
+
+        .nik-catalog2-commerce-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .nik-catalog2-commerce-card {
+            min-height: 188px;
+            border-radius: 24px;
+            padding: 24px;
+        }
+
+        .nik-catalog2-commerce-card span {
+            color: #287df2;
+            font-size: 12px;
+            font-weight: 950;
+            text-transform: uppercase;
+        }
+
+        .nik-catalog2-commerce-card h3 {
+            margin: 10px 0 8px;
+            color: #0f1b33;
+            font-size: 24px;
+            font-weight: 950;
+            line-height: 1.08;
+        }
+
+        .nik-catalog2-commerce-card p {
+            margin: 0;
+            color: rgba(15,27,51,.66);
+            font-size: 14px;
+            font-weight: 760;
+            line-height: 1.45;
+        }
+
+        .nik-catalog2-commerce-card a {
+            display: inline-flex;
+            min-height: 40px;
+            align-items: center;
+            margin-top: 18px;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(246,251,255,.72));
+            padding: 0 15px;
+            color: #287df2;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(39,88,145,.08), inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
         @media (max-width: 760px) {
             .nik-catalog2 {
                 background:
@@ -1646,6 +1960,75 @@
             .nik-catalog2-hero-product {
                 opacity: .62;
             }
+
+            .nik-catalog2-servicebar {
+                display: grid;
+                gap: 8px;
+            }
+
+            .nik-catalog2-servicebar > div,
+            .nik-catalog2-servicebar nav {
+                gap: 10px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                scrollbar-width: none;
+            }
+
+            .nik-catalog2-servicebar > div::-webkit-scrollbar,
+            .nik-catalog2-servicebar nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nik-catalog2-mega-strip {
+                grid-template-columns: 1fr;
+                padding: 12px;
+            }
+
+            .nik-catalog2-mega-copy {
+                min-height: auto;
+            }
+
+            .nik-catalog2-mega-links {
+                display: flex;
+                overflow-x: auto;
+                margin-right: -12px;
+                padding-right: 12px;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+            }
+
+            .nik-catalog2-mega-links::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nik-catalog2-mega-links a {
+                min-width: 190px;
+                scroll-snap-align: start;
+            }
+
+            .nik-catalog2-product-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                margin-right: -12px;
+                padding-right: 12px;
+                scrollbar-width: none;
+            }
+
+            .nik-catalog2-product-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nik-catalog2-product-tabs a {
+                flex: 0 0 auto;
+            }
+
+            .nik-catalog2-product-card {
+                min-height: 296px;
+            }
+
+            .nik-catalog2-commerce-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -1653,6 +2036,18 @@
 <div class="nik-catalog2">
     <div class="nik-catalog2-shell">
         <header class="nik-catalog2-header" aria-label="Навигация">
+            <div class="nik-catalog2-servicebar">
+                <div>
+                    <span>Ваш город: Москва</span>
+                    <span>Доставка по России</span>
+                </div>
+                <nav aria-label="Сервисная навигация">
+                    @foreach ($serviceLinks as $link)
+                        <a href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+                    @endforeach
+                </nav>
+            </div>
+
             <a class="nik-catalog2-logo" href="{{ route('catalog.preview') }}" aria-label="НИКТРЕЙД">
                 <img src="{{ asset('images/logont.png') }}" alt="НИКТРЕЙД">
             </a>
@@ -1687,6 +2082,22 @@
                 </a>
             </div>
         </header>
+
+        <section class="nik-catalog2-mega-strip nik-catalog2-glass" aria-label="Направления каталога">
+            <div class="nik-catalog2-mega-copy">
+                <span>Каталог товаров</span>
+                <strong>Быстрый выбор по задачам</strong>
+            </div>
+            <div class="nik-catalog2-mega-links">
+                @foreach ($catalogDirections as $direction)
+                    <a href="{{ $direction['url'] }}">
+                        <img src="{{ $direction['image'] }}" alt="{{ $direction['label'] }}">
+                        <span>{{ $direction['label'] }}</span>
+                        <small>{{ $direction['caption'] }}</small>
+                    </a>
+                @endforeach
+            </div>
+        </section>
 
         <section class="nik-catalog2-hero-grid">
             <div class="nik-catalog2-hero nik-catalog2-glass">
@@ -1742,6 +2153,14 @@
                 <h2>Популярные товары</h2>
                 <a href="{{ route('catalog.index') }}">Смотреть все →</a>
             </div>
+            <div class="nik-catalog2-product-tabs" aria-label="Подборки товаров">
+                @foreach ($productTabs as $tab)
+                    <a class="{{ $tab['active'] ? 'is-active' : '' }}" href="{{ $tab['url'] }}">
+                        {{ $tab['label'] }}
+                        <span>{{ $tab['count'] }}</span>
+                    </a>
+                @endforeach
+            </div>
             <div class="nik-catalog2-product-grid">
                 @forelse ($featured->take(12) as $product)
                     @php
@@ -1775,6 +2194,14 @@
                             @if ($productVolume($product))
                                 <em>{{ $productVolume($product) }}</em>
                             @endif
+                            <span class="nik-catalog2-product-facts">
+                                @if ($product->article)
+                                    <span>арт. {{ $product->article }}</span>
+                                @endif
+                                <span class="{{ $product->availability_status === 'out_of_stock' ? 'is-wait' : 'is-stock' }}">
+                                    {{ $product->availability_status === 'out_of_stock' ? 'скоро появится' : 'в наличии' }}
+                                </span>
+                            </span>
                         </a>
                         <div class="nik-catalog2-price-row">
                             <div class="nik-catalog2-price">
@@ -1786,8 +2213,12 @@
                             <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
                                 @csrf
                                 <input type="hidden" name="redirect_anchor" value="catalog2-product-{{ $product->id }}">
-                                <button class="nik-catalog2-cart-btn" type="submit" aria-label="Добавить в корзину">
+                                @php($cartQuantityForProduct = (int) ($cartProductItems->get($product->id)?->quantity ?? 0))
+                                <button class="nik-catalog2-cart-btn {{ $cartQuantityForProduct > 0 ? 'is-in-cart' : '' }}" type="submit" aria-label="Добавить в корзину">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+                                    @if ($cartQuantityForProduct > 0)
+                                        <span>{{ $cartQuantityForProduct }}</span>
+                                    @endif
                                 </button>
                             </form>
                         </div>
@@ -1802,6 +2233,27 @@
             @foreach (['Собственное производство', 'Контроль качества', 'Сертифицированная продукция', 'Выгодные оптовые цены', 'Доставка по всей России', 'Поддержка клиентов'] as $advantage)
                 <div class="nik-catalog2-advantage"><i>✧</i><span>{{ $advantage }}</span></div>
             @endforeach
+        </section>
+
+        <section id="business" class="nik-catalog2-commerce-grid">
+            <article class="nik-catalog2-commerce-card nik-catalog2-glass">
+                <span>Оптовым клиентам</span>
+                <h3>Поставки для бизнеса</h3>
+                <p>Подберём линейку, объём и условия поставки под склад, клининг, HoReCa или автомойку.</p>
+                <a href="#products">Смотреть профессиональные товары</a>
+            </article>
+            <article class="nik-catalog2-commerce-card nik-catalog2-glass">
+                <span>Дилерам</span>
+                <h3>Бренды HIBERG и ARVETERA</h3>
+                <p>Реальные товарные фото, актуальные категории и быстрый переход к брендовым подборкам.</p>
+                <a href="#brands">Перейти к брендам</a>
+            </article>
+            <article class="nik-catalog2-commerce-card nik-catalog2-glass">
+                <span>Доставка</span>
+                <h3>По России</h3>
+                <p>Каталог собран вокруг задач покупателя: дом, автомобиль, бизнес и санитарные решения.</p>
+                <a href="#categories">Выбрать направление</a>
+            </article>
         </section>
 
         <section id="promos" class="nik-catalog2-promos">

@@ -4,35 +4,64 @@ namespace App\Filament\Resources\Orders\Pages;
 
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
-use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\Width;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
 
+    protected string $view = 'filament.resources.orders.pages.view-order';
+
+    protected Width|string|null $maxContentWidth = Width::Full;
+
+    public function getTitle(): string|Htmlable
+    {
+        return 'Заказ ' . $this->record->order_number;
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return null;
+    }
+
     protected function getHeaderActions(): array
     {
-        return [
-            EditAction::make(),
-            Action::make('archive')
-                ->label('Отправить в архив')
-                ->requiresConfirmation()
-                ->modalDescription('Отправить заказ в архив?')
-                ->visible(fn (): bool => $this->record instanceof Order && $this->record->canBeArchived())
-                ->action(fn (): bool => $this->record->update(['archived_at' => now()])),
-            Action::make('unarchive')
-                ->label('Вернуть из архива')
-                ->requiresConfirmation()
-                ->modalDescription('Вернуть заказ из архива?')
-                ->visible(fn (): bool => $this->record instanceof Order && $this->record->isArchived())
-                ->action(fn (): bool => $this->record->update(['archived_at' => null])),
-            DeleteAction::make()
-                ->label('Удалить заказ')
-                ->requiresConfirmation()
-                ->modalDescription('Вы уверены, что хотите удалить этот заказ? Это действие нельзя отменить.'),
-        ];
+        return [];
+    }
+
+    public function archiveOrder(): void
+    {
+        if (! $this->record instanceof Order || ! $this->record->canBeArchived()) {
+            Notification::make()->title('Заказ нельзя отправить в архив.')->danger()->send();
+
+            return;
+        }
+
+        $this->record->update(['archived_at' => now()]);
+        $this->record->refresh();
+
+        Notification::make()->title('Заказ отправлен в архив.')->success()->send();
+    }
+
+    public function unarchiveOrder(): void
+    {
+        if (! $this->record instanceof Order || ! $this->record->isArchived()) {
+            Notification::make()->title('Заказ не находится в архиве.')->danger()->send();
+
+            return;
+        }
+
+        $this->record->update(['archived_at' => null]);
+        $this->record->refresh();
+
+        Notification::make()->title('Заказ возвращён из архива.')->success()->send();
     }
 }

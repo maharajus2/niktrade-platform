@@ -1415,6 +1415,238 @@
                 width: 36%;
             }
         }
+
+        /* Final Niktrade soft glass direction based on the new homepage reference. */
+        .nik-catalog2 {
+            --liquid-blue: #287df2;
+            --liquid-blue-deep: #0b70f0;
+            --liquid-green: #2f9f6d;
+            --liquid-ink: #0f1b33;
+            --liquid-border: rgba(211, 226, 246, .88);
+            --liquid-shadow: 0 24px 66px rgba(39, 88, 145, .12), 0 2px 10px rgba(39, 88, 145, .06);
+            background:
+                linear-gradient(118deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.20) 34%, rgba(236,246,255,.46) 62%, rgba(255,255,255,.80) 100%),
+                linear-gradient(180deg, #fbfdff 0%, #eef6ff 46%, #f8fbff 100%);
+            background-attachment: fixed;
+        }
+
+        .nik-catalog2::before {
+            background:
+                linear-gradient(90deg, rgba(255,255,255,.62), rgba(255,255,255,0) 32%, rgba(108,173,255,.08) 72%, rgba(255,255,255,.46)),
+                linear-gradient(180deg, rgba(255,255,255,.64), rgba(255,255,255,0) 34%);
+            opacity: .76;
+        }
+
+        .nik-catalog2::after {
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,0) 46%, rgba(194,224,255,.16));
+            filter: none;
+            opacity: .70;
+        }
+
+        .nik-catalog2-glass {
+            border-color: var(--liquid-border);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.90), rgba(246,251,255,.76) 56%, rgba(239,247,255,.68));
+            background-attachment: fixed;
+            box-shadow:
+                var(--liquid-shadow),
+                inset 0 1px 0 rgba(255,255,255,.96),
+                inset 0 -1px 0 rgba(114,176,245,.14);
+            backdrop-filter: blur(18px) saturate(135%);
+            -webkit-backdrop-filter: blur(18px) saturate(135%);
+        }
+
+        .nik-catalog2-glass::before {
+            background: linear-gradient(138deg, rgba(255,255,255,.72), rgba(255,255,255,.18) 36%, rgba(255,255,255,0) 58%);
+            mix-blend-mode: normal;
+            opacity: .72;
+        }
+
+        .nik-catalog2-glass::after {
+            inset: 0;
+            background: transparent;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,.72),
+                inset 0 -18px 36px rgba(40,125,242,.06);
+            opacity: .95;
+        }
+
+        .nik-catalog2-glass:hover {
+            border-color: rgba(221,233,248,.96);
+            box-shadow:
+                0 30px 76px rgba(39,88,145,.15),
+                0 8px 22px rgba(40,125,242,.08),
+                inset 0 1px 0 rgba(255,255,255,.96),
+                inset 0 -1px 0 rgba(114,176,245,.16);
+        }
+
+        .nik-catalog2-header {
+            top: 12px;
+        }
+
+        .nik-catalog2-catalog-btn,
+        .nik-catalog2-nav a,
+        .nik-catalog2-icon-link,
+        .nik-catalog2-action,
+        .nik-catalog2-brand-card a,
+        .nik-catalog2-promo a,
+        .nik-catalog2-brand-mini,
+        .nik-catalog2-about-visual,
+        .nik-catalog2-news-card,
+        .nik-catalog2-subscribe input,
+        .nik-catalog2-favorite,
+        .nik-catalog2-product-image,
+        .nik-catalog2-feature i,
+        .nik-catalog2-advantage i,
+        .nik-catalog2-why i {
+            border-color: rgba(218,231,247,.92);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.88), rgba(246,251,255,.72));
+            box-shadow:
+                0 10px 26px rgba(39,88,145,.09),
+                inset 0 1px 0 rgba(255,255,255,.94),
+                inset 0 -1px 0 rgba(40,125,242,.08);
+            backdrop-filter: blur(12px) saturate(125%);
+            -webkit-backdrop-filter: blur(12px) saturate(125%);
+        }
+
+        .nik-catalog2-catalog-btn,
+        .nik-catalog2-action.is-primary,
+        .nik-catalog2-cart-btn,
+        .nik-catalog2-subscribe button {
+            border-color: rgba(255,255,255,.58);
+            background: linear-gradient(180deg, #5aa4ff 0%, #287df2 56%, #0b70f0 100%);
+            color: #fff;
+            box-shadow:
+                0 16px 34px rgba(40,125,242,.28),
+                inset 0 1px 0 rgba(255,255,255,.46),
+                inset 0 -1px 0 rgba(4,76,179,.24);
+        }
+
+        .nik-catalog2-hero {
+            min-height: 398px;
+            border-radius: 32px;
+        }
+
+        .nik-catalog2-hero::before {
+            background:
+                linear-gradient(102deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.62) 36%, rgba(235,246,255,.34) 68%, rgba(255,255,255,.12) 100%);
+            opacity: .96;
+        }
+
+        .nik-catalog2-hero h1 {
+            color: #0f1b33;
+            letter-spacing: 0;
+        }
+
+        .nik-catalog2-hero h2,
+        .nik-catalog2-section-head a,
+        .nik-catalog2-news-card time,
+        .nik-catalog2-news-card a {
+            color: #287df2;
+        }
+
+        .nik-catalog2-hero-product {
+            opacity: .52;
+            filter: drop-shadow(0 28px 42px rgba(39,88,145,.14));
+        }
+
+        .nik-catalog2-bubble {
+            border-color: rgba(218,231,247,.76);
+            background: radial-gradient(circle at 34% 24%, rgba(255,255,255,.86), rgba(232,244,255,.34) 58%, rgba(255,255,255,.18));
+            box-shadow: inset 0 1px 8px rgba(255,255,255,.74), 0 12px 24px rgba(39,88,145,.08);
+        }
+
+        .nik-catalog2-brand-card,
+        .nik-catalog2-brand-card.is-arvetera {
+            background:
+                linear-gradient(106deg, rgba(255,255,255,.88) 0%, rgba(255,255,255,.58) 54%, rgba(231,245,255,.36) 100%);
+            background-attachment: fixed;
+        }
+
+        .nik-catalog2-brand-card.is-arvetera {
+            background:
+                linear-gradient(106deg, rgba(255,255,255,.88) 0%, rgba(255,255,255,.58) 54%, rgba(231,250,242,.42) 100%);
+            background-attachment: fixed;
+        }
+
+        .nik-catalog2-brand-card h3 {
+            color: #12213d;
+            text-transform: none;
+        }
+
+        .nik-catalog2-brand-card.is-arvetera h3 {
+            color: #2f7d48;
+        }
+
+        .nik-catalog2-brand-card img {
+            opacity: .88;
+            filter: drop-shadow(0 18px 26px rgba(39,88,145,.12));
+        }
+
+        .nik-catalog2-category-card,
+        .nik-catalog2-product-card {
+            border-radius: 22px;
+        }
+
+        .nik-catalog2-category-card:hover,
+        .nik-catalog2-product-card:hover,
+        .nik-catalog2-promo:hover {
+            transform: translateY(-2px);
+            border-color: rgba(221,233,248,.96);
+            box-shadow:
+                0 30px 76px rgba(39,88,145,.15),
+                0 8px 22px rgba(40,125,242,.08),
+                inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .nik-catalog2-badge {
+            border: 1px solid rgba(255,255,255,.70);
+            background: linear-gradient(145deg, #e8f3ff, #ffffff);
+            color: #287df2;
+            box-shadow: 0 8px 18px rgba(39,88,145,.08), inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
+        .nik-catalog2-badge.is-sale {
+            background: linear-gradient(145deg, #fff3dd, #ffffff);
+            color: #f08a00;
+        }
+
+        .nik-catalog2-badge.is-new {
+            background: linear-gradient(145deg, #e8f3ff, #ffffff);
+            color: #287df2;
+        }
+
+        .nik-catalog2-price {
+            color: #0f1b33;
+        }
+
+        .nik-catalog2-promo.is-sale,
+        .nik-catalog2-promo.is-new,
+        .nik-catalog2-promo.is-b2b {
+            background:
+                linear-gradient(110deg, rgba(255,255,255,.90), rgba(255,255,255,.66) 48%, rgba(239,247,255,.46));
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 760px) {
+            .nik-catalog2 {
+                background:
+                    linear-gradient(125deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.22) 42%, rgba(234,245,255,.52) 100%),
+                    linear-gradient(180deg, #fbfdff 0%, #eef7ff 50%, #f9fcff 100%);
+                background-attachment: fixed;
+            }
+
+            .nik-catalog2-hero {
+                min-height: auto;
+                padding-bottom: 210px;
+            }
+
+            .nik-catalog2-hero-product {
+                opacity: .62;
+            }
+        }
     </style>
 </head>
 <body>

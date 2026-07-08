@@ -1,35 +1,47 @@
-/* Final Apple-inspired Liquid Glass layer for custom Niktrade Work UI pages. */
+/* Niktrade soft glass layer for custom Work UI pages. */
 .nik-work-app {
+    --nik-soft-blue: #287df2;
+    --nik-soft-blue-strong: #0b70f0;
+    --nik-soft-ink: #0f1b33;
+    --nik-soft-muted: #66758b;
+    --nik-soft-line: rgba(211, 226, 246, .86);
+    --nik-soft-line-bright: rgba(255, 255, 255, .92);
+    --nik-soft-surface: rgba(255, 255, 255, .84);
+    --nik-soft-surface-light: rgba(248, 252, 255, .74);
+    --nik-soft-shadow: 0 22px 60px rgba(39, 88, 145, .12), 0 2px 10px rgba(39, 88, 145, .06);
+    --nik-soft-shadow-hover: 0 28px 72px rgba(39, 88, 145, .15), 0 8px 22px rgba(40, 125, 242, .08);
+    min-height: 100vh;
     background:
-        radial-gradient(circle at 78% 18%, rgba(244, 183, 126, .30), transparent 21rem),
-        radial-gradient(circle at 92% 42%, rgba(114, 176, 237, .36), transparent 25rem),
-        radial-gradient(circle at 10% 84%, rgba(73, 148, 226, .30), transparent 27rem),
-        linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, .46) 30%, transparent 43% 100%),
-        linear-gradient(135deg, #f7fbff 0%, #eef6ff 46%, #f7fbff 100%);
-    background-attachment: fixed;
+        linear-gradient(118deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .18) 34%, rgba(236, 246, 255, .44) 62%, rgba(255, 255, 255, .76) 100%),
+        linear-gradient(180deg, #fbfdff 0%, #eef6ff 46%, #f8fbff 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--nik-soft-ink);
 }
 
 .nik-work-app::before {
-    position: fixed;
+    position: fixed !important;
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, 0) 32%, rgba(108, 173, 255, .08) 72%, rgba(255, 255, 255, .46)),
+        linear-gradient(180deg, rgba(255, 255, 255, .64), rgba(255, 255, 255, 0) 34%) !important;
+    opacity: .86 !important;
 }
 
 .nik-work-app :is(
     .nik-work-sidebar,
     .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
     .nik-employee-glass-card,
     .nik-employee-profile-tabs,
-    .nik-directory-search,
-    .nik-directory-tabs,
     .nik-directory-panel,
     .nik-directory-side section,
     .nik-directory-kpis article,
     .nik-directory-mobile-card,
     .nik-department-card,
     .nik-directory-mobile-kpis article,
-    .nik-directory-mobile-search,
-    .orders-work-search,
-    .orders-work-view-switch,
-    .orders-work-filters,
+    .nik-directory-structure article,
     .orders-work-kpi,
     .orders-work-column,
     .orders-work-order,
@@ -40,6 +52,11 @@
     .nik-order-detail-hero,
     .nik-order-detail-card,
     .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
     .nik-work-mobile-card,
     .nik-work-mobile-sheet,
     .nik-work-mobile-sheet-placeholder,
@@ -59,42 +76,35 @@
     .nik-employee-disabled-state,
     .nik-employee-profile-today
 ) {
-    border-color: rgba(255, 255, 255, .78);
+    position: relative;
+    isolation: isolate;
+    border-color: var(--nik-soft-line) !important;
     background:
-        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .52), transparent 35%),
-        radial-gradient(circle at 92% 100%, rgba(22, 119, 255, .18), transparent 42%),
-        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
-        linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(226, 246, 255, .16) 48%, rgba(255, 255, 255, .25));
-    background-attachment: fixed;
+        linear-gradient(145deg, rgba(255, 255, 255, .90), rgba(246, 251, 255, .76) 56%, rgba(239, 247, 255, .68)) !important;
     box-shadow:
-        0 34px 92px rgba(20, 82, 148, .18),
-        0 14px 38px rgba(22, 119, 255, .12),
-        0 1px 0 rgba(255, 255, 255, .70),
+        var(--nik-soft-shadow),
         inset 0 1px 0 rgba(255, 255, 255, .96),
-        inset 1px 0 0 rgba(255, 255, 255, .46),
-        inset 0 -22px 42px rgba(22, 119, 255, .10),
-        inset 0 0 38px rgba(255, 255, 255, .18);
-    backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
-    -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
+        inset 0 -1px 0 rgba(114, 176, 245, .14) !important;
+    backdrop-filter: blur(18px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
 }
 
 .nik-work-app :is(
     .nik-work-sidebar,
     .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
     .nik-employee-glass-card,
     .nik-employee-profile-tabs,
-    .nik-directory-search,
-    .nik-directory-tabs,
     .nik-directory-panel,
     .nik-directory-side section,
     .nik-directory-kpis article,
     .nik-directory-mobile-card,
     .nik-department-card,
     .nik-directory-mobile-kpis article,
-    .nik-directory-mobile-search,
-    .orders-work-search,
-    .orders-work-view-switch,
-    .orders-work-filters,
+    .nik-directory-structure article,
     .orders-work-kpi,
     .orders-work-column,
     .orders-work-order,
@@ -105,6 +115,11 @@
     .nik-order-detail-hero,
     .nik-order-detail-card,
     .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
     .nik-work-mobile-card,
     .nik-work-mobile-sheet,
     .nik-work-mobile-sheet-placeholder,
@@ -123,33 +138,23 @@
     .nik-employee-profile-list > div,
     .nik-employee-disabled-state,
     .nik-employee-profile-today
-)::before {
-    background:
-        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .92), transparent 19%),
-        linear-gradient(126deg, rgba(255, 255, 255, .76) 0 7%, rgba(255, 255, 255, .30) 8% 18%, rgba(255, 255, 255, 0) 42%),
-        linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .28) 48%, transparent 56%),
-        linear-gradient(315deg, rgba(22, 119, 255, .12), transparent 44%);
-    mix-blend-mode: screen;
-    opacity: .90;
-}
-
+)::before,
 .nik-work-app :is(
     .nik-work-sidebar,
     .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
     .nik-employee-glass-card,
     .nik-employee-profile-tabs,
-    .nik-directory-search,
-    .nik-directory-tabs,
     .nik-directory-panel,
     .nik-directory-side section,
     .nik-directory-kpis article,
     .nik-directory-mobile-card,
     .nik-department-card,
     .nik-directory-mobile-kpis article,
-    .nik-directory-mobile-search,
-    .orders-work-search,
-    .orders-work-view-switch,
-    .orders-work-filters,
+    .nik-directory-structure article,
     .orders-work-kpi,
     .orders-work-column,
     .orders-work-order,
@@ -160,6 +165,11 @@
     .nik-order-detail-hero,
     .nik-order-detail-card,
     .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
     .nik-work-mobile-card,
     .nik-work-mobile-sheet,
     .nik-work-mobile-sheet-placeholder,
@@ -179,15 +189,193 @@
     .nik-employee-disabled-state,
     .nik-employee-profile-today
 )::after {
-    background:
-        radial-gradient(ellipse at 50% 106%, rgba(22, 119, 255, .17), transparent 51%),
-        linear-gradient(to top, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 40%),
-        linear-gradient(90deg, rgba(255, 255, 255, .22), transparent 18%, transparent 82%, rgba(78, 169, 255, .17));
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-structure article,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-order-detail-hero,
+    .nik-order-detail-card,
+    .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::before {
+    background: linear-gradient(138deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .18) 36%, rgba(255, 255, 255, 0) 58%);
+    opacity: .72;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-structure article,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-order-detail-hero,
+    .nik-order-detail-card,
+    .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+)::after {
     box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, .22),
-        inset 0 0 32px rgba(255, 255, 255, .22),
-        inset 0 -28px 52px rgba(22, 119, 255, .11);
-    opacity: .84;
+        inset 0 0 0 1px rgba(255, 255, 255, .72),
+        inset 0 -18px 36px rgba(40, 125, 242, .06);
+    opacity: .95;
+}
+
+.nik-work-app :is(
+    .nik-work-sidebar,
+    .nik-work-card,
+    .nt-workplace__widget,
+    .nt-hr-card,
+    .nik-work-hr-desktop-kpis article,
+    .nik-employee-card,
+    .nik-employee-glass-card,
+    .nik-employee-profile-tabs,
+    .nik-directory-panel,
+    .nik-directory-side section,
+    .nik-directory-kpis article,
+    .nik-directory-mobile-card,
+    .nik-department-card,
+    .nik-directory-mobile-kpis article,
+    .nik-directory-structure article,
+    .orders-work-kpi,
+    .orders-work-column,
+    .orders-work-order,
+    .orders-work-analytics article,
+    .orders-work-list,
+    .orders-work-filter-sheet,
+    .orders-work-modal,
+    .nik-order-detail-hero,
+    .nik-order-detail-card,
+    .nik-order-detail-rail article,
+    .nik-calendar-hero,
+    .nik-calendar-main-card,
+    .nik-calendar-side section,
+    .nik-calendar-notices > div,
+    .nik-calendar-day-popover,
+    .nik-work-mobile-card,
+    .nik-work-mobile-sheet,
+    .nik-work-mobile-sheet-placeholder,
+    .nik-work-mobile-menu-list,
+    .nik-work-mobile-task-sheet div,
+    .nik-work-hr-mobile-kpis article,
+    .nik-work-hr-mobile-card,
+    .nik-work-hr-mobile-row,
+    .nik-work-hr-mobile-event,
+    .nik-work-hr-mobile-action-grid a,
+    .nik-employee-mobile-quick a,
+    .nik-employee-mobile-quick span,
+    .nik-employee-mobile-stats div,
+    .nik-employee-mobile-facts div,
+    .nik-employee-summary-list > div,
+    .nik-employee-profile-list > div,
+    .nik-employee-disabled-state,
+    .nik-employee-profile-today
+) > * {
+    position: relative;
+    z-index: 1;
+}
+
+.nik-work-app :is(
+    .nik-work-card:hover,
+    .nt-workplace__widget:hover,
+    .nt-hr-card:hover,
+    .nik-employee-card:hover,
+    .nik-directory-panel:hover,
+    .nik-department-card:hover,
+    .orders-work-order:hover,
+    .nik-order-detail-card:hover,
+    .nik-calendar-main-card:hover
+) {
+    box-shadow:
+        var(--nik-soft-shadow-hover),
+        inset 0 1px 0 rgba(255, 255, 255, .96),
+        inset 0 -1px 0 rgba(114, 176, 245, .16) !important;
 }
 
 .nik-work-app :is(
@@ -202,6 +390,8 @@
     .nik-work-designed-empty,
     .nik-work-action,
     .nik-work-task-placeholder,
+    .nik-directory-search,
+    .nik-directory-tabs,
     .nik-directory-filter-button,
     .nik-directory-viewbar a,
     .nik-directory-filters,
@@ -212,6 +402,10 @@
     .nik-directory-mini-list a,
     .nik-directory-quick a,
     .nik-directory-quick span,
+    .nik-directory-mobile-search,
+    .orders-work-search,
+    .orders-work-view-switch,
+    .orders-work-filters,
     .orders-work-tool-button,
     .orders-work-view-switch button,
     .orders-work-filters button,
@@ -235,6 +429,25 @@
     .nik-order-detail-timeline > div,
     .nik-order-detail-empty,
     .nik-order-detail-mobile-head > div:last-child > a,
+    .nik-calendar-filter-button,
+    .nik-calendar-disabled-action,
+    .nik-calendar-view-switch,
+    .nik-calendar-navigation,
+    .nik-calendar-filters,
+    .nik-calendar-filters select,
+    .nik-calendar-period-picker,
+    .nik-calendar-period-months button,
+    .nik-calendar-period-picker select,
+    .nik-calendar-agenda-card,
+    .nik-calendar-schedule-state,
+    .nik-calendar-quick-actions a,
+    .nik-calendar-quick-actions > span,
+    .nik-calendar-legend,
+    .nik-calendar-mobile-strip button,
+    .nik-calendar-mobile-expand,
+    .nik-calendar-holiday-tooltip,
+    .nik-calendar-day-popover-list button,
+    .nik-calendar-day-popover-actions button,
     .nik-work-mobile-icon-button,
     .nik-work-mobile-avatar,
     .nik-work-mobile-card-head > a,
@@ -257,17 +470,15 @@
     .nik-work-hr-mobile-card-head a,
     .nik-work-hr-mobile-gift
 ) {
-    border-color: rgba(255, 255, 255, .64);
+    border-color: rgba(218, 231, 247, .92) !important;
     background:
-        radial-gradient(circle at 24% 0%, rgba(255, 255, 255, .78), transparent 42%),
-        linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(232, 247, 255, .20));
-    background-attachment: fixed;
+        linear-gradient(145deg, rgba(255, 255, 255, .88), rgba(246, 251, 255, .72)) !important;
     box-shadow:
-        0 14px 34px rgba(31, 52, 86, .11),
-        inset 0 1px 0 rgba(255, 255, 255, .82),
-        inset 0 -1px 0 rgba(22, 119, 255, .08);
-    backdrop-filter: blur(22px) saturate(170%);
-    -webkit-backdrop-filter: blur(22px) saturate(170%);
+        0 10px 26px rgba(39, 88, 145, .09),
+        inset 0 1px 0 rgba(255, 255, 255, .94),
+        inset 0 -1px 0 rgba(40, 125, 242, .08) !important;
+    backdrop-filter: blur(12px) saturate(125%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(125%) !important;
 }
 
 .nik-work-app :is(
@@ -279,317 +490,127 @@
     .nik-order-detail-action:first-child,
     .nik-order-detail-rail article.is-active > span,
     .nik-order-detail-rail article.is-done > span,
-    .nik-work-mobile-sheet-actions a:first-child,
-    .nik-work-mobile-bottom-menu strong
-) {
-    border: 1px solid rgba(255, 255, 255, .44);
-    background:
-        radial-gradient(circle at 30% 10%, rgba(255, 255, 255, .50), transparent 36%),
-        linear-gradient(180deg, rgba(42, 157, 255, .98), rgba(0, 110, 234, .94));
-    color: #fff;
-    box-shadow:
-        0 16px 34px rgba(22, 119, 255, .30),
-        inset 0 1px 0 rgba(255, 255, 255, .48),
-        inset 0 -1px 0 rgba(0, 61, 170, .20);
-}
-
-@media (max-width: 820px) {
-    .nik-work-app .nik-work-mobile-bottom-bar,
-    .nik-work-app .nik-work-mobile-sheet {
-        background:
-            radial-gradient(circle at 50% -18%, rgba(255, 255, 255, .72), transparent 40%),
-            radial-gradient(circle at 90% 100%, rgba(22, 119, 255, .16), transparent 42%),
-            linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .24));
-        background-attachment: fixed;
-        backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
-        -webkit-backdrop-filter: blur(36px) saturate(205%) contrast(1.06);
-    }
-}
-
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-) {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    border-color: rgba(255, 255, 255, .80);
-    background:
-        radial-gradient(circle at 16% -4%, rgba(255, 255, 255, .56), transparent 37%),
-        radial-gradient(circle at 90% 104%, rgba(22, 119, 255, .20), transparent 44%),
-        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
-        linear-gradient(135deg, rgba(255, 255, 255, .33), rgba(225, 246, 255, .15) 48%, rgba(255, 255, 255, .24));
-    background-attachment: fixed;
-    box-shadow:
-        0 34px 92px rgba(20, 82, 148, .19),
-        0 16px 38px rgba(22, 119, 255, .13),
-        0 1px 0 rgba(255, 255, 255, .72),
-        inset 0 1px 0 rgba(255, 255, 255, .98),
-        inset 1px 0 0 rgba(255, 255, 255, .48),
-        inset 0 -24px 46px rgba(22, 119, 255, .11),
-        inset 0 0 40px rgba(255, 255, 255, .19);
-    backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
-    -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06);
-}
-
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-) > * {
-    position: relative;
-    z-index: 1;
-}
-
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-)::before,
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-)::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-)::before {
-    background:
-        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .94), transparent 19%),
-        linear-gradient(126deg, rgba(255, 255, 255, .76) 0 7%, rgba(255, 255, 255, .30) 8% 18%, rgba(255, 255, 255, 0) 42%),
-        linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .28) 48%, transparent 56%),
-        linear-gradient(315deg, rgba(22, 119, 255, .12), transparent 44%);
-    mix-blend-mode: screen;
-    opacity: .90;
-}
-
-.nik-work-app :is(
-    .nik-employee-card,
-    .nik-directory-structure article,
-    .nik-calendar-hero,
-    .nik-calendar-main-card,
-    .nik-calendar-side section,
-    .nik-calendar-notices > div,
-    .nik-calendar-day-popover
-)::after {
-    background:
-        radial-gradient(ellipse at 50% 106%, rgba(22, 119, 255, .18), transparent 51%),
-        linear-gradient(to top, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 40%),
-        linear-gradient(90deg, rgba(255, 255, 255, .22), transparent 18%, transparent 82%, rgba(78, 169, 255, .17));
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, .22),
-        inset 0 0 32px rgba(255, 255, 255, .22),
-        inset 0 -28px 52px rgba(22, 119, 255, .11);
-    opacity: .84;
-}
-
-.nik-work-app :is(
-    .nik-calendar-filter-button,
-    .nik-calendar-disabled-action,
-    .nik-calendar-view-switch,
-    .nik-calendar-navigation,
-    .nik-calendar-filters,
-    .nik-calendar-filters select,
-    .nik-calendar-period-picker,
-    .nik-calendar-period-months button,
-    .nik-calendar-period-picker select,
-    .nik-calendar-agenda-card,
-    .nik-calendar-schedule-state,
-    .nik-calendar-quick-actions a,
-    .nik-calendar-quick-actions > span,
-    .nik-calendar-legend,
-    .nik-calendar-mobile-strip button,
-    .nik-calendar-mobile-expand,
-    .nik-calendar-holiday-tooltip,
-    .nik-calendar-day-popover-list button,
-    .nik-calendar-day-popover-actions button
-) {
-    border-color: rgba(255, 255, 255, .66);
-    background:
-        radial-gradient(circle at 24% 0%, rgba(255, 255, 255, .80), transparent 42%),
-        linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(232, 247, 255, .20));
-    background-attachment: fixed;
-    box-shadow:
-        0 14px 34px rgba(31, 52, 86, .11),
-        inset 0 1px 0 rgba(255, 255, 255, .84),
-        inset 0 -1px 0 rgba(22, 119, 255, .08);
-    backdrop-filter: blur(22px) saturate(170%);
-    -webkit-backdrop-filter: blur(22px) saturate(170%);
-}
-
-.nik-work-app :is(
     .nik-calendar-add,
     .nik-calendar-view-switch button.is-active,
     .nik-calendar-mobile-strip button.is-active,
-    .nik-calendar-period-months button.is-active
+    .nik-calendar-period-months button.is-active,
+    .nik-work-mobile-sheet-actions a:first-child,
+    .nik-work-mobile-bottom-menu strong
 ) {
-    border: 1px solid rgba(255, 255, 255, .44);
+    border-color: rgba(255, 255, 255, .58) !important;
     background:
-        radial-gradient(circle at 30% 10%, rgba(255, 255, 255, .50), transparent 36%),
-        linear-gradient(180deg, rgba(42, 157, 255, .98), rgba(0, 110, 234, .94));
-    color: #fff;
+        linear-gradient(180deg, #5aa4ff 0%, #287df2 56%, #0b70f0 100%) !important;
+    color: #fff !important;
     box-shadow:
-        0 16px 34px rgba(22, 119, 255, .30),
-        inset 0 1px 0 rgba(255, 255, 255, .48),
-        inset 0 -1px 0 rgba(0, 61, 170, .20);
+        0 16px 34px rgba(40, 125, 242, .28),
+        inset 0 1px 0 rgba(255, 255, 255, .46),
+        inset 0 -1px 0 rgba(4, 76, 179, .24) !important;
 }
 
-.nik-work-app[class] {
-    background:
-        radial-gradient(circle at 78% 18%, rgba(244, 183, 126, .30), transparent 21rem),
-        radial-gradient(circle at 92% 42%, rgba(114, 176, 237, .36), transparent 25rem),
-        radial-gradient(circle at 10% 84%, rgba(73, 148, 226, .30), transparent 27rem),
-        linear-gradient(112deg, transparent 0 18%, rgba(255, 255, 255, .46) 30%, transparent 43% 100%),
-        linear-gradient(135deg, #f7fbff 0%, #eef6ff 46%, #f7fbff 100%) !important;
-    background-attachment: fixed !important;
+.nik-work-app :is(
+    .nik-work-nav-link.is-active,
+    .orders-work-view-switch button.is-active,
+    .nik-directory-tabs a.is-active,
+    .nik-work-mobile-bottom-bar a.is-active,
+    .nik-work-mobile-bottom-bar button.is-active
+) {
+    background: linear-gradient(145deg, rgba(232, 243, 255, .96), rgba(255, 255, 255, .74)) !important;
+    color: var(--nik-soft-blue-strong) !important;
+    box-shadow:
+        0 10px 24px rgba(40, 125, 242, .12),
+        inset 0 1px 0 rgba(255, 255, 255, .94) !important;
 }
 
-.nik-work-app[class]::before {
-    position: fixed !important;
+.nik-work-app :is(
+    .nik-work-title,
+    .nik-order-detail-title h1,
+    .nik-calendar-title h1,
+    .nik-directory-title h1
+) {
+    color: var(--nik-soft-ink) !important;
+    letter-spacing: 0 !important;
 }
 
-@media (max-width: 820px) {
-    .nik-work-app[class] {
-        background:
-            radial-gradient(circle at 84% 0%, rgba(244, 183, 126, .28), transparent 17rem),
-            radial-gradient(circle at 92% 32%, rgba(114, 176, 237, .34), transparent 20rem),
-            radial-gradient(circle at 6% 82%, rgba(73, 148, 226, .28), transparent 22rem),
-            linear-gradient(112deg, transparent 0 16%, rgba(255, 255, 255, .44) 31%, transparent 45% 100%),
-            linear-gradient(135deg, #f7fbff 0%, #edf6ff 48%, #f8fbff 100%) !important;
-        background-attachment: fixed !important;
-    }
+.nik-work-app :is(
+    .nik-work-date,
+    .nik-work-card p,
+    .nik-order-detail-title p,
+    .nik-order-detail-card p,
+    .nik-calendar-title p,
+    .nik-directory-title p
+) {
+    color: var(--nik-soft-muted) !important;
+}
 
-    .nik-work-app.nik-work-app--orders .orders-work-column {
-        border: 1px solid rgba(255, 255, 255, .72) !important;
-        border-radius: 24px !important;
-        background:
-            radial-gradient(circle at 16% -4%, rgba(255, 255, 255, .42), transparent 38%),
-            radial-gradient(circle at 90% 104%, rgba(22, 119, 255, .14), transparent 44%),
-            linear-gradient(135deg, rgba(255, 255, 255, .24), rgba(225, 246, 255, .12)) !important;
-        background-attachment: fixed !important;
-        box-shadow:
-            0 24px 68px rgba(20, 82, 148, .14),
-            inset 0 1px 0 rgba(255, 255, 255, .86),
-            inset 0 -18px 38px rgba(22, 119, 255, .08) !important;
-        padding: 10px !important;
-    }
+.nik-work-app :is(
+    .nik-work-alert.is-amber,
+    .orders-work-order-status.is-warning,
+    .nik-calendar-event.is-sick
+) {
+    background: linear-gradient(145deg, rgba(255, 249, 235, .92), rgba(255, 255, 255, .74)) !important;
+}
+
+.nik-work-app :is(
+    .nik-work-alert.is-red,
+    .orders-work-order-status.is-danger
+) {
+    background: linear-gradient(145deg, rgba(255, 239, 241, .92), rgba(255, 255, 255, .74)) !important;
+}
+
+.nik-work-app :is(
+    .nik-work-alert.is-blue,
+    .orders-work-order-status.is-info
+) {
+    background: linear-gradient(145deg, rgba(234, 245, 255, .94), rgba(255, 255, 255, .76)) !important;
 }
 
 .nik-work-app .nt-workplace {
     background: transparent !important;
 }
 
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-) {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    border-color: rgba(255, 255, 255, .80) !important;
-    background:
-        radial-gradient(circle at 16% -4%, rgba(255, 255, 255, .56), transparent 37%),
-        radial-gradient(circle at 90% 104%, rgba(22, 119, 255, .20), transparent 44%),
-        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, .10), transparent 34%),
-        linear-gradient(135deg, rgba(255, 255, 255, .33), rgba(225, 246, 255, .15) 48%, rgba(255, 255, 255, .24)) !important;
-    background-attachment: fixed !important;
-    box-shadow:
-        0 34px 92px rgba(20, 82, 148, .19),
-        0 16px 38px rgba(22, 119, 255, .13),
-        0 1px 0 rgba(255, 255, 255, .72),
-        inset 0 1px 0 rgba(255, 255, 255, .98),
-        inset 1px 0 0 rgba(255, 255, 255, .48),
-        inset 0 -24px 46px rgba(22, 119, 255, .11),
-        inset 0 0 40px rgba(255, 255, 255, .19) !important;
-    backdrop-filter: blur(34px) saturate(205%) contrast(1.06) !important;
-    -webkit-backdrop-filter: blur(34px) saturate(205%) contrast(1.06) !important;
-}
+@media (max-width: 820px) {
+    .nik-work-app {
+        background:
+            linear-gradient(125deg, rgba(255, 255, 255, .92) 0%, rgba(255, 255, 255, .22) 42%, rgba(234, 245, 255, .52) 100%),
+            linear-gradient(180deg, #fbfdff 0%, #eef7ff 50%, #f9fcff 100%) !important;
+        background-attachment: fixed !important;
+    }
 
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-) > * {
-    position: relative;
-    z-index: 1;
-}
+    .nik-work-app .nik-work-mobile-bottom-bar,
+    .nik-work-app .nik-work-mobile-sheet {
+        border-color: rgba(218, 231, 247, .96) !important;
+        background:
+            linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(246, 251, 255, .82)) !important;
+        box-shadow:
+            0 20px 52px rgba(31, 68, 120, .18),
+            inset 0 1px 0 rgba(255, 255, 255, .96),
+            inset 0 -1px 0 rgba(40, 125, 242, .10) !important;
+        backdrop-filter: blur(20px) saturate(135%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(135%) !important;
+    }
 
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-)::before,
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-)::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
-}
+    .nik-work-app .nik-work-mobile-bottom-bar::before {
+        background: linear-gradient(145deg, rgba(255, 255, 255, .92), rgba(246, 251, 255, .82)) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, .96),
+            inset 0 -1px 0 rgba(40, 125, 242, .08) !important;
+    }
 
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-)::before {
-    background:
-        radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .94), transparent 19%),
-        linear-gradient(126deg, rgba(255, 255, 255, .76) 0 7%, rgba(255, 255, 255, .30) 8% 18%, rgba(255, 255, 255, 0) 42%),
-        linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .28) 48%, transparent 56%),
-        linear-gradient(315deg, rgba(22, 119, 255, .12), transparent 44%);
-    mix-blend-mode: screen;
-    opacity: .90;
-}
+    .nik-work-app .nik-work-mobile-bottom-menu strong {
+        width: 52px;
+        height: 52px;
+        box-shadow:
+            0 14px 28px rgba(40, 125, 242, .30),
+            0 0 0 7px rgba(40, 125, 242, .08),
+            inset 0 1px 0 rgba(255, 255, 255, .44) !important;
+    }
 
-.nik-work-app :is(
-    .nt-workplace__widget,
-    .nt-hr-card,
-    .nik-work-hr-desktop-kpis article
-)::after {
-    background:
-        radial-gradient(ellipse at 50% 106%, rgba(22, 119, 255, .18), transparent 51%),
-        linear-gradient(to top, rgba(255, 255, 255, .32), rgba(255, 255, 255, 0) 40%),
-        linear-gradient(90deg, rgba(255, 255, 255, .22), transparent 18%, transparent 82%, rgba(78, 169, 255, .17));
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, .22),
-        inset 0 0 32px rgba(255, 255, 255, .22),
-        inset 0 -28px 52px rgba(22, 119, 255, .11);
-    opacity: .84;
+    .nik-work-app.nik-work-app--orders .orders-work-column {
+        border-color: rgba(218, 231, 247, .92) !important;
+        background: linear-gradient(145deg, rgba(255, 255, 255, .86), rgba(246, 251, 255, .72)) !important;
+        box-shadow:
+            0 18px 48px rgba(39, 88, 145, .11),
+            inset 0 1px 0 rgba(255, 255, 255, .94),
+            inset 0 -1px 0 rgba(40, 125, 242, .08) !important;
+    }
 }

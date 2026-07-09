@@ -7413,7 +7413,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         font-weight: 800;
     }
 
-    .nik-work-app .nik-work-hr-mobile-avatar {
+    .nik-work-app span.nik-work-hr-mobile-avatar {
         display: inline-flex;
         width: 34px;
         height: 34px;
@@ -7424,6 +7424,27 @@ body:has(.nik-work-app) .nik-work-sidebar {
         color: #1d4ed8;
         font-size: 13px;
         font-weight: 900;
+    }
+
+    .nik-work-app .nik-work-hr-mobile-actions .nik-work-hr-mobile-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        color: #172033;
+        font-size: 13px;
+        font-weight: 850;
+    }
+
+    .nik-work-app .nik-work-hr-mobile-actions .nik-work-hr-mobile-avatar > span {
+        display: inline-flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        border-radius: inherit;
+        background: transparent;
+        color: inherit;
+        box-shadow: none;
     }
 
     .nik-work-app .nik-work-hr-mobile-row strong,

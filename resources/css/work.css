@@ -8109,3 +8109,56 @@ body:has(.nik-work-app) .nik-work-sidebar {
         gap: 16px !important;
     }
 }
+
+@media (min-width: 1281px) and (max-width: 1500px) {
+    .nik-work-app .nik-work-shell {
+        max-width: none !important;
+        padding: 18px 22px 30px 10px !important;
+    }
+
+    .nik-work-app .nik-work-layout {
+        grid-template-columns: 204px minmax(0, 1fr) !important;
+        gap: 22px !important;
+        align-items: start !important;
+    }
+
+    .nik-work-app .nik-work-sidebar {
+        padding-inline: 12px !important;
+    }
+
+    .nik-work-app .nik-work-brand-logo {
+        width: 124px !important;
+    }
+
+    .nik-work-app .nik-work-main {
+        min-width: 0 !important;
+    }
+
+    .nik-work-app .nik-directory-layout,
+    .nik-work-app .nik-calendar-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .nik-work-app .nik-directory-side,
+    .nik-work-app .nik-calendar-side {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 16px !important;
+    }
+
+    .nik-work-app .nik-directory-side > *,
+    .nik-work-app .nik-calendar-side > * {
+        min-width: 0 !important;
+    }
+
+    .nik-work-app .orders-work-board {
+        grid-template-columns: repeat(5, minmax(280px, 1fr)) !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x proximity;
+    }
+
+    .nik-work-app .orders-work-column {
+        min-width: 280px !important;
+        scroll-snap-align: start;
+    }
+}

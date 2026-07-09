@@ -633,6 +633,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 14px;
+            margin-top: clamp(34px, 4.6vw, 64px);
         }
 
         .nik-catalog2-action {
@@ -2682,11 +2683,7 @@
             }
 
             .nik-catalog2-hero-carousel .nik-catalog2-actions {
-                margin-top: 22px;
-            }
-
-            .nik-catalog2-hero-carousel .nik-catalog2-actions .nik-catalog2-action:not(.is-primary) {
-                display: none;
+                margin-top: 34px;
             }
 
             .nik-catalog2-hero-carousel .nik-catalog2-action {
@@ -2942,11 +2939,6 @@
                                     >
                                         {{ $slide['button_label'] }}
                                     </a>
-                                    @if (! $loop->first)
-                                        <a class="nik-catalog2-action" href="#products">Смотреть товары</a>
-                                    @else
-                                        <a class="nik-catalog2-action" href="#promos">Смотреть акции</a>
-                                    @endif
                                 </div>
                             </div>
 

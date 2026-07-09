@@ -94,10 +94,10 @@ class SiteHomepageBannerForm
                     ])
                     ->columns(2),
 
-                Section::make('Визуал')
+                Section::make('Визуал баннера')
                     ->schema([
                         FileUpload::make('image_path')
-                            ->label('Изображение desktop')
+                            ->label('Баннер desktop')
                             ->disk('public')
                             ->directory('homepage-banners')
                             ->visibility('public')
@@ -109,10 +109,10 @@ class SiteHomepageBannerForm
                             ->imagePreviewHeight('180')
                             ->openable()
                             ->downloadable()
-                            ->helperText('Рекомендация: широкий PNG/WebP/JPG. Если оставить пустым, сайт возьмет изображение связанного товара или резервное изображение.'),
+                            ->helperText('Отдельное изображение для desktop-баннера. Рекомендация: широкий PNG/WebP/JPG, примерно 1920x620.'),
 
                         FileUpload::make('mobile_image_path')
-                            ->label('Изображение mobile')
+                            ->label('Баннер mobile')
                             ->disk('public')
                             ->directory('homepage-banners/mobile')
                             ->visibility('public')
@@ -123,7 +123,8 @@ class SiteHomepageBannerForm
                             ->previewable(true)
                             ->imagePreviewHeight('180')
                             ->openable()
-                            ->downloadable(),
+                            ->downloadable()
+                            ->helperText('Отдельное изображение для мобильного баннера. Рекомендация: вертикальный или компактный PNG/WebP/JPG, примерно 900x1200.'),
 
                         Select::make('theme')
                             ->label('Тема')

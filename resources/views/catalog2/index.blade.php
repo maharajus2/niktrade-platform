@@ -77,15 +77,14 @@
         ]);
     }
 
-    $brandCardData = collect($heroBrandNames)->map(function (string $label, string $key) use ($brandProducts, $brands, $imageUrl, $visualImage) {
+    $brandCardData = collect($heroBrandNames)->map(function (string $label, string $key) use ($brands, $fallbackBannerImage) {
         $brand = $brands->first(fn ($brand) => str_contains(mb_strtolower($brand->name), $key));
-        $items = $brandProducts->first(fn ($items, $name) => str_contains($name, $key)) ?? collect();
         return [
             'key' => $key,
             'label' => $brand?->name ?: $label,
             'tagline' => $key === 'hiberg' ? 'Качество на каждый день' : 'Доступно и эффективно',
             'url' => $brand ? route('catalog.index', ['brand' => $brand->id]) : route('catalog.preview', ['brand' => $key]),
-            'image' => $imageUrl($items->first()?->images?->last()?->file_path ?? $visualImage($key === 'hiberg' ? 1 : 2)),
+            'image' => $fallbackBannerImage,
         ];
     })->values();
 
@@ -2422,8 +2421,30 @@
         }
 
         .nik-catalog2-hero-carousel {
-            min-height: 398px;
+            min-height: clamp(430px, 32vw, 520px);
             padding: 0;
+        }
+
+        .nik-catalog2-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .nik-catalog2-brand-stack {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .nik-catalog2-brand-card {
+            min-height: 220px;
+            padding: 34px 38px;
+        }
+
+        .nik-catalog2-brand-card img {
+            right: 28px;
+            bottom: 14px;
+            width: min(36%, 260px);
+            max-height: 190px;
         }
 
         .nik-catalog2-hero-carousel::before {
@@ -2441,10 +2462,10 @@
             position: absolute;
             inset: 0;
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(220px, .72fr);
+            grid-template-columns: minmax(0, .96fr) minmax(300px, .58fr);
             align-items: center;
-            gap: 28px;
-            padding: 46px 56px;
+            gap: clamp(30px, 5vw, 72px);
+            padding: clamp(44px, 4.6vw, 70px) clamp(44px, 5vw, 76px);
             opacity: 0;
             pointer-events: none;
             transform: translateX(30px) scale(.985);
@@ -2482,7 +2503,7 @@
         }
 
         .nik-catalog2-hero-carousel .nik-catalog2-hero-copy {
-            width: min(620px, 100%);
+            width: min(760px, 100%);
         }
 
         .nik-catalog2-hero-badge {
@@ -2518,8 +2539,8 @@
         }
 
         .nik-catalog2-hero-slide-image {
-            width: min(100%, 340px);
-            max-height: 310px;
+            width: min(100%, 430px);
+            max-height: 380px;
             object-fit: contain;
             opacity: .82;
             filter: drop-shadow(0 28px 42px rgba(39,88,145,.16));
@@ -2592,14 +2613,19 @@
         }
 
         @media (max-width: 760px) {
+            .nik-catalog2-hero-grid {
+                gap: 14px;
+                margin-bottom: 14px;
+            }
+
             .nik-catalog2-hero-carousel {
-                min-height: 650px;
+                min-height: 560px;
                 padding: 0;
             }
 
             .nik-catalog2-hero-slide {
                 display: block;
-                padding: 28px 22px 230px;
+                padding: 28px 22px 210px;
             }
 
             .nik-catalog2-hero-carousel .nik-catalog2-hero-copy {
@@ -2610,13 +2636,67 @@
                 font-size: 14px;
             }
 
+            .nik-catalog2-hero-carousel .nik-catalog2-features {
+                display: none;
+            }
+
+            .nik-catalog2-hero-carousel .nik-catalog2-actions {
+                margin-top: 22px;
+            }
+
+            .nik-catalog2-hero-carousel .nik-catalog2-actions .nik-catalog2-action:not(.is-primary) {
+                display: none;
+            }
+
+            .nik-catalog2-hero-carousel .nik-catalog2-action {
+                min-height: 46px;
+                padding: 0 24px;
+            }
+
             .nik-catalog2-hero-slide-image {
                 position: absolute;
-                right: 20px;
-                bottom: 44px;
-                width: min(64%, 260px);
-                max-height: 210px;
-                opacity: .58;
+                right: -8px;
+                bottom: 82px;
+                width: min(54%, 220px);
+                max-height: 150px;
+                opacity: .34;
+            }
+
+            .nik-catalog2-brand-stack {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .nik-catalog2-brand-card {
+                min-height: 176px;
+                padding: 20px 15px;
+            }
+
+            .nik-catalog2-brand-card h3 {
+                font-size: clamp(22px, 6vw, 27px);
+                line-height: 1.02;
+            }
+
+            .nik-catalog2-brand-card p {
+                max-width: 9.8em;
+                margin: 8px 0 12px;
+                font-size: 12px;
+                line-height: 1.25;
+            }
+
+            .nik-catalog2-brand-card a {
+                min-height: 34px;
+                padding: 0 10px;
+                border-radius: 12px;
+                font-size: 11px;
+            }
+
+            .nik-catalog2-brand-card img {
+                right: 6px;
+                bottom: 8px;
+                width: 54%;
+                max-height: 82px;
+                opacity: .42;
             }
 
             .nik-catalog2-hero-arrow {
@@ -2758,22 +2838,6 @@
             </aside>
         </header>
 
-        <section class="nik-catalog2-mega-strip nik-catalog2-glass" aria-label="Направления каталога">
-            <div class="nik-catalog2-mega-copy">
-                <span>Каталог товаров</span>
-                <strong>Быстрый выбор по задачам</strong>
-            </div>
-            <div class="nik-catalog2-mega-links">
-                @foreach ($catalogDirections as $direction)
-                    <a href="{{ $direction['url'] }}">
-                        <img src="{{ $direction['image'] }}" alt="{{ $direction['label'] }}">
-                        <span>{{ $direction['label'] }}</span>
-                        <small>{{ $direction['caption'] }}</small>
-                    </a>
-                @endforeach
-            </div>
-        </section>
-
         <section class="nik-catalog2-hero-grid">
             <div class="nik-catalog2-hero nik-catalog2-glass nik-catalog2-hero-carousel" data-catalog2-hero-carousel>
                 <span class="nik-catalog2-bubble is-1"></span>
@@ -2864,6 +2928,22 @@
                         <a href="{{ $brandCard['url'] }}">Смотреть товары</a>
                         <img src="{{ $brandCard['image'] }}" alt="{{ $brandCard['label'] }}">
                     </article>
+                @endforeach
+            </div>
+        </section>
+
+        <section class="nik-catalog2-mega-strip nik-catalog2-glass" aria-label="Направления каталога">
+            <div class="nik-catalog2-mega-copy">
+                <span>Каталог товаров</span>
+                <strong>Быстрый выбор по задачам</strong>
+            </div>
+            <div class="nik-catalog2-mega-links">
+                @foreach ($catalogDirections as $direction)
+                    <a href="{{ $direction['url'] }}">
+                        <img src="{{ $direction['image'] }}" alt="{{ $direction['label'] }}">
+                        <span>{{ $direction['label'] }}</span>
+                        <small>{{ $direction['caption'] }}</small>
+                    </a>
                 @endforeach
             </div>
         </section>

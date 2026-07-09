@@ -7205,6 +7205,16 @@ body:has(.nik-work-app) .nik-work-sidebar {
         font-weight: 850;
         box-shadow: 0 12px 32px rgba(31, 52, 86, .11), inset 0 1px 0 rgba(255, 255, 255, .76);
         backdrop-filter: blur(24px) saturate(1.2);
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .nik-work-app .nik-work-hr-mobile-actions > button:focus-visible,
+    .nik-work-app .nik-work-hr-mobile-actions > .nik-work-user-menu > button:focus-visible {
+        box-shadow:
+            0 12px 32px rgba(31, 52, 86, .11),
+            0 0 0 3px rgba(29, 124, 242, .16),
+            inset 0 1px 0 rgba(255, 255, 255, .76);
     }
 
     .nik-work-app .nik-work-hr-mobile-actions .nik-work-svg {

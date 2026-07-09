@@ -7229,7 +7229,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app .nik-work-hr-mobile-hero {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr);
         align-items: start;
         gap: 12px;
         margin-bottom: 16px;
@@ -8502,7 +8502,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
 }
 
 @media (max-width: 820px) {
-    .nik-work-app .nik-work-mobile-hero {
+    .nik-work-app .nik-work-mobile-hero,
+    .nik-work-app .nik-work-hr-mobile-hero {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 14px;

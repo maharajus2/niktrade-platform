@@ -7439,7 +7439,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app .nik-work-hr-mobile-actions .nik-work-hr-mobile-avatar {
         width: 42px;
         height: 42px;
+        overflow: hidden;
         border-radius: 999px;
+        background-clip: padding-box;
+        clip-path: inset(0 round 999px);
         color: #172033;
         font-size: 13px;
         font-weight: 850;

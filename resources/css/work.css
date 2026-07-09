@@ -7163,14 +7163,13 @@ body:has(.nik-work-app) .nik-work-sidebar {
         display: inline-flex;
         min-width: 0;
         align-items: center;
-        gap: 9px;
-        color: #101827;
         text-decoration: none;
     }
 
     .nik-work-app .nik-work-hr-mobile-brand img {
-        width: 28px;
-        height: 28px;
+        width: 132px;
+        max-width: 42vw;
+        height: auto;
         object-fit: contain;
     }
 
@@ -7189,8 +7188,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
         gap: 8px;
     }
 
-    .nik-work-app .nik-work-hr-mobile-actions button,
-    .nik-work-app .nik-work-hr-mobile-actions div {
+    .nik-work-app .nik-work-hr-mobile-actions > button,
+    .nik-work-app .nik-work-hr-mobile-actions > .nik-work-user-menu > button {
         position: relative;
         display: inline-flex;
         width: 42px;
@@ -7779,17 +7778,20 @@ body:has(.nik-work-app) .nik-work-sidebar {
     top: calc(100% + 10px);
     right: 0;
     z-index: 80;
+    display: grid;
     min-width: 156px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .68);
     border-radius: 18px;
     background: rgba(255, 255, 255, .86);
+    padding: 6px;
     box-shadow: 0 22px 54px rgba(31, 52, 86, .18), inset 0 1px 0 rgba(255, 255, 255, .72);
     backdrop-filter: blur(24px) saturate(1.16);
 }
 
 .nik-work-app .nik-work-user-menu-panel form {
     margin: 0;
+    min-width: 0;
 }
 
 .nik-work-app .nik-work-user-menu-panel button {
@@ -7799,16 +7801,16 @@ body:has(.nik-work-app) .nik-work-sidebar {
     min-width: 0;
     min-height: 46px;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     border: 0;
-    border-radius: 0;
+    border-radius: 14px;
     background: transparent;
-    padding: 0 16px;
+    padding: 0 18px;
     color: #172033;
     font: inherit;
     font-size: 14px;
     font-weight: 850;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
     box-shadow: none;
 }
@@ -7831,12 +7833,14 @@ body:has(.nik-work-app) .nik-work-sidebar {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
+    display: grid;
     width: auto;
     height: auto;
     min-width: 156px;
     border: 1px solid rgba(255, 255, 255, .68);
     border-radius: 18px;
     background: rgba(255, 255, 255, .86);
+    padding: 6px;
     box-shadow: 0 22px 54px rgba(31, 52, 86, .18), inset 0 1px 0 rgba(255, 255, 255, .72);
     backdrop-filter: blur(24px) saturate(1.16);
 }
@@ -7845,11 +7849,11 @@ body:has(.nik-work-app) .nik-work-sidebar {
     width: 100%;
     height: auto;
     min-height: 46px;
-    justify-content: flex-start;
+    justify-content: center;
     border: 0;
-    border-radius: 0;
+    border-radius: 14px;
     background: transparent;
-    padding: 0 16px;
+    padding: 0 18px;
     box-shadow: none;
 }
 

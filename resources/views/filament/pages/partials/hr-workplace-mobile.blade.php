@@ -37,8 +37,7 @@
 >
     <header class="nik-work-hr-mobile-top">
         <a href="{{ \App\Filament\Pages\Workplace::getUrl() }}" class="nik-work-hr-mobile-brand" aria-label="Никтрейд">
-            <img src="{{ asset('images/logo-icon.png') }}" alt="Никтрейд" />
-            <strong>HR пространство</strong>
+            <img src="{{ asset('images/logont.png') }}" alt="Никтрейд" />
         </a>
 
         <div class="nik-work-hr-mobile-actions">

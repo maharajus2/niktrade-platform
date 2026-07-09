@@ -464,8 +464,8 @@
     .nik-work-mobile-sheet-head button,
     .nik-work-mobile-sheet-tabs span,
     .nik-work-mobile-sheet-actions a + a,
-    .nik-work-hr-mobile-actions button,
-    .nik-work-hr-mobile-actions div,
+    .nik-work-hr-mobile-actions > button,
+    .nik-work-hr-mobile-actions > .nik-work-user-menu > button,
     .nik-work-hr-mobile-calendar-strip a,
     .nik-work-hr-mobile-card-head a,
     .nik-work-hr-mobile-gift

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SiteHomepageBanners\Schemas;
 
 use App\Models\SiteHomepageBanner;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -131,6 +132,19 @@ class SiteHomepageBannerForm
                             ->options(SiteHomepageBanner::themeOptions())
                             ->default('blue')
                             ->required(),
+
+                        ColorPicker::make('text_color')
+                            ->label('Цвет надписей')
+                            ->regex('/^#(?:[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/')
+                            ->helperText('Заголовок, подзаголовок, надзаголовок, метка и описание. Оставьте пустым, чтобы использовать цвет темы.'),
+
+                        Select::make('font_family')
+                            ->label('Шрифт надписей')
+                            ->options(SiteHomepageBanner::fontFamilyOptions())
+                            ->default(SiteHomepageBanner::FONT_DEFAULT)
+                            ->required()
+                            ->native(false)
+                            ->helperText('Меняет шрифтовую пару текста баннера без изменения кнопок и карточек.'),
                     ])
                     ->columns(2),
 

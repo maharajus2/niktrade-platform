@@ -16,6 +16,12 @@ class SiteHomepageBanner extends Model
     public const LINK_PRODUCT = 'product';
     public const LINK_CUSTOM = 'custom';
 
+    public const FONT_DEFAULT = 'default';
+    public const FONT_GEOMETRIC = 'geometric';
+    public const FONT_ROUNDED = 'rounded';
+    public const FONT_SERIF = 'serif';
+    public const FONT_CONDENSED = 'condensed';
+
     protected $fillable = [
         'eyebrow',
         'title',
@@ -31,6 +37,8 @@ class SiteHomepageBanner extends Model
         'image_path',
         'mobile_image_path',
         'theme',
+        'text_color',
+        'font_family',
         'opens_in_new_tab',
         'is_active',
         'sort_order',
@@ -56,6 +64,28 @@ class SiteHomepageBanner extends Model
             self::LINK_CATEGORY => 'Категория',
             self::LINK_PRODUCT => 'Товар',
             self::LINK_CUSTOM => 'Своя ссылка',
+        ];
+    }
+
+    public static function fontFamilyOptions(): array
+    {
+        return [
+            self::FONT_DEFAULT => 'По умолчанию',
+            self::FONT_GEOMETRIC => 'Геометрический',
+            self::FONT_ROUNDED => 'Округлый',
+            self::FONT_SERIF => 'Антиква',
+            self::FONT_CONDENSED => 'Компактный',
+        ];
+    }
+
+    public static function fontFamilyStacks(): array
+    {
+        return [
+            self::FONT_DEFAULT => null,
+            self::FONT_GEOMETRIC => 'Inter, Arial, sans-serif',
+            self::FONT_ROUNDED => '"Trebuchet MS", "Arial Rounded MT Bold", Inter, Arial, sans-serif',
+            self::FONT_SERIF => 'Georgia, "Times New Roman", serif',
+            self::FONT_CONDENSED => '"Arial Narrow", "Roboto Condensed", Arial, sans-serif',
         ];
     }
 

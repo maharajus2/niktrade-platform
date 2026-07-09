@@ -9,6 +9,14 @@
         return $path ? Storage::disk('public')->url($path) : asset('images/logo-icon.png');
     };
 
+    $normalizeBannerColor = function (?string $color): ?string {
+        $color = is_string($color) ? trim($color) : '';
+
+        return preg_match('/^#(?:[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $color) ? $color : null;
+    };
+
+    $bannerFontStacks = SiteHomepageBanner::fontFamilyStacks();
+
     $productUrl = fn (Product $product): string => route('catalog.show', $product->slug ?: $product->id);
     $formatPrice = fn ($price): string => number_format((float) $price, 0, ',', ' ') . ' ₽';
 
@@ -144,11 +152,12 @@
     ];
 
     $bannerSlides = ($homepageBanners ?? collect())
-        ->map(function (SiteHomepageBanner $banner, int $index) use ($imageUrl, $fallbackBannerImage) {
+        ->map(function (SiteHomepageBanner $banner, int $index) use ($imageUrl, $fallbackBannerImage, $normalizeBannerColor, $bannerFontStacks) {
             $hasBannerImage = filled($banner->image_path) || filled($banner->mobile_image_path);
             $imagePath = $banner->image_path
                 ?: $banner->mobile_image_path
                 ?: $banner->product?->images?->first()?->file_path;
+            $fontFamily = $banner->font_family ?: SiteHomepageBanner::FONT_DEFAULT;
 
             return [
                 'eyebrow' => $banner->eyebrow,
@@ -162,6 +171,8 @@
                 'mobile_image' => $banner->mobile_image_path ? $imageUrl($banner->mobile_image_path) : null,
                 'is_background' => $hasBannerImage,
                 'theme' => $banner->theme ?: 'blue',
+                'text_color' => $normalizeBannerColor($banner->text_color),
+                'font_stack' => $bannerFontStacks[$fontFamily] ?? null,
                 'target_blank' => $banner->opens_in_new_tab,
             ];
         })
@@ -181,6 +192,8 @@
                 'mobile_image' => null,
                 'is_background' => false,
                 'theme' => 'blue',
+                'text_color' => null,
+                'font_stack' => null,
                 'target_blank' => false,
             ],
             [
@@ -195,6 +208,8 @@
                 'mobile_image' => null,
                 'is_background' => false,
                 'theme' => 'green',
+                'text_color' => null,
+                'font_stack' => null,
                 'target_blank' => false,
             ],
             [
@@ -209,6 +224,8 @@
                 'mobile_image' => null,
                 'is_background' => false,
                 'theme' => 'cyan',
+                'text_color' => null,
+                'font_stack' => null,
                 'target_blank' => false,
             ],
         ]);
@@ -591,24 +608,6 @@
             line-height: 1.12;
         }
 
-        .nik-catalog2-features {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 14px;
-            margin: 34px 0 26px;
-        }
-
-        .nik-catalog2-feature {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #10223f;
-            font-size: 12px;
-            font-weight: 850;
-            line-height: 1.25;
-        }
-
-        .nik-catalog2-feature i,
         .nik-catalog2-advantage i,
         .nik-catalog2-why i {
             display: inline-flex;
@@ -1461,11 +1460,6 @@
                 font-size: 23px;
             }
 
-            .nik-catalog2-features {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 12px;
-            }
-
             .nik-catalog2-hero-product {
                 right: 18%;
                 bottom: 14px;
@@ -1622,7 +1616,6 @@
         .nik-catalog2-subscribe input,
         .nik-catalog2-favorite,
         .nik-catalog2-product-image,
-        .nik-catalog2-feature i,
         .nik-catalog2-advantage i,
         .nik-catalog2-why i {
             border-color: rgba(218,231,247,.92);
@@ -2474,6 +2467,7 @@
             padding: clamp(44px, 4.6vw, 70px) clamp(44px, 5vw, 76px);
             opacity: 0;
             pointer-events: none;
+            font-family: var(--banner-font-family, inherit);
             transform: translateX(30px) scale(.985);
             transition:
                 opacity .46s ease,
@@ -2558,6 +2552,14 @@
             font-size: 15px;
             font-weight: 760;
             line-height: 1.55;
+        }
+
+        .nik-catalog2-hero-slide.has-custom-text-color .nik-catalog2-eyebrow,
+        .nik-catalog2-hero-slide.has-custom-text-color .nik-catalog2-hero-badge,
+        .nik-catalog2-hero-slide.has-custom-text-color h1,
+        .nik-catalog2-hero-slide.has-custom-text-color h2,
+        .nik-catalog2-hero-slide.has-custom-text-color .nik-catalog2-hero-description {
+            color: var(--banner-text-color);
         }
 
         .nik-catalog2-hero-media {
@@ -2677,10 +2679,6 @@
 
             .nik-catalog2-hero-description {
                 font-size: 14px;
-            }
-
-            .nik-catalog2-hero-carousel .nik-catalog2-features {
-                display: none;
             }
 
             .nik-catalog2-hero-carousel .nik-catalog2-actions {
@@ -2905,10 +2903,17 @@
 
                 <div class="nik-catalog2-hero-track">
                     @foreach ($bannerSlides as $slide)
+                        @php
+                            $slideStyle = array_filter([
+                                filled($slide['text_color']) ? '--banner-text-color: ' . $slide['text_color'] : null,
+                                filled($slide['font_stack']) ? '--banner-font-family: ' . $slide['font_stack'] : null,
+                            ]);
+                        @endphp
                         <article
-                            class="nik-catalog2-hero-slide is-{{ $slide['theme'] }} {{ $slide['is_background'] ? 'has-banner-image' : '' }} {{ $loop->first ? 'is-active' : '' }}"
+                            class="nik-catalog2-hero-slide is-{{ $slide['theme'] }} {{ $slide['is_background'] ? 'has-banner-image' : '' }} {{ filled($slide['text_color']) ? 'has-custom-text-color' : '' }} {{ $loop->first ? 'is-active' : '' }}"
                             data-catalog2-hero-slide
                             aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
+                            @if ($slideStyle) style="{{ implode('; ', $slideStyle) }}" @endif
                         >
                             <div class="nik-catalog2-hero-copy">
                                 @if (filled($slide['eyebrow']))
@@ -2927,14 +2932,6 @@
 
                                 @if (filled($slide['description']))
                                     <p class="nik-catalog2-hero-description">{{ $slide['description'] }}</p>
-                                @endif
-
-                                @if ($loop->first)
-                                    <div class="nik-catalog2-features">
-                                        @foreach (['Собственное производство', 'Высокое качество', 'Выгодные цены', 'Быстрая доставка по России'] as $feature)
-                                            <div class="nik-catalog2-feature"><i>✦</i><span>{{ $feature }}</span></div>
-                                        @endforeach
-                                    </div>
                                 @endif
 
                                 <div class="nik-catalog2-actions">

@@ -1,5 +1,6 @@
 @php
     use App\Models\Product;
+    use App\Models\SiteHomepageBanner;
     use App\Support\ProductDisplayFormatter;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage;
@@ -40,6 +41,7 @@
     };
 
     $heroImage = $productImagePaths->skip(1)->first() ?: $productImagePaths->first();
+    $fallbackBannerImage = asset('images/logo-icon.png');
     $featured = $products->take(10)->values();
     $heroBrandNames = ['hiberg' => 'HIBERG', 'arvetera' => 'ARVETERA'];
 
@@ -141,6 +143,71 @@
         ['label' => 'Новинки', 'count' => $newProducts->count(), 'url' => '#products', 'active' => false],
         ['label' => 'Для бизнеса', 'count' => $businessProducts->count(), 'url' => '#business', 'active' => false],
     ];
+
+    $bannerSlides = ($homepageBanners ?? collect())
+        ->map(function (SiteHomepageBanner $banner, int $index) use ($imageUrl, $fallbackBannerImage) {
+            $imagePath = $banner->image_path
+                ?: $banner->product?->images?->first()?->file_path;
+
+            return [
+                'eyebrow' => $banner->eyebrow,
+                'title' => $banner->title,
+                'subtitle' => $banner->subtitle,
+                'description' => $banner->description,
+                'badge' => $banner->badge_text,
+                'button_label' => $banner->button_label ?: 'Перейти',
+                'url' => $banner->resolveUrl(),
+                'image' => $imagePath ? $imageUrl($imagePath) : $fallbackBannerImage,
+                'mobile_image' => $banner->mobile_image_path ? $imageUrl($banner->mobile_image_path) : null,
+                'theme' => $banner->theme ?: 'blue',
+                'target_blank' => $banner->opens_in_new_tab,
+            ];
+        })
+        ->values();
+
+    if ($bannerSlides->isEmpty()) {
+        $bannerSlides = collect([
+            [
+                'eyebrow' => 'Производитель бытовой химии',
+                'title' => 'Профессиональная бытовая химия',
+                'subtitle' => 'для дома, бизнеса и автомобиля',
+                'description' => 'Собственное производство, понятный каталог и продукты для ежедневной чистоты.',
+                'badge' => 'НИКТРЕЙД',
+                'button_label' => 'Перейти в каталог',
+                'url' => '#products',
+                'image' => $fallbackBannerImage,
+                'mobile_image' => null,
+                'theme' => 'blue',
+                'target_blank' => false,
+            ],
+            [
+                'eyebrow' => 'Акции и спецпредложения',
+                'title' => 'Выгодные закупки',
+                'subtitle' => 'товары со скидками и быстрым заказом',
+                'description' => 'Соберите корзину из популярных позиций и оформите заказ без лишних шагов.',
+                'badge' => 'Акция',
+                'button_label' => 'Смотреть акции',
+                'url' => '#promos',
+                'image' => $fallbackBannerImage,
+                'mobile_image' => null,
+                'theme' => 'green',
+                'target_blank' => false,
+            ],
+            [
+                'eyebrow' => 'Для бизнеса и HoReCa',
+                'title' => 'Химия для бизнеса',
+                'subtitle' => 'склады, сервисы, клининг и рестораны',
+                'description' => 'Подберите средства под ваши задачи: уборка, дезинфекция, кухня, автохимия.',
+                'badge' => 'B2B',
+                'button_label' => 'Перейти в раздел',
+                'url' => '#business',
+                'image' => $fallbackBannerImage,
+                'mobile_image' => null,
+                'theme' => 'cyan',
+                'target_blank' => false,
+            ],
+        ]);
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -2353,6 +2420,232 @@
                 transform: translateX(0);
             }
         }
+
+        .nik-catalog2-hero-carousel {
+            min-height: 398px;
+            padding: 0;
+        }
+
+        .nik-catalog2-hero-carousel::before {
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .nik-catalog2-hero-track {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+
+        .nik-catalog2-hero-slide {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, .72fr);
+            align-items: center;
+            gap: 28px;
+            padding: 46px 56px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(30px) scale(.985);
+            transition:
+                opacity .46s ease,
+                transform .58s cubic-bezier(.22, .84, .28, 1);
+        }
+
+        .nik-catalog2-hero-slide.is-active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+        }
+
+        .nik-catalog2-hero-slide.is-leaving {
+            transform: translateX(-22px) scale(.99);
+        }
+
+        .nik-catalog2-hero-slide.is-green {
+            background:
+                radial-gradient(circle at 82% 42%, rgba(47,159,109,.18), transparent 18rem),
+                radial-gradient(circle at 18% 24%, rgba(255,255,255,.58), transparent 20rem);
+        }
+
+        .nik-catalog2-hero-slide.is-cyan {
+            background:
+                radial-gradient(circle at 78% 34%, rgba(18,184,205,.16), transparent 18rem),
+                radial-gradient(circle at 20% 12%, rgba(255,255,255,.58), transparent 20rem);
+        }
+
+        .nik-catalog2-hero-slide.is-dark {
+            background:
+                linear-gradient(115deg, rgba(15,27,51,.08), rgba(40,125,242,.08)),
+                radial-gradient(circle at 82% 44%, rgba(15,27,51,.16), transparent 18rem);
+        }
+
+        .nik-catalog2-hero-carousel .nik-catalog2-hero-copy {
+            width: min(620px, 100%);
+        }
+
+        .nik-catalog2-hero-badge {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            min-height: 30px;
+            margin-top: 18px;
+            padding: 0 12px;
+            border: 1px solid rgba(218,231,247,.90);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(255,255,255,.86), rgba(246,251,255,.64));
+            color: #287df2;
+            font-size: 12px;
+            font-weight: 900;
+            box-shadow:
+                0 10px 22px rgba(39,88,145,.08),
+                inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
+        .nik-catalog2-hero-description {
+            max-width: 540px;
+            margin: 18px 0 0;
+            color: rgba(15,27,51,.64);
+            font-size: 15px;
+            font-weight: 760;
+            line-height: 1.55;
+        }
+
+        .nik-catalog2-hero-slide picture {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .nik-catalog2-hero-slide-image {
+            width: min(100%, 340px);
+            max-height: 310px;
+            object-fit: contain;
+            opacity: .82;
+            filter: drop-shadow(0 28px 42px rgba(39,88,145,.16));
+        }
+
+        .nik-catalog2-hero-arrow {
+            position: absolute;
+            top: 50%;
+            z-index: 5;
+            display: inline-flex;
+            width: 48px;
+            height: 48px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(255,255,255,.86), rgba(246,251,255,.68));
+            color: #10223f;
+            font: inherit;
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow:
+                0 14px 30px rgba(39,88,145,.12),
+                inset 0 1px 0 rgba(255,255,255,.96);
+            transform: translateY(-50%);
+            transition: transform .18s ease, box-shadow .18s ease;
+            backdrop-filter: blur(14px) saturate(135%);
+            -webkit-backdrop-filter: blur(14px) saturate(135%);
+        }
+
+        .nik-catalog2-hero-arrow:hover {
+            transform: translateY(-50%) scale(1.04);
+            box-shadow:
+                0 18px 36px rgba(39,88,145,.16),
+                inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .nik-catalog2-hero-arrow.is-prev {
+            left: 16px;
+        }
+
+        .nik-catalog2-hero-arrow.is-next {
+            right: 16px;
+        }
+
+        .nik-catalog2-hero-dots {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            z-index: 5;
+            display: flex;
+            gap: 10px;
+            transform: translateX(-50%);
+        }
+
+        .nik-catalog2-hero-dot {
+            width: 42px;
+            height: 4px;
+            padding: 0;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(15,27,51,.18);
+            transition: width .2s ease, background .2s ease;
+        }
+
+        .nik-catalog2-hero-dot.is-active {
+            width: 62px;
+            background: #287df2;
+        }
+
+        @media (max-width: 760px) {
+            .nik-catalog2-hero-carousel {
+                min-height: 650px;
+                padding: 0;
+            }
+
+            .nik-catalog2-hero-slide {
+                display: block;
+                padding: 28px 22px 230px;
+            }
+
+            .nik-catalog2-hero-carousel .nik-catalog2-hero-copy {
+                width: 100%;
+            }
+
+            .nik-catalog2-hero-description {
+                font-size: 14px;
+            }
+
+            .nik-catalog2-hero-slide-image {
+                position: absolute;
+                right: 20px;
+                bottom: 44px;
+                width: min(64%, 260px);
+                max-height: 210px;
+                opacity: .58;
+            }
+
+            .nik-catalog2-hero-arrow {
+                top: auto;
+                bottom: 18px;
+                width: 44px;
+                height: 44px;
+            }
+
+            .nik-catalog2-hero-arrow.is-prev {
+                left: 22px;
+            }
+
+            .nik-catalog2-hero-arrow.is-next {
+                right: 22px;
+            }
+
+            .nik-catalog2-hero-dots {
+                bottom: 38px;
+            }
+
+            .nik-catalog2-hero-dot {
+                width: 24px;
+            }
+
+            .nik-catalog2-hero-dot.is-active {
+                width: 38px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2482,26 +2775,84 @@
         </section>
 
         <section class="nik-catalog2-hero-grid">
-            <div class="nik-catalog2-hero nik-catalog2-glass">
+            <div class="nik-catalog2-hero nik-catalog2-glass nik-catalog2-hero-carousel" data-catalog2-hero-carousel>
                 <span class="nik-catalog2-bubble is-1"></span>
                 <span class="nik-catalog2-bubble is-2"></span>
                 <span class="nik-catalog2-bubble is-3"></span>
-                <div class="nik-catalog2-hero-copy">
-                    <div class="nik-catalog2-eyebrow">Производитель бытовой химии</div>
-                    <h1>Профессиональная бытовая химия</h1>
-                    <h2>для дома, бизнеса и автомобиля</h2>
-                    <div class="nik-catalog2-features">
-                        @foreach (['Собственное производство', 'Высокое качество', 'Выгодные цены', 'Быстрая доставка по России'] as $feature)
-                            <div class="nik-catalog2-feature"><i>✦</i><span>{{ $feature }}</span></div>
+
+                <div class="nik-catalog2-hero-track">
+                    @foreach ($bannerSlides as $slide)
+                        <article
+                            class="nik-catalog2-hero-slide is-{{ $slide['theme'] }} {{ $loop->first ? 'is-active' : '' }}"
+                            data-catalog2-hero-slide
+                            aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
+                        >
+                            <div class="nik-catalog2-hero-copy">
+                                @if (filled($slide['eyebrow']))
+                                    <div class="nik-catalog2-eyebrow">{{ $slide['eyebrow'] }}</div>
+                                @endif
+
+                                @if (filled($slide['badge']))
+                                    <div class="nik-catalog2-hero-badge">{{ $slide['badge'] }}</div>
+                                @endif
+
+                                <h1>{{ $slide['title'] }}</h1>
+
+                                @if (filled($slide['subtitle']))
+                                    <h2>{{ $slide['subtitle'] }}</h2>
+                                @endif
+
+                                @if (filled($slide['description']))
+                                    <p class="nik-catalog2-hero-description">{{ $slide['description'] }}</p>
+                                @endif
+
+                                @if ($loop->first)
+                                    <div class="nik-catalog2-features">
+                                        @foreach (['Собственное производство', 'Высокое качество', 'Выгодные цены', 'Быстрая доставка по России'] as $feature)
+                                            <div class="nik-catalog2-feature"><i>✦</i><span>{{ $feature }}</span></div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <div class="nik-catalog2-actions">
+                                    <a
+                                        class="nik-catalog2-action is-primary"
+                                        href="{{ $slide['url'] }}"
+                                        @if ($slide['target_blank']) target="_blank" rel="noopener noreferrer" @endif
+                                    >
+                                        {{ $slide['button_label'] }}
+                                    </a>
+                                    @if (! $loop->first)
+                                        <a class="nik-catalog2-action" href="#products">Смотреть товары</a>
+                                    @else
+                                        <a class="nik-catalog2-action" href="#promos">Смотреть акции</a>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <picture>
+                                @if (filled($slide['mobile_image']))
+                                    <source media="(max-width: 760px)" srcset="{{ $slide['mobile_image'] }}">
+                                @endif
+                                <img class="nik-catalog2-hero-slide-image" src="{{ $slide['image'] }}" alt="{{ $slide['title'] }}">
+                            </picture>
+                        </article>
+                    @endforeach
+                </div>
+
+                @if ($bannerSlides->count() > 1)
+                    <button class="nik-catalog2-hero-arrow is-prev" type="button" aria-label="Предыдущий баннер" data-catalog2-hero-prev>‹</button>
+                    <button class="nik-catalog2-hero-arrow is-next" type="button" aria-label="Следующий баннер" data-catalog2-hero-next>›</button>
+                    <div class="nik-catalog2-hero-dots" aria-label="Слайды баннера">
+                        @foreach ($bannerSlides as $slide)
+                            <button
+                                class="nik-catalog2-hero-dot {{ $loop->first ? 'is-active' : '' }}"
+                                type="button"
+                                aria-label="Показать баннер {{ $loop->iteration }}"
+                                data-catalog2-hero-dot="{{ $loop->index }}"
+                            ></button>
                         @endforeach
                     </div>
-                    <div class="nik-catalog2-actions">
-                        <a class="nik-catalog2-action is-primary" href="#products">Перейти в каталог</a>
-                        <a class="nik-catalog2-action" href="#promos">Смотреть акции</a>
-                    </div>
-                </div>
-                @if ($heroImage)
-                    <img class="nik-catalog2-hero-product" src="{{ $imageUrl($heroImage) }}" alt="{{ $heroProduct?->name }}">
                 @endif
             </div>
 
@@ -2753,6 +3104,91 @@
 </div>
 
 <script>
+    (() => {
+        const carousel = document.querySelector('[data-catalog2-hero-carousel]');
+
+        if (!carousel) {
+            return;
+        }
+
+        const slides = [...carousel.querySelectorAll('[data-catalog2-hero-slide]')];
+
+        if (slides.length < 2) {
+            return;
+        }
+
+        const dots = [...carousel.querySelectorAll('[data-catalog2-hero-dot]')];
+        const prev = carousel.querySelector('[data-catalog2-hero-prev]');
+        const next = carousel.querySelector('[data-catalog2-hero-next]');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let activeIndex = 0;
+        let timer = null;
+
+        const setSlide = (nextIndex) => {
+            const normalizedIndex = (nextIndex + slides.length) % slides.length;
+
+            if (normalizedIndex === activeIndex) {
+                return;
+            }
+
+            slides[activeIndex]?.classList.add('is-leaving');
+            slides[activeIndex]?.classList.remove('is-active');
+            slides[activeIndex]?.setAttribute('aria-hidden', 'true');
+
+            dots[activeIndex]?.classList.remove('is-active');
+
+            activeIndex = normalizedIndex;
+
+            slides[activeIndex]?.classList.remove('is-leaving');
+            slides[activeIndex]?.classList.add('is-active');
+            slides[activeIndex]?.setAttribute('aria-hidden', 'false');
+
+            dots[activeIndex]?.classList.add('is-active');
+        };
+
+        const stop = () => {
+            if (timer !== null) {
+                window.clearInterval(timer);
+                timer = null;
+            }
+        };
+
+        const start = () => {
+            if (prefersReducedMotion || timer !== null) {
+                return;
+            }
+
+            timer = window.setInterval(() => setSlide(activeIndex + 1), 6500);
+        };
+
+        prev?.addEventListener('click', () => {
+            stop();
+            setSlide(activeIndex - 1);
+            start();
+        });
+
+        next?.addEventListener('click', () => {
+            stop();
+            setSlide(activeIndex + 1);
+            start();
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                stop();
+                setSlide(index);
+                start();
+            });
+        });
+
+        carousel.addEventListener('mouseenter', stop);
+        carousel.addEventListener('mouseleave', start);
+        carousel.addEventListener('focusin', stop);
+        carousel.addEventListener('focusout', start);
+
+        start();
+    })();
+
     (() => {
         const root = document.querySelector('.nik-catalog2');
         const toggle = document.querySelector('[data-catalog2-menu-toggle]');

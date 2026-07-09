@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\SiteHomepageBanner;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -78,6 +79,20 @@ class CatalogController extends Controller
             ->groupBy(fn (Product $product): string => mb_strtolower((string) $product->brand?->name))
             ->map(fn (Collection $items): Collection => $items->take(4)->values());
 
+        $homepageBanners = SiteHomepageBanner::query()
+            ->active()
+            ->with([
+                'brand',
+                'category',
+                'product.images' => fn ($query) => $query
+                    ->orderByDesc('is_main')
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
+            ->ordered()
+            ->limit(8)
+            ->get();
+
         return view('catalog2.index', [
             'products' => $products,
             'heroProduct' => $products->first(fn (Product $product): bool => $product->images->isNotEmpty()),
@@ -85,6 +100,7 @@ class CatalogController extends Controller
             'categories' => $categories,
             'categoryProducts' => $categoryProducts,
             'brandProducts' => $brandProducts,
+            'homepageBanners' => $homepageBanners,
             'cartProductItems' => $this->getCartProductItems($request, $products->pluck('id')->all()),
         ]);
     }

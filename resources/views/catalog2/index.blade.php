@@ -2030,6 +2030,328 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .nik-catalog2-header {
+            grid-template-columns: 200px minmax(0, 1fr) auto;
+            gap: 10px 12px;
+        }
+
+        .nik-catalog2-logo img {
+            width: 190px;
+        }
+
+        .nik-catalog2-nav {
+            gap: 7px;
+            overflow: hidden;
+        }
+
+        .nik-catalog2-nav a {
+            flex: 0 0 auto;
+            min-height: 42px;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+
+        .nik-catalog2-catalog-btn {
+            min-width: 112px;
+            min-height: 42px;
+            padding: 0 12px;
+            gap: 10px;
+        }
+
+        .nik-catalog2-head-tools {
+            gap: 8px;
+        }
+
+        .nik-catalog2-phone {
+            font-size: 14px;
+        }
+
+        .nik-catalog2-icon-link {
+            width: 42px;
+            height: 42px;
+        }
+
+        .nik-catalog2-menu-toggle,
+        .nik-catalog2-menu-backdrop,
+        .nik-catalog2-menu-panel {
+            display: none;
+        }
+
+        .nik-catalog2-menu-toggle {
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 44px;
+            padding: 0 16px;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(255,255,255,.90), rgba(246,251,255,.76));
+            color: #10223f;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 900;
+            box-shadow:
+                0 10px 26px rgba(39,88,145,.10),
+                inset 0 1px 0 rgba(255,255,255,.96),
+                inset 0 -1px 0 rgba(40,125,242,.10);
+            backdrop-filter: blur(12px) saturate(125%);
+            -webkit-backdrop-filter: blur(12px) saturate(125%);
+        }
+
+        .nik-catalog2-menu-toggle span:last-child,
+        .nik-catalog2-menu-close span {
+            display: grid;
+            gap: 4px;
+        }
+
+        .nik-catalog2-menu-toggle i,
+        .nik-catalog2-menu-close i {
+            display: block;
+            width: 18px;
+            height: 2px;
+            border-radius: 99px;
+            background: currentColor;
+        }
+
+        .nik-catalog2-menu-close i:first-child {
+            transform: translateY(3px) rotate(45deg);
+        }
+
+        .nik-catalog2-menu-close i:last-child {
+            transform: translateY(-3px) rotate(-45deg);
+        }
+
+        .nik-catalog2-menu-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(255,255,255,.90), rgba(246,251,255,.74));
+            color: #10223f;
+            box-shadow:
+                0 10px 24px rgba(39,88,145,.10),
+                inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .nik-catalog2-menu-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nik-catalog2-menu-panel-head img {
+            width: 148px;
+            height: auto;
+        }
+
+        .nik-catalog2-menu-service,
+        .nik-catalog2-menu-links,
+        .nik-catalog2-menu-tools {
+            display: grid;
+            gap: 10px;
+        }
+
+        .nik-catalog2-menu-service {
+            color: rgba(15,27,51,.64);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .nik-catalog2-menu-service nav {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .nik-catalog2-menu-service a,
+        .nik-catalog2-menu-links a,
+        .nik-catalog2-menu-phone,
+        .nik-catalog2-menu-icon {
+            border: 1px solid rgba(218,231,247,.92);
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(255,255,255,.90), rgba(246,251,255,.72));
+            color: #10223f;
+            box-shadow:
+                0 10px 26px rgba(39,88,145,.09),
+                inset 0 1px 0 rgba(255,255,255,.94),
+                inset 0 -1px 0 rgba(40,125,242,.08);
+        }
+
+        .nik-catalog2-menu-service a {
+            min-height: 38px;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 850;
+        }
+
+        .nik-catalog2-menu-links a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 48px;
+            padding: 0 16px;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .nik-catalog2-menu-links a::after {
+            content: "›";
+            color: #287df2;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .nik-catalog2-menu-tools {
+            grid-template-columns: repeat(3, 52px);
+            align-items: center;
+        }
+
+        .nik-catalog2-menu-phone {
+            grid-column: 1 / -1;
+            display: grid;
+            gap: 2px;
+            padding: 13px 16px;
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+        .nik-catalog2-menu-phone small {
+            color: rgba(15,27,51,.56);
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .nik-catalog2-menu-icon {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+        }
+
+        .nik-catalog2-menu-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nik-catalog2-menu-icon .nik-catalog2-cart-count {
+            top: 4px;
+            right: 4px;
+        }
+
+        body.nik-catalog2-menu-lock {
+            overflow: hidden;
+        }
+
+        @media (max-width: 1280px) and (min-width: 761px) {
+            .nik-catalog2-header {
+                grid-template-columns: 190px minmax(0, 1fr) auto;
+            }
+
+            .nik-catalog2-logo img {
+                width: 178px;
+            }
+
+            .nik-catalog2-nav {
+                gap: 6px;
+            }
+
+            .nik-catalog2-nav a {
+                padding: 0 8px;
+                font-size: 12px;
+            }
+
+            .nik-catalog2-catalog-btn {
+                min-width: 104px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nik-catalog2-header {
+                position: sticky;
+                top: 10px;
+                z-index: 80;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 12px;
+                align-items: center;
+                margin-bottom: 14px;
+            }
+
+            .nik-catalog2-servicebar,
+            .nik-catalog2-nav,
+            .nik-catalog2-head-tools {
+                display: none;
+            }
+
+            .nik-catalog2-logo img {
+                width: 158px;
+            }
+
+            .nik-catalog2-menu-toggle {
+                display: inline-flex;
+            }
+
+            .nik-catalog2-menu-backdrop {
+                position: fixed;
+                inset: 0;
+                z-index: 110;
+                display: block;
+                padding: 0;
+                border: 0;
+                background: rgba(10, 24, 45, .22);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .22s ease;
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+
+            .nik-catalog2-menu-panel {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 120;
+                display: flex;
+                width: min(360px, calc(100vw - 28px));
+                flex-direction: column;
+                gap: 18px;
+                padding: 18px;
+                overflow-y: auto;
+                border-left: 1px solid rgba(218,231,247,.92);
+                background:
+                    linear-gradient(145deg, rgba(255,255,255,.94), rgba(239,247,255,.82)),
+                    radial-gradient(circle at 18% 8%, rgba(40,125,242,.14), transparent 18rem);
+                box-shadow:
+                    -26px 0 70px rgba(39,88,145,.20),
+                    inset 1px 0 0 rgba(255,255,255,.92);
+                transform: translateX(calc(100% + 32px));
+                transition: transform .26s cubic-bezier(.22, .84, .28, 1);
+                backdrop-filter: blur(22px) saturate(145%);
+                -webkit-backdrop-filter: blur(22px) saturate(145%);
+            }
+
+            .nik-catalog2.is-menu-open .nik-catalog2-menu-backdrop {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .nik-catalog2.is-menu-open .nik-catalog2-menu-panel {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -2051,6 +2373,17 @@
             <a class="nik-catalog2-logo" href="{{ route('catalog.preview') }}" aria-label="НИКТРЕЙД">
                 <img src="{{ asset('images/logont.png') }}" alt="НИКТРЕЙД">
             </a>
+
+            <button
+                class="nik-catalog2-menu-toggle"
+                type="button"
+                aria-controls="catalog2MobileMenu"
+                aria-expanded="false"
+                data-catalog2-menu-toggle
+            >
+                <span>Меню</span>
+                <span aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
 
             <nav class="nik-catalog2-nav">
                 <a class="nik-catalog2-catalog-btn" href="#products">
@@ -2081,6 +2414,54 @@
                     <span class="nik-catalog2-cart-count">{{ $cartQuantity }}</span>
                 </a>
             </div>
+
+            <button class="nik-catalog2-menu-backdrop" type="button" aria-label="Закрыть меню" data-catalog2-menu-backdrop></button>
+
+            <aside class="nik-catalog2-menu-panel" id="catalog2MobileMenu" aria-hidden="true" aria-label="Мобильное меню">
+                <div class="nik-catalog2-menu-panel-head">
+                    <img src="{{ asset('images/logont.png') }}" alt="НИКТРЕЙД">
+                    <button class="nik-catalog2-menu-close" type="button" aria-label="Закрыть меню" data-catalog2-menu-close>
+                        <span aria-hidden="true"><i></i><i></i></span>
+                    </button>
+                </div>
+
+                <div class="nik-catalog2-menu-service">
+                    <span>Ваш город: Москва</span>
+                    <span>Доставка по России</span>
+                    <nav aria-label="Сервисная навигация">
+                        @foreach ($serviceLinks as $link)
+                            <a href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+                        @endforeach
+                    </nav>
+                </div>
+
+                <nav class="nik-catalog2-menu-links" aria-label="Основная навигация">
+                    <a href="#products">Каталог</a>
+                    <a href="#brands">Бренды</a>
+                    <a href="#categories">Категории</a>
+                    <a href="#promos">Акции</a>
+                    <a href="#products">Новинки</a>
+                    <a href="#about">О компании</a>
+                    <a href="#footer">Доставка и оплата</a>
+                </nav>
+
+                <div class="nik-catalog2-menu-tools">
+                    <div class="nik-catalog2-menu-phone">
+                        8 (800) 555-35-35
+                        <small>Ежедневно с 9:00 до 18:00</small>
+                    </div>
+                    <a class="nik-catalog2-menu-icon" href="#" aria-label="Избранное">
+                        <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+                    </a>
+                    <a class="nik-catalog2-menu-icon" href="{{ Auth::guard('customer')->check() ? route('customer.account') : route('customer.login') }}" aria-label="Аккаунт">
+                        <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+                    </a>
+                    <a class="nik-catalog2-menu-icon" href="{{ route('cart.index') }}" aria-label="Корзина">
+                        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+                        <span class="nik-catalog2-cart-count">{{ $cartQuantity }}</span>
+                    </a>
+                </div>
+            </aside>
         </header>
 
         <section class="nik-catalog2-mega-strip nik-catalog2-glass" aria-label="Направления каталога">
@@ -2371,6 +2752,45 @@
 </div>
 
 <script>
+    (() => {
+        const root = document.querySelector('.nik-catalog2');
+        const toggle = document.querySelector('[data-catalog2-menu-toggle]');
+        const close = document.querySelector('[data-catalog2-menu-close]');
+        const backdrop = document.querySelector('[data-catalog2-menu-backdrop]');
+        const panel = document.getElementById('catalog2MobileMenu');
+
+        if (!root || !toggle || !close || !backdrop || !panel) {
+            return;
+        }
+
+        const setOpen = (isOpen) => {
+            root.classList.toggle('is-menu-open', isOpen);
+            document.body.classList.toggle('nik-catalog2-menu-lock', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            panel.setAttribute('aria-hidden', String(!isOpen));
+        };
+
+        toggle.addEventListener('click', () => setOpen(!root.classList.contains('is-menu-open')));
+        close.addEventListener('click', () => setOpen(false));
+        backdrop.addEventListener('click', () => setOpen(false));
+
+        panel.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => setOpen(false));
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                setOpen(false);
+            }
+        });
+
+        window.matchMedia('(min-width: 761px)').addEventListener('change', (event) => {
+            if (event.matches) {
+                setOpen(false);
+            }
+        });
+    })();
+
     (() => {
         const isCoarse = window.matchMedia('(pointer: coarse)').matches;
 

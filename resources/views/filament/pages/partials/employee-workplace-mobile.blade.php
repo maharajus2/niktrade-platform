@@ -57,8 +57,16 @@
     </header>
 
     <section class="nik-work-mobile-hero">
-        <h1>Добрый день, {{ $firstName }}! 👋</h1>
-        <p>{{ $workspace['dateLabel'] }}</p>
+        <div>
+            <h1>Добрый день, {{ $firstName }}! 👋</h1>
+            <p>{{ $workspace['dateLabel'] }}</p>
+        </div>
+
+        @if ($contextAction ?? null)
+            <div class="nik-work-mobile-context">
+                {{ $contextAction }}
+            </div>
+        @endif
     </section>
 
     <main class="nik-work-mobile-stack">

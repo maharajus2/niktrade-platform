@@ -12,7 +12,7 @@
         ['key' => 'orders', 'label' => 'Заказы', 'icon' => 'package', 'url' => \App\Filament\Resources\Orders\OrderResource::getUrl('index')],
         ['key' => 'calendar', 'label' => 'Календарь', 'icon' => 'calendar', 'url' => \App\Filament\Pages\MyCalendar::getUrl()],
         ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => '3'],
-        ['label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
+        ['key' => 'requests', 'label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
         ['label' => 'Документы', 'icon' => 'file', 'url' => '#employee-documents'],
         ['label' => 'Сообщения', 'icon' => 'message', 'url' => '#', 'badge' => '2'],
         ['label' => 'Справочники', 'icon' => 'book', 'url' => '#'],

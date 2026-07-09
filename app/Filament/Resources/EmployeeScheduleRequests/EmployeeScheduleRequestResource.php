@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EmployeeScheduleRequests;
 
 use App\Filament\Resources\EmployeeScheduleRequests\Pages\CreateEmployeeScheduleRequest;
 use App\Filament\Resources\EmployeeScheduleRequests\Pages\ListEmployeeScheduleRequests;
+use App\Filament\Resources\EmployeeScheduleRequests\Pages\ViewEmployeeScheduleRequest;
 use App\Models\ApprovalWorkflow;
 use App\Models\Department;
 use App\Models\EmployeeScheduleRequest;
@@ -154,6 +155,7 @@ class EmployeeScheduleRequestResource extends Resource
                 'approvalWorkflow.events.forwardedTo',
             ]))
             ->defaultSort('created_at', 'desc')
+            ->recordUrl(fn (EmployeeScheduleRequest $record): string => static::getUrl('view', ['record' => $record]))
             ->columns([
                 TextColumn::make('employee.name')
                     ->label('Сотрудник')
@@ -512,6 +514,18 @@ class EmployeeScheduleRequestResource extends Resource
         return auth()->check();
     }
 
+    public static function canView(Model $record): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && $record instanceof EmployeeScheduleRequest
+            && EmployeeScheduleRequest::query()
+                ->visibleTo($user)
+                ->whereKey($record->getKey())
+                ->exists();
+    }
+
     public static function canCreate(): bool
     {
         return auth()->check();
@@ -686,6 +700,7 @@ class EmployeeScheduleRequestResource extends Resource
         return [
             'index' => ListEmployeeScheduleRequests::route('/'),
             'create' => CreateEmployeeScheduleRequest::route('/create'),
+            'view' => ViewEmployeeScheduleRequest::route('/{record}'),
         ];
     }
 }

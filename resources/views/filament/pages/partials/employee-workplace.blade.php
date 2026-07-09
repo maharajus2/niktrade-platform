@@ -238,5 +238,8 @@
         </x-work.card>
     </main>
 
-    @include('filament.pages.partials.employee-workplace-mobile', ['workspace' => $workspace])
+    @include('filament.pages.partials.employee-workplace-mobile', [
+        'workspace' => $workspace,
+        'contextAction' => $contextAction ?? null,
+    ])
 @endcomponent

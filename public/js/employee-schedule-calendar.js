@@ -934,7 +934,7 @@
                             return (props.date || (event.start ? formatDate(event.start) : null)) === selectedDate
                         }) : []
 
-                        if (! isMobile() && calendar.view.type === 'dayGridMonth') {
+                        if (calendar.view.type === 'dayGridMonth' || isMobile()) {
                             showDayPopover(info, dayEvents)
 
                             return
@@ -958,6 +958,18 @@
                         selectedDate = props.date || formatDate(event.start)
                         updateSelectedDayLabel()
                         renderAgenda(calendar ? calendar.getEvents() : [])
+
+                        if (isMobile()) {
+                            const dayEvents = calendar ? calendar.getEvents().filter((item) => {
+                                const itemProps = item.extendedProps || {}
+
+                                return (itemProps.date || (item.start ? formatDate(item.start) : null)) === selectedDate
+                            }) : [event]
+
+                            showDayPopover({ date: event.start, dayEl: info.el }, dayEvents)
+
+                            return
+                        }
 
                         if (! canUpdate || ! props.editable) {
                             alert(`${event.title}`)
@@ -1330,7 +1342,15 @@
                         updateSelectedDayLabel()
                         syncMobileStripButtons()
                         renderAgenda(calendar.getEvents())
-                        showHolidayTooltip(button)
+
+                        const clickedDate = new Date(`${selectedDate}T12:00:00`)
+                        const dayEvents = calendar.getEvents().filter((item) => {
+                            const itemProps = item.extendedProps || {}
+
+                            return (itemProps.date || (item.start ? formatDate(item.start) : null)) === selectedDate
+                        })
+
+                        showDayPopover({ date: clickedDate, dayEl: button }, dayEvents)
                     }
                 })
 

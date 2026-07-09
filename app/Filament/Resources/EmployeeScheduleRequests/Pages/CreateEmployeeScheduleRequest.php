@@ -11,6 +11,8 @@ use DateTimeInterface;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
+use Filament\Support\Enums\Width;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
@@ -18,7 +20,26 @@ class CreateEmployeeScheduleRequest extends CreateRecord
 {
     protected static string $resource = EmployeeScheduleRequestResource::class;
 
+    protected string $view = 'filament.resources.employee-schedule-requests.pages.create-request';
+
+    protected Width|string|null $maxContentWidth = Width::Full;
+
     protected static ?string $title = 'Создать заявку';
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [];
+    }
 
     protected function beforeCreate(): void
     {

@@ -145,7 +145,9 @@
 
     $bannerSlides = ($homepageBanners ?? collect())
         ->map(function (SiteHomepageBanner $banner, int $index) use ($imageUrl, $fallbackBannerImage) {
+            $hasBannerImage = filled($banner->image_path) || filled($banner->mobile_image_path);
             $imagePath = $banner->image_path
+                ?: $banner->mobile_image_path
                 ?: $banner->product?->images?->first()?->file_path;
 
             return [
@@ -158,6 +160,7 @@
                 'url' => $banner->resolveUrl(),
                 'image' => $imagePath ? $imageUrl($imagePath) : $fallbackBannerImage,
                 'mobile_image' => $banner->mobile_image_path ? $imageUrl($banner->mobile_image_path) : null,
+                'is_background' => $hasBannerImage,
                 'theme' => $banner->theme ?: 'blue',
                 'target_blank' => $banner->opens_in_new_tab,
             ];
@@ -176,6 +179,7 @@
                 'url' => '#products',
                 'image' => $fallbackBannerImage,
                 'mobile_image' => null,
+                'is_background' => false,
                 'theme' => 'blue',
                 'target_blank' => false,
             ],
@@ -189,6 +193,7 @@
                 'url' => '#promos',
                 'image' => $fallbackBannerImage,
                 'mobile_image' => null,
+                'is_background' => false,
                 'theme' => 'green',
                 'target_blank' => false,
             ],
@@ -202,6 +207,7 @@
                 'url' => '#business',
                 'image' => $fallbackBannerImage,
                 'mobile_image' => null,
+                'is_background' => false,
                 'theme' => 'cyan',
                 'target_blank' => false,
             ],
@@ -2502,6 +2508,27 @@
                 radial-gradient(circle at 82% 44%, rgba(15,27,51,.16), transparent 18rem);
         }
 
+        .nik-catalog2-hero-slide.has-banner-image {
+            grid-template-columns: minmax(0, 1fr);
+            overflow: hidden;
+        }
+
+        .nik-catalog2-hero-slide.has-banner-image::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,.96) 0%, rgba(255,255,255,.82) 33%, rgba(246,251,255,.42) 61%, rgba(246,251,255,.14) 100%),
+                radial-gradient(circle at 24% 48%, rgba(255,255,255,.78), transparent 34rem);
+        }
+
+        .nik-catalog2-hero-slide.has-banner-image .nik-catalog2-hero-copy {
+            position: relative;
+            z-index: 2;
+        }
+
         .nik-catalog2-hero-carousel .nik-catalog2-hero-copy {
             width: min(760px, 100%);
         }
@@ -2533,9 +2560,16 @@
             line-height: 1.55;
         }
 
-        .nik-catalog2-hero-slide picture {
+        .nik-catalog2-hero-media {
             display: flex;
             justify-content: flex-end;
+        }
+
+        .nik-catalog2-hero-media.is-background {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            display: block;
         }
 
         .nik-catalog2-hero-slide-image {
@@ -2544,6 +2578,15 @@
             object-fit: contain;
             opacity: .82;
             filter: drop-shadow(0 28px 42px rgba(39,88,145,.16));
+        }
+
+        .nik-catalog2-hero-media.is-background .nik-catalog2-hero-slide-image {
+            width: 100%;
+            height: 100%;
+            max-height: none;
+            object-fit: cover;
+            opacity: 1;
+            filter: none;
         }
 
         .nik-catalog2-hero-arrow {
@@ -2653,6 +2696,12 @@
                 padding: 0 24px;
             }
 
+            .nik-catalog2-hero-slide.has-banner-image::before {
+                background:
+                    linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(255,255,255,.86) 42%, rgba(247,251,255,.54) 72%, rgba(247,251,255,.20) 100%),
+                    radial-gradient(circle at 50% 22%, rgba(255,255,255,.76), transparent 20rem);
+            }
+
             .nik-catalog2-hero-slide-image {
                 position: absolute;
                 right: -8px;
@@ -2660,6 +2709,16 @@
                 width: min(54%, 220px);
                 max-height: 150px;
                 opacity: .34;
+            }
+
+            .nik-catalog2-hero-media.is-background .nik-catalog2-hero-slide-image {
+                inset: auto;
+                position: static;
+                width: 100%;
+                height: 100%;
+                max-height: none;
+                opacity: 1;
+                object-fit: cover;
             }
 
             .nik-catalog2-brand-stack {
@@ -2847,7 +2906,7 @@
                 <div class="nik-catalog2-hero-track">
                     @foreach ($bannerSlides as $slide)
                         <article
-                            class="nik-catalog2-hero-slide is-{{ $slide['theme'] }} {{ $loop->first ? 'is-active' : '' }}"
+                            class="nik-catalog2-hero-slide is-{{ $slide['theme'] }} {{ $slide['is_background'] ? 'has-banner-image' : '' }} {{ $loop->first ? 'is-active' : '' }}"
                             data-catalog2-hero-slide
                             aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
                         >
@@ -2894,7 +2953,7 @@
                                 </div>
                             </div>
 
-                            <picture>
+                            <picture class="nik-catalog2-hero-media {{ $slide['is_background'] ? 'is-background' : 'is-artwork' }}">
                                 @if (filled($slide['mobile_image']))
                                     <source media="(max-width: 760px)" srcset="{{ $slide['mobile_image'] }}">
                                 @endif

@@ -2207,7 +2207,7 @@
         }
 
         .nik-catalog2-menu-tools {
-            grid-template-columns: repeat(3, 52px);
+            grid-template-columns: repeat(3, 52px) minmax(0, 1fr);
             align-items: center;
         }
 
@@ -2218,6 +2218,7 @@
             padding: 13px 16px;
             font-size: 17px;
             font-weight: 950;
+            white-space: nowrap;
         }
 
         .nik-catalog2-menu-phone small {

@@ -258,5 +258,65 @@
             backdrop-filter: blur(22px) saturate(170%);
             -webkit-backdrop-filter: blur(22px) saturate(170%);
         }
+
+        @media (max-width: 900px) {
+            html,
+            body.nik-employee-edit-page {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            body.nik-employee-edit-page .fi-layout {
+                display: block;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            body.nik-employee-edit-page .fi-sidebar.fi-main-sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                width: min(16rem, 84vw);
+                max-width: 84vw;
+                transform: translateX(-100%);
+                pointer-events: none;
+            }
+
+            body.nik-employee-edit-page .fi-main,
+            body.nik-employee-edit-page .fi-page,
+            body.nik-employee-edit-page .fi-page-content {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                margin-inline: 0;
+                transform: none;
+            }
+
+            body.nik-employee-edit-page .fi-main {
+                padding: 12px;
+            }
+
+            body.nik-employee-edit-page .fi-page-content,
+            body.nik-employee-edit-page .fi-section-content,
+            body.nik-employee-edit-page .fi-sc-component-ctn,
+            body.nik-employee-edit-page .fi-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            body.nik-employee-edit-page .fi-section,
+            body.nik-employee-edit-page .fi-section-content,
+            body.nik-employee-edit-page .fi-sc-component,
+            body.nik-employee-edit-page .fi-fo-field-wrp,
+            body.nik-employee-edit-page .fi-input-wrp,
+            body.nik-employee-edit-page .fi-select-input {
+                min-width: 0;
+                max-width: 100%;
+            }
+
+            body.nik-employee-edit-page [style*="grid-template-columns: repeat(2"] {
+                grid-template-columns: minmax(0, 1fr) !important;
+            }
+        }
     </style>
 @endonce

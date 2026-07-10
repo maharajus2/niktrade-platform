@@ -35,7 +35,16 @@
                             из {{ $workspace['hoursPlanLabel'] }}
                         </div>
                         <div class="nik-work-progress" style="margin-top: 12px;">
-                            <div class="nik-work-progress-bar" style="width: {{ $workspace['progressPercent'] }}%;"></div>
+                            <div
+                                class="nik-work-progress-bar"
+                                style="width: {{ $workspace['progressPercent'] }}%;"
+                                @if ($workspace['workday']['isConfiguredSchedule'])
+                                    data-workday-progress
+                                    data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
+                                    data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                                    data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                                @endif
+                            ></div>
                         </div>
                     </div>
                 </div>
@@ -242,4 +251,44 @@
         'workspace' => $workspace,
         'contextAction' => $contextAction ?? null,
     ])
+
+    @once
+        <script>
+            (() => {
+                const toMinutes = (value) => {
+                    const match = String(value || '').match(/^(\d{1,2}):(\d{2})/)
+
+                    if (!match) {
+                        return null
+                    }
+
+                    return (Number(match[1]) * 60) + Number(match[2])
+                }
+
+                const updateWorkdayProgress = () => {
+                    document.querySelectorAll('[data-workday-progress]').forEach((element) => {
+                        const start = toMinutes(element.dataset.workdayStart)
+                        const end = toMinutes(element.dataset.workdayEnd)
+
+                        if (element.dataset.workdayActive !== '1' || start === null || end === null || end <= start) {
+                            element.style.width = '0%'
+
+                            return
+                        }
+
+                        const now = new Date()
+                        const current = (now.getHours() * 60) + now.getMinutes() + (now.getSeconds() / 60)
+                        const percent = Math.max(0, Math.min(100, ((current - start) / (end - start)) * 100))
+
+                        element.style.width = `${Math.round(percent)}%`
+                    })
+                }
+
+                updateWorkdayProgress()
+                window.addEventListener('focus', updateWorkdayProgress)
+                window.addEventListener('pageshow', updateWorkdayProgress)
+                setInterval(updateWorkdayProgress, 60000)
+            })()
+        </script>
+    @endonce
 @endcomponent

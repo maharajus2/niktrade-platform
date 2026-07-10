@@ -412,7 +412,7 @@ class Workplace extends Page
         }
 
         if ($workday['isConfiguredSchedule']) {
-            return (int) $workday['elapsedPercent'];
+            return 0;
         }
 
         return (int) min(100, ($this->plannedHours($entries, $workday) / 8) * 100);

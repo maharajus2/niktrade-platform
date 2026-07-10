@@ -90,7 +90,15 @@
                         <strong>{{ number_format($workspace['hoursToday'], 1, ',', ' ') }} ч</strong>
                         <small>из {{ $workspace['hoursPlanLabel'] }}</small>
                         <div class="nik-work-mobile-progress">
-                            <i style="width: {{ $workspace['progressPercent'] }}%;"></i>
+                            <i
+                                style="width: {{ $workspace['progressPercent'] }}%;"
+                                @if ($workspace['workday']['isConfiguredSchedule'])
+                                    data-workday-progress
+                                    data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
+                                    data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                                    data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                                @endif
+                            ></i>
                         </div>
                     </div>
                 </div>

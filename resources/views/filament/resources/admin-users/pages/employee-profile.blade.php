@@ -6,6 +6,7 @@
     $documents = $profile['documents'];
     $requestCounts = $profile['requestCounts'];
     $manager = $profile['manager'];
+    $workday = $profile['workday'];
 
     $initials = collect(explode(' ', trim($employee->name)))
         ->filter()
@@ -119,6 +120,8 @@
                         <div><dt>Дата найма</dt><dd>{{ $dateValue($employee->hire_date) }}</dd></div>
                         <div><dt>Должность</dt><dd>{{ $value($employee->position) }}</dd></div>
                         <div><dt>График работы</dt><dd>{{ $employee->getScheduleTypeLabel() }}</dd></div>
+                        <div><dt>Рабочие часы</dt><dd>{{ $workday['hoursLabel'] }}</dd></div>
+                        <div><dt>Обед</dt><dd>{{ $workday['lunchLabel'] }}</dd></div>
                         <div><dt>Отдел</dt><dd>{{ $value($employee->department?->name) }}</dd></div>
                         <div><dt>Руководитель</dt><dd>{{ $value($manager?->name) }}</dd></div>
                         <div><dt>Основная роль</dt><dd>{{ $profile['roleLabel'] }}</dd></div>
@@ -225,6 +228,9 @@
                     <div class="nik-employee-profile-today">
                         <strong>{{ $profile['shiftLabel'] }}</strong>
                         <span>{{ $profile['todayStatus'] }}</span>
+                        @if ($workday['isConfiguredSchedule'])
+                            <small>{{ $workday['lunchLabel'] }} · {{ $workday['note'] ?: 'График 5/2' }}</small>
+                        @endif
                     </div>
                 @else
                     <div class="nik-employee-disabled-state">График недоступен для текущего пользователя.</div>
@@ -416,6 +422,9 @@
                     <div><span>Телефон</span><strong>{{ $value($employee->phone) }}</strong></div>
                     <div><span>Дата рождения</span><strong>{{ $birthDateValue }}</strong></div>
                     <div><span>Дата найма</span><strong>{{ $dateValue($employee->hire_date) }}</strong></div>
+                    <div><span>График</span><strong>{{ $employee->getScheduleTypeLabel() }}</strong></div>
+                    <div><span>Рабочие часы</span><strong>{{ $workday['hoursLabel'] }}</strong></div>
+                    <div><span>Обед</span><strong>{{ $workday['lunchLabel'] }}</strong></div>
                     <div><span>Руководитель</span><strong>{{ $value($manager?->name) }}</strong></div>
                     <div><span>Роль</span><strong>{{ $profile['roleLabel'] }}</strong></div>
                 </div>
@@ -447,6 +456,9 @@
                 @if ($profile['canViewSchedule'])
                     <x-work.calendar-mini :month-label="$profile['monthLabel']" :days="$profile['calendarDays']" :url="$profile['calendarUrl']" />
                     <div class="nik-work-mobile-empty">{{ $profile['shiftLabel'] }} · {{ $profile['todayStatus'] }}</div>
+                    @if ($workday['isConfiguredSchedule'])
+                        <div class="nik-work-mobile-empty">{{ $workday['lunchLabel'] }} · {{ $workday['note'] ?: 'График 5/2' }}</div>
+                    @endif
                 @else
                     <div class="nik-work-mobile-empty">График недоступен для текущего пользователя.</div>
                 @endif

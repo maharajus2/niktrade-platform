@@ -9,6 +9,7 @@ use App\Models\EmployeeScheduleEntry;
 use App\Models\EmployeeScheduleRequest;
 use App\Models\User;
 use App\Support\Dashboard\DashboardWidgetRegistry;
+use App\Support\EmployeeWorkday;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -283,6 +284,7 @@ class Workplace extends Page
         $today = today();
         $monthStart = $today->copy()->startOfMonth();
         $monthEnd = $today->copy()->endOfMonth();
+        $workday = EmployeeWorkday::for($employee, $today);
 
         $todayEntries = $employee->scheduleEntries()
             ->whereDate('date', $today)
@@ -312,10 +314,13 @@ class Workplace extends Page
             'employee' => $employee,
             'dateLabel' => now()->translatedFormat('l, d F Y'),
             'monthLabel' => $monthStart->translatedFormat('F Y'),
-            'todayStatus' => $this->employeeStatusLabel($todayEntries),
-            'shiftLabel' => $this->shiftLabel($todayEntries),
-            'hoursToday' => $this->plannedHours($todayEntries),
-            'timeline' => $this->timeline($todayEntries),
+            'todayStatus' => $this->employeeStatusLabel($todayEntries, $workday),
+            'shiftLabel' => $this->shiftLabel($todayEntries, $workday),
+            'hoursToday' => $this->plannedHours($todayEntries, $workday),
+            'hoursPlanLabel' => $this->hoursLabel($this->plannedHours($todayEntries, $workday)),
+            'progressPercent' => $this->progressPercent($todayEntries, $workday),
+            'workday' => $workday,
+            'timeline' => $this->timeline($todayEntries, $workday),
             'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
             'attentionItems' => $this->attentionItems($employee, $expiringDocuments),
             'requestCounts' => $this->requestCounts($employee),
@@ -336,7 +341,7 @@ class Workplace extends Page
         ];
     }
 
-    private function employeeStatusLabel(Collection $entries): string
+    private function employeeStatusLabel(Collection $entries, array $workday): string
     {
         if ($entries->where('type', EmployeeScheduleEntry::TYPE_VACATION)->isNotEmpty()) {
             return 'Отпуск';
@@ -350,6 +355,10 @@ class Workplace extends Page
             return 'Выходной';
         }
 
+        if ($workday['isConfiguredSchedule']) {
+            return $workday['statusLabel'];
+        }
+
         if ($entries->where('type', EmployeeScheduleEntry::TYPE_SHIFT)->isNotEmpty()) {
             return 'Рабочий день';
         }
@@ -357,17 +366,31 @@ class Workplace extends Page
         return 'Смен не назначено';
     }
 
-    private function shiftLabel(Collection $entries): ?string
+    private function shiftLabel(Collection $entries, array $workday): ?string
     {
         $shifts = $entries->where('type', EmployeeScheduleEntry::TYPE_SHIFT);
+
+        if ($workday['isConfiguredSchedule']) {
+            return $workday['isWorkday']
+                ? $workday['startsAt'].'-'.$workday['endsAt']
+                : $workday['statusLabel'];
+        }
 
         return $shifts->isNotEmpty()
             ? $shifts->map(fn (EmployeeScheduleEntry $entry): string => $entry->timeLabel())->join(', ')
             : null;
     }
 
-    private function plannedHours(Collection $entries): float
+    private function plannedHours(Collection $entries, array $workday): float
     {
+        if ($this->hasFullDayAbsence($entries)) {
+            return 0;
+        }
+
+        if ($workday['isConfiguredSchedule']) {
+            return round($workday['plannedMinutes'] / 60, 1);
+        }
+
         return round($entries
             ->filter(fn (EmployeeScheduleEntry $entry): bool => $entry->isWorkTime())
             ->sum(function (EmployeeScheduleEntry $entry): float {
@@ -382,11 +405,59 @@ class Workplace extends Page
             }), 1);
     }
 
-    private function timeline(Collection $entries): array
+    private function progressPercent(Collection $entries, array $workday): int
+    {
+        if ($this->hasFullDayAbsence($entries)) {
+            return 0;
+        }
+
+        if ($workday['isConfiguredSchedule']) {
+            return (int) $workday['elapsedPercent'];
+        }
+
+        return (int) min(100, ($this->plannedHours($entries, $workday) / 8) * 100);
+    }
+
+    private function hoursLabel(float $hours): string
+    {
+        return number_format($hours, 1, ',', ' ').' ч';
+    }
+
+    private function hasFullDayAbsence(Collection $entries): bool
+    {
+        return $entries
+            ->whereIn('type', [
+                EmployeeScheduleEntry::TYPE_VACATION,
+                EmployeeScheduleEntry::TYPE_SICK_LEAVE,
+                EmployeeScheduleEntry::TYPE_DAY_OFF,
+            ])
+            ->isNotEmpty();
+    }
+
+    private function timeline(Collection $entries, array $workday): array
     {
         $items = [];
 
+        if ($workday['isConfiguredSchedule'] && ! $this->hasFullDayAbsence($entries)) {
+            if (! $workday['isWorkday']) {
+                $items[] = [
+                    'time' => 'Весь день',
+                    'title' => $workday['statusLabel'],
+                    'meta' => $workday['note'] ?: 'По графику 5/2',
+                    'color' => $workday['isHoliday'] ? '#ef4444' : '#94a3b8',
+                ];
+            } else {
+                $items[] = ['time' => $workday['startsAt'], 'title' => 'Начало рабочего дня', 'meta' => 'График 5/2', 'color' => '#22c55e'];
+                $items[] = ['time' => $workday['lunchStartsAt'], 'title' => 'Обеденный перерыв', 'meta' => $workday['lunchStartsAt'].'-'.$workday['lunchEndsAt'], 'color' => '#94a3b8'];
+                $items[] = ['time' => $workday['endsAt'], 'title' => $workday['isShortened'] ? 'Сокращённый день' : 'Конец рабочего дня', 'meta' => $workday['note'] ?: 'Хорошего вечера', 'color' => $workday['isShortened'] ? '#f59e0b' : '#94a3b8'];
+            }
+        }
+
         foreach ($entries as $entry) {
+            if ($workday['isConfiguredSchedule'] && $entry->type === EmployeeScheduleEntry::TYPE_SHIFT) {
+                continue;
+            }
+
             if ($entry->type === EmployeeScheduleEntry::TYPE_SHIFT && $entry->starts_at && $entry->ends_at) {
                 $items[] = ['time' => substr((string) $entry->starts_at, 0, 5), 'title' => 'Начало смены', 'meta' => 'Рабочий день', 'color' => '#22c55e'];
 

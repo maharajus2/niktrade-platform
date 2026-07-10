@@ -32,10 +32,10 @@
                             {{ number_format($workspace['hoursToday'], 1, ',', ' ') }} ч
                         </div>
                         <div style="margin-top: 4px; color: #64748b; font-size: 13px; font-weight: 650;">
-                            из 8 ч
+                            из {{ $workspace['hoursPlanLabel'] }}
                         </div>
                         <div class="nik-work-progress" style="margin-top: 12px;">
-                            <div class="nik-work-progress-bar" style="width: {{ min(100, ($workspace['hoursToday'] / 8) * 100) }}%;"></div>
+                            <div class="nik-work-progress-bar" style="width: {{ $workspace['progressPercent'] }}%;"></div>
                         </div>
                     </div>
                 </div>

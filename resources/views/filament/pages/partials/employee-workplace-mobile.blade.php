@@ -88,9 +88,9 @@
                     <div class="nik-work-mobile-hours">
                         <span>Рабочее время сегодня</span>
                         <strong>{{ number_format($workspace['hoursToday'], 1, ',', ' ') }} ч</strong>
-                        <small>из 8 ч</small>
+                        <small>из {{ $workspace['hoursPlanLabel'] }}</small>
                         <div class="nik-work-mobile-progress">
-                            <i style="width: {{ min(100, ($workspace['hoursToday'] / 8) * 100) }}%;"></i>
+                            <i style="width: {{ $workspace['progressPercent'] }}%;"></i>
                         </div>
                     </div>
                 </div>

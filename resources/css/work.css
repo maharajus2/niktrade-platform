@@ -3851,6 +3851,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 .nik-work-app .nik-employee-profile-today {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -3871,6 +3872,13 @@ body:has(.nik-work-app) .nik-work-sidebar {
     color: #15803d;
     font-size: 12px;
     font-weight: 760;
+}
+
+.nik-work-app .nik-employee-profile-today small {
+    flex: 1 0 100%;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .nik-work-app .nik-employee-profile-list {

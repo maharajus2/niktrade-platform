@@ -6,11 +6,13 @@ use App\Filament\Resources\AdminUsers\UserResource;
 use App\Models\Department;
 use App\Models\User;
 use App\Support\AdminRoles;
+use App\Support\EmployeeWorkday;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
@@ -203,7 +205,79 @@ class UserForm
                         Select::make('schedule_type')
                             ->label('Тип графика')
                             ->options(User::scheduleTypeOptions())
-                            ->nullable(),
+                            ->nullable()
+                            ->live(),
+
+                        TimePicker::make('work_starts_at')
+                            ->label('Начало рабочего дня')
+                            ->seconds(false)
+                            ->minutesStep(30)
+                            ->default(EmployeeWorkday::DEFAULT_START)
+                            ->required(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO)
+                            ->visible(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO),
+
+                        TimePicker::make('work_ends_at')
+                            ->label('Окончание рабочего дня')
+                            ->seconds(false)
+                            ->minutesStep(30)
+                            ->default(EmployeeWorkday::DEFAULT_END)
+                            ->required(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO)
+                            ->rule(fn (callable $get): \Closure => function (string $attribute, mixed $value, \Closure $fail) use ($get): void {
+                                if ($get('schedule_type') !== User::SCHEDULE_FIVE_TWO) {
+                                    return;
+                                }
+
+                                $start = EmployeeWorkday::timeToMinutes($get('work_starts_at'));
+                                $end = EmployeeWorkday::timeToMinutes($value);
+
+                                if ($start !== null && $end !== null && $end <= $start) {
+                                    $fail('Окончание рабочего дня должно быть позже начала.');
+                                }
+                            })
+                            ->visible(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO),
+
+                        TimePicker::make('lunch_starts_at')
+                            ->label('Начало обеда')
+                            ->seconds(false)
+                            ->minutesStep(30)
+                            ->default(EmployeeWorkday::DEFAULT_LUNCH_START)
+                            ->required(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO)
+                            ->visible(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO),
+
+                        TimePicker::make('lunch_ends_at')
+                            ->label('Окончание обеда')
+                            ->helperText('Допустимая продолжительность: 30 минут или 1 час.')
+                            ->seconds(false)
+                            ->minutesStep(30)
+                            ->default(EmployeeWorkday::DEFAULT_LUNCH_END)
+                            ->required(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO)
+                            ->rule(fn (callable $get): \Closure => function (string $attribute, mixed $value, \Closure $fail) use ($get): void {
+                                if ($get('schedule_type') !== User::SCHEDULE_FIVE_TWO) {
+                                    return;
+                                }
+
+                                $lunchStart = EmployeeWorkday::timeToMinutes($get('lunch_starts_at'));
+                                $lunchEnd = EmployeeWorkday::timeToMinutes($value);
+                                $workStart = EmployeeWorkday::timeToMinutes($get('work_starts_at'));
+                                $workEnd = EmployeeWorkday::timeToMinutes($get('work_ends_at'));
+
+                                if ($lunchStart === null || $lunchEnd === null) {
+                                    return;
+                                }
+
+                                $duration = $lunchEnd - $lunchStart;
+
+                                if (! in_array($duration, [30, 60], true)) {
+                                    $fail('Обед должен длиться 30 минут или 1 час.');
+
+                                    return;
+                                }
+
+                                if ($workStart !== null && $workEnd !== null && ($lunchStart < $workStart || $lunchEnd > $workEnd)) {
+                                    $fail('Обед должен попадать внутрь рабочего дня.');
+                                }
+                            })
+                            ->visible(fn (callable $get): bool => $get('schedule_type') === User::SCHEDULE_FIVE_TWO),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),

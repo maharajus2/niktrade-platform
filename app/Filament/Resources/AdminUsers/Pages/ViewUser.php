@@ -12,6 +12,7 @@ use App\Models\EmployeeScheduleEntry;
 use App\Models\EmployeeScheduleRequest;
 use App\Models\User;
 use App\Support\AdminRoles;
+use App\Support\EmployeeWorkday;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Enums\Width;
@@ -64,6 +65,7 @@ class ViewUser extends ViewRecord
         $today = today();
         $monthStart = $today->copy()->startOfMonth();
         $monthEnd = $today->copy()->endOfMonth();
+        $workday = EmployeeWorkday::for($employee, $today);
 
         $todayEntries = UserResource::canViewEmployeeSchedule($employee)
             ? $employee->scheduleEntries()
@@ -128,8 +130,9 @@ class ViewUser extends ViewRecord
                 'documentsUrl' => '#employee-profile-documents',
                 'workplaceUrl' => Workplace::getUrl(),
                 'monthLabel' => $monthStart->translatedFormat('F Y'),
-                'todayStatus' => $this->employeeStatusLabel($todayEntries),
-                'shiftLabel' => $this->shiftLabel($todayEntries) ?: $employee->getScheduleTypeLabel(),
+                'todayStatus' => $this->employeeStatusLabel($todayEntries, $workday),
+                'shiftLabel' => $this->shiftLabel($todayEntries, $workday) ?: $employee->getScheduleTypeLabel(),
+                'workday' => $workday,
                 'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
                 'recentScheduleEntries' => $this->timeline($todayEntries),
                 'recentRequests' => $recentRequests,
@@ -149,7 +152,7 @@ class ViewUser extends ViewRecord
         ];
     }
 
-    private function employeeStatusLabel(Collection $entries): string
+    private function employeeStatusLabel(Collection $entries, array $workday): string
     {
         if ($entries->where('type', EmployeeScheduleEntry::TYPE_VACATION)->isNotEmpty()) {
             return 'Отпуск';
@@ -163,6 +166,10 @@ class ViewUser extends ViewRecord
             return 'Выходной';
         }
 
+        if ($workday['isConfiguredSchedule']) {
+            return $workday['statusLabel'];
+        }
+
         if ($entries->where('type', EmployeeScheduleEntry::TYPE_SHIFT)->isNotEmpty()) {
             return 'Рабочий день';
         }
@@ -170,9 +177,15 @@ class ViewUser extends ViewRecord
         return 'Смен не назначено';
     }
 
-    private function shiftLabel(Collection $entries): ?string
+    private function shiftLabel(Collection $entries, array $workday): ?string
     {
         $shifts = $entries->where('type', EmployeeScheduleEntry::TYPE_SHIFT);
+
+        if ($workday['isConfiguredSchedule']) {
+            return $workday['isWorkday']
+                ? $workday['startsAt'].'-'.$workday['endsAt']
+                : $workday['statusLabel'];
+        }
 
         return $shifts->isNotEmpty()
             ? $shifts->map(fn (EmployeeScheduleEntry $entry): string => $entry->timeLabel())->join(', ')

@@ -145,6 +145,7 @@ class Workplace extends Page
         ];
 
         $todayEntries = EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->with('employee.department')
             ->whereDate('date', $today)
@@ -187,6 +188,7 @@ class Workplace extends Page
             ->all();
 
         $upcomingEvents = EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->with('employee')
             ->whereBetween('date', [$today->toDateString(), $weekEnd->toDateString()])
@@ -307,11 +309,13 @@ class Workplace extends Page
         $workday = EmployeeWorkday::for($employee, $today);
 
         $todayEntries = $employee->scheduleEntries()
+            ->active()
             ->whereDate('date', $today)
             ->orderBy('starts_at')
             ->get();
 
         $monthEntries = $employee->scheduleEntries()
+            ->active()
             ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
             ->orderBy('date')
             ->get()

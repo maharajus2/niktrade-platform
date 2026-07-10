@@ -29,6 +29,7 @@ class EmployeeCalendarWidget extends Widget
         $end = today()->endOfMonth();
 
         $entries = $employee?->scheduleEntries()
+            ->active()
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->orderBy('date')
             ->get()

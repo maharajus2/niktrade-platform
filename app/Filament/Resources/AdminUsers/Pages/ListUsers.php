@@ -232,6 +232,7 @@ class ListUsers extends ListRecords
     private function todayEntryCount(string $type): int
     {
         return EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->whereDate('date', today())
             ->where('type', $type)

@@ -25,6 +25,7 @@ class EmployeeMyDayWidget extends Widget
         $today = today();
 
         $entries = $employee?->scheduleEntries()
+            ->active()
             ->whereDate('date', $today)
             ->orderBy('starts_at')
             ->get() ?? collect();

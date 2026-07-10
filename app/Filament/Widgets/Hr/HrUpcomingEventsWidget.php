@@ -28,6 +28,7 @@ class HrUpcomingEventsWidget extends Widget
         $events = collect();
 
         EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->with('employee.department')
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])

@@ -173,6 +173,11 @@ class EmployeeScheduleEntry extends Model
         });
     }
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->whereNull('archived_at');
+    }
+
     public function isHrVisible(): bool
     {
         return $this->visibility === self::VISIBILITY_HR

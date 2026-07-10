@@ -371,6 +371,7 @@ class EmployeeScheduleRequest extends Model
             ];
 
             $exists = EmployeeScheduleEntry::query()
+                ->active()
                 ->where('employee_id', $data['employee_id'])
                 ->whereDate('date', $data['date'])
                 ->where('type', $data['type'])

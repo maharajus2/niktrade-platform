@@ -325,6 +325,7 @@ class User extends Authenticatable
     public function futureScheduleEntries(): HasMany
     {
         return $this->scheduleEntries()
+            ->active()
             ->whereDate('date', '>=', today())
             ->orderBy('date')
             ->orderBy('starts_at');
@@ -432,6 +433,7 @@ class User extends Authenticatable
         $end = $start->copy()->endOfMonth();
 
         return $this->scheduleEntries()
+            ->active()
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->orderBy('date')
             ->orderBy('starts_at')

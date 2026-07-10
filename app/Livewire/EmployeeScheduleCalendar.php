@@ -585,6 +585,7 @@ class EmployeeScheduleCalendar extends Component
     private function hasDuplicate(User $employee, array $data, ?int $exceptId = null): bool
     {
         return $employee->scheduleEntries()
+            ->active()
             ->whereDate('date', $data['date'])
             ->where('type', $data['type'])
             ->where('title', $data['title'])

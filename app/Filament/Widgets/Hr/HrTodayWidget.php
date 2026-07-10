@@ -22,6 +22,7 @@ class HrTodayWidget extends Widget
     {
         $today = today();
         $entries = EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->with('employee.department')
             ->whereDate('date', $today)

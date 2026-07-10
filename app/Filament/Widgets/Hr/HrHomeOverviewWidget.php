@@ -58,6 +58,7 @@ class HrHomeOverviewWidget extends Widget
             ->count();
 
         $todayEntries = EmployeeScheduleEntry::query()
+            ->active()
             ->hrVisible()
             ->whereDate('date', $today)
             ->get();

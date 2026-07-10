@@ -69,6 +69,7 @@ class ViewUser extends ViewRecord
 
         $todayEntries = UserResource::canViewEmployeeSchedule($employee)
             ? $employee->scheduleEntries()
+                ->active()
                 ->whereDate('date', $today)
                 ->orderBy('starts_at')
                 ->get()
@@ -76,6 +77,7 @@ class ViewUser extends ViewRecord
 
         $monthEntries = UserResource::canViewEmployeeSchedule($employee)
             ? $employee->scheduleEntries()
+                ->active()
                 ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
                 ->orderBy('date')
                 ->get()

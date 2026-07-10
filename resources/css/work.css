@@ -3434,7 +3434,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
             radial-gradient(circle at 50% -18%, rgba(255, 255, 255, .72), transparent 40%),
             radial-gradient(circle at 90% 100%, rgba(22, 119, 255, .16), transparent 42%),
             linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .24));
-        background-attachment: fixed;
+        background-attachment: scroll;
         box-shadow:
             0 -26px 76px rgba(31, 52, 86, .24),
             0 1px 0 rgba(255, 255, 255, .72),
@@ -3448,7 +3448,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         background:
             radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .70), transparent 45%),
             linear-gradient(135deg, rgba(255, 255, 255, .42), rgba(239, 247, 255, .22));
-        background-attachment: fixed;
+        background-attachment: scroll;
         box-shadow:
             inset 0 1px 0 rgba(255, 255, 255, .86),
             inset 0 -18px 34px rgba(22, 119, 255, .08);
@@ -5186,14 +5186,12 @@ body:has(.nik-work-app) .nik-work-sidebar {
         --nik-mobile-safe-bottom: max(14px, env(safe-area-inset-bottom));
         --nik-mobile-nav-reserve: calc(118px + var(--nik-mobile-safe-bottom));
         --nik-mobile-nav-comfy-reserve: calc(178px + var(--nik-mobile-safe-bottom));
+        overscroll-behavior-y: none;
     }
 
-    @supports (height: 100dvh) {
-        .nik-work-app {
-            --nik-mobile-safe-bottom: max(14px, calc((100vh - 100dvh) + env(safe-area-inset-bottom) + 14px));
-            --nik-mobile-nav-reserve: calc(118px + var(--nik-mobile-safe-bottom));
-            --nik-mobile-nav-comfy-reserve: calc(178px + var(--nik-mobile-safe-bottom));
-        }
+    html:has(.nik-work-app),
+    body:has(.nik-work-app) {
+        overscroll-behavior-y: none;
     }
 
     .nik-work-app [x-cloak] {
@@ -5214,7 +5212,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         right: 14px;
         bottom: var(--nik-mobile-safe-bottom, max(14px, env(safe-area-inset-bottom)));
         left: 14px;
-        z-index: 50;
+        z-index: 860;
         isolation: isolate;
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -5224,6 +5222,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         border: 1px solid rgba(255, 255, 255, .66);
         border-radius: 30px;
         background: linear-gradient(135deg, rgba(255, 255, 255, .82), rgba(246, 250, 255, .70));
+        background-attachment: scroll;
         padding: 8px;
         box-shadow: 0 24px 64px rgba(31, 52, 86, .20), inset 0 1px 0 rgba(255, 255, 255, .78);
         backdrop-filter: blur(28px) saturate(1.35);
@@ -5240,6 +5239,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         border: 0;
         border-radius: 999px 999px 32px 32px;
         background: linear-gradient(135deg, rgba(255, 255, 255, .82), rgba(246, 250, 255, .70));
+        background-attachment: scroll;
         box-shadow: none;
         pointer-events: none;
         transform: translateX(-50%);

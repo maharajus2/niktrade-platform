@@ -1268,6 +1268,26 @@
     font-weight: 850;
 }
 
+.nik-work-app .nik-work-status[data-workday-status-state="work"] {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.nik-work-app .nik-work-status[data-workday-status-state="lunch"] {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.nik-work-app .nik-work-status[data-workday-status-state="rest"] {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.nik-work-app .nik-work-status[data-workday-status-state="weekend"] {
+    background: #eef2f7;
+    color: #475569;
+}
+
 .nik-work-app .nik-work-progress-wrap {
     margin-top: 26px;
     border-top: 1px solid #e8edf5;
@@ -1282,6 +1302,18 @@
     font-size: 15px;
     font-weight: 850;
     line-height: 1.35;
+}
+
+.nik-work-app .nik-work-day-ended strong,
+.nik-work-app .nik-work-day-ended span {
+    display: block;
+}
+
+.nik-work-app .nik-work-day-ended span {
+    margin-top: 4px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 750;
 }
 
 .nik-work-app .nik-work-day-ended[hidden] {
@@ -5936,6 +5968,26 @@ body:has(.nik-work-app) .nik-work-sidebar {
         font-weight: 760;
     }
 
+    .nik-work-app--employee .nik-work-mobile-status[data-workday-status-state="work"] {
+        background: rgba(209, 250, 229, .78);
+        color: #15803d;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-status[data-workday-status-state="lunch"] {
+        background: rgba(254, 243, 199, .86);
+        color: #b45309;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-status[data-workday-status-state="rest"] {
+        background: rgba(219, 234, 254, .82);
+        color: #1d4ed8;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-status[data-workday-status-state="weekend"] {
+        background: rgba(238, 242, 247, .82);
+        color: #475569;
+    }
+
     .nik-work-app--employee .nik-work-mobile-hours {
         margin-top: 18px;
         border-top: 1px solid rgba(148, 163, 184, .18);
@@ -5950,6 +6002,18 @@ body:has(.nik-work-app) .nik-work-sidebar {
         font-size: 15px;
         font-weight: 850;
         line-height: 1.35;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-day-ended strong,
+    .nik-work-app--employee .nik-work-mobile-day-ended span {
+        display: block;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-day-ended span {
+        margin-top: 4px;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 750;
     }
 
     .nik-work-app--employee .nik-work-mobile-day-ended[hidden] {

@@ -3,6 +3,8 @@
     $documents = $workspace['documents'];
     $requestCounts = $workspace['requestCounts'];
     $attentionItems = $workspace['attentionItems'];
+    $usesLiveWorkdayStatus = $workspace['workday']['isConfiguredSchedule']
+        && in_array($workspace['todayStatus'], ['Рабочий день', 'Выходной', 'Праздничный день'], true);
 @endphp
 
 @component('layouts.work', [
@@ -24,7 +26,19 @@
                 <div class="nik-work-shift-card">
                     <div class="nik-work-label">Ваша смена</div>
                     <div class="nik-work-shift-time">{{ $workspace['shiftLabel'] ?? 'Не назначена' }}</div>
-                    <div class="nik-work-status">{{ $workspace['todayStatus'] }}</div>
+                    <div
+                        class="nik-work-status"
+                        @if ($usesLiveWorkdayStatus)
+                            data-workday-status
+                            data-workday-is-workday="{{ $workspace['workday']['isWorkday'] ? '1' : '0' }}"
+                            data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                            data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                            data-workday-lunch-start="{{ $workspace['workday']['lunchStartsAt'] }}"
+                            data-workday-lunch-end="{{ $workspace['workday']['lunchEndsAt'] }}"
+                        @endif
+                    >
+                        {{ $workspace['todayStatus'] }}
+                    </div>
 
                     <div class="nik-work-progress-wrap" data-workday-progress-group>
                         <div class="nik-work-label">Рабочее время сегодня</div>
@@ -56,7 +70,8 @@
                         </div>
                     </div>
                     <div class="nik-work-day-ended" data-workday-ended-message hidden>
-                        Рабочий день окончен, хорошего отдыха.
+                        <strong>Рабочий день окончен!</strong>
+                        <span>Хорошего отдыха, {{ $employee->name }}.</span>
                     </div>
                 </div>
 
@@ -302,8 +317,38 @@
                     return (now.getHours() * 60) + now.getMinutes() + (now.getSeconds() / 60)
                 }
 
+                const updateWorkdayStatuses = (current) => {
+                    document.querySelectorAll('[data-workday-status]').forEach((element) => {
+                        const isWorkday = element.dataset.workdayIsWorkday === '1'
+                        const start = toMinutes(element.dataset.workdayStart)
+                        const end = toMinutes(element.dataset.workdayEnd)
+                        const lunchStart = toMinutes(element.dataset.workdayLunchStart)
+                        const lunchEnd = toMinutes(element.dataset.workdayLunchEnd)
+                        let label = 'Выходной'
+                        let state = 'weekend'
+
+                        if (isWorkday && start !== null && end !== null && end > start) {
+                            if (lunchStart !== null && lunchEnd !== null && lunchEnd > lunchStart && current >= lunchStart && current < lunchEnd) {
+                                label = 'Обед'
+                                state = 'lunch'
+                            } else if (current >= start && current < end) {
+                                label = 'Рабочий день'
+                                state = 'work'
+                            } else {
+                                label = 'Отдых'
+                                state = 'rest'
+                            }
+                        }
+
+                        element.textContent = label
+                        element.dataset.workdayStatusState = state
+                    })
+                }
+
                 const updateWorkdayProgress = () => {
                     const current = currentLocalMinutes()
+
+                    updateWorkdayStatuses(current)
 
                     document.querySelectorAll('[data-workday-progress]').forEach((element) => {
                         const start = toMinutes(element.dataset.workdayStart)

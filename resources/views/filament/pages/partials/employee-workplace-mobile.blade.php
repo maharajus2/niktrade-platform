@@ -3,6 +3,8 @@
     $documents = $workspace['documents'];
     $requestCounts = $workspace['requestCounts'];
     $attentionItems = $workspace['attentionItems'];
+    $usesLiveWorkdayStatus = $workspace['workday']['isConfiguredSchedule']
+        && in_array($workspace['todayStatus'], ['Рабочий день', 'Выходной', 'Праздничный день'], true);
     $firstName = str($employee->name)->before(' ')->value() ?: $employee->name;
     $initials = collect(explode(' ', trim($employee->name)))
         ->filter()
@@ -83,7 +85,19 @@
                 <div class="nik-work-mobile-shift">
                     <div class="nik-work-mobile-label">Ваша смена</div>
                     <div class="nik-work-mobile-shift-time">{{ $workspace['shiftLabel'] ?? 'Не назначена' }}</div>
-                    <div class="nik-work-mobile-status">{{ $workspace['todayStatus'] }}</div>
+                    <div
+                        class="nik-work-mobile-status"
+                        @if ($usesLiveWorkdayStatus)
+                            data-workday-status
+                            data-workday-is-workday="{{ $workspace['workday']['isWorkday'] ? '1' : '0' }}"
+                            data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                            data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                            data-workday-lunch-start="{{ $workspace['workday']['lunchStartsAt'] }}"
+                            data-workday-lunch-end="{{ $workspace['workday']['lunchEndsAt'] }}"
+                        @endif
+                    >
+                        {{ $workspace['todayStatus'] }}
+                    </div>
 
                     <div class="nik-work-mobile-hours" data-workday-progress-group>
                         <span>Рабочее время сегодня</span>
@@ -111,7 +125,8 @@
                         </div>
                     </div>
                     <div class="nik-work-mobile-day-ended" data-workday-ended-message hidden>
-                        Рабочий день окончен, хорошего отдыха.
+                        <strong>Рабочий день окончен!</strong>
+                        <span>Хорошего отдыха, {{ $employee->name }}.</span>
                     </div>
                 </div>
 

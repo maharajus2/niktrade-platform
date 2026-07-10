@@ -1102,6 +1102,13 @@
         isolation: isolate;
     }
 
+    .nik-calendar.is-period-picker-open .nik-calendar-mobile-strip,
+    .nik-calendar.is-period-picker-open .nik-calendar-mobile-expand,
+    .nik-calendar.is-period-picker-open .nik-calendar-legend {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
     .nik-calendar-filter-button {
         display: inline-flex;
     }

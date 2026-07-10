@@ -1202,16 +1202,17 @@
     }
 
     .nik-calendar-period-months button {
-        min-height: 42px;
+        min-height: 39px;
         font-size: 13px;
     }
 
     .nik-calendar-period-picker label {
-        margin-top: 2px;
+        order: -1;
+        margin: 0 0 2px;
     }
 
     .nik-calendar-period-picker select {
-        min-height: 46px;
+        min-height: 44px;
     }
 
     .nik-calendar-filters {

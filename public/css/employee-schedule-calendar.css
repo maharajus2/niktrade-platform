@@ -285,6 +285,22 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .74);
 }
 
+@media (min-width: 821px) {
+    .nik-calendar.is-period-picker-open .nik-calendar-main-card {
+        z-index: 80;
+        overflow: visible;
+        isolation: isolate;
+    }
+
+    .nik-calendar.is-period-picker-open .nik-calendar-toolbar {
+        z-index: 120;
+    }
+
+    .nik-calendar.is-period-picker-open .nik-calendar-period-picker {
+        z-index: 130;
+    }
+}
+
 .nik-calendar-filters {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr)) auto;

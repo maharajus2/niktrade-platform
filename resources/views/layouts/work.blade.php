@@ -9,13 +9,7 @@
 ])
 
 @php
-    $initials = $user
-        ? collect(explode(' ', trim($user->name)))
-            ->filter()
-            ->take(2)
-            ->map(fn (string $part): string => mb_substr($part, 0, 1))
-            ->join('')
-        : 'N';
+    $initials = $user?->initials ?: 'N';
 @endphp
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])

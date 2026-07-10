@@ -100,10 +100,36 @@ class UserForm
                             ->visible(fn (?User $record): bool => filled($record?->avatar_path))
                             ->columnSpanFull(),
 
-                        TextInput::make('name')
-                            ->label('ФИО')
+                        TextInput::make('last_name')
+                            ->label('Фамилия')
                             ->required()
+                            ->validationMessages([
+                                'required' => 'Укажите фамилию.',
+                            ])
                             ->maxLength(255),
+
+                        TextInput::make('first_name')
+                            ->label('Имя')
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Укажите имя.',
+                            ])
+                            ->maxLength(255),
+
+                        TextInput::make('patronymic')
+                            ->label('Отчество')
+                            ->disabled(fn (callable $get): bool => (bool) $get('no_patronymic'))
+                            ->dehydrated()
+                            ->maxLength(255),
+
+                        Toggle::make('no_patronymic')
+                            ->label('Без отчества')
+                            ->live()
+                            ->afterStateUpdated(function (bool $state, callable $set): void {
+                                if ($state) {
+                                    $set('patronymic', null);
+                                }
+                            }),
 
                         TextInput::make('email')
                             ->label('Email')

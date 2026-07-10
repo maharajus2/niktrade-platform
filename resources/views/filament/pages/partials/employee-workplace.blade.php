@@ -8,7 +8,7 @@
 @endphp
 
 @component('layouts.work', [
-    'title' => 'Добрый день, '.$employee->name.'! 👋',
+    'title' => 'Добрый день, '.$employee->greeting_name.'! 👋',
     'subtitle' => $workspace['dateLabel'],
     'user' => $employee,
     'active' => 'workplace',
@@ -71,7 +71,7 @@
                     </div>
                     <div class="nik-work-day-ended" data-workday-ended-message hidden>
                         <strong>Рабочий день окончен!</strong>
-                        <span>Хорошего отдыха, {{ $employee->name }}.</span>
+                        <span>Хорошего отдыха, {{ $employee->greeting_name }}.</span>
                     </div>
                 </div>
 

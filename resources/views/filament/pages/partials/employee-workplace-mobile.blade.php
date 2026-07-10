@@ -5,12 +5,8 @@
     $attentionItems = $workspace['attentionItems'];
     $usesLiveWorkdayStatus = $workspace['workday']['isConfiguredSchedule']
         && in_array($workspace['todayStatus'], ['Рабочий день', 'Выходной', 'Праздничный день'], true);
-    $firstName = str($employee->name)->before(' ')->value() ?: $employee->name;
-    $initials = collect(explode(' ', trim($employee->name)))
-        ->filter()
-        ->take(2)
-        ->map(fn (string $part): string => mb_substr($part, 0, 1))
-        ->join('');
+    $firstName = $employee->greeting_name;
+    $initials = $employee->initials;
 
     $mobileMenuGroups = [
         'Главное' => [
@@ -126,7 +122,7 @@
                     </div>
                     <div class="nik-work-mobile-day-ended" data-workday-ended-message hidden>
                         <strong>Рабочий день окончен!</strong>
-                        <span>Хорошего отдыха, {{ $employee->name }}.</span>
+                        <span>Хорошего отдыха, {{ $employee->greeting_name }}.</span>
                     </div>
                 </div>
 

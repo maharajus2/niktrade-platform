@@ -18,13 +18,7 @@
         ['label' => 'Справочники', 'icon' => 'book', 'url' => '#'],
     ];
 
-    $initials = $user
-        ? collect(explode(' ', trim($user->name)))
-            ->filter()
-            ->take(2)
-            ->map(fn (string $part): string => mb_substr($part, 0, 1))
-            ->join('')
-        : 'N';
+    $initials = $user?->initials ?: 'N';
 @endphp
 
 <aside class="nik-work-sidebar" aria-label="Рабочая навигация">

@@ -17,7 +17,7 @@
         default => 'green',
     };
     $avatar = fn (User $employee): ?string => $employee->avatar_path ? Storage::disk('public')->url($employee->avatar_path) : null;
-    $initials = fn (User $employee): string => collect(explode(' ', trim($employee->name)))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1))->join('') ?: 'N';
+    $initials = fn (User $employee): string => $employee->initials;
     $queryWithout = fn (array $replace = [], array $remove = []): array => collect(request()->query())
         ->except($remove)
         ->merge($replace)

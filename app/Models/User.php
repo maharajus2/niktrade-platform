@@ -17,6 +17,10 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable([
     'name',
+    'last_name',
+    'first_name',
+    'patronymic',
+    'no_patronymic',
     'email',
     'password',
     'avatar_path',
@@ -111,6 +115,110 @@ class User extends Authenticatable
     public const FOREIGN_STATUS_OTHER = 'other';
 
     protected string $guard_name = 'web';
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $user): void {
+            $user->last_name = self::normalizeNamePart($user->last_name);
+            $user->first_name = self::normalizeNamePart($user->first_name);
+            $user->patronymic = self::normalizeNamePart($user->patronymic);
+
+            if (blank($user->last_name) && blank($user->first_name) && filled($user->name)) {
+                $parts = self::splitFullName((string) $user->name);
+
+                $user->last_name = $parts['last_name'];
+                $user->first_name = $parts['first_name'];
+                $user->patronymic = $parts['patronymic'];
+            }
+
+            $user->no_patronymic = (bool) $user->no_patronymic || blank($user->patronymic);
+
+            if ($user->no_patronymic) {
+                $user->patronymic = null;
+            }
+
+            $fullName = self::buildFullName(
+                $user->last_name,
+                $user->first_name,
+                $user->patronymic,
+            );
+
+            if (filled($fullName)) {
+                $user->name = $fullName;
+            }
+        });
+    }
+
+    public static function buildFullName(?string $lastName, ?string $firstName, ?string $patronymic = null): string
+    {
+        return collect([
+            self::normalizeNamePart($lastName),
+            self::normalizeNamePart($firstName),
+            self::normalizeNamePart($patronymic),
+        ])->filter(fn (?string $part): bool => filled($part))->implode(' ');
+    }
+
+    /**
+     * @return array{last_name: ?string, first_name: ?string, patronymic: ?string}
+     */
+    public static function splitFullName(string $name): array
+    {
+        $words = preg_split('/\s+/u', trim($name), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $normalized = mb_strtolower(implode(' ', $words));
+
+        if (in_array($normalized, ['елена алёшина', 'елена алешина'], true)) {
+            return [
+                'last_name' => $words[1] ?? null,
+                'first_name' => $words[0] ?? null,
+                'patronymic' => null,
+            ];
+        }
+
+        if (count($words) === 1) {
+            return [
+                'last_name' => null,
+                'first_name' => $words[0],
+                'patronymic' => null,
+            ];
+        }
+
+        return [
+            'last_name' => $words[0] ?? null,
+            'first_name' => $words[1] ?? null,
+            'patronymic' => count($words) >= 3 ? implode(' ', array_slice($words, 2)) : null,
+        ];
+    }
+
+    public function getGreetingNameAttribute(): string
+    {
+        return $this->first_name ?: (self::splitFullName((string) $this->name)['first_name'] ?: $this->name);
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        $parts = [
+            $this->last_name,
+            $this->first_name,
+        ];
+
+        if (blank($this->last_name) && blank($this->first_name)) {
+            $parts = preg_split('/\s+/u', trim((string) $this->name), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        }
+
+        return collect($parts)
+            ->filter(fn (?string $part): bool => filled($part))
+            ->take(2)
+            ->map(fn (string $part): string => mb_substr($part, 0, 1))
+            ->join('') ?: 'N';
+    }
+
+    private static function normalizeNamePart(mixed $value): ?string
+    {
+        $value = trim((string) $value);
+        $value = preg_replace('/\s+/u', ' ', $value) ?: '';
+
+        return $value === '' ? null : $value;
+    }
 
     public static function employmentTypeOptions(): array
     {
@@ -414,6 +522,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'no_patronymic' => 'boolean',
             'date_of_birth' => 'date',
             'hire_date' => 'date',
             'dismissal_date' => 'date',

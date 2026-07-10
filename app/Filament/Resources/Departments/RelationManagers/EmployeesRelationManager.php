@@ -11,6 +11,7 @@ use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -37,10 +38,36 @@ class EmployeesRelationManager extends RelationManager
         return $schema
             ->columns(2)
             ->components([
-                TextInput::make('name')
-                    ->label('ФИО')
+                TextInput::make('last_name')
+                    ->label('Фамилия')
                     ->required()
+                    ->validationMessages([
+                        'required' => 'Укажите фамилию.',
+                    ])
                     ->maxLength(255),
+
+                TextInput::make('first_name')
+                    ->label('Имя')
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Укажите имя.',
+                    ])
+                    ->maxLength(255),
+
+                TextInput::make('patronymic')
+                    ->label('Отчество')
+                    ->disabled(fn (callable $get): bool => (bool) $get('no_patronymic'))
+                    ->dehydrated()
+                    ->maxLength(255),
+
+                Toggle::make('no_patronymic')
+                    ->label('Без отчества')
+                    ->live()
+                    ->afterStateUpdated(function (bool $state, callable $set): void {
+                        if ($state) {
+                            $set('patronymic', null);
+                        }
+                    }),
 
                 TextInput::make('email')
                     ->label('Email')

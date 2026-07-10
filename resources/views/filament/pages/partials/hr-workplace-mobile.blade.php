@@ -1,11 +1,7 @@
 @php
     $employee = $workspace['employee'];
-    $firstName = str($employee->name)->before(' ')->value() ?: $employee->name;
-    $initials = collect(explode(' ', trim($employee->name)))
-        ->filter()
-        ->take(2)
-        ->map(fn (string $part): string => mb_substr($part, 0, 1))
-        ->join('');
+    $firstName = $employee->greeting_name;
+    $initials = $employee->initials;
 
     $mobileMenuGroups = [
         'Главное' => [

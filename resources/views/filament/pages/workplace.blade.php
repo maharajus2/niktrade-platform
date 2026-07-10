@@ -207,7 +207,7 @@
     </style>
 
     @component('layouts.work', [
-        'title' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'HR рабочее пространство' : $this->getGreeting().', '.auth()->user()->name.'! 👋',
+        'title' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'HR рабочее пространство' : $this->getGreeting().', '.auth()->user()->greeting_name.'! 👋',
         'subtitle' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'Обзор ключевых показателей и текущих задач' : now()->translatedFormat('l, d F Y'),
         'user' => auth()->user(),
         'active' => 'workplace',

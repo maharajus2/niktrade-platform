@@ -8,11 +8,7 @@
     $manager = $profile['manager'];
     $workday = $profile['workday'];
 
-    $initials = collect(explode(' ', trim($employee->name)))
-        ->filter()
-        ->take(2)
-        ->map(fn (string $part): string => mb_substr($part, 0, 1))
-        ->join('');
+    $initials = $employee->initials;
 
     $value = fn ($state): string => filled($state) ? (string) $state : 'Не указано';
     $dateValue = fn ($date): string => $date ? $date->format('d.m.Y') : 'Не указано';

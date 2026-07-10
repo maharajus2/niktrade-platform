@@ -99,9 +99,10 @@ class Workplace extends Page
         $hour = (int) now()->format('H');
 
         return match (true) {
-            $hour < 12 => 'Доброе утро',
-            $hour < 18 => 'Добрый день',
-            default => 'Добрый вечер',
+            $hour >= 5 && $hour < 12 => 'Доброе утро',
+            $hour >= 12 && $hour < 16 => 'Добрый день',
+            $hour >= 16 && $hour < 23 => 'Добрый вечер',
+            default => 'Доброй ночи',
         };
     }
 
@@ -208,6 +209,7 @@ class Workplace extends Page
 
         return [
             'employee' => auth()->user(),
+            'greeting' => $this->getGreeting(),
             'dateLabel' => now()->translatedFormat('l, d F Y'),
             'kpis' => [
                 ['label' => 'Сотрудники', 'value' => $employeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'blue', 'icon' => 'users'],
@@ -310,11 +312,17 @@ class Workplace extends Page
 
         $expiringDocuments = $employee->expiringDocuments();
 
+        $todayStatus = $this->employeeStatusLabel($todayEntries, $workday);
+        $dayMessage = $this->employeeDayMessage($workday, $todayStatus);
+
         return [
             'employee' => $employee,
+            'greeting' => $this->getGreeting(),
             'dateLabel' => now()->translatedFormat('l, d F Y'),
             'monthLabel' => $monthStart->translatedFormat('F Y'),
-            'todayStatus' => $this->employeeStatusLabel($todayEntries, $workday),
+            'todayStatus' => $todayStatus,
+            'dayMessage' => $dayMessage,
+            'dayMessageMode' => $this->employeeDayMessageMode($workday, $todayStatus),
             'shiftLabel' => $this->shiftLabel($todayEntries, $workday),
             'hoursToday' => $this->plannedHours($todayEntries, $workday),
             'hoursPlanLabel' => $this->hoursLabel($this->plannedHours($todayEntries, $workday)),
@@ -352,7 +360,20 @@ class Workplace extends Page
         }
 
         if ($entries->where('type', EmployeeScheduleEntry::TYPE_DAY_OFF)->isNotEmpty()) {
-            return 'Выходной';
+            return $entries
+                ->where('type', EmployeeScheduleEntry::TYPE_DAY_OFF)
+                ->where('request_reason_type', EmployeeScheduleEntry::REASON_TIME_OFF)
+                ->isNotEmpty()
+                    ? 'Отгул'
+                    : 'Выходной';
+        }
+
+        if ($entries->where('type', EmployeeScheduleEntry::TYPE_TRAINING)->isNotEmpty()) {
+            return 'Обучение';
+        }
+
+        if ($entries->where('type', EmployeeScheduleEntry::TYPE_MEDICAL_EXAM)->isNotEmpty()) {
+            return 'Медосмотр';
         }
 
         if ($workday['isConfiguredSchedule']) {
@@ -364,6 +385,55 @@ class Workplace extends Page
         }
 
         return 'Смен не назначено';
+    }
+
+    private function employeeDayMessage(array $workday, string $todayStatus): string
+    {
+        if ($todayStatus === 'Отпуск') {
+            return 'Хорошего отпуска!';
+        }
+
+        if ($todayStatus === 'Больничный') {
+            return 'Выздоравливайте!';
+        }
+
+        if ($todayStatus === 'Отгул') {
+            return 'Хорошего отдыха!';
+        }
+
+        if ($todayStatus === 'Обучение') {
+            return 'Продуктивного обучения!';
+        }
+
+        if ($todayStatus === 'Медосмотр') {
+            return 'Удачного медосмотра!';
+        }
+
+        if ($workday['isHoliday']) {
+            return 'С праздником!';
+        }
+
+        if ($todayStatus === 'Выходной') {
+            return 'Удачных выходных!';
+        }
+
+        return 'Хорошего отдыха!';
+    }
+
+    private function employeeDayMessageMode(array $workday, string $todayStatus): string
+    {
+        if (in_array($todayStatus, [
+            'Отпуск',
+            'Больничный',
+            'Отгул',
+            'Выходной',
+            'Обучение',
+            'Медосмотр',
+        ], true) || $workday['isHoliday']) {
+            return 'always';
+        }
+
+        return 'after_workday';
     }
 
     private function shiftLabel(Collection $entries, array $workday): ?string

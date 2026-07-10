@@ -56,7 +56,7 @@
 
     <section class="nik-work-mobile-hero">
         <div>
-            <h1>Добрый день, {{ $firstName }}! 👋</h1>
+            <h1 data-work-greeting-title data-work-greeting-name="{{ $firstName }}">{{ $workspace['greeting'] }}, {{ $firstName }}! 👋</h1>
             <p>{{ $workspace['dateLabel'] }}</p>
         </div>
 
@@ -95,7 +95,12 @@
                         {{ $workspace['todayStatus'] }}
                     </div>
 
-                    <div class="nik-work-mobile-hours" data-workday-progress-group>
+                    <div
+                        class="nik-work-mobile-hours"
+                        data-workday-progress-group
+                        data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
+                        @if ($workspace['dayMessageMode'] === 'always') hidden @endif
+                    >
                         <span>Рабочее время сегодня</span>
                         <strong
                             @if ($workspace['workday']['isConfiguredSchedule'])
@@ -120,9 +125,12 @@
                             ></i>
                         </div>
                     </div>
-                    <div class="nik-work-mobile-day-ended" data-workday-ended-message hidden>
-                        <strong>Рабочий день окончен!</strong>
-                        <span>Хорошего отдыха, {{ $employee->greeting_name }}.</span>
+                    <div
+                        class="nik-work-mobile-day-ended"
+                        data-workday-ended-message
+                        @if ($workspace['dayMessageMode'] !== 'always') hidden @endif
+                    >
+                        <span>{{ $workspace['dayMessage'] }}</span>
                     </div>
                 </div>
 

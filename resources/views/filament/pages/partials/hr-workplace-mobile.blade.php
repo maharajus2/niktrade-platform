@@ -45,7 +45,7 @@
 
     <section class="nik-work-hr-mobile-hero">
         <div>
-            <h1>Доброе утро, {{ $firstName }}!</h1>
+            <h1 data-work-greeting-title data-work-greeting-name="{{ $firstName }}">{{ $workspace['greeting'] }}, {{ $firstName }}!</h1>
             <p>Панель HR-специалиста</p>
         </div>
 

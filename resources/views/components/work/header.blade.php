@@ -4,11 +4,20 @@
     'initials' => 'N',
     'user' => null,
     'actions' => null,
+    'greetingName' => null,
 ])
 
 <header class="nik-work-header">
     <div>
-        <h1 class="nik-work-title">{{ $title }}</h1>
+        <h1
+            class="nik-work-title"
+            @if (filled($greetingName))
+                data-work-greeting-title
+                data-work-greeting-name="{{ $greetingName }}"
+            @endif
+        >
+            {{ $title }}
+        </h1>
 
         @if ($subtitle)
             <div class="nik-work-date">{{ $subtitle }}</div>

@@ -8,13 +8,14 @@
 @endphp
 
 @component('layouts.work', [
-    'title' => 'Добрый день, '.$employee->greeting_name.'! 👋',
+    'title' => $workspace['greeting'].', '.$employee->greeting_name.'! 👋',
     'subtitle' => $workspace['dateLabel'],
     'user' => $employee,
     'active' => 'workplace',
     'showSidebar' => true,
     'appClass' => 'nik-work-app--employee',
     'actions' => $contextAction ?? null,
+    'greetingName' => $employee->greeting_name,
 ])
     <main class="nik-work-grid nik-work-desktop">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="clock">
@@ -40,7 +41,12 @@
                         {{ $workspace['todayStatus'] }}
                     </div>
 
-                    <div class="nik-work-progress-wrap" data-workday-progress-group>
+                    <div
+                        class="nik-work-progress-wrap"
+                        data-workday-progress-group
+                        data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
+                        @if ($workspace['dayMessageMode'] === 'always') hidden @endif
+                    >
                         <div class="nik-work-label">Рабочее время сегодня</div>
                         <div
                             style="margin-top: 8px; font-size: 22px; font-weight: 900;"
@@ -69,9 +75,12 @@
                             ></div>
                         </div>
                     </div>
-                    <div class="nik-work-day-ended" data-workday-ended-message hidden>
-                        <strong>Рабочий день окончен!</strong>
-                        <span>Хорошего отдыха, {{ $employee->greeting_name }}.</span>
+                    <div
+                        class="nik-work-day-ended"
+                        data-workday-ended-message
+                        @if ($workspace['dayMessageMode'] !== 'always') hidden @endif
+                    >
+                        <span>{{ $workspace['dayMessage'] }}</span>
                     </div>
                 </div>
 
@@ -360,10 +369,11 @@
                             && current >= end
                         const group = element.closest('[data-workday-progress-group]')
                         const endedMessage = group?.parentElement?.querySelector('[data-workday-ended-message]')
+                        const showMessage = group?.dataset.workdayMessageMode === 'always' || hasEnded
 
                         if (group && endedMessage) {
-                            group.hidden = hasEnded
-                            endedMessage.hidden = !hasEnded
+                            group.hidden = showMessage
+                            endedMessage.hidden = !showMessage
                         }
 
                         if (element.dataset.workdayActive !== '1' || start === null || end === null || end <= start) {

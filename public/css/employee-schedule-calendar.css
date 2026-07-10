@@ -6,7 +6,7 @@
 @media (max-width: 820px) {
     .nik-calendar .nik-calendar-day-popover {
         position: fixed !important;
-        inset: auto 12px calc(92px + env(safe-area-inset-bottom)) 12px !important;
+        inset: auto 12px calc(92px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom))) 12px !important;
         z-index: 920;
         width: auto;
         max-height: min(62vh, 560px);
@@ -1058,7 +1058,7 @@
 @media (max-width: 820px) {
     .nik-calendar {
         margin: 0 -2px;
-        padding-bottom: calc(106px + env(safe-area-inset-bottom));
+        padding-bottom: calc(106px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
     }
 
     .nik-calendar-hero,
@@ -1187,7 +1187,7 @@
         position: fixed;
         top: auto;
         right: max(14px, env(safe-area-inset-right));
-        bottom: calc(106px + env(safe-area-inset-bottom));
+        bottom: calc(106px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
         left: max(14px, env(safe-area-inset-left));
         z-index: 90;
         width: auto;
@@ -1231,7 +1231,7 @@
     }
 
     .nik-calendar-side section:first-child {
-        margin-bottom: calc(150px + env(safe-area-inset-bottom));
+        margin-bottom: calc(150px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
     }
 
     .nik-calendar-mobile-strip {
@@ -1425,7 +1425,7 @@
         width: 100%;
         max-height: 85vh;
         border-radius: 30px 30px 0 0;
-        padding: 12px 16px calc(18px + env(safe-area-inset-bottom));
+        padding: 12px 16px calc(18px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
     }
 
     .nt-schedule-modal__panel::before {

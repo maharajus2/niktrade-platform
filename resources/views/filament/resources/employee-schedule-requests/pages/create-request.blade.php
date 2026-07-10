@@ -45,16 +45,14 @@
             x-data="{ activeSheet: null, openSheet(sheet) { this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); }, closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); } }"
             x-on:keydown.escape.window="closeSheet()"
         >
-            <header class="orders-work-mobile-head nik-schedule-request-mobile-head">
-                <div>
+            <header class="nik-work-mobile-top nik-schedule-request-mobile-head">
+                <a href="{{ Workplace::getUrl() }}" class="nik-work-mobile-brand" aria-label="Никтрейд">
                     <img src="{{ asset('images/logont.png') }}" alt="Никтрейд" />
-                    <h1>Заявка</h1>
-                    <p>Создание</p>
-                </div>
-                <div>
-                    <a href="{{ EmployeeScheduleRequestResource::getUrl('index') }}" aria-label="К заявкам"><x-work.icon name="chevron-left" /></a>
-                    <button type="button" aria-label="Уведомления" class="has-badge"><x-work.icon name="bell" /><span>3</span></button>
-                    <x-work.user-menu class="orders-work-mobile-user" :user="$user" :initials="$initials" button-class="orders-work-mobile-avatar" :show-chevron="false" />
+                </a>
+                <div class="nik-work-mobile-top-actions">
+                    <button type="button" class="nik-work-mobile-icon-button" aria-label="Поиск"><x-work.icon name="search" /></button>
+                    <button type="button" class="nik-work-mobile-icon-button has-badge" aria-label="Уведомления"><x-work.icon name="bell" /><span>3</span></button>
+                    <x-work.user-menu :user="$user" :initials="$initials" button-class="nik-work-mobile-avatar" :show-chevron="false" />
                 </div>
             </header>
 

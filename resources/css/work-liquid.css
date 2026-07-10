@@ -521,6 +521,21 @@
         inset 0 1px 0 rgba(255, 255, 255, .94) !important;
 }
 
+.nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active {
+    border-color: rgba(255, 255, 255, .72) !important;
+    background: linear-gradient(180deg, #5aa4ff 0%, #287df2 56%, #0b70f0 100%) !important;
+    color: #fff !important;
+    box-shadow:
+        0 16px 34px rgba(40, 125, 242, .30),
+        inset 0 1px 0 rgba(255, 255, 255, .46),
+        inset 0 -1px 0 rgba(4, 76, 179, .24) !important;
+}
+
+.nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active span,
+.nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active strong {
+    color: #fff !important;
+}
+
 .nik-work-app :is(
     .nik-work-title,
     .nik-order-detail-title h1,

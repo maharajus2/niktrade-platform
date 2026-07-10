@@ -2754,7 +2754,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app .nik-order-detail {
         gap: 14px;
-        padding: max(14px, env(safe-area-inset-top)) 14px calc(116px + env(safe-area-inset-bottom));
+        padding: max(14px, env(safe-area-inset-top)) 14px var(--nik-mobile-nav-reserve, calc(116px + env(safe-area-inset-bottom)));
     }
 
     .nik-work-app .nik-order-detail-mobile-head {
@@ -3946,7 +3946,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
 @media (max-width: 820px) {
     .nik-work-app--employee-profile .nik-employee-profile-mobile {
-        padding-bottom: calc(178px + env(safe-area-inset-bottom));
+        padding-bottom: var(--nik-mobile-nav-comfy-reserve, calc(178px + env(safe-area-inset-bottom)));
     }
 
     .nik-work-app--employee-profile .nik-employee-mobile-back {
@@ -4804,7 +4804,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app.nik-work-app--orders .nik-orders-workspace {
         gap: 14px;
-        padding: max(14px, env(safe-area-inset-top)) 14px calc(116px + env(safe-area-inset-bottom));
+        padding: max(14px, env(safe-area-inset-top)) 14px var(--nik-mobile-nav-reserve, calc(116px + env(safe-area-inset-bottom)));
     }
 
     .nik-work-app.nik-work-app--orders .orders-work-mobile-head {
@@ -5182,12 +5182,26 @@ body:has(.nik-work-app) .nik-work-sidebar {
 }
 
 @media (max-width: 820px) {
+    .nik-work-app {
+        --nik-mobile-safe-bottom: max(14px, env(safe-area-inset-bottom));
+        --nik-mobile-nav-reserve: calc(118px + var(--nik-mobile-safe-bottom));
+        --nik-mobile-nav-comfy-reserve: calc(178px + var(--nik-mobile-safe-bottom));
+    }
+
+    @supports (height: 100dvh) {
+        .nik-work-app {
+            --nik-mobile-safe-bottom: max(14px, calc((100vh - 100dvh) + env(safe-area-inset-bottom) + 14px));
+            --nik-mobile-nav-reserve: calc(118px + var(--nik-mobile-safe-bottom));
+            --nik-mobile-nav-comfy-reserve: calc(178px + var(--nik-mobile-safe-bottom));
+        }
+    }
+
     .nik-work-app [x-cloak] {
         display: none !important;
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile {
-        padding-bottom: calc(118px + env(safe-area-inset-bottom)) !important;
+        padding-bottom: var(--nik-mobile-nav-comfy-reserve, calc(178px + env(safe-area-inset-bottom))) !important;
     }
 
     .nik-work-app.nik-work-app--employee .nik-work-mobile-dock,
@@ -5198,7 +5212,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app .nik-work-mobile-bottom-bar {
         position: fixed;
         right: 14px;
-        bottom: max(14px, env(safe-area-inset-bottom));
+        bottom: var(--nik-mobile-safe-bottom, max(14px, env(safe-area-inset-bottom)));
         left: 14px;
         z-index: 50;
         isolation: isolate;
@@ -5664,7 +5678,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app--employee .nik-work-mobile {
         display: block;
         min-height: 100vh;
-        padding: max(14px, env(safe-area-inset-top)) 14px calc(178px + env(safe-area-inset-bottom));
+        padding: max(14px, env(safe-area-inset-top)) 14px var(--nik-mobile-nav-comfy-reserve, calc(178px + env(safe-area-inset-bottom)));
         color: #111827;
     }
 
@@ -7148,7 +7162,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app.nik-work-app--hr .nik-work-hr-mobile {
         display: block !important;
         min-height: 100vh;
-        padding: 18px 14px calc(118px + env(safe-area-inset-bottom));
+        padding: 18px 14px var(--nik-mobile-nav-comfy-reserve, calc(178px + env(safe-area-inset-bottom)));
     }
 
     .nik-work-app .nik-work-hr-mobile-top {
@@ -7502,7 +7516,12 @@ body:has(.nik-work-app) .nik-work-sidebar {
     .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active {
         background: linear-gradient(135deg, #1f86ff, #075fe8);
         color: #fff;
-        box-shadow: 0 12px 28px rgba(22, 119, 255, .20);
+        box-shadow: 0 14px 30px rgba(22, 119, 255, .30), inset 0 1px 0 rgba(255, 255, 255, .36);
+    }
+
+    .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active span,
+    .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active strong {
+        color: #fff;
     }
 
     .nik-work-app .nik-work-hr-mobile-calendar-strip span {
@@ -8576,12 +8595,12 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app.nik-work-app--schedule-request .nik-work-main {
         min-width: 0;
-        padding: 0 0 calc(190px + env(safe-area-inset-bottom));
+        padding: 0 0 calc(190px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
     }
 
     .nik-work-app .nik-schedule-request {
         gap: 14px;
-        padding: 14px 8px calc(96px + env(safe-area-inset-bottom));
+        padding: 14px 8px calc(118px + var(--nik-mobile-safe-bottom, env(safe-area-inset-bottom)));
     }
 
     .nik-work-app .nik-schedule-request-mobile-head {

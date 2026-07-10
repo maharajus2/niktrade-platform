@@ -447,9 +447,9 @@ class Workplace extends Page
                     'color' => $workday['isHoliday'] ? '#ef4444' : '#94a3b8',
                 ];
             } else {
-                $items[] = ['time' => $workday['startsAt'], 'title' => 'Начало рабочего дня', 'meta' => 'График 5/2', 'color' => '#22c55e'];
-                $items[] = ['time' => $workday['lunchStartsAt'], 'title' => 'Обеденный перерыв', 'meta' => $workday['lunchStartsAt'].'-'.$workday['lunchEndsAt'], 'color' => '#94a3b8'];
-                $items[] = ['time' => $workday['endsAt'], 'title' => $workday['isShortened'] ? 'Сокращённый день' : 'Конец рабочего дня', 'meta' => $workday['note'] ?: 'Хорошего вечера', 'color' => $workday['isShortened'] ? '#f59e0b' : '#94a3b8'];
+                $items[] = ['time' => $workday['startsAt'], 'title' => 'Начало рабочего дня', 'meta' => 'График 5/2', 'color' => '#94a3b8', 'workdayMarker' => 'start'];
+                $items[] = ['time' => $workday['lunchStartsAt'], 'title' => 'Обеденный перерыв', 'meta' => $workday['lunchStartsAt'].'-'.$workday['lunchEndsAt'], 'color' => '#94a3b8', 'workdayMarker' => 'lunch'];
+                $items[] = ['time' => $workday['endsAt'], 'title' => $workday['isShortened'] ? 'Сокращённый день' : 'Конец рабочего дня', 'meta' => $workday['note'] ?: 'Хорошего вечера', 'color' => '#94a3b8', 'workdayMarker' => 'end'];
             }
         }
 

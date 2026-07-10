@@ -87,7 +87,16 @@
 
                     <div class="nik-work-mobile-hours">
                         <span>Рабочее время сегодня</span>
-                        <strong>{{ number_format($workspace['hoursToday'], 1, ',', ' ') }} ч</strong>
+                        <strong
+                            @if ($workspace['workday']['isConfiguredSchedule'])
+                                data-workday-elapsed
+                                data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
+                                data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                                data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                            @endif
+                        >
+                            {{ $workspace['workday']['isConfiguredSchedule'] ? '0 ч' : number_format($workspace['hoursToday'], 1, ',', ' ').' ч' }}
+                        </strong>
                         <small>из {{ $workspace['hoursPlanLabel'] }}</small>
                         <div class="nik-work-mobile-progress">
                             <i
@@ -105,7 +114,13 @@
 
                 <div class="nik-work-mobile-timeline">
                     @forelse ($workspace['timeline'] as $item)
-                        <div class="nik-work-mobile-timeline-row">
+                        <div
+                            class="nik-work-mobile-timeline-row"
+                            @if (filled($item['workdayMarker'] ?? null))
+                                data-workday-marker="{{ $item['workdayMarker'] }}"
+                                data-workday-marker-time="{{ $item['time'] }}"
+                            @endif
+                        >
                             <time>{{ $item['time'] }}</time>
                             <span style="background: {{ $item['color'] }}"></span>
                             <div>

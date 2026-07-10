@@ -4,7 +4,13 @@
 
 <div class="nik-work-timeline">
     @forelse ($items as $item)
-        <div class="nik-work-timeline-row">
+        <div
+            class="nik-work-timeline-row"
+            @if (filled($item['workdayMarker'] ?? null))
+                data-workday-marker="{{ $item['workdayMarker'] }}"
+                data-workday-marker-time="{{ $item['time'] }}"
+            @endif
+        >
             <div class="nik-work-timeline-time">{{ $item['time'] }}</div>
             <div>
                 <span class="nik-work-timeline-dot" style="background: {{ $item['color'] }}"></span>

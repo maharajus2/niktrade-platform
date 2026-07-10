@@ -28,8 +28,16 @@
 
                     <div class="nik-work-progress-wrap">
                         <div class="nik-work-label">Рабочее время сегодня</div>
-                        <div style="margin-top: 8px; font-size: 22px; font-weight: 900;">
-                            {{ number_format($workspace['hoursToday'], 1, ',', ' ') }} ч
+                        <div
+                            style="margin-top: 8px; font-size: 22px; font-weight: 900;"
+                            @if ($workspace['workday']['isConfiguredSchedule'])
+                                data-workday-elapsed
+                                data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
+                                data-workday-start="{{ $workspace['workday']['startsAt'] }}"
+                                data-workday-end="{{ $workspace['workday']['endsAt'] }}"
+                            @endif
+                        >
+                            {{ $workspace['workday']['isConfiguredSchedule'] ? '0 ч' : number_format($workspace['hoursToday'], 1, ',', ' ').' ч' }}
                         </div>
                         <div style="margin-top: 4px; color: #64748b; font-size: 13px; font-weight: 650;">
                             из {{ $workspace['hoursPlanLabel'] }}
@@ -265,7 +273,35 @@
                     return (Number(match[1]) * 60) + Number(match[2])
                 }
 
+                const formatElapsed = (minutes) => {
+                    const safeMinutes = Math.max(0, Math.round(minutes))
+                    const hours = Math.floor(safeMinutes / 60)
+                    const rest = safeMinutes % 60
+
+                    if (safeMinutes === 0) {
+                        return '0 ч'
+                    }
+
+                    if (hours <= 0) {
+                        return `${rest} мин`
+                    }
+
+                    if (rest === 0) {
+                        return `${hours} ч`
+                    }
+
+                    return `${hours} ч ${rest} мин`
+                }
+
+                const currentLocalMinutes = () => {
+                    const now = new Date()
+
+                    return (now.getHours() * 60) + now.getMinutes() + (now.getSeconds() / 60)
+                }
+
                 const updateWorkdayProgress = () => {
+                    const current = currentLocalMinutes()
+
                     document.querySelectorAll('[data-workday-progress]').forEach((element) => {
                         const start = toMinutes(element.dataset.workdayStart)
                         const end = toMinutes(element.dataset.workdayEnd)
@@ -276,11 +312,47 @@
                             return
                         }
 
-                        const now = new Date()
-                        const current = (now.getHours() * 60) + now.getMinutes() + (now.getSeconds() / 60)
                         const percent = Math.max(0, Math.min(100, ((current - start) / (end - start)) * 100))
 
                         element.style.width = `${Math.round(percent)}%`
+                    })
+
+                    document.querySelectorAll('[data-workday-elapsed]').forEach((element) => {
+                        const start = toMinutes(element.dataset.workdayStart)
+                        const end = toMinutes(element.dataset.workdayEnd)
+
+                        if (element.dataset.workdayActive !== '1' || start === null || end === null || end <= start) {
+                            element.textContent = '0 ч'
+
+                            return
+                        }
+
+                        element.textContent = formatElapsed(Math.max(0, Math.min(end - start, current - start)))
+                    })
+
+                    document.querySelectorAll('[data-workday-marker]').forEach((row) => {
+                        const markerTime = toMinutes(row.dataset.workdayMarkerTime)
+                        const markerRows = Array.from(row.closest('.nik-work-timeline, .nik-work-mobile-timeline')?.querySelectorAll('[data-workday-marker]') || [])
+                        const markerTimes = markerRows
+                            .map((markerRow) => toMinutes(markerRow.dataset.workdayMarkerTime))
+                            .filter((time) => time !== null)
+                            .sort((left, right) => left - right)
+                        const nextTime = markerTimes.find((time) => current < time)
+                        const dot = row.querySelector('.nik-work-timeline-dot, span')
+
+                        if (markerTime === null || !dot) {
+                            return
+                        }
+
+                        const state = markerTime === nextTime ? 'next' : (current >= markerTime ? 'past' : 'future')
+                        const colors = {
+                            next: '#1677ff',
+                            past: '#94a3b8',
+                            future: '#cbd5e1',
+                        }
+
+                        row.dataset.workdayMarkerState = state
+                        dot.style.background = colors[state]
                     })
                 }
 

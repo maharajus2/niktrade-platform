@@ -7514,14 +7514,15 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 
     .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active {
-        background: linear-gradient(135deg, #1f86ff, #075fe8);
-        color: #fff;
-        box-shadow: 0 14px 30px rgba(22, 119, 255, .30), inset 0 1px 0 rgba(255, 255, 255, .36);
+        border-color: rgba(255, 255, 255, .72) !important;
+        background: linear-gradient(180deg, #5aa4ff 0%, #287df2 56%, #0b70f0 100%) !important;
+        color: #fff !important;
+        box-shadow: 0 14px 30px rgba(22, 119, 255, .30), inset 0 1px 0 rgba(255, 255, 255, .36) !important;
     }
 
     .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active span,
     .nik-work-app .nik-work-hr-mobile-calendar-strip a.is-active strong {
-        color: #fff;
+        color: #fff !important;
     }
 
     .nik-work-app .nik-work-hr-mobile-calendar-strip span {

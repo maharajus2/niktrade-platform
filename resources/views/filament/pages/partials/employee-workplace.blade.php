@@ -359,7 +359,7 @@
                 updateWorkdayProgress()
                 window.addEventListener('focus', updateWorkdayProgress)
                 window.addEventListener('pageshow', updateWorkdayProgress)
-                setInterval(updateWorkdayProgress, 60000)
+                setInterval(updateWorkdayProgress, 1000)
             })()
         </script>
     @endonce

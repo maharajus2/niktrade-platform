@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'visibility',
     'source',
     'approved_request_id',
+    'period_group_id',
     'created_by',
     'updated_by',
     'archived_at',

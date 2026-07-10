@@ -188,7 +188,124 @@
             })
         }
 
+        const eventDateKey = (event) => {
+            const props = event.extendedProps || {}
+
+            return props.date || (event.start ? formatDate(event.start) : selectedDate)
+        }
+
+        const addDaysToKey = (dateKey, days) => {
+            const date = new Date(`${dateKey}T12:00:00`)
+            date.setDate(date.getDate() + days)
+
+            return formatDate(date)
+        }
+
+        const agendaGroupLabel = (dateKey, todayKey) => {
+            const date = new Date(`${dateKey}T12:00:00`)
+            const offset = Math.round((date - new Date(`${todayKey}T12:00:00`)) / 86400000)
+            const formatted = date.toLocaleDateString('ru-RU', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+            })
+
+            if (offset === 1) {
+                return { title: `Завтра, ${formatted}`, badge: 'Будущие события' }
+            }
+
+            if (offset === 2) {
+                return { title: `Послезавтра, ${formatted}`, badge: 'Будущие события' }
+            }
+
+            if (offset > 2) {
+                return { title: formatted, badge: 'Будущие события' }
+            }
+
+            return { title: formatted, badge: '' }
+        }
+
+        const renderAgendaCard = (event) => {
+            const time = event.allDay ? 'Весь день' : `${event.props.starts_at || ''}${event.props.ends_at ? `–${event.props.ends_at}` : ''}`
+            const type = event.props.type || 'custom'
+            const typeLabel = event.props.type_label || typeLabels[type] || 'Событие'
+            const visibility = event.props.visibility_label || ''
+
+            return `
+                <article class="nik-calendar-agenda-card is-${type}">
+                    <time>${escapeHtml(time)}</time>
+                    <div>
+                        <strong>${escapeHtml(event.props.display_title || event.title)}</strong>
+                        <span>${escapeHtml(typeLabel)}${event.props.source_label ? ` · ${escapeHtml(event.props.source_label)}` : ''}</span>
+                    </div>
+                    ${visibility ? `<em>${escapeHtml(visibility)}</em>` : ''}
+                </article>
+            `
+        }
+
         const renderAgenda = (events) => {
+            const container = agendaContainer()
+
+            if (! container) {
+                return
+            }
+
+            const selectedKey = selectedDate || formatDate(new Date())
+            const todayKey = formatDate(new Date())
+            const visibleDateKeys = isMobile() && selectedKey === todayKey
+                ? [0, 1, 2, 3].map((days) => addDaysToKey(todayKey, days))
+                : [selectedKey]
+            const visibleEvents = events
+                .map((event) => ({
+                    title: event.title,
+                    start: event.start,
+                    allDay: event.allDay,
+                    props: event.extendedProps || {},
+                    dateKey: eventDateKey(event),
+                }))
+                .filter((event) => visibleDateKeys.includes(event.dateKey))
+                .sort((a, b) => String(a.dateKey).localeCompare(String(b.dateKey))
+                    || String(a.props.starts_at || '').localeCompare(String(b.props.starts_at || '')))
+
+            if (visibleEvents.length === 0) {
+                container.innerHTML = `<div class="nik-calendar-empty">${
+                    isMobile() && selectedKey === todayKey
+                        ? 'На сегодня и ближайшие 3 дня событий нет.'
+                        : 'На выбранный день нет событий.'
+                }</div>`
+
+                return
+            }
+
+            if (! isMobile()) {
+                container.innerHTML = visibleEvents.map(renderAgendaCard).join('')
+
+                return
+            }
+
+            const groups = visibleEvents.reduce((carry, event) => {
+                carry[event.dateKey] = carry[event.dateKey] || []
+                carry[event.dateKey].push(event)
+
+                return carry
+            }, {})
+
+            container.innerHTML = visibleDateKeys
+                .filter((dateKey) => groups[dateKey]?.length > 0)
+                .map((dateKey) => {
+                    const label = agendaGroupLabel(dateKey, todayKey)
+
+                    return `
+                        <section class="nik-calendar-agenda-group">
+                            <h3>${escapeHtml(label.title)}${label.badge ? `<span>${escapeHtml(label.badge)}</span>` : ''}</h3>
+                            ${groups[dateKey].map(renderAgendaCard).join('')}
+                        </section>
+                    `
+                })
+                .join('')
+        }
+
+        const renderAgendaOld = (events) => {
             const container = agendaContainer()
 
             if (! container) {
@@ -461,7 +578,7 @@
                         </div>
 
                         <div class="nt-schedule-modal__hint" data-nt-edit-range-hint hidden>
-                            Сейчас редактируется выбранный день. Редактирование всего периода будет добавлено позже.
+                            Сейчас редактируется выбранный день. Для диапазона можно удалить выбранный день или весь период.
                         </div>
 
                         <div class="nt-schedule-modal__hint" data-nt-request-hint hidden>
@@ -507,7 +624,10 @@
                         <div class="nt-schedule-modal__error" data-nt-schedule-error></div>
 
                         <div class="nt-schedule-modal__actions">
-                            <button type="button" class="nt-schedule-button nt-schedule-button--danger" data-nt-schedule-delete>Удалить</button>
+                            <div class="nt-schedule-modal__delete-group">
+                                <button type="button" class="nt-schedule-button nt-schedule-button--danger" data-nt-schedule-delete-day>Удалить день</button>
+                                <button type="button" class="nt-schedule-button nt-schedule-button--danger is-soft" data-nt-schedule-delete-period>Удалить период</button>
+                            </div>
                             <div class="nt-schedule-modal__action-group">
                                 <button type="button" class="nt-schedule-button nt-schedule-button--secondary" data-nt-schedule-close>Отмена</button>
                                 <button type="submit" class="nt-schedule-button nt-schedule-button--primary">Сохранить</button>
@@ -639,7 +759,8 @@
             const modal = ensureModal()
             const form = modal.querySelector('form')
             const error = modal.querySelector('[data-nt-schedule-error]')
-            const deleteButton = modal.querySelector('[data-nt-schedule-delete]')
+            const deleteDayButton = modal.querySelector('[data-nt-schedule-delete-day]')
+            const deletePeriodButton = modal.querySelector('[data-nt-schedule-delete-period]')
             const editRangeHint = modal.querySelector('[data-nt-edit-range-hint]')
 
             form.reset()
@@ -657,7 +778,8 @@
             modal.querySelector('[name="visibility"]').value = data.visibility || typeDefaults[data.type || 'custom']?.visibility || 'private'
             modal.querySelector('[name="source"]').value = data.source || 'manual'
             modal.querySelector('[name="comment"]').value = data.comment || ''
-            deleteButton.hidden = mode === 'create' || ! data.editable
+            deleteDayButton.hidden = mode === 'create' || ! data.editable
+            deletePeriodButton.hidden = mode === 'create' || ! data.editable || ! data.period_delete_available
             editRangeHint.hidden = mode !== 'edit'
             updateModalVisibility(modal, false)
 
@@ -680,13 +802,13 @@
                     })
             }
 
-            deleteButton.onclick = () => {
-                if (! confirm('Удалить событие?')) {
+            const deleteEntry = (scope, message) => {
+                if (! confirm(message)) {
                     return
                 }
 
                 error.textContent = ''
-                wire.deleteCalendarEntry(Number(modal.querySelector('[name="id"]').value))
+                wire.deleteCalendarEntry(Number(modal.querySelector('[name="id"]').value), scope)
                     .then(() => {
                         closeModal(modal)
                         refetch()
@@ -695,6 +817,9 @@
                         error.textContent = errorMessage(requestError)
                     })
             }
+
+            deleteDayButton.onclick = () => deleteEntry('single', 'Удалить событие только за этот день?')
+            deletePeriodButton.onclick = () => deleteEntry('period', 'Удалить весь период этого события?')
 
             modal.classList.remove('is-hidden')
             modal.querySelector('[name="type"]').focus()
@@ -727,6 +852,7 @@
                 visibility: props.visibility || 'hr',
                 source: props.source || 'manual',
                 comment: props.comment || '',
+                period_delete_available: Boolean(props.period_delete_available),
                 editable: props.editable,
             }
         }
@@ -914,6 +1040,7 @@
                                 window.setTimeout(() => {
                                     if (calendar) {
                                         renderAgenda(calendar.getEvents())
+                                        renderMobileStrip(calendar)
                                     }
                                 }, 0)
                             })
@@ -1002,7 +1129,10 @@
                     eventAllow: (dropInfo) => {
                         return canUpdate && (canEditPast || ! isPastDate(dropInfo.start))
                     },
-                    eventsSet: (events) => renderAgenda(events),
+                    eventsSet: (events) => {
+                        renderAgenda(events)
+                        renderMobileStrip(calendar)
+                    },
                     datesSet: () => {
                         if (calendar) {
                             if (calendar.view.type === 'dayGridMonth') {
@@ -1395,6 +1525,22 @@
                         editable: true,
                     })
                 }
+
+                const refreshCalendarFromPageState = () => {
+                    if (document.visibilityState === 'hidden') {
+                        return
+                    }
+
+                    refetch()
+                    window.setTimeout(() => {
+                        renderAgenda(calendar.getEvents())
+                        renderMobileStrip(calendar)
+                    }, 250)
+                }
+
+                window.addEventListener('pageshow', refreshCalendarFromPageState)
+                window.addEventListener('focus', refreshCalendarFromPageState)
+                document.addEventListener('visibilitychange', refreshCalendarFromPageState)
             })
             .catch((error) => {
                 element.innerHTML = `<div class="rounded-lg border border-danger-200 bg-danger-50 p-4 text-sm text-danger-700">${error.message}</div>`

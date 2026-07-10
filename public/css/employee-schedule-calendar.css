@@ -585,6 +585,19 @@
     text-transform: capitalize;
 }
 
+.nik-calendar-agenda-group h3 span {
+    display: inline-flex;
+    margin-left: 8px;
+    border-radius: 999px;
+    background: rgba(232, 241, 255, .82);
+    padding: 3px 7px;
+    color: #0b70f0;
+    font-size: 10px;
+    font-weight: 820;
+    text-transform: none;
+    vertical-align: middle;
+}
+
 .nik-calendar-agenda-card {
     display: grid;
     grid-template-columns: 62px minmax(0, 1fr);
@@ -1056,6 +1069,18 @@
     color: #b91c1c;
 }
 
+.nt-schedule-button--danger.is-soft {
+    border-color: rgba(251, 191, 36, .72);
+    background: rgba(255, 251, 235, .82);
+    color: #b45309;
+}
+
+.nt-schedule-modal__delete-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 @media (max-width: 1100px) {
     .nik-calendar-grid {
         grid-template-columns: minmax(0, 1fr);
@@ -1460,7 +1485,8 @@
     }
 
     .nt-schedule-modal__actions,
-    .nt-schedule-modal__action-group {
+    .nt-schedule-modal__action-group,
+    .nt-schedule-modal__delete-group {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
     }

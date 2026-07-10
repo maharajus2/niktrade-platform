@@ -27,8 +27,31 @@ const setupWorkSidebar = () => {
     });
 };
 
+const lockWorkMobileViewportScale = () => {
+    if (!document.querySelector('.nik-work-app')) {
+        return;
+    }
+
+    let viewport = document.querySelector('meta[name="viewport"]');
+
+    if (!viewport) {
+        viewport = document.createElement('meta');
+        viewport.name = 'viewport';
+        document.head.appendChild(viewport);
+    }
+
+    viewport.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover',
+    );
+};
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupWorkSidebar);
+    document.addEventListener('DOMContentLoaded', () => {
+        setupWorkSidebar();
+        lockWorkMobileViewportScale();
+    });
 } else {
     setupWorkSidebar();
+    lockWorkMobileViewportScale();
 }

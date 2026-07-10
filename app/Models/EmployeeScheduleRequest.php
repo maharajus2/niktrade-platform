@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'employee_id',
@@ -352,6 +353,7 @@ class EmployeeScheduleRequest extends Model
         $entryType = $this->calendarEntryType();
         $start = Carbon::parse($this->start_date)->startOfDay();
         $end = Carbon::parse($this->end_date)->startOfDay();
+        $periodGroupId = $start->ne($end) ? (string) Str::uuid() : null;
 
         for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $data = [
@@ -368,6 +370,7 @@ class EmployeeScheduleRequest extends Model
                 'visibility' => EmployeeScheduleEntry::VISIBILITY_HR,
                 'source' => EmployeeScheduleEntry::SOURCE_REQUEST,
                 'approved_request_id' => $this->getKey(),
+                'period_group_id' => $periodGroupId,
             ];
 
             $exists = EmployeeScheduleEntry::query()

@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -42,8 +43,8 @@ class EmployeeScheduleCalendar extends Component
         $endDate = Carbon::parse($end)->subDay()->toDateString();
 
         return $employee->scheduleEntries()
+            ->active()
             ->whereBetween('date', [$startDate, $endDate])
-            ->whereNull('archived_at')
             ->where(fn ($query) => $this->scopeVisibleToCurrentUser($query, $employee))
             ->orderBy('date')
             ->orderBy('starts_at')
@@ -65,6 +66,7 @@ class EmployeeScheduleCalendar extends Component
 
         $range = $this->normalizeRangePayload($payload);
         $this->ensureTypeCanBeCreated($employee, $range['data']['type']);
+        $periodGroupId = $range['start_date'] !== $range['end_date'] ? (string) Str::uuid() : null;
         $created = 0;
         $skipped = 0;
 
@@ -82,6 +84,7 @@ class EmployeeScheduleCalendar extends Component
             }
 
             $employee->scheduleEntries()->create($data + [
+                'period_group_id' => $periodGroupId,
                 'created_by' => auth()->id(),
                 'updated_by' => auth()->id(),
             ]);
@@ -151,23 +154,41 @@ class EmployeeScheduleCalendar extends Component
         ]);
     }
 
-    public function deleteCalendarEntry(int $entryId): void
+    /**
+     * @return array{deleted: int}
+     */
+    public function deleteCalendarEntry(int $entryId, string $scope = 'single'): array
     {
         $employee = $this->employee();
         $entry = $this->findEmployeeEntry($entryId);
 
         $this->authorizeScheduleUpdate($employee);
-        $this->ensureEditableDate($entry->date->toDateString());
 
-        $entry->update([
-            'archived_at' => now(),
-            'updated_by' => auth()->id(),
-        ]);
+        $entries = $scope === 'period'
+            ? $this->periodEntriesFor($entry)
+            : collect([$entry]);
+
+        $entries = $entries
+            ->filter(fn (EmployeeScheduleEntry $candidate): bool => $candidate->archived_at === null)
+            ->values();
+
+        $entries->each(fn (EmployeeScheduleEntry $candidate) => $this->ensureEditableDate($candidate->date->toDateString()));
+
+        EmployeeScheduleEntry::query()
+            ->whereKey($entries->pluck('id')->all())
+            ->update([
+                'archived_at' => now(),
+                'updated_by' => auth()->id(),
+            ]);
 
         Notification::make()
             ->title('Событие перенесено в архив.')
             ->success()
             ->send();
+
+        return [
+            'deleted' => $entries->count(),
+        ];
     }
 
     /**
@@ -269,6 +290,9 @@ class EmployeeScheduleCalendar extends Component
                 'visibility_label' => EmployeeScheduleEntry::visibilityOptions()[$entry->visibility ?? EmployeeScheduleEntry::VISIBILITY_HR] ?? 'HR',
                 'source' => $entry->source ?? EmployeeScheduleEntry::SOURCE_MANUAL,
                 'source_label' => EmployeeScheduleEntry::sourceOptions()[$entry->source ?? EmployeeScheduleEntry::SOURCE_MANUAL] ?? 'Вручную',
+                'approved_request_id' => $entry->approved_request_id,
+                'period_group_id' => $entry->period_group_id,
+                'period_delete_available' => $this->periodDeleteAvailable($entry),
                 'editable' => $isEditable,
                 'is_work_time' => $entry->isWorkTime(),
             ],
@@ -565,6 +589,84 @@ class EmployeeScheduleCalendar extends Component
     private function productionCalendar(): array
     {
         return ProductionCalendar::payload();
+    }
+
+    private function periodDeleteAvailable(EmployeeScheduleEntry $entry): bool
+    {
+        return $this->periodEntriesFor($entry)->count() > 1;
+    }
+
+    /**
+     * @return Collection<int, EmployeeScheduleEntry>
+     */
+    private function periodEntriesFor(EmployeeScheduleEntry $entry): Collection
+    {
+        if (filled($entry->period_group_id)) {
+            return EmployeeScheduleEntry::query()
+                ->active()
+                ->where('employee_id', $entry->employee_id)
+                ->where('period_group_id', $entry->period_group_id)
+                ->orderBy('date')
+                ->get();
+        }
+
+        if (filled($entry->approved_request_id)) {
+            return EmployeeScheduleEntry::query()
+                ->active()
+                ->where('employee_id', $entry->employee_id)
+                ->where('approved_request_id', $entry->approved_request_id)
+                ->where('type', $entry->type)
+                ->orderBy('date')
+                ->get();
+        }
+
+        return $this->contiguousMatchingPeriodEntries($entry);
+    }
+
+    /**
+     * @return Collection<int, EmployeeScheduleEntry>
+     */
+    private function contiguousMatchingPeriodEntries(EmployeeScheduleEntry $entry): Collection
+    {
+        $selectedDate = $entry->date->copy()->startOfDay();
+        $entries = $this->matchingPeriodSignatureQuery($entry)
+            ->whereBetween('date', [
+                $selectedDate->copy()->subDays(60)->toDateString(),
+                $selectedDate->copy()->addDays(60)->toDateString(),
+            ])
+            ->orderBy('date')
+            ->get()
+            ->keyBy(fn (EmployeeScheduleEntry $candidate): string => $candidate->date->toDateString());
+
+        $period = collect();
+
+        for ($date = $selectedDate->copy(); $entries->has($date->toDateString()); $date->subDay()) {
+            $period->prepend($entries->get($date->toDateString()));
+        }
+
+        for ($date = $selectedDate->copy()->addDay(); $entries->has($date->toDateString()); $date->addDay()) {
+            $period->push($entries->get($date->toDateString()));
+        }
+
+        return $period->values();
+    }
+
+    private function matchingPeriodSignatureQuery(EmployeeScheduleEntry $entry)
+    {
+        return EmployeeScheduleEntry::query()
+            ->active()
+            ->where('employee_id', $entry->employee_id)
+            ->where('type', $entry->type)
+            ->where('title', $entry->title)
+            ->where('is_all_day', $entry->is_all_day)
+            ->where('starts_at', $entry->starts_at)
+            ->where('ends_at', $entry->ends_at)
+            ->where('request_reason_type', $entry->request_reason_type)
+            ->where('vacation_without_pay', $entry->vacation_without_pay)
+            ->where('comment', $entry->comment)
+            ->where('visibility', $entry->visibility)
+            ->where('source', $entry->source)
+            ->where('approved_request_id', $entry->approved_request_id);
     }
 
     /**

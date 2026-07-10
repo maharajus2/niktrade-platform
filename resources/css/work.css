@@ -737,6 +737,11 @@
         grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
     }
 
+    .nik-work-app .nik-directory-head .nik-directory-filter-button,
+    .nik-work-app .nik-directory-head .nik-directory-primary {
+        justify-self: start;
+    }
+
     .nik-work-app .nik-directory-kpis {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }

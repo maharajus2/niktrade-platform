@@ -85,7 +85,7 @@
                     <div class="nik-work-mobile-shift-time">{{ $workspace['shiftLabel'] ?? 'Не назначена' }}</div>
                     <div class="nik-work-mobile-status">{{ $workspace['todayStatus'] }}</div>
 
-                    <div class="nik-work-mobile-hours">
+                    <div class="nik-work-mobile-hours" data-workday-progress-group>
                         <span>Рабочее время сегодня</span>
                         <strong
                             @if ($workspace['workday']['isConfiguredSchedule'])
@@ -109,6 +109,9 @@
                                 @endif
                             ></i>
                         </div>
+                    </div>
+                    <div class="nik-work-mobile-day-ended" data-workday-ended-message hidden>
+                        Рабочий день окончен, хорошего отдыха.
                     </div>
                 </div>
 

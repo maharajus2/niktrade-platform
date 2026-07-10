@@ -1274,6 +1274,20 @@
     padding-top: 20px;
 }
 
+.nik-work-app .nik-work-day-ended {
+    margin-top: 26px;
+    border-top: 1px solid #e8edf5;
+    padding-top: 20px;
+    color: #15803d;
+    font-size: 15px;
+    font-weight: 850;
+    line-height: 1.35;
+}
+
+.nik-work-app .nik-work-day-ended[hidden] {
+    display: none;
+}
+
 .nik-work-app .nik-work-progress {
     height: 8px;
     overflow: hidden;
@@ -5926,6 +5940,20 @@ body:has(.nik-work-app) .nik-work-sidebar {
         margin-top: 18px;
         border-top: 1px solid rgba(148, 163, 184, .18);
         padding-top: 16px;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-day-ended {
+        margin-top: 18px;
+        border-top: 1px solid rgba(148, 163, 184, .18);
+        padding-top: 16px;
+        color: #15803d;
+        font-size: 15px;
+        font-weight: 850;
+        line-height: 1.35;
+    }
+
+    .nik-work-app--employee .nik-work-mobile-day-ended[hidden] {
+        display: none;
     }
 
     .nik-work-app--employee .nik-work-mobile-hours span,

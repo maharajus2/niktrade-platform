@@ -26,7 +26,7 @@
                     <div class="nik-work-shift-time">{{ $workspace['shiftLabel'] ?? 'Не назначена' }}</div>
                     <div class="nik-work-status">{{ $workspace['todayStatus'] }}</div>
 
-                    <div class="nik-work-progress-wrap">
+                    <div class="nik-work-progress-wrap" data-workday-progress-group>
                         <div class="nik-work-label">Рабочее время сегодня</div>
                         <div
                             style="margin-top: 8px; font-size: 22px; font-weight: 900;"
@@ -54,6 +54,9 @@
                                 @endif
                             ></div>
                         </div>
+                    </div>
+                    <div class="nik-work-day-ended" data-workday-ended-message hidden>
+                        Рабочий день окончен, хорошего отдыха.
                     </div>
                 </div>
 
@@ -305,6 +308,18 @@
                     document.querySelectorAll('[data-workday-progress]').forEach((element) => {
                         const start = toMinutes(element.dataset.workdayStart)
                         const end = toMinutes(element.dataset.workdayEnd)
+                        const hasEnded = element.dataset.workdayActive === '1'
+                            && start !== null
+                            && end !== null
+                            && end > start
+                            && current >= end
+                        const group = element.closest('[data-workday-progress-group]')
+                        const endedMessage = group?.parentElement?.querySelector('[data-workday-ended-message]')
+
+                        if (group && endedMessage) {
+                            group.hidden = hasEnded
+                            endedMessage.hidden = !hasEnded
+                        }
 
                         if (element.dataset.workdayActive !== '1' || start === null || end === null || end <= start) {
                             element.style.width = '0%'

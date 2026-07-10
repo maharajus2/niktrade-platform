@@ -426,6 +426,17 @@
     font-weight: 700;
 }
 
+.nik-work-app .nik-department-card,
+.nik-work-app .nik-department-card-main > div,
+.nik-work-app .nik-department-card dl > div {
+    min-width: 0;
+}
+
+.nik-work-app .nik-department-card strong,
+.nik-work-app .nik-department-card dd {
+    overflow-wrap: anywhere;
+}
+
 .nik-work-app .nik-directory-pill {
     display: inline-flex;
     padding: 5px 9px;
@@ -721,7 +732,7 @@
     display: none;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1280px) {
     .nik-work-app .nik-directory-head {
         grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
     }
@@ -735,6 +746,11 @@
     }
 
     .nik-work-app .nik-directory-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nik-work-app .nik-employee-card-grid,
+    .nik-work-app .nik-department-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

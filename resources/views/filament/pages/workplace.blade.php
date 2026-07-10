@@ -215,6 +215,7 @@
         'appClass' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'nik-work-app--hr' : '',
         'actions' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
         'greetingName' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? null : auth()->user()->greeting_name,
+        'renderedLocalDate' => $hrWorkspace['localDate'] ?? null,
     ])
     <div class="nt-workplace nt-workplace--hr nik-work-hr-desktop">
         @if ($this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR)

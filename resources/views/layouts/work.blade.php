@@ -7,6 +7,7 @@
     'appClass' => '',
     'actions' => null,
     'greetingName' => null,
+    'renderedLocalDate' => null,
 ])
 
 @php
@@ -31,7 +32,12 @@
     </style>
 @endonce
 
-<div class="nik-work-app {{ $appClass }}">
+<div
+    class="nik-work-app {{ $appClass }}"
+    @if (filled($renderedLocalDate))
+        data-work-rendered-local-date="{{ $renderedLocalDate }}"
+    @endif
+>
     <div class="nik-work-shell">
         <div class="nik-work-layout {{ $showSidebar ? '' : 'nik-work-layout--no-sidebar' }}">
             @if ($showSidebar)
@@ -57,6 +63,51 @@
 @once
     <script>
         (() => {
+            const localDateString = () => {
+                const date = new Date()
+                const year = date.getFullYear()
+                const month = String(date.getMonth() + 1).padStart(2, '0')
+                const day = String(date.getDate()).padStart(2, '0')
+
+                return `${year}-${month}-${day}`
+            }
+
+            const cookieValue = (name) => document.cookie
+                .split('; ')
+                .find((row) => row.startsWith(`${name}=`))
+                ?.split('=')
+                .slice(1)
+                .join('=') || null
+
+            const setCookie = (name, value) => {
+                document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=604800; SameSite=Lax`
+            }
+
+            const syncWorkLocalDate = () => {
+                const localDate = localDateString()
+                const renderedDate = document.querySelector('[data-work-rendered-local-date]')?.dataset.workRenderedLocalDate
+                const currentCookieDate = cookieValue('niktrade_local_date')
+
+                if (currentCookieDate !== localDate) {
+                    setCookie('niktrade_local_date', localDate)
+
+                    if (renderedDate && renderedDate !== localDate) {
+                        window.location.reload()
+                    }
+
+                    return
+                }
+
+                if (renderedDate && renderedDate !== localDate) {
+                    const reloadKey = `niktrade-local-date-reloaded:${localDate}`
+
+                    if (window.sessionStorage.getItem(reloadKey) !== '1') {
+                        window.sessionStorage.setItem(reloadKey, '1')
+                        window.location.reload()
+                    }
+                }
+            }
+
             const greetingForHour = (hour) => {
                 if (hour >= 5 && hour < 12) {
                     return 'Доброе утро'
@@ -88,10 +139,20 @@
                 })
             }
 
+            syncWorkLocalDate()
             updateWorkGreetings()
-            window.addEventListener('focus', updateWorkGreetings)
-            window.addEventListener('pageshow', updateWorkGreetings)
-            setInterval(updateWorkGreetings, 60000)
+            window.addEventListener('focus', () => {
+                syncWorkLocalDate()
+                updateWorkGreetings()
+            })
+            window.addEventListener('pageshow', () => {
+                syncWorkLocalDate()
+                updateWorkGreetings()
+            })
+            setInterval(() => {
+                syncWorkLocalDate()
+                updateWorkGreetings()
+            }, 60000)
         })()
     </script>
 @endonce

@@ -16,6 +16,7 @@
     'appClass' => 'nik-work-app--employee',
     'actions' => $contextAction ?? null,
     'greetingName' => $employee->greeting_name,
+    'renderedLocalDate' => $workspace['localDate'],
 ])
     <main class="nik-work-grid nik-work-desktop">
         <x-work.card class="nik-work-span-5" title="Мой день" icon="clock">

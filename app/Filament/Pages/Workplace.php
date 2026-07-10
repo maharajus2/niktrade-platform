@@ -106,6 +106,21 @@ class Workplace extends Page
         };
     }
 
+    private function currentLocalDate(): Carbon
+    {
+        $date = request()->cookie('niktrade_local_date');
+
+        if (is_string($date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) === 1) {
+            try {
+                return Carbon::parse($date)->startOfDay();
+            } catch (\Throwable) {
+                // Fall back to the server date if the browser cookie is malformed.
+            }
+        }
+
+        return today();
+    }
+
     protected function getViewData(): array
     {
         return [
@@ -120,7 +135,7 @@ class Workplace extends Page
 
     private function hrWorkspaceData(): array
     {
-        $today = today();
+        $today = $this->currentLocalDate();
         $weekEnd = $today->copy()->addDays(7);
 
         $activeRequestStatuses = [
@@ -197,7 +212,7 @@ class Workplace extends Page
             ->get()
             ->map(fn (User $employee): array => [
                 'employee' => $employee->name,
-                'date' => $this->nextBirthday($employee),
+                'date' => $this->nextBirthday($employee, $today),
                 'age' => $employee->age_label,
                 'url' => UserResource::getUrl('view', ['record' => $employee]),
             ])
@@ -210,7 +225,9 @@ class Workplace extends Page
         return [
             'employee' => auth()->user(),
             'greeting' => $this->getGreeting(),
-            'dateLabel' => now()->translatedFormat('l, d F Y'),
+            'dateLabel' => $today->translatedFormat('l, d F Y'),
+            'localDate' => $today->toDateString(),
+            'today' => $today,
             'kpis' => [
                 ['label' => 'Сотрудники', 'value' => $employeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'blue', 'icon' => 'users'],
                 ['label' => 'Новые', 'value' => $newEmployeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'cyan', 'icon' => 'plus'],
@@ -267,11 +284,12 @@ class Workplace extends Page
             }, collect());
     }
 
-    private function nextBirthday(User $employee): Carbon
+    private function nextBirthday(User $employee, ?Carbon $today = null): Carbon
     {
-        $birthday = Carbon::parse($employee->date_of_birth)->year((int) today()->format('Y'));
+        $today ??= $this->currentLocalDate();
+        $birthday = Carbon::parse($employee->date_of_birth)->year((int) $today->format('Y'));
 
-        return $birthday->isBefore(today()) ? $birthday->addYear() : $birthday;
+        return $birthday->isBefore($today) ? $birthday->addYear() : $birthday;
     }
 
     private function employeeWorkspaceData(): array
@@ -283,7 +301,7 @@ class Workplace extends Page
             return [];
         }
 
-        $today = today();
+        $today = $this->currentLocalDate();
         $monthStart = $today->copy()->startOfMonth();
         $monthEnd = $today->copy()->endOfMonth();
         $workday = EmployeeWorkday::for($employee, $today);
@@ -318,7 +336,8 @@ class Workplace extends Page
         return [
             'employee' => $employee,
             'greeting' => $this->getGreeting(),
-            'dateLabel' => now()->translatedFormat('l, d F Y'),
+            'dateLabel' => $today->translatedFormat('l, d F Y'),
+            'localDate' => $today->toDateString(),
             'monthLabel' => $monthStart->translatedFormat('F Y'),
             'todayStatus' => $todayStatus,
             'dayMessage' => $dayMessage,
@@ -329,8 +348,8 @@ class Workplace extends Page
             'progressPercent' => $this->progressPercent($todayEntries, $workday),
             'workday' => $workday,
             'timeline' => $this->timeline($todayEntries, $workday),
-            'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries),
-            'attentionItems' => $this->attentionItems($employee, $expiringDocuments),
+            'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries, $today),
+            'attentionItems' => $this->attentionItems($employee, $expiringDocuments, $today),
             'requestCounts' => $this->requestCounts($employee),
             'recentRequests' => $requests,
             'documents' => [
@@ -554,7 +573,7 @@ class Workplace extends Page
             ->all();
     }
 
-    private function calendarDays($monthStart, $monthEnd, Collection $entries): array
+    private function calendarDays($monthStart, $monthEnd, Collection $entries, Carbon $today): array
     {
         $days = [];
         $cursor = $monthStart->copy()->startOfWeek();
@@ -565,7 +584,7 @@ class Workplace extends Page
             $days[] = [
                 'date' => $cursor->copy(),
                 'isCurrentMonth' => $cursor->month === $monthStart->month,
-                'isToday' => $cursor->isToday(),
+                'isToday' => $cursor->isSameDay($today),
                 'events' => $entries->get($key, collect())->take(4)->values(),
             ];
 
@@ -575,7 +594,7 @@ class Workplace extends Page
         return $days;
     }
 
-    private function attentionItems(User $employee, Collection $expiringDocuments): array
+    private function attentionItems(User $employee, Collection $expiringDocuments, Carbon $today): array
     {
         $items = collect();
 
@@ -600,7 +619,7 @@ class Workplace extends Page
             ]);
         }
 
-        if ($employee->probation_enabled && $employee->probation_ends_at?->betweenIncluded(today(), today()->addDays(14))) {
+        if ($employee->probation_enabled && $employee->probation_ends_at?->betweenIncluded($today, $today->copy()->addDays(14))) {
             $items->push([
                 'tone' => 'blue',
                 'title' => 'Испытательный срок',

@@ -97,7 +97,7 @@
         <section class="nik-work-hr-mobile-card">
             <div class="nik-work-hr-mobile-card-head">
                 <div>
-                    <span>{{ now()->translatedFormat('F Y') }}</span>
+                    <span>{{ $workspace['today']->translatedFormat('F Y') }}</span>
                     <h2>Плановые отсутствия</h2>
                 </div>
                 <a href="{{ $workspace['urls']['calendar'] }}">Календарь</a>
@@ -105,8 +105,8 @@
 
             <div class="nik-work-hr-mobile-calendar-strip">
                 @foreach (range(0, 6) as $offset)
-                    @php($day = today()->copy()->addDays($offset))
-                    <a href="{{ $workspace['urls']['calendar'] }}" class="{{ $day->isToday() ? 'is-active' : '' }}">
+                    @php($day = $workspace['today']->copy()->addDays($offset))
+                    <a href="{{ $workspace['urls']['calendar'] }}" class="{{ $day->isSameDay($workspace['today']) ? 'is-active' : '' }}">
                         <span>{{ mb_substr($day->translatedFormat('D'), 0, 2) }}</span>
                         <strong>{{ $day->format('d') }}</strong>
                     </a>

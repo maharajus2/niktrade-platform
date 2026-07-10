@@ -206,7 +206,23 @@ class UserForm
                             ->label('Тип графика')
                             ->options(User::scheduleTypeOptions())
                             ->nullable()
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(function (?string $state, callable $set, callable $get): void {
+                                if ($state !== User::SCHEDULE_FIVE_TWO) {
+                                    return;
+                                }
+
+                                foreach ([
+                                    'work_starts_at' => EmployeeWorkday::DEFAULT_START,
+                                    'work_ends_at' => EmployeeWorkday::DEFAULT_END,
+                                    'lunch_starts_at' => EmployeeWorkday::DEFAULT_LUNCH_START,
+                                    'lunch_ends_at' => EmployeeWorkday::DEFAULT_LUNCH_END,
+                                ] as $field => $default) {
+                                    if (blank($get($field))) {
+                                        $set($field, $default);
+                                    }
+                                }
+                            }),
 
                         TimePicker::make('work_starts_at')
                             ->label('Начало рабочего дня')

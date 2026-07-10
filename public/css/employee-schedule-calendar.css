@@ -1171,21 +1171,36 @@
     }
 
     .nik-calendar-period-picker {
-        top: calc(100% + 8px);
-        right: 0;
-        left: 0;
+        position: fixed;
+        top: auto;
+        right: max(14px, env(safe-area-inset-right));
+        bottom: calc(106px + env(safe-area-inset-bottom));
+        left: max(14px, env(safe-area-inset-left));
+        z-index: 90;
         width: auto;
-        border-radius: 20px;
-        padding: 10px;
+        max-height: min(62dvh, 460px);
+        overflow: auto;
+        border-radius: 26px;
+        padding: 14px;
+        overscroll-behavior: contain;
     }
 
     .nik-calendar-period-months {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
     }
 
     .nik-calendar-period-months button {
-        min-height: 36px;
-        font-size: 12px;
+        min-height: 42px;
+        font-size: 13px;
+    }
+
+    .nik-calendar-period-picker label {
+        margin-top: 2px;
+    }
+
+    .nik-calendar-period-picker select {
+        min-height: 46px;
     }
 
     .nik-calendar-filters {

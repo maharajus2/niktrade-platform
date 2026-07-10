@@ -1045,6 +1045,19 @@
                     if (picker) {
                         picker.hidden = true
                     }
+
+                    calendarRoot?.classList.remove('is-period-picker-open')
+                }
+
+                function setPeriodPickerOpen(open) {
+                    const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
+
+                    if (! picker) {
+                        return
+                    }
+
+                    picker.hidden = ! open
+                    calendarRoot?.classList.toggle('is-period-picker-open', open)
                 }
 
                 let lastPeriodMonthPointerAt = 0
@@ -1310,7 +1323,7 @@
                     const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
 
                     if (picker) {
-                        picker.hidden = ! picker.hidden
+                        setPeriodPickerOpen(picker.hidden)
                     }
                 })
 
@@ -1325,7 +1338,15 @@
                 })
 
                 document.addEventListener('click', (event) => {
-                    if (! calendarRoot?.contains(event.target)) {
+                    const picker = calendarRoot?.querySelector('[data-nt-period-picker]')
+                    const titleToggle = calendarRoot?.querySelector('[data-nt-calendar-title-toggle]')
+
+                    if (
+                        picker
+                        && ! picker.hidden
+                        && ! picker.contains(event.target)
+                        && ! titleToggle?.contains(event.target)
+                    ) {
                         closePeriodPicker()
                     }
                 })

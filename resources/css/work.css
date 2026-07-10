@@ -8576,12 +8576,12 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app.nik-work-app--schedule-request .nik-work-main {
         min-width: 0;
-        padding: 0 0 calc(112px + env(safe-area-inset-bottom));
+        padding: 0 0 calc(190px + env(safe-area-inset-bottom));
     }
 
     .nik-work-app .nik-schedule-request {
         gap: 14px;
-        padding: 14px 8px 0;
+        padding: 14px 8px calc(96px + env(safe-area-inset-bottom));
     }
 
     .nik-work-app .nik-schedule-request-mobile-head {

@@ -46,12 +46,26 @@ const lockWorkMobileViewportScale = () => {
     );
 };
 
+const setupWorkMobilePerformanceProfile = () => {
+    if (!document.querySelector('.nik-work-app')) {
+        return;
+    }
+
+    const userAgent = navigator.userAgent || '';
+    const platform = navigator.userAgentData?.platform || '';
+    const isAndroid = /Android/i.test(userAgent) || /Android/i.test(platform);
+
+    document.documentElement.classList.toggle('nik-work-android', isAndroid);
+};
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         setupWorkSidebar();
         lockWorkMobileViewportScale();
+        setupWorkMobilePerformanceProfile();
     });
 } else {
     setupWorkSidebar();
     lockWorkMobileViewportScale();
+    setupWorkMobilePerformanceProfile();
 }

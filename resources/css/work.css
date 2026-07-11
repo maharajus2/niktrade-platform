@@ -8841,6 +8841,11 @@ body:has(.nik-work-app) .nik-work-sidebar {
         background-attachment: scroll;
     }
 
+    html.nik-work-android .nik-work-app {
+        overflow-x: hidden;
+        overflow-y: visible;
+    }
+
     html.nik-work-android .nik-work-app :is(
         .nik-work-mobile-card,
         .nik-work-mobile-sheet,

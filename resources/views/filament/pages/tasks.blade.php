@@ -267,7 +267,6 @@
                                         <button type="button" wire:click="moveTask({{ $selectedTask->id }}, {{ $column->id }})">{{ $column->name }}</button>
                                     @endif
                                 @endforeach
-                                <button type="button" wire:click="completeTask({{ $selectedTask->id }})">Готово</button>
                                 <button type="button" wire:click="archiveTask({{ $selectedTask->id }})">В архив</button>
                             </div>
 

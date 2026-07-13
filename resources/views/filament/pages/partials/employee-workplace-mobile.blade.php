@@ -15,7 +15,7 @@
             ['label' => 'Мои документы', 'icon' => 'file', 'url' => '#employee-documents-mobile'],
         ],
         'Рабочие инструменты' => [
-            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => '3', 'sheet' => 'tasks'],
+            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => $workspace['urls']['tasks'], 'badge' => $workspace['tasks']['total']],
             ['label' => 'Коммуникации', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
             ['label' => 'Справочники', 'icon' => 'book', 'url' => '#', 'badge' => 'Скоро', 'disabled' => true],
         ],
@@ -242,18 +242,34 @@
                     <span><x-work.icon name="check-square" /></span>
                     <strong>Мои задачи</strong>
                 </div>
-                <small>Скоро</small>
+                <a href="{{ $workspace['urls']['tasks'] }}">{{ $workspace['tasks']['total'] }}</a>
             </div>
             <div class="nik-work-mobile-chips">
-                @foreach (['Все', 'Новые', 'В работе', 'На проверке', 'Готово'] as $filter)
-                    <span>{{ $filter }}</span>
-                @endforeach
+                <span class="is-active">Все {{ $workspace['tasks']['total'] }}</span>
+                <span>Новые {{ $workspace['tasks']['columns']['new'] }}</span>
+                <span>В работе {{ $workspace['tasks']['columns']['in_progress'] }}</span>
+                <span>Проверка {{ $workspace['tasks']['columns']['review'] }}</span>
+                <span>Готово {{ $workspace['tasks']['columns']['done'] }}</span>
             </div>
-            <div class="nik-work-mobile-empty is-illustrated">
-                <x-work.icon name="book" />
-                <strong>Пока нет задач</strong>
-                <span>Здесь будут отображаться ваши задачи и поручения.</span>
+            <div class="nik-work-mobile-list">
+                @forelse ($workspace['tasks']['latest'] as $task)
+                    <a class="nik-work-mobile-row" href="{{ $workspace['urls']['tasks'] }}">
+                        <div>
+                            <strong>{{ $task->title }}</strong>
+                            <small>{{ $task->due_at ? $task->due_at->format('d.m H:i') : 'Без срока' }} · {{ $task->priority_label }}</small>
+                        </div>
+                        <span>{{ $task->status_label }}</span>
+                        <i>›</i>
+                    </a>
+                @empty
+                    <div class="nik-work-mobile-empty is-illustrated">
+                        <x-work.icon name="book" />
+                        <strong>Пока нет задач</strong>
+                        <span>Создайте личную задачу или поручение.</span>
+                    </div>
+                @endforelse
             </div>
+            <a class="nik-work-mobile-link" href="{{ $workspace['urls']['tasks'] }}">Открыть все задачи</a>
         </section>
 
         <section id="employee-requests-mobile" class="nik-work-mobile-card">

@@ -322,6 +322,31 @@ class User extends Authenticatable
         return $this->hasMany(ApprovalWorkflow::class, 'current_approver_id');
     }
 
+    public function ownedTaskBoards(): HasMany
+    {
+        return $this->hasMany(TaskBoard::class, 'owner_id');
+    }
+
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'creator_id');
+    }
+
+    public function assignedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assignee_id');
+    }
+
+    public function delegatedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assigned_by_id');
+    }
+
+    public function taskParticipations(): HasMany
+    {
+        return $this->hasMany(TaskParticipant::class);
+    }
+
     public function futureScheduleEntries(): HasMany
     {
         return $this->scheduleEntries()

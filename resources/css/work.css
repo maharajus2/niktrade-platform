@@ -9079,3 +9079,771 @@ body:has(.nik-work-app) .nik-work-sidebar {
         -webkit-backdrop-filter: blur(16px) saturate(1.22) !important;
     }
 }
+
+.nik-work-app .nik-work-task-preview-list {
+    display: grid;
+    gap: 10px;
+}
+
+.nik-work-app .nik-work-task-preview {
+    display: grid;
+    gap: 5px;
+    padding: 12px;
+    color: var(--nik-work-text);
+    text-decoration: none;
+    border: 1px solid rgba(47, 128, 237, 0.16);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(232, 245, 255, 0.46));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.nik-work-app .nik-work-task-preview strong {
+    font-size: 13px;
+    line-height: 1.25;
+}
+
+.nik-work-app .nik-work-task-preview span {
+    color: var(--nik-work-muted);
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.nik-work-app .nik-work-task-placeholder.is-compact {
+    min-height: 92px;
+    font-size: 12px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-page {
+    display: grid;
+    gap: 18px;
+    padding-bottom: 132px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-toolbar,
+.nik-work-app.nik-tasks .nik-tasks-form-panel,
+.nik-work-app.nik-tasks .nik-tasks-board-wrap,
+.nik-work-app.nik-tasks .nik-tasks-side > section,
+.nik-work-app.nik-tasks .nik-tasks-kpi,
+.nik-work-app.nik-tasks .nik-tasks-tabs {
+    border: 1px solid rgba(187, 215, 245, 0.78);
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(232, 244, 255, 0.5)),
+        rgba(255, 255, 255, 0.42);
+    box-shadow:
+        0 24px 60px rgba(49, 116, 185, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(26px) saturate(1.28);
+    -webkit-backdrop-filter: blur(26px) saturate(1.28);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 28px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 260px;
+    flex: 1 1 420px;
+    min-height: 50px;
+    padding: 0 16px;
+    border: 1px solid rgba(187, 215, 245, 0.78);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #64748b;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #111827;
+    font: inherit;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-toolbar-actions,
+.nik-work-app.nik-tasks .nik-tasks-form-actions,
+.nik-work-app.nik-tasks .nik-tasks-detail-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-btn,
+.nik-work-app.nik-tasks .nik-tasks-detail-actions button,
+.nik-work-app.nik-tasks .nik-tasks-hold-box button,
+.nik-work-app.nik-tasks .nik-tasks-comments button,
+.nik-work-app.nik-tasks .nik-tasks-add-participant button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid rgba(187, 215, 245, 0.9);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.76);
+    color: #0f172a;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 12px 26px rgba(47, 128, 237, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-btn:hover,
+.nik-work-app.nik-tasks .nik-tasks-detail-actions button:hover,
+.nik-work-app.nik-tasks .nik-tasks-hold-box button:hover,
+.nik-work-app.nik-tasks .nik-tasks-comments button:hover,
+.nik-work-app.nik-tasks .nik-tasks-add-participant button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 32px rgba(47, 128, 237, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-btn.is-primary {
+    border-color: rgba(47, 128, 237, 0.52);
+    background: linear-gradient(180deg, #48a0ff 0%, #1479f6 100%);
+    color: #fff;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-btn.is-muted {
+    color: #2563eb;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kpi {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: center;
+    min-height: 92px;
+    padding: 18px;
+    border-radius: 26px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kpi > span {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    color: #1479f6;
+    background: rgba(47, 128, 237, 0.1);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kpi.is-green > span { color: #059669; background: rgba(16, 185, 129, 0.12); }
+.nik-work-app.nik-tasks .nik-tasks-kpi.is-amber > span { color: #d97706; background: rgba(245, 158, 11, 0.14); }
+.nik-work-app.nik-tasks .nik-tasks-kpi.is-red > span { color: #dc2626; background: rgba(239, 68, 68, 0.12); }
+
+.nik-work-app.nik-tasks .nik-tasks-kpi small {
+    display: block;
+    color: #64748b;
+    font-weight: 800;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kpi strong {
+    display: block;
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px;
+    border-radius: 24px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-tabs button,
+.nik-work-app.nik-tasks .nik-tasks-board-switcher button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    background: transparent;
+    color: #475569;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-tabs button.is-active,
+.nik-work-app.nik-tasks .nik-tasks-board-switcher button.is-active {
+    border-color: rgba(47, 128, 237, 0.26);
+    background: rgba(255, 255, 255, 0.82);
+    color: #1479f6;
+    box-shadow: 0 10px 24px rgba(47, 128, 237, 0.13);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-tabs em {
+    min-width: 24px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: rgba(47, 128, 237, 0.1);
+    color: #2563eb;
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-panel {
+    padding: 18px;
+    border-radius: 30px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-head,
+.nik-work-app.nik-tasks .nik-tasks-board-head,
+.nik-work-app.nik-tasks .nik-tasks-detail-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-head span,
+.nik-work-app.nik-tasks .nik-tasks-board-head span,
+.nik-work-app.nik-tasks .nik-tasks-detail-head span {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-head h2,
+.nik-work-app.nik-tasks .nik-tasks-board-head h2,
+.nik-work-app.nik-tasks .nik-tasks-detail-head h2 {
+    margin: 4px 0 0;
+    color: #0f172a;
+    font-size: 24px;
+    line-height: 1.12;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-head > button,
+.nik-work-app.nik-tasks .nik-tasks-detail-head > button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.78);
+    color: #64748b;
+    transform: rotate(45deg);
+    cursor: pointer;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-field.is-wide {
+    grid-column: 1 / -1;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-field span {
+    color: #475569;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-field input,
+.nik-work-app.nik-tasks .nik-tasks-field select,
+.nik-work-app.nik-tasks .nik-tasks-field textarea,
+.nik-work-app.nik-tasks .nik-tasks-hold-box textarea,
+.nik-work-app.nik-tasks .nik-tasks-comments textarea,
+.nik-work-app.nik-tasks .nik-tasks-add-participant select {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid rgba(187, 215, 245, 0.88);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.76);
+    color: #0f172a;
+    padding: 12px 14px;
+    outline: 0;
+    font: inherit;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-field textarea,
+.nik-work-app.nik-tasks .nik-tasks-hold-box textarea,
+.nik-work-app.nik-tasks .nik-tasks-comments textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-form-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    gap: 18px;
+    align-items: start;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-board-wrap {
+    min-width: 0;
+    padding: 18px;
+    border-radius: 32px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-board-switcher {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-kanban {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(210px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column {
+    min-width: 0;
+    border: 1px solid rgba(187, 215, 245, 0.78);
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.48);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px;
+    border-bottom: 1px solid rgba(187, 215, 245, 0.5);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column header div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column header div span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--task-column-color);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--task-column-color) 14%, transparent);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column header strong {
+    color: #0f172a;
+    font-size: 15px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column header em {
+    min-width: 28px;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.74);
+    color: #64748b;
+    font-style: normal;
+    font-weight: 900;
+    text-align: center;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column-list {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-column-empty,
+.nik-work-app.nik-tasks .nik-tasks-empty,
+.nik-work-app.nik-tasks .nik-tasks-side-empty {
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    min-height: 140px;
+    padding: 18px;
+    border: 1px dashed rgba(148, 163, 184, 0.4);
+    border-radius: 22px;
+    color: #64748b;
+    text-align: center;
+}
+
+.nik-work-app.nik-tasks .nik-task-card {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid rgba(187, 215, 245, 0.78);
+    border-radius: 22px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(232, 244, 255, 0.58));
+    box-shadow: 0 14px 32px rgba(49, 116, 185, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.nik-work-app.nik-tasks .nik-task-card.is-hold {
+    border-color: rgba(245, 158, 11, 0.46);
+    background: linear-gradient(145deg, rgba(255, 251, 235, 0.86), rgba(232, 244, 255, 0.5));
+}
+
+.nik-work-app.nik-tasks .nik-task-card-main {
+    display: grid;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-main strong {
+    color: #0f172a;
+    font-size: 15px;
+    line-height: 1.22;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-main small,
+.nik-work-app.nik-tasks .nik-task-card-meta {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-priority {
+    width: fit-content;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: rgba(47, 128, 237, 0.11);
+    color: #1479f6;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-priority.is-red { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
+.nik-work-app.nik-tasks .nik-task-card-priority.is-amber { background: rgba(245, 158, 11, 0.14); color: #b45309; }
+.nik-work-app.nik-tasks .nik-task-card-priority.is-gray { background: rgba(100, 116, 139, 0.12); color: #475569; }
+
+.nik-work-app.nik-tasks .nik-task-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-meta .is-overdue {
+    color: #dc2626;
+    font-weight: 900;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-footer {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.nik-work-app.nik-tasks .nik-task-card-footer button {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid rgba(187, 215, 245, 0.8);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.72);
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-side {
+    position: sticky;
+    top: 18px;
+    min-width: 0;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-detail,
+.nik-work-app.nik-tasks .nik-tasks-side-empty {
+    padding: 18px;
+    border-radius: 32px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-detail-meta,
+.nik-work-app.nik-tasks .nik-tasks-participants,
+.nik-work-app.nik-tasks .nik-tasks-comments,
+.nik-work-app.nik-tasks .nik-tasks-hold-box {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-detail-meta span {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(187, 215, 245, 0.5);
+    color: #64748b;
+    font-size: 13px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-detail-meta strong {
+    color: #0f172a;
+    text-align: right;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-detail-description {
+    margin: 16px 0 0;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.56);
+    color: #334155;
+    line-height: 1.5;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-hold-box,
+.nik-work-app.nik-tasks .nik-tasks-comments form,
+.nik-work-app.nik-tasks .nik-tasks-add-participant {
+    padding: 12px;
+    border: 1px solid rgba(187, 215, 245, 0.6);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.46);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-hold-box label {
+    display: grid;
+    gap: 8px;
+    color: #475569;
+    font-weight: 800;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-participants h3,
+.nik-work-app.nik-tasks .nik-tasks-comments h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 16px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-participants > div:not(.nik-tasks-add-participant) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-participants > div:not(.nik-tasks-add-participant) span {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(47, 128, 237, 0.1);
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-add-participant {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comments form {
+    display: grid;
+    gap: 10px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list {
+    display: grid;
+    gap: 10px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list article {
+    display: grid;
+    gap: 5px;
+    padding: 12px;
+    border: 1px solid rgba(187, 215, 245, 0.6);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.56);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list article.is-system {
+    background: rgba(47, 128, 237, 0.08);
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list strong {
+    color: #0f172a;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list span,
+.nik-work-app.nik-tasks .nik-tasks-empty-mini {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-comment-list p {
+    margin: 0;
+    color: #334155;
+    line-height: 1.45;
+}
+
+.nik-work-app.nik-tasks .nik-tasks-mobile-fab {
+    display: none;
+}
+
+@media (max-width: 1280px) {
+    .nik-work-app.nik-tasks .nik-tasks-content {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-side {
+        position: static;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-kanban {
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .nik-work-app.nik-tasks .nik-tasks-page {
+        gap: 14px;
+        padding: 0 0 calc(150px + env(safe-area-inset-bottom));
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-toolbar {
+        display: grid;
+        padding: 12px;
+        border-radius: 26px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-search {
+        min-width: 0;
+        min-height: 48px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-toolbar-actions {
+        display: none;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-kpi {
+        min-height: 112px;
+        padding: 14px;
+        border-radius: 24px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-kpi strong {
+        font-size: 28px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-tabs {
+        margin-right: calc(-1 * var(--nik-work-mobile-x, 20px));
+        margin-left: calc(-1 * var(--nik-work-mobile-x, 20px));
+        padding-inline: var(--nik-work-mobile-x, 20px);
+        border-radius: 0;
+        border-right: 0;
+        border-left: 0;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-form-panel,
+    .nik-work-app.nik-tasks .nik-tasks-board-wrap,
+    .nik-work-app.nik-tasks .nik-tasks-side > section {
+        border-radius: 28px;
+        padding: 14px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-board-head {
+        display: grid;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-board-switcher {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-kanban {
+        display: flex;
+        gap: 12px;
+        margin-right: -14px;
+        margin-left: -14px;
+        padding: 0 14px 6px;
+        scroll-snap-type: x mandatory;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-column {
+        flex: 0 0 min(86vw, 340px);
+        scroll-snap-align: start;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-detail-head h2,
+    .nik-work-app.nik-tasks .nik-tasks-form-head h2,
+    .nik-work-app.nik-tasks .nik-tasks-board-head h2 {
+        font-size: 22px;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-detail-meta span {
+        display: grid;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-add-participant {
+        grid-template-columns: 1fr;
+    }
+
+    .nik-work-app.nik-tasks .nik-tasks-mobile-fab {
+        position: fixed;
+        right: 22px;
+        bottom: calc(116px + env(safe-area-inset-bottom));
+        z-index: 65;
+        display: grid;
+        place-items: center;
+        width: 58px;
+        height: 58px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 50%;
+        background: linear-gradient(180deg, #48a0ff 0%, #1479f6 100%);
+        color: #fff;
+        box-shadow: 0 18px 42px rgba(47, 128, 237, 0.34);
+    }
+}

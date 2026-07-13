@@ -1,9 +1,10 @@
 @props([
     'homeUrl' => \App\Filament\Pages\Workplace::getUrl(),
+    'active' => 'workplace',
 ])
 
 <nav class="nik-work-mobile-bottom-bar" aria-label="Быстрая навигация">
-    <a href="{{ $homeUrl }}" x-bind:class="{ 'is-active': activeSheet === null }">
+    <a href="{{ $homeUrl }}" x-bind:class="{ 'is-active': activeSheet === null && @js($active === 'workplace') }">
         <x-work.icon name="home" />
         <span>Главная</span>
     </a>
@@ -15,10 +16,10 @@
         <strong><x-work.icon name="grid" /></strong>
         <span>Меню</span>
     </button>
-    <button type="button" x-bind:class="{ 'is-active': activeSheet === 'tasks' }" x-on:click="openSheet('tasks')">
+    <a href="{{ \App\Filament\Pages\Tasks::getUrl() }}" class="{{ $active === 'tasks' ? 'is-active' : '' }}">
         <x-work.icon name="check-square" />
         <span>Задачи</span>
-    </button>
+    </a>
     <button type="button" x-bind:class="{ 'is-active': activeSheet === 'requests' }" x-on:click="openSheet('requests')">
         <x-work.icon name="file" />
         <span>Заявки</span>

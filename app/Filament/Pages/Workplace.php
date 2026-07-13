@@ -7,7 +7,9 @@ use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResou
 use App\Models\EmployeeDocument;
 use App\Models\EmployeeScheduleEntry;
 use App\Models\EmployeeScheduleRequest;
+use App\Models\Task;
 use App\Models\User;
+use App\Services\Tasks\TaskAccessService;
 use App\Support\Dashboard\DashboardWidgetRegistry;
 use App\Support\EmployeeWorkday;
 use BackedEnum;
@@ -20,6 +22,7 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 
 class Workplace extends Page
 {
@@ -352,6 +355,7 @@ class Workplace extends Page
             'progressPercent' => $this->progressPercent($todayEntries, $workday),
             'workday' => $workday,
             'timeline' => $this->timeline($todayEntries, $workday),
+            'tasks' => $this->employeeTasksData($employee),
             'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries, $today),
             'attentionItems' => $this->attentionItems($employee, $expiringDocuments, $today),
             'requestCounts' => $this->requestCounts($employee),
@@ -365,10 +369,59 @@ class Workplace extends Page
             ],
             'urls' => [
                 'calendar' => MyCalendar::getUrl(),
+                'tasks' => Tasks::getUrl(),
                 'requests' => EmployeeScheduleRequestResource::getUrl('index'),
                 'createRequest' => EmployeeScheduleRequestResource::getUrl('create'),
                 'documents' => '#employee-documents',
             ],
+        ];
+    }
+
+    private function employeeTasksData(User $employee): array
+    {
+        $empty = [
+            'total' => 0,
+            'overdue' => 0,
+            'columns' => [
+                'new' => 0,
+                'in_progress' => 0,
+                'review' => 0,
+                'done' => 0,
+            ],
+            'latest' => collect(),
+        ];
+
+        if (! Schema::hasTable('tasks')) {
+            return $empty;
+        }
+
+        $query = app(TaskAccessService::class)
+            ->scopeVisibleTasks(Task::query(), $employee)
+            ->with(['column', 'assignee', 'assignedBy'])
+            ->active();
+
+        return [
+            'total' => (clone $query)->where('assignee_id', $employee->id)->count(),
+            'overdue' => (clone $query)
+                ->where('assignee_id', $employee->id)
+                ->whereNotNull('due_at')
+                ->where('due_at', '<', now())
+                ->whereNotIn('status', [Task::STATUS_COMPLETED, Task::STATUS_ARCHIVED])
+                ->count(),
+            'columns' => [
+                'new' => (clone $query)->where('assignee_id', $employee->id)->where('status', Task::STATUS_OPEN)->count(),
+                'in_progress' => (clone $query)->where('assignee_id', $employee->id)->where('status', Task::STATUS_IN_PROGRESS)->count(),
+                'review' => (clone $query)->where('assignee_id', $employee->id)->where('status', Task::STATUS_REVIEW)->count(),
+                'done' => (clone $query)->where('assignee_id', $employee->id)->where('status', Task::STATUS_COMPLETED)->count(),
+            ],
+            'latest' => (clone $query)
+                ->where('assignee_id', $employee->id)
+                ->whereNotIn('status', [Task::STATUS_COMPLETED, Task::STATUS_ARCHIVED])
+                ->orderByRaw("case priority when 'urgent' then 1 when 'high' then 2 when 'normal' then 3 else 4 end")
+                ->orderByRaw('due_at nulls last')
+                ->latest()
+                ->take(4)
+                ->get(),
         ];
     }
 

@@ -158,10 +158,16 @@
 
         <x-work.card class="nik-work-span-8" title="Мои задачи" icon="check-square">
             <x-slot:actions>
-                <x-work.badge tone="gray">Скоро</x-work.badge>
+                <a href="{{ $workspace['urls']['tasks'] }}" class="nik-work-card-link">
+                    {{ $workspace['tasks']['total'] }} активных
+                </a>
             </x-slot:actions>
 
-            <x-work.kanban-preview />
+            <x-work.kanban-preview
+                :counts="$workspace['tasks']['columns']"
+                :tasks="$workspace['tasks']['latest']"
+                :url="$workspace['urls']['tasks']"
+            />
         </x-work.card>
 
         <x-work.card class="nik-work-span-4" title="Сообщения" icon="message">

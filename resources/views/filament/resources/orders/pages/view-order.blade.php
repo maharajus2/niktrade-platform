@@ -70,7 +70,7 @@
             ['label' => 'Мой календарь', 'icon' => 'calendar', 'url' => MyCalendar::getUrl()],
         ],
         'Рабочие инструменты' => array_values(array_filter([
-            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => '3', 'sheet' => 'tasks'],
+            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => \App\Filament\Pages\Tasks::getUrl()],
             ['label' => 'Коммуникации', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
             EmployeeScheduleRequestResource::canAccess()
                 ? ['label' => 'Заявки', 'icon' => 'link', 'url' => EmployeeScheduleRequestResource::getUrl('index')]

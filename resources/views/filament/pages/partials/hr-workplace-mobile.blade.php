@@ -19,7 +19,7 @@
             ['label' => 'Документы', 'icon' => 'file', 'url' => $workspace['urls']['employees']],
         ])),
         'Инструменты' => [
-            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => '#', 'badge' => 'Скоро', 'sheet' => 'tasks'],
+            ['label' => 'Задачи', 'icon' => 'check-square', 'url' => \App\Filament\Pages\Tasks::getUrl()],
             ['label' => 'Сообщения', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
         ],
     ];

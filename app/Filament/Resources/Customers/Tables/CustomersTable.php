@@ -20,8 +20,11 @@ class CustomersTable
                 ImageColumn::make('avatar_path')
                     ->label('Аватар')
                     ->disk('public')
-                    ->height(48)
-                    ->circular(),
+                    ->imageWidth(44)
+                    ->imageHeight(44)
+                    ->extraImgAttributes([
+                        'style' => 'background: linear-gradient(145deg, rgba(232, 241, 255, .95), rgba(255, 255, 255, .86)); border: 1px solid rgba(255, 255, 255, .86); border-radius: 15px; box-shadow: 0 12px 24px rgba(31, 52, 86, .12), inset 0 1px 0 rgba(255, 255, 255, .82); object-fit: cover;',
+                    ]),
 
                 TextColumn::make('first_name')
                     ->label('ФИО')

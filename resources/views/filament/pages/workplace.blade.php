@@ -96,9 +96,12 @@
         }
 
         .nt-workplace__avatar {
-            border-radius: 999px;
-            background: #0f172a;
-            color: #fff;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, .86);
+            border-radius: 16px;
+            background: linear-gradient(135deg, #dbeafe, #c7d2fe);
+            color: #1d4ed8;
+            box-shadow: 0 12px 24px rgba(31, 52, 86, .12), inset 0 1px 0 rgba(255, 255, 255, .82);
         }
 
         .nt-workplace__badge {

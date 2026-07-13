@@ -24,9 +24,9 @@
                         @forelse ($people as $person)
                             <a href="{{ $person['url'] }}" class="flex items-center gap-3 rounded-lg border border-gray-200 p-2.5 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-950">
                                 @if ($person['avatar_path'])
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($person['avatar_path']) }}" alt="" class="h-10 w-10 rounded-full object-cover">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($person['avatar_path']) }}" alt="" class="h-10 w-10 object-cover" style="border: 1px solid rgba(255, 255, 255, .86); border-radius: 14px; box-shadow: 0 10px 20px rgba(31, 52, 86, .12), inset 0 1px 0 rgba(255, 255, 255, .82);">
                                 @else
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                                    <span class="flex h-10 w-10 items-center justify-center bg-gray-100 text-sm font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300" style="border: 1px solid rgba(255, 255, 255, .86); border-radius: 14px; box-shadow: 0 10px 20px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .82);">
                                         {{ mb_substr($person['name'], 0, 1) }}
                                     </span>
                                 @endif

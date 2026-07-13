@@ -3722,10 +3722,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
     align-self: start;
     width: 150px;
     aspect-ratio: 35 / 45;
-    border: 1px solid rgba(218, 228, 242, .78);
-    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, .86);
+    border-radius: 24px;
     background: linear-gradient(145deg, rgba(232, 241, 255, .95), rgba(255, 255, 255, .84));
-    box-shadow: 0 18px 42px rgba(31, 52, 86, .14);
+    box-shadow: 0 18px 42px rgba(31, 52, 86, .14), inset 0 1px 0 rgba(255, 255, 255, .82);
 }
 
 .nik-work-app .nik-employee-profile-photo img {
@@ -4099,10 +4099,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
         overflow: hidden;
         width: 112px;
         height: 112px;
-        border: 1px solid rgba(218, 228, 242, .78);
-        border-radius: 34px;
+        border: 1px solid rgba(255, 255, 255, .86);
+        border-radius: 24px;
         background: linear-gradient(145deg, rgba(232, 241, 255, .95), rgba(255, 255, 255, .84));
-        box-shadow: 0 18px 42px rgba(31, 52, 86, .15);
+        box-shadow: 0 18px 42px rgba(31, 52, 86, .15), inset 0 1px 0 rgba(255, 255, 255, .82);
     }
 
     .nik-work-app--employee-profile .nik-employee-mobile-photo img {

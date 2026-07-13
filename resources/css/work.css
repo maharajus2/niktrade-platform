@@ -9736,20 +9736,23 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .nik-work-app.nik-tasks .nik-work-layout {
-        display: block;
+        display: block !important;
+        grid-template-columns: minmax(0, 1fr) !important;
     }
 
     .nik-work-app.nik-tasks .nik-work-sidebar {
-        display: none;
+        display: none !important;
     }
 
     .nik-work-app.nik-tasks .nik-work-main {
         width: 100%;
         min-width: 0;
     }
+}
 
+@media (max-width: 768px) {
     .nik-work-app.nik-tasks .nik-tasks-page {
         gap: 14px;
         padding: 0 0 calc(150px + env(safe-area-inset-bottom));

@@ -30,15 +30,15 @@
 @endphp
 
 <div style="align-items: stretch; display: flex; flex-wrap: wrap; gap: 16px; max-width: 100%;">
-    <div style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12); height: 155px; overflow: hidden; width: 120px;">
+    <div style="background: linear-gradient(145deg, rgba(232, 241, 255, .95), rgba(255, 255, 255, .86)); border: 1px solid rgba(255, 255, 255, .86); border-radius: 22px; box-shadow: 0 18px 42px rgba(31, 52, 86, .14), inset 0 1px 0 rgba(255, 255, 255, .82); height: 155px; overflow: hidden; width: 120px;">
         @if ($photoUrl)
             <img
                 src="{{ $photoUrl }}"
                 alt="{{ $employee?->name ? 'Фото сотрудника '.$employee->name : 'Фото сотрудника' }}"
-                style="display: block; height: 155px; object-fit: cover; width: 120px;"
+                style="display: block; height: 100%; object-fit: cover; width: 100%;"
             >
         @else
-            <div style="align-items: center; background: #f9fafb; color: #9ca3af; display: flex; font-size: 12px; font-weight: 600; height: 155px; justify-content: center; line-height: 1.3; padding: 12px; text-align: center; width: 120px;">
+            <div style="align-items: center; background: rgba(255, 255, 255, .58); color: #64748b; display: flex; font-size: 12px; font-weight: 700; height: 100%; justify-content: center; line-height: 1.3; padding: 12px; text-align: center; width: 100%;">
                 Фото<br>35 × 45
             </div>
         @endif

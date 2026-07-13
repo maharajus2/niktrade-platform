@@ -388,10 +388,12 @@
     height: 42px;
     place-items: center;
     overflow: hidden;
-    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, .82);
+    border-radius: 15px;
     background: linear-gradient(135deg, #dbeafe, #eef2ff);
     color: #0b64d8;
     font-weight: 850;
+    box-shadow: 0 12px 24px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .78);
 }
 
 .nik-work-app .nik-directory-avatar.is-small {
@@ -404,6 +406,7 @@
 .nik-work-app .nik-directory-avatar img {
     width: 100%;
     height: 100%;
+    border-radius: inherit;
     object-fit: cover;
 }
 
@@ -1142,7 +1145,7 @@
 }
 
 .nik-work-app .nik-work-avatar {
-    border-radius: 999px;
+    border-radius: 16px;
     background: #0f172a;
     color: #fff;
 }
@@ -1704,11 +1707,13 @@
     height: 44px;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .82);
+    border-radius: 15px;
     background: linear-gradient(135deg, #dbeafe, #c7d2fe);
     color: #1d4ed8;
     font-size: 14px;
     font-weight: 900;
+    box-shadow: 0 12px 24px rgba(31, 52, 86, .10), inset 0 1px 0 rgba(255, 255, 255, .78);
 }
 
 .nik-work-app .nik-work-sidebar-name {
@@ -8001,12 +8006,36 @@ body:has(.nik-work-app) .nik-work-sidebar {
     height: 44px;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .86);
+    border-radius: 15px;
     background: linear-gradient(135deg, #dbeafe, #c7d2fe);
     color: #1d4ed8;
     font-size: 14px;
     font-weight: 760;
     object-fit: cover;
+    box-shadow: 0 10px 22px rgba(31, 52, 86, .12), inset 0 1px 0 rgba(255, 255, 255, .82);
+}
+
+.nik-work-app .nik-work-user-menu > :is(.nik-work-mobile-avatar, .orders-work-mobile-avatar, .nik-work-hr-mobile-avatar) {
+    overflow: hidden;
+    border-radius: 16px !important;
+    padding: 3px;
+    clip-path: inset(0 round 16px);
+}
+
+.nik-work-app .nik-work-user-menu > :is(.nik-work-mobile-avatar, .orders-work-mobile-avatar, .nik-work-hr-mobile-avatar) img,
+.nik-work-app .nik-work-user-menu > :is(.nik-work-mobile-avatar, .orders-work-mobile-avatar, .nik-work-hr-mobile-avatar) > span:first-child {
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, .86);
+    border-radius: 13px;
+    background: linear-gradient(135deg, #dbeafe, #c7d2fe);
+    color: #1d4ed8;
+    object-fit: cover;
+    box-shadow: 0 9px 18px rgba(31, 52, 86, .12), inset 0 1px 0 rgba(255, 255, 255, .82);
 }
 
 .nik-work-app .nik-work-user-chevron {

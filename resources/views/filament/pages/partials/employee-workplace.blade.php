@@ -404,22 +404,26 @@
                     document.querySelectorAll('[data-workday-marker]').forEach((row) => {
                         const markerTime = toMinutes(row.dataset.workdayMarkerTime)
                         const markerRows = Array.from(row.closest('.nik-work-timeline, .nik-work-mobile-timeline')?.querySelectorAll('[data-workday-marker]') || [])
-                        const markerTimes = markerRows
-                            .map((markerRow) => toMinutes(markerRow.dataset.workdayMarkerTime))
-                            .filter((time) => time !== null)
-                            .sort((left, right) => left - right)
-                        const nextTime = markerTimes.find((time) => current < time)
+                            .map((markerRow) => ({
+                                row: markerRow,
+                                time: toMinutes(markerRow.dataset.workdayMarkerTime),
+                                end: toMinutes(markerRow.dataset.workdayMarkerEnd),
+                            }))
+                            .filter((markerRow) => markerRow.time !== null)
+                            .sort((left, right) => left.time - right.time)
+                        const activeInterval = markerRows.find((markerRow) => markerRow.end !== null && markerRow.end > markerRow.time && current >= markerRow.time && current < markerRow.end)
+                        const nextMarker = activeInterval || markerRows.find((markerRow) => current < markerRow.time) || markerRows[markerRows.length - 1]
                         const dot = row.querySelector('.nik-work-timeline-dot, span')
 
                         if (markerTime === null || !dot) {
                             return
                         }
 
-                        const state = markerTime === nextTime ? 'next' : (current >= markerTime ? 'past' : 'future')
+                        const state = markerTime === nextMarker?.time ? 'current' : (current >= markerTime ? 'past' : 'future')
                         const colors = {
-                            next: '#1677ff',
-                            past: '#94a3b8',
-                            future: '#cbd5e1',
+                            current: '#1677ff',
+                            past: '#22c55e',
+                            future: '#94a3b8',
                         }
 
                         row.dataset.workdayMarkerState = state

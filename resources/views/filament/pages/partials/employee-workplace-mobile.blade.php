@@ -141,6 +141,9 @@
                             @if (filled($item['workdayMarker'] ?? null))
                                 data-workday-marker="{{ $item['workdayMarker'] }}"
                                 data-workday-marker-time="{{ $item['time'] }}"
+                                @if (filled($item['workdayMarkerEnd'] ?? null))
+                                    data-workday-marker-end="{{ $item['workdayMarkerEnd'] }}"
+                                @endif
                             @endif
                         >
                             <time>{{ $item['time'] }}</time>

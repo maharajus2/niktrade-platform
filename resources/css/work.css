@@ -9737,6 +9737,19 @@ body:has(.nik-work-app) .nik-work-sidebar {
 }
 
 @media (max-width: 768px) {
+    .nik-work-app.nik-tasks .nik-work-layout {
+        display: block;
+    }
+
+    .nik-work-app.nik-tasks .nik-work-sidebar {
+        display: none;
+    }
+
+    .nik-work-app.nik-tasks .nik-work-main {
+        width: 100%;
+        min-width: 0;
+    }
+
     .nik-work-app.nik-tasks .nik-tasks-page {
         gap: 14px;
         padding: 0 0 calc(150px + env(safe-area-inset-bottom));

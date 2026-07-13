@@ -404,8 +404,8 @@
 }
 
 .nik-work-app .nik-directory-avatar img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     border-radius: inherit;
     object-fit: cover;
 }
@@ -8002,8 +8002,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
 .nik-work-app .nik-work-user-pill img,
 .nik-work-app .nik-work-user-pill > span:first-child {
     display: inline-flex;
-    width: 44px;
-    height: 44px;
+    width: 44px !important;
+    height: 44px !important;
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(255, 255, 255, .86);
@@ -8026,8 +8026,8 @@ body:has(.nik-work-app) .nik-work-sidebar {
 .nik-work-app .nik-work-user-menu > :is(.nik-work-mobile-avatar, .orders-work-mobile-avatar, .nik-work-hr-mobile-avatar) img,
 .nik-work-app .nik-work-user-menu > :is(.nik-work-mobile-avatar, .orders-work-mobile-avatar, .nik-work-hr-mobile-avatar) > span:first-child {
     display: inline-flex;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(255, 255, 255, .86);

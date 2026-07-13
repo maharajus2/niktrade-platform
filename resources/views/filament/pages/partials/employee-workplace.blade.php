@@ -372,7 +372,8 @@
                     const currentMarker = markerRows.find((markerRow) => markerRow.state === 'current')
                     const pastMarkers = markerRows.filter((markerRow) => markerRow.state === 'past')
                     const pastMarker = pastMarkers[pastMarkers.length - 1]
-                    const futureMarker = markerRows.find((markerRow) => markerRow.state === 'future')
+                    const futureMarker = markerRows.find((markerRow) => markerRow.state === 'next')
+                        || markerRows.find((markerRow) => markerRow.state === 'future')
                     const selectedRows = [pastMarker, currentMarker, futureMarker]
                         .filter(Boolean)
                         .map((markerRow) => markerRow.row)
@@ -481,16 +482,19 @@
                             .sort((left, right) => left.time - right.time)
                         const activeIntervals = markerRows.filter((markerRow) => markerRow.end !== null && markerRow.end > markerRow.time && current >= markerRow.time && current < markerRow.end)
                         const activeInterval = activeIntervals[activeIntervals.length - 1]
-                        const nextMarker = activeInterval || markerRows.find((markerRow) => current < markerRow.time) || markerRows[markerRows.length - 1]
+                        const nextMarker = markerRows.find((markerRow) => current < markerRow.time)
                         const dot = row.querySelector('.nik-work-timeline-dot, span')
 
                         if (markerTime === null || !dot) {
                             return
                         }
 
-                        const state = row === nextMarker?.row ? 'current' : (current >= markerTime ? 'past' : 'future')
+                        const state = row === activeInterval?.row
+                            ? 'current'
+                            : (row === nextMarker?.row ? 'next' : (current >= markerTime ? 'past' : 'future'))
                         const colors = {
                             current: '#1677ff',
+                            next: '#f59e0b',
                             past: '#22c55e',
                             future: '#94a3b8',
                         }

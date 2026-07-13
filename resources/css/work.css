@@ -1391,6 +1391,10 @@
     box-shadow: 0 0 0 5px rgba(34, 197, 94, .13);
 }
 
+.nik-work-app .nik-work-timeline-row[data-workday-marker-state="next"] .nik-work-timeline-dot {
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, .15);
+}
+
 .nik-work-app .nik-work-timeline-row[data-workday-marker-state="future"] .nik-work-timeline-dot {
     box-shadow: 0 0 0 5px rgba(148, 163, 184, .12);
 }
@@ -6123,7 +6127,7 @@ body:has(.nik-work-app) .nik-work-sidebar {
         height: 9px;
         margin-top: 4px;
         border-radius: 999px;
-        box-shadow: 0 0 0 5px rgba(22, 119, 255, .12);
+        box-shadow: 0 0 0 5px rgba(148, 163, 184, .13);
     }
 
     .nik-work-app--employee .nik-work-mobile-timeline-row[data-workday-marker-state="current"] > span {
@@ -6132,6 +6136,10 @@ body:has(.nik-work-app) .nik-work-sidebar {
 
     .nik-work-app--employee .nik-work-mobile-timeline-row[data-workday-marker-state="past"] > span {
         box-shadow: 0 0 0 5px rgba(34, 197, 94, .14);
+    }
+
+    .nik-work-app--employee .nik-work-mobile-timeline-row[data-workday-marker-state="next"] > span {
+        box-shadow: 0 0 0 5px rgba(245, 158, 11, .16);
     }
 
     .nik-work-app--employee .nik-work-mobile-timeline-row[data-workday-marker-state="future"] > span {

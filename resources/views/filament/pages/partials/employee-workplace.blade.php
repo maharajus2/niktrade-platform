@@ -48,7 +48,7 @@
                         data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
                         @if ($workspace['dayMessageMode'] === 'always') hidden @endif
                     >
-                        <div class="nik-work-label">Осталось рабочего времени</div>
+                        <div class="nik-work-label" data-workday-counter-label>Осталось рабочего времени</div>
                         <div
                             style="margin-top: 8px; font-size: 22px; font-weight: 900;"
                             @if ($workspace['workday']['isConfiguredSchedule'])
@@ -452,8 +452,7 @@
                             return
                         }
 
-                        const remaining = Math.max(0, Math.min(end - start, end - current))
-                        const percent = (remaining / (end - start)) * 100
+                        const percent = Math.max(0, Math.min(100, ((current - start) / (end - start)) * 100))
 
                         element.style.width = `${Math.round(percent)}%`
                     })
@@ -461,11 +460,49 @@
                     document.querySelectorAll('[data-workday-remaining]').forEach((element) => {
                         const start = toMinutes(element.dataset.workdayStart)
                         const end = toMinutes(element.dataset.workdayEnd)
+                        const group = element.closest('[data-workday-progress-group]')
+                        const label = group?.querySelector('[data-workday-counter-label]')
+                        const beforeCountdownWindow = element.dataset.workdayActive === '1'
+                            && start !== null
+                            && end !== null
+                            && end > start
+                            && current < start - 120
 
                         if (element.dataset.workdayActive !== '1' || start === null || end === null || end <= start) {
+                            if (label) {
+                                label.textContent = 'Осталось рабочего времени'
+                            }
+
                             element.textContent = '0 ч'
 
                             return
+                        }
+
+                        if (group && ! beforeCountdownWindow && group.dataset.workdayMessageMode !== 'always' && current < end) {
+                            group.hidden = false
+                        }
+
+                        if (current < start) {
+                            if (label) {
+                                label.textContent = 'До начала смены'
+                            }
+
+                            if (beforeCountdownWindow) {
+                                if (group) {
+                                    group.hidden = true
+                                }
+                                element.textContent = '—'
+
+                                return
+                            }
+
+                            element.textContent = formatDuration(start - current)
+
+                            return
+                        }
+
+                        if (label) {
+                            label.textContent = 'Осталось рабочего времени'
                         }
 
                         element.textContent = formatDuration(Math.max(0, Math.min(end - start, end - current)))

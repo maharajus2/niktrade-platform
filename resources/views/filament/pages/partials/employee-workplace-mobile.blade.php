@@ -101,7 +101,7 @@
                         data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
                         @if ($workspace['dayMessageMode'] === 'always') hidden @endif
                     >
-                        <span>Осталось рабочего времени</span>
+                        <span data-workday-counter-label>Осталось рабочего времени</span>
                         <strong
                             @if ($workspace['workday']['isConfiguredSchedule'])
                                 data-workday-remaining

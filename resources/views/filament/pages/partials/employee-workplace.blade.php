@@ -48,11 +48,11 @@
                         data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
                         @if ($workspace['dayMessageMode'] === 'always') hidden @endif
                     >
-                        <div class="nik-work-label">Рабочее время сегодня</div>
+                        <div class="nik-work-label">Осталось рабочего времени</div>
                         <div
                             style="margin-top: 8px; font-size: 22px; font-weight: 900;"
                             @if ($workspace['workday']['isConfiguredSchedule'])
-                                data-workday-elapsed
+                                data-workday-remaining
                                 data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
                                 data-workday-start="{{ $workspace['workday']['startsAt'] }}"
                                 data-workday-end="{{ $workspace['workday']['endsAt'] }}"
@@ -301,7 +301,7 @@
                     return (Number(match[1]) * 60) + Number(match[2])
                 }
 
-                const formatElapsed = (minutes) => {
+                const formatDuration = (minutes) => {
                     const safeMinutes = Math.max(0, Math.round(minutes))
                     const hours = Math.floor(safeMinutes / 60)
                     const rest = safeMinutes % 60
@@ -452,12 +452,13 @@
                             return
                         }
 
-                        const percent = Math.max(0, Math.min(100, ((current - start) / (end - start)) * 100))
+                        const remaining = Math.max(0, Math.min(end - start, end - current))
+                        const percent = (remaining / (end - start)) * 100
 
                         element.style.width = `${Math.round(percent)}%`
                     })
 
-                    document.querySelectorAll('[data-workday-elapsed]').forEach((element) => {
+                    document.querySelectorAll('[data-workday-remaining]').forEach((element) => {
                         const start = toMinutes(element.dataset.workdayStart)
                         const end = toMinutes(element.dataset.workdayEnd)
 
@@ -467,7 +468,7 @@
                             return
                         }
 
-                        element.textContent = formatElapsed(Math.max(0, Math.min(end - start, current - start)))
+                        element.textContent = formatDuration(Math.max(0, Math.min(end - start, end - current)))
                     })
 
                     document.querySelectorAll('[data-workday-marker]').forEach((row) => {

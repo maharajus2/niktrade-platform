@@ -101,10 +101,10 @@
                         data-workday-message-mode="{{ $workspace['dayMessageMode'] }}"
                         @if ($workspace['dayMessageMode'] === 'always') hidden @endif
                     >
-                        <span>Рабочее время сегодня</span>
+                        <span>Осталось рабочего времени</span>
                         <strong
                             @if ($workspace['workday']['isConfiguredSchedule'])
-                                data-workday-elapsed
+                                data-workday-remaining
                                 data-workday-active="{{ $workspace['workday']['isWorkday'] && $workspace['hoursToday'] > 0 ? '1' : '0' }}"
                                 data-workday-start="{{ $workspace['workday']['startsAt'] }}"
                                 data-workday-end="{{ $workspace['workday']['endsAt'] }}"

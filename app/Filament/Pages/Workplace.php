@@ -552,23 +552,37 @@ class Workplace extends Page
             }
 
             if ($entry->type === EmployeeScheduleEntry::TYPE_SHIFT && $entry->starts_at && $entry->ends_at) {
-                $items[] = ['time' => substr((string) $entry->starts_at, 0, 5), 'title' => 'Начало смены', 'meta' => 'Рабочий день', 'color' => '#22c55e'];
+                $items[] = ['time' => substr((string) $entry->starts_at, 0, 5), 'title' => 'Начало смены', 'meta' => 'Рабочий день', 'color' => '#22c55e', 'workdayMarker' => 'shift-start-'.$entry->id, 'workdayMarkerTime' => substr((string) $entry->starts_at, 0, 5)];
 
                 if (substr((string) $entry->starts_at, 0, 5) <= '13:00' && substr((string) $entry->ends_at, 0, 5) >= '14:00') {
-                    $items[] = ['time' => '13:00', 'title' => 'Обеденный перерыв', 'meta' => '13:00 — 14:00', 'color' => '#94a3b8'];
+                    $items[] = ['time' => '13:00', 'title' => 'Обеденный перерыв', 'meta' => '13:00 — 14:00', 'color' => '#94a3b8', 'workdayMarker' => 'shift-lunch-'.$entry->id, 'workdayMarkerEnd' => '14:00'];
                 }
 
-                $items[] = ['time' => substr((string) $entry->ends_at, 0, 5), 'title' => 'Конец смены', 'meta' => 'Хорошего вечера', 'color' => '#94a3b8'];
+                $items[] = ['time' => substr((string) $entry->ends_at, 0, 5), 'title' => 'Конец смены', 'meta' => 'Хорошего вечера', 'color' => '#94a3b8', 'workdayMarker' => 'shift-end-'.$entry->id, 'workdayMarkerTime' => substr((string) $entry->ends_at, 0, 5)];
 
                 continue;
             }
 
-            $items[] = [
+            $item = [
                 'time' => $entry->is_all_day ? 'Весь день' : $entry->timeLabel(),
                 'title' => $entry->getDisplayTitle(),
                 'meta' => $entry->comment ?: 'Событие календаря',
                 'color' => $entry->getCalendarColor(),
             ];
+
+            if (! $entry->is_all_day && $entry->starts_at && $entry->ends_at) {
+                $startsAt = substr((string) $entry->starts_at, 0, 5);
+                $endsAt = substr((string) $entry->ends_at, 0, 5);
+
+                $item['workdayMarker'] = 'entry-'.$entry->id;
+                $item['workdayMarkerTime'] = $startsAt;
+
+                if ($endsAt > $startsAt) {
+                    $item['workdayMarkerEnd'] = $endsAt;
+                }
+            }
+
+            $items[] = $item;
         }
 
         return collect($items)

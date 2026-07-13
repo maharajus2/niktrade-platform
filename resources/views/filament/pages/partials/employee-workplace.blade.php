@@ -355,6 +355,74 @@
                     })
                 }
 
+                const selectCompactTimelineRows = (rows) => {
+                    const markerRows = rows
+                        .map((row) => ({
+                            row,
+                            time: toMinutes(row.dataset.workdayMarkerTime),
+                            state: row.dataset.workdayMarkerState,
+                        }))
+                        .filter((markerRow) => markerRow.time !== null)
+                        .sort((left, right) => left.time - right.time)
+
+                    if (markerRows.length === 0) {
+                        return new Set(rows.slice(0, 3))
+                    }
+
+                    const currentMarker = markerRows.find((markerRow) => markerRow.state === 'current')
+                    const pastMarkers = markerRows.filter((markerRow) => markerRow.state === 'past')
+                    const pastMarker = pastMarkers[pastMarkers.length - 1]
+                    const futureMarker = markerRows.find((markerRow) => markerRow.state === 'future')
+                    const selectedRows = [pastMarker, currentMarker, futureMarker]
+                        .filter(Boolean)
+                        .map((markerRow) => markerRow.row)
+
+                    return new Set(selectedRows)
+                }
+
+                const updateTimelineVisibility = () => {
+                    document.querySelectorAll('[data-workday-timeline-shell]').forEach((shell) => {
+                        const rows = Array.from(shell.querySelectorAll('[data-workday-timeline-row]'))
+                        const toggle = shell.querySelector('[data-workday-timeline-toggle]')
+                        const label = shell.querySelector('[data-workday-timeline-toggle-label]')
+                        const shouldCompact = rows.length > 3
+                        const isExpanded = shell.dataset.workdayTimelineExpanded === '1'
+                        const visibleRows = selectCompactTimelineRows(rows)
+
+                        if (toggle) {
+                            toggle.hidden = !shouldCompact
+                        }
+
+                        if (label) {
+                            label.textContent = isExpanded ? 'Свернуть список' : `Показать все события (${rows.length})`
+                        }
+
+                        rows.forEach((row) => {
+                            row.hidden = shouldCompact && ! isExpanded && ! visibleRows.has(row)
+                        })
+                    })
+                }
+
+                const bindTimelineToggles = () => {
+                    document.querySelectorAll('[data-workday-timeline-toggle]').forEach((button) => {
+                        if (button.dataset.workdayTimelineBound === '1') {
+                            return
+                        }
+
+                        button.dataset.workdayTimelineBound = '1'
+                        button.addEventListener('click', () => {
+                            const shell = button.closest('[data-workday-timeline-shell]')
+
+                            if (! shell) {
+                                return
+                            }
+
+                            shell.dataset.workdayTimelineExpanded = shell.dataset.workdayTimelineExpanded === '1' ? '0' : '1'
+                            updateTimelineVisibility()
+                        })
+                    })
+                }
+
                 const updateWorkdayProgress = () => {
                     const current = currentLocalMinutes()
 
@@ -411,7 +479,8 @@
                             }))
                             .filter((markerRow) => markerRow.time !== null)
                             .sort((left, right) => left.time - right.time)
-                        const activeInterval = markerRows.find((markerRow) => markerRow.end !== null && markerRow.end > markerRow.time && current >= markerRow.time && current < markerRow.end)
+                        const activeIntervals = markerRows.filter((markerRow) => markerRow.end !== null && markerRow.end > markerRow.time && current >= markerRow.time && current < markerRow.end)
+                        const activeInterval = activeIntervals[activeIntervals.length - 1]
                         const nextMarker = activeInterval || markerRows.find((markerRow) => current < markerRow.time) || markerRows[markerRows.length - 1]
                         const dot = row.querySelector('.nik-work-timeline-dot, span')
 
@@ -419,7 +488,7 @@
                             return
                         }
 
-                        const state = markerTime === nextMarker?.time ? 'current' : (current >= markerTime ? 'past' : 'future')
+                        const state = row === nextMarker?.row ? 'current' : (current >= markerTime ? 'past' : 'future')
                         const colors = {
                             current: '#1677ff',
                             past: '#22c55e',
@@ -429,8 +498,11 @@
                         row.dataset.workdayMarkerState = state
                         dot.style.background = colors[state]
                     })
+
+                    updateTimelineVisibility()
                 }
 
+                bindTimelineToggles()
                 updateWorkdayProgress()
                 window.addEventListener('focus', updateWorkdayProgress)
                 window.addEventListener('pageshow', updateWorkdayProgress)

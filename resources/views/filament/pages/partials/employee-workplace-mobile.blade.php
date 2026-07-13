@@ -134,28 +134,35 @@
                     </div>
                 </div>
 
-                <div class="nik-work-mobile-timeline">
-                    @forelse ($workspace['timeline'] as $item)
-                        <div
-                            class="nik-work-mobile-timeline-row"
-                            @if (filled($item['workdayMarker'] ?? null))
-                                data-workday-marker="{{ $item['workdayMarker'] }}"
-                                data-workday-marker-time="{{ $item['time'] }}"
-                                @if (filled($item['workdayMarkerEnd'] ?? null))
-                                    data-workday-marker-end="{{ $item['workdayMarkerEnd'] }}"
+                <div class="nik-work-mobile-timeline-shell" data-workday-timeline-shell>
+                    <div class="nik-work-mobile-timeline" data-workday-timeline>
+                        @forelse ($workspace['timeline'] as $item)
+                            <div
+                                class="nik-work-mobile-timeline-row"
+                                data-workday-timeline-row
+                                @if (filled($item['workdayMarker'] ?? null))
+                                    data-workday-marker="{{ $item['workdayMarker'] }}"
+                                    data-workday-marker-time="{{ $item['workdayMarkerTime'] ?? $item['time'] }}"
+                                    @if (filled($item['workdayMarkerEnd'] ?? null))
+                                        data-workday-marker-end="{{ $item['workdayMarkerEnd'] }}"
+                                    @endif
                                 @endif
-                            @endif
-                        >
-                            <time>{{ $item['time'] }}</time>
-                            <span style="background: {{ $item['color'] }}"></span>
-                            <div>
-                                <strong>{{ $item['title'] }}</strong>
-                                <small>{{ $item['meta'] }}</small>
+                            >
+                                <time>{{ $item['time'] }}</time>
+                                <span style="background: {{ $item['color'] }}"></span>
+                                <div>
+                                    <strong>{{ $item['title'] }}</strong>
+                                    <small>{{ $item['meta'] }}</small>
+                                </div>
                             </div>
-                        </div>
-                    @empty
-                        <div class="nik-work-mobile-empty">На сегодня нет событий в календаре.</div>
-                    @endforelse
+                        @empty
+                            <div class="nik-work-mobile-empty">На сегодня нет событий в календаре.</div>
+                        @endforelse
+                    </div>
+
+                    <button class="nik-work-mobile-timeline-toggle" type="button" data-workday-timeline-toggle hidden>
+                        <span data-workday-timeline-toggle-label>Показать все события</span>
+                    </button>
                 </div>
             </div>
 

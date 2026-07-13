@@ -382,6 +382,7 @@
 }
 
 .nik-work-app .nik-directory-avatar {
+    position: relative;
     display: grid;
     flex: 0 0 42px;
     width: 42px;
@@ -404,6 +405,8 @@
 }
 
 .nik-work-app .nik-directory-avatar img {
+    position: absolute;
+    inset: 0;
     width: 100% !important;
     height: 100% !important;
     border-radius: inherit;

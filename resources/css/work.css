@@ -8275,6 +8275,41 @@ body:has(.nik-work-app) .nik-work-sidebar {
     box-shadow: 0 10px 24px rgba(22, 119, 255, .28);
 }
 
+.nik-work-app .nik-work-day-cell.has-events > span:first-child {
+    transform: translateY(-4px);
+}
+
+.nik-work-app .nik-work-event-dots {
+    bottom: 5px;
+    min-height: 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 1px 3px;
+    border-radius: 999px;
+}
+
+.nik-work-app .nik-work-event-dot {
+    width: 5px;
+    height: 5px;
+    border: 1px solid rgba(255, 255, 255, .72);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .18);
+}
+
+.nik-work-app .nik-work-day-cell.is-today .nik-work-event-dots {
+    bottom: 6px;
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid rgba(255, 255, 255, .82);
+    box-shadow:
+        0 5px 12px rgba(15, 23, 42, .20),
+        inset 0 1px 0 rgba(255, 255, 255, .92);
+}
+
+.nik-work-app .nik-work-day-cell.is-today .nik-work-event-dot {
+    border-color: rgba(15, 23, 42, .12);
+    box-shadow: none;
+}
+
 @media (min-width: 1281px) {
     .nik-work-app .nik-work-grid > :nth-child(4) {
         grid-column: 1 / span 6;

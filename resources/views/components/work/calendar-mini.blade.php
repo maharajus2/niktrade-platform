@@ -14,7 +14,7 @@
 
 <div class="nik-work-calendar-grid">
     @foreach ($days as $day)
-        <div class="nik-work-day-cell {{ $day['isCurrentMonth'] ? '' : 'is-muted' }} {{ $day['isToday'] ? 'is-today' : '' }}">
+        <div class="nik-work-day-cell {{ $day['isCurrentMonth'] ? '' : 'is-muted' }} {{ $day['isToday'] ? 'is-today' : '' }} {{ count($day['events']) > 0 ? 'has-events' : '' }}">
             <span>{{ $day['date']->format('j') }}</span>
 
             @if (count($day['events']) > 0)

@@ -43,6 +43,6 @@
             <span class="nik-work-notification-count">3</span>
         </button>
 
-        <x-work.user-menu :user="$user" :initials="$initials" />
+        <x-work.user-menu :user="$user" :initials="$initials" :show-chevron="false" />
     </div>
 </header>

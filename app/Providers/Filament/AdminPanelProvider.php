@@ -38,6 +38,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
+                fn () => view('filament.work-ui-styles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
                 fn () => view('filament.resources.admin-users.pages.employee-edit-styles'),
                 scopes: EditUser::class,
             )

@@ -202,7 +202,7 @@
                     @if ($this->activeTab === 'archive')
                         <section class="nik-tasks-list">
                             @forelse ($tasks as $task)
-                                @include('filament.pages.partials.task-card', ['task' => $task, 'columns' => $columns])
+                                @include('filament.pages.partials.task-card', ['task' => $task, 'columns' => $columns, 'draggable' => false])
                             @empty
                                 <div class="nik-tasks-empty">
                                     <x-work.icon name="check-square" />
@@ -212,10 +212,53 @@
                             @endforelse
                         </section>
                     @else
-                        <section class="nik-tasks-kanban" aria-label="Доска задач">
+                        <section
+                            class="nik-tasks-kanban"
+                            aria-label="Доска задач"
+                            x-data="{
+                                draggedTaskId: null,
+                                draggedColumnId: null,
+                                overColumnId: null,
+                                mobileDragActive: false,
+                                mobileDragElement: null,
+                                dropTask(targetColumnId) {
+                                    if (! this.draggedTaskId || ! targetColumnId || Number(this.draggedColumnId) === Number(targetColumnId)) {
+                                        this.overColumnId = null;
+                                        this.mobileDragActive = false;
+                                        this.mobileDragElement = null;
+                                        return;
+                                    }
+
+                                    this.$wire.moveTask(Number(this.draggedTaskId), Number(targetColumnId));
+                                    this.draggedTaskId = null;
+                                    this.draggedColumnId = null;
+                                    this.overColumnId = null;
+                                    this.mobileDragActive = false;
+                                    this.mobileDragElement = null;
+                                },
+                                columnFromPoint(x, y) {
+                                    const element = document.elementFromPoint(x, y);
+                                    const target = element?.closest('[data-task-column]');
+
+                                    return target?.dataset.taskColumn ?? null;
+                                },
+                                setMobileOverColumn(x, y) {
+                                    this.overColumnId = this.columnFromPoint(x, y);
+                                },
+                            }"
+                            x-bind:class="{ 'is-mobile-dragging': mobileDragActive }"
+                        >
                             @foreach ($columns as $column)
                                 @php $columnTasks = $tasksByColumn->get($column->id, collect()); @endphp
-                                <article class="nik-tasks-column" style="--task-column-color: {{ $column->color ?: '#2f80ed' }}">
+                                <article
+                                    class="nik-tasks-column"
+                                    data-task-column="{{ $column->id }}"
+                                    style="--task-column-color: {{ $column->color ?: '#2f80ed' }}"
+                                    x-bind:class="{ 'is-over': Number(overColumnId) === {{ $column->id }} }"
+                                    x-on:dragover.prevent="if (draggedTaskId) overColumnId = '{{ $column->id }}'"
+                                    x-on:dragleave="if ($event.currentTarget === $event.target) overColumnId = null"
+                                    x-on:drop.prevent="dropTask({{ $column->id }})"
+                                >
                                     <header>
                                         <div>
                                             <span></span>
@@ -226,7 +269,7 @@
 
                                     <div class="nik-tasks-column-list">
                                         @forelse ($columnTasks as $task)
-                                            @include('filament.pages.partials.task-card', ['task' => $task, 'columns' => $columns])
+                                            @include('filament.pages.partials.task-card', ['task' => $task, 'columns' => $columns, 'draggable' => true])
                                         @empty
                                             <div class="nik-tasks-column-empty">Нет задач</div>
                                         @endforelse

@@ -12,6 +12,15 @@
 ])
 
 @php
+    $requestTone = fn (?string $status): string => match ($status) {
+        \App\Models\EmployeeScheduleRequest::STATUS_APPROVED => 'green',
+        \App\Models\EmployeeScheduleRequest::STATUS_REJECTED => 'red',
+        \App\Models\EmployeeScheduleRequest::STATUS_RETURNED => 'amber',
+        \App\Models\EmployeeScheduleRequest::STATUS_CANCELLED => 'gray',
+        \App\Models\EmployeeScheduleRequest::STATUS_IN_REVIEW,
+        \App\Models\EmployeeScheduleRequest::STATUS_FORWARDED => 'blue',
+        default => 'amber',
+    };
     $menuGroups = \App\Support\WorkNavigation::mergeMenuGroups($menuGroups, auth()->user(), $active ?? null);
 @endphp
 
@@ -175,7 +184,7 @@
 </section>
 
 <section
-    class="nik-work-mobile-sheet"
+    class="nik-work-mobile-sheet nik-work-mobile-sheet--requests"
     x-cloak
     x-show="activeSheet === 'requests'"
     x-bind:hidden="activeSheet !== 'requests'"
@@ -194,35 +203,58 @@
     <div class="nik-work-mobile-sheet-handle"></div>
     <header class="nik-work-mobile-sheet-head">
         <div>
-            <span>Заявки сотрудников</span>
-            <h2>Мои заявки</h2>
+            <span>Кадровые заявки</span>
+            <h2>Заявки</h2>
         </div>
         <button type="button" x-on:click="closeSheet()" aria-label="Закрыть">
             <x-work.icon name="plus" />
         </button>
     </header>
-    <div class="nik-work-mobile-sheet-tabs">
-        <span>Ожидают {{ $requestCounts['pending'] ?? 0 }}</span>
-        <span class="is-active">Одобрены {{ $requestCounts['approved'] ?? 0 }}</span>
-        <span>Отклонены {{ $requestCounts['rejected'] ?? 0 }}</span>
-        <span>Возвращены {{ $requestCounts['returned'] ?? 0 }}</span>
+
+    <div class="nik-work-mobile-request-stats">
+        <a href="{{ $requestsUrl }}">
+            <span>Ожидают</span>
+            <strong>{{ $requestCounts['pending'] ?? 0 }}</strong>
+        </a>
+        <a href="{{ $requestsUrl }}">
+            <span>Одобрены</span>
+            <strong>{{ $requestCounts['approved'] ?? 0 }}</strong>
+        </a>
+        <a href="{{ $requestsUrl }}">
+            <span>Отклонены</span>
+            <strong>{{ $requestCounts['rejected'] ?? 0 }}</strong>
+        </a>
+        <a href="{{ $requestsUrl }}">
+            <span>Возвращены</span>
+            <strong>{{ $requestCounts['returned'] ?? 0 }}</strong>
+        </a>
     </div>
-    <div class="nik-work-mobile-list">
+
+    <div class="nik-work-mobile-sheet-actions nik-work-mobile-request-actions">
+        <a href="{{ $createRequestUrl }}"><x-work.icon name="plus" /> Создать заявку</a>
+        <a href="{{ $requestsUrl }}"><x-work.icon name="list" /> Все заявки</a>
+    </div>
+
+    <div class="nik-work-mobile-request-list">
         @forelse ($recentRequests as $request)
-            <div class="nik-work-mobile-row">
+            <a
+                class="nik-work-mobile-request-row is-{{ $requestTone($request->status ?? null) }}"
+                href="{{ \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('view', ['record' => $request]) }}"
+            >
+                <span class="nik-work-mobile-request-icon"><x-work.icon name="link" /></span>
                 <div>
                     <strong>{{ $request->getTypeLabel() }}</strong>
                     <small>{{ $request->getDateRangeLabel() }}</small>
                 </div>
-                <span>{{ $request->getStatusLabel() }}</span>
-                <i>›</i>
-            </div>
+                <em>{{ $request->getStatusLabel() }}</em>
+                <i><x-work.icon name="chevron-right" /></i>
+            </a>
         @empty
-            <div class="nik-work-mobile-empty">У вас пока нет заявок.</div>
+            <div class="nik-work-mobile-request-empty">
+                <x-work.icon name="file" />
+                <strong>Заявок пока нет</strong>
+                <span>Создайте заявку на отпуск, отгул, смену или событие календаря.</span>
+            </div>
         @endforelse
-    </div>
-    <div class="nik-work-mobile-sheet-actions">
-        <a href="{{ $createRequestUrl }}">Создать заявку</a>
-        <a href="{{ $requestsUrl }}">Открыть все заявки</a>
     </div>
 </section>

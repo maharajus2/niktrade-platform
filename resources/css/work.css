@@ -8519,6 +8519,35 @@ body:has(.nik-work-app) .nik-work-sidebar {
         scrollbar-width: thin;
     }
 
+    .nik-work-app .nik-work-nav-link {
+        grid-template-columns: 26px minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        min-height: 50px !important;
+        gap: 10px !important;
+        padding: 9px 12px !important;
+        border-radius: 13px !important;
+    }
+
+    .nik-work-app .nik-work-nav-label {
+        display: block;
+        min-width: 0;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+        text-wrap: balance;
+    }
+
+    .nik-work-app .nik-work-nav-icon {
+        align-self: center;
+        justify-self: center;
+        flex: 0 0 auto;
+    }
+
+    .nik-work-app .nik-work-nav-badge,
+    .nik-work-app .nik-work-nav-trailing {
+        align-self: center;
+        justify-self: end;
+    }
+
     .nik-work-app .nik-work-nav::-webkit-scrollbar {
         width: 6px;
     }

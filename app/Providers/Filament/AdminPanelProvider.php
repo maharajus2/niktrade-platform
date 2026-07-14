@@ -37,6 +37,10 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->login()
             ->renderHook(
+                PanelsRenderHook::BODY_START,
+                fn () => view('filament.work-ui-navigation'),
+            )
+            ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
                 fn () => view('filament.work-ui-styles'),
             )

@@ -11,6 +11,10 @@
     'requestsUrl' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index'),
 ])
 
+@php
+    $menuGroups = \App\Support\WorkNavigation::mergeMenuGroups($menuGroups, auth()->user(), $active ?? null);
+@endphp
+
 <div
     class="nik-work-mobile-sheet-backdrop"
     x-cloak

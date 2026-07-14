@@ -588,10 +588,28 @@ class UserResource extends Resource
         try {
             $user = auth()->user();
 
-            return $user !== null
-                && ($user->hasRole('super_admin') || collect($permissions)->contains(fn (string $permission): bool => $user->can($permission)));
+            if (! $user instanceof User) {
+                return false;
+            }
+
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+
+            if ($user->hasRole('admin') && static::isViewPermissionSet($permissions)) {
+                return true;
+            }
+
+            return collect($permissions)->contains(fn (string $permission): bool => $user->can($permission));
         } catch (Throwable) {
             return false;
         }
+    }
+
+    private static function isViewPermissionSet(array $permissions): bool
+    {
+        return collect($permissions)->every(
+            fn (string $permission): bool => str_ends_with($permission, '.view') || str_ends_with($permission, '.view_any'),
+        );
     }
 }

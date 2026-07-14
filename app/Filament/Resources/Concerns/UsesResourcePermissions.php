@@ -48,8 +48,19 @@ trait UsesResourcePermissions
         try {
             $user = auth()->user();
 
-            return $user instanceof User
-                && ($user->hasRole('super_admin') || $user->can(static::permissionPrefix().'.'.$ability));
+            if (! $user instanceof User) {
+                return false;
+            }
+
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+
+            if ($user->hasRole('admin') && in_array($ability, ['view_any', 'view'], true)) {
+                return true;
+            }
+
+            return $user->can(static::permissionPrefix().'.'.$ability);
         } catch (Throwable) {
             return false;
         }

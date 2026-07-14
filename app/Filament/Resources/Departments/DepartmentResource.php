@@ -107,7 +107,19 @@ class DepartmentResource extends Resource
         try {
             $user = auth()->user();
 
-            return $user !== null && ($user->hasRole('super_admin') || $user->can($permission));
+            if ($user === null) {
+                return false;
+            }
+
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+
+            if ($user->hasRole('admin') && in_array($permission, ['departments.view_any', 'departments.view'], true)) {
+                return true;
+            }
+
+            return $user->can($permission);
         } catch (Throwable) {
             return false;
         }

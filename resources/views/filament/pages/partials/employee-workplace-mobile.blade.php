@@ -29,6 +29,8 @@
             ['label' => 'Мои заявки', 'icon' => 'link', 'url' => $workspace['urls']['requests']],
         ])),
     ];
+
+    $mobileMenuGroups = \App\Support\WorkNavigation::mergeMenuGroups($mobileMenuGroups, auth()->user(), 'workplace');
 @endphp
 
 <div

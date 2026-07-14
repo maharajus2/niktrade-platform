@@ -8491,6 +8491,49 @@ body:has(.nik-work-app) .nik-work-sidebar {
     }
 }
 
+@media (min-width: 901px) {
+    .nik-work-app .nik-work-sidebar {
+        display: flex !important;
+        height: calc(100dvh - 36px) !important;
+        max-height: calc(100dvh - 36px) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        flex-direction: column !important;
+    }
+
+    .nik-work-app .nik-work-logo {
+        flex: 0 0 auto !important;
+    }
+
+    .nik-work-app .nik-work-nav {
+        display: grid !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        align-content: start !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        padding-right: 4px !important;
+        scrollbar-color: rgba(37, 99, 235, .34) transparent;
+        scrollbar-width: thin;
+    }
+
+    .nik-work-app .nik-work-nav::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .nik-work-app .nik-work-nav::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(37, 99, 235, .28);
+    }
+
+    .nik-work-app .nik-work-sidebar-toggle {
+        flex: 0 0 auto !important;
+        margin-top: 12px !important;
+    }
+}
+
 @media (max-width: 820px) {
     html.nik-work-mobile-sheet-open,
     html.nik-work-mobile-sheet-open body {

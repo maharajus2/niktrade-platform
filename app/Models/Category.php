@@ -8,6 +8,7 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
+        'image_path',
         'is_active',
     ];
 }

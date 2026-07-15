@@ -48,6 +48,12 @@
         return $productImagePaths->get($index % $productImagePaths->count());
     };
 
+    $categoryImagePath = function ($category): ?string {
+        $path = $category?->image_path;
+
+        return filled($path) && Storage::disk('public')->exists($path) ? $path : null;
+    };
+
     $heroImage = $productImagePaths->skip(1)->first() ?: $productImagePaths->first();
     $fallbackBannerImage = asset('images/logo-icon.png');
     $featured = $products->take(10)->values();
@@ -62,13 +68,13 @@
         'Дезинфекция',
     ];
 
-    $categoryCards = $categories->take(6)->map(function ($category, int $index) use ($categoryProducts, $imageUrl, $visualImage) {
+    $categoryCards = $categories->take(6)->map(function ($category, int $index) use ($categoryProducts, $categoryImagePath, $imageUrl, $visualImage) {
         $product = $categoryProducts->get($category->id);
 
         return [
             'name' => $category->name,
             'url' => route('catalog.index', ['category' => $category->id]),
-            'image' => $imageUrl($product?->images?->first()?->file_path ?? $visualImage($index)),
+            'image' => $imageUrl($categoryImagePath($category) ?? $product?->images?->first()?->file_path ?? $visualImage($index)),
         ];
     })->values();
 
@@ -115,7 +121,7 @@
         ['label' => 'Все товары', 'caption' => 'полный каталог', 'needle' => []],
     ];
 
-    $catalogDirections = collect($directionLabels)->map(function (array $direction, int $index) use ($categories, $products, $imageUrl, $visualImage) {
+    $catalogDirections = collect($directionLabels)->map(function (array $direction, int $index) use ($categories, $products, $categoryImagePath, $imageUrl, $visualImage) {
         $category = $categories->first(function ($category) use ($direction): bool {
             $name = mb_strtolower((string) $category->name);
 
@@ -133,7 +139,7 @@
             'label' => $direction['label'],
             'caption' => $direction['caption'],
             'url' => $category ? route('catalog.index', ['category' => $category->id]) : route('catalog.index'),
-            'image' => $imageUrl($product?->images?->first()?->file_path ?? $visualImage($index)),
+            'image' => $imageUrl($categoryImagePath($category) ?? $product?->images?->first()?->file_path ?? $visualImage($index)),
         ];
     });
 

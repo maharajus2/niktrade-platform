@@ -4,14 +4,14 @@
 ])
 
 <nav class="nik-work-mobile-bottom-bar" aria-label="Быстрая навигация">
-    <a href="{{ $homeUrl }}" x-bind:class="{ 'is-active': activeSheet === null && @js($active === 'workplace') }">
+    <a href="{{ $homeUrl }}" class="{{ $active === 'workplace' ? 'is-active' : '' }}">
         <x-work.icon name="home" />
         <span>Главная</span>
     </a>
-    <button type="button" x-bind:class="{ 'is-active': activeSheet === 'messages' }" x-on:click="openSheet('messages')">
+    <a href="{{ \App\Filament\Pages\Messenger::getUrl() }}" class="{{ $active === 'messenger' ? 'is-active' : '' }}">
         <x-work.icon name="message" />
         <span>Мессенджер</span>
-    </button>
+    </a>
     <button type="button" class="nik-work-mobile-bottom-menu" x-bind:class="{ 'is-active': activeSheet === 'menu' }" x-on:click="openSheet('menu')">
         <strong><x-work.icon name="grid" /></strong>
         <span>Меню</span>

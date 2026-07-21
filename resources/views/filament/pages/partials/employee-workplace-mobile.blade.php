@@ -25,7 +25,7 @@
         ],
         'Рабочие инструменты' => [
             ['label' => 'Задачи', 'icon' => 'check-square', 'url' => $workspace['urls']['tasks'], 'badge' => $workspace['tasks']['total']],
-            ['label' => 'Коммуникации', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
+            ['label' => 'Коммуникации', 'icon' => 'message', 'url' => $workspace['urls']['messenger'], 'badge' => $workspace['messages']['unreadCount']],
             ['label' => 'Справочники', 'icon' => 'book', 'url' => '#', 'badge' => 'Скоро', 'disabled' => true],
         ],
         'Организация' => array_values(array_filter([
@@ -224,11 +224,11 @@
                     <strong>Открыть документы</strong>
                     <i>›</i>
                 </a>
-                <span class="is-disabled">
+                <a href="{{ $workspace['urls']['messenger'] }}">
                     <x-work.icon name="message" />
                     <strong>Мессенджер</strong>
-                    <em>Скоро</em>
-                </span>
+                    <i>›</i>
+                </a>
             </div>
         </section>
 
@@ -340,9 +340,22 @@
                     <span><x-work.icon name="message" /></span>
                     <strong>Мессенджер</strong>
                 </div>
-                <small>Скоро</small>
+                <a href="{{ $workspace['urls']['messenger'] }}">{{ $workspace['messages']['unreadCount'] }}</a>
             </div>
-            <div class="nik-work-mobile-empty">Корпоративный мессенджер будет подключён позже.</div>
+            <div class="nik-work-mobile-list">
+                @forelse ($workspace['messages']['latest'] as $conversation)
+                    <a class="nik-work-mobile-row" href="{{ $workspace['urls']['messenger'] }}?selectedConversationId={{ $conversation->id }}">
+                        <div>
+                            <strong>{{ $conversation->displayTitleFor($employee) }}</strong>
+                            <small>{{ $conversation->lastMessage?->body ?: 'Новое сообщение' }}</small>
+                        </div>
+                        <span>{{ $conversation->unreadCountFor($employee) }}</span>
+                        <i>›</i>
+                    </a>
+                @empty
+                    <div class="nik-work-mobile-empty">Непрочитанных сообщений нет.</div>
+                @endforelse
+            </div>
         </section>
 
         <section id="employee-more-mobile" class="nik-work-mobile-card">
@@ -368,7 +381,7 @@
                 <div>
                     <a href="#employee-documents-mobile"><x-work.icon name="file" /><span>Документы</span><i>›</i></a>
                     <span><x-work.icon name="book" /><span>Справочники</span><em>Скоро</em></span>
-                    <span><x-work.icon name="message" /><span>Мессенджер</span><em>Скоро</em></span>
+                    <a href="{{ $workspace['urls']['messenger'] }}"><x-work.icon name="message" /><span>Мессенджер</span><i>›</i></a>
                 </div>
             </div>
         </section>

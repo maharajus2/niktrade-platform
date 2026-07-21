@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Filament\Pages\MyCalendar;
+use App\Filament\Pages\Messenger;
 use App\Filament\Pages\Tasks;
 use App\Filament\Pages\Workplace;
 use App\Filament\Resources\AdminUsers\UserResource;
@@ -38,6 +39,7 @@ class WorkNavigation
             'Главное' => [
                 self::pageItem('workplace', 'Рабочее пространство', 'grid', Workplace::class, $active),
                 self::pageItem('calendar', 'Календарь', 'calendar', MyCalendar::class, $active),
+                self::pageItem('messenger', 'Мессенджер', 'message', Messenger::class, $active),
                 self::pageItem('tasks', 'Задачи', 'check-square', Tasks::class, $active),
                 self::resourceItem('requests', 'Заявки', 'link', EmployeeScheduleRequestResource::class, $active),
             ],

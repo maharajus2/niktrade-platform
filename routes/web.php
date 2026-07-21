@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\EmployeeDocumentDownloadController;
+use App\Http\Controllers\Admin\MessageAttachmentDownloadController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerAccountController;
@@ -33,6 +34,8 @@ Route::get('/logout', fn () => redirect()->route('catalog.index'));
 Route::middleware('auth')->group(function () {
     Route::get('/admin/employees/{employee}/documents/{document}/download', EmployeeDocumentDownloadController::class)
         ->name('admin.employee-documents.download');
+    Route::get('/admin/messenger/attachments/{attachment}/download', MessageAttachmentDownloadController::class)
+        ->name('admin.messenger.attachments.download');
 });
 
 Route::middleware('guest:customer')->group(function () {

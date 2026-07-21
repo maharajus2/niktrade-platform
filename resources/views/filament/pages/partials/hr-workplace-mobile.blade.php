@@ -20,7 +20,7 @@
         ])),
         'Инструменты' => [
             ['label' => 'Задачи', 'icon' => 'check-square', 'url' => \App\Filament\Pages\Tasks::getUrl()],
-            ['label' => 'Сообщения', 'icon' => 'message', 'url' => '#', 'badge' => '2', 'sheet' => 'messages'],
+            ['label' => 'Сообщения', 'icon' => 'message', 'url' => \App\Filament\Pages\Messenger::getUrl()],
         ],
     ];
 @endphp

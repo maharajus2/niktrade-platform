@@ -15,7 +15,7 @@
             ],
             'Рабочие инструменты' => [
                 ['label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
-                ['label' => 'Сообщения', 'icon' => 'message', 'url' => '#', 'badge' => 'Скоро', 'sheet' => 'messages'],
+                ['label' => 'Сообщения', 'icon' => 'message', 'url' => \App\Filament\Pages\Messenger::getUrl()],
             ],
         ];
     @endphp

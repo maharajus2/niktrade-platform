@@ -147,10 +147,9 @@
                         label="Открыть документы"
                     />
                     <x-work.action-row
+                        :href="$workspace['urls']['messenger']"
                         icon="message"
                         label="Написать сообщение"
-                        suffix="Скоро"
-                        disabled
                     />
                 </div>
             </x-work.card>
@@ -172,45 +171,33 @@
 
         <x-work.card class="nik-work-span-4" title="Сообщения" icon="message">
             <x-slot:actions>
-                <x-work.badge tone="red">2</x-work.badge>
+                @if (($workspace['messages']['unreadCount'] ?? 0) > 0)
+                    <x-work.badge tone="red">{{ $workspace['messages']['unreadCount'] }}</x-work.badge>
+                @else
+                    <a href="{{ $workspace['urls']['messenger'] }}" class="nik-work-card-link">Открыть</a>
+                @endif
             </x-slot:actions>
 
             <div class="nik-work-message-list">
-                <div class="nik-work-message">
-                    <div class="nik-work-message-avatar is-purple">HR</div>
-                    <div>
-                        <div class="nik-work-row-title">HR-отдел</div>
-                        <div class="nik-work-row-meta">Напоминаем о медосмотре...</div>
-                    </div>
-                    <div class="nik-work-message-side">
-                        <span>10:15</span>
-                        <span class="nik-work-message-dot"></span>
-                    </div>
-                </div>
-
-                <div class="nik-work-message">
-                    <div class="nik-work-message-avatar is-blue">IT</div>
-                    <div>
-                        <div class="nik-work-row-title">IT-поддержка</div>
-                        <div class="nik-work-row-meta">Ваш тикет #3456 обновлён</div>
-                    </div>
-                    <div class="nik-work-message-side">
-                        <span>09:42</span>
-                        <span class="nik-work-message-dot"></span>
-                    </div>
-                </div>
-
-                <div class="nik-work-message">
-                    <div class="nik-work-message-avatar is-green">OK</div>
-                    <div>
-                        <div class="nik-work-row-title">Отдел кадров</div>
-                        <div class="nik-work-row-meta">Новый график на декабрь</div>
-                    </div>
-                    <div class="nik-work-message-side">Вчера</div>
-                </div>
+                @forelse ($workspace['messages']['latest'] as $conversation)
+                    @php $title = $conversation->displayTitleFor($employee); @endphp
+                    <a class="nik-work-message" href="{{ $workspace['urls']['messenger'] }}?selectedConversationId={{ $conversation->id }}" style="text-decoration: none;">
+                        <div class="nik-work-message-avatar is-blue">{{ mb_substr($title, 0, 2) }}</div>
+                        <div>
+                            <div class="nik-work-row-title">{{ $title }}</div>
+                            <div class="nik-work-row-meta">{{ $conversation->lastMessage?->body ?: 'Новое сообщение' }}</div>
+                        </div>
+                        <div class="nik-work-message-side">
+                            <span>{{ $conversation->last_message_at?->format('H:i') }}</span>
+                            <span class="nik-work-message-dot"></span>
+                        </div>
+                    </a>
+                @empty
+                    <x-work.placeholder badge="">Непрочитанных сообщений нет.</x-work.placeholder>
+                @endforelse
             </div>
 
-            <a href="#" class="nik-work-card-link">Открыть все сообщения</a>
+            <a href="{{ $workspace['urls']['messenger'] }}" class="nik-work-card-link">Открыть все сообщения</a>
         </x-work.card>
 
         <x-work.card class="nik-work-span-6" title="Мои заявки" icon="link">

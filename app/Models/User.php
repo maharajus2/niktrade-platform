@@ -347,6 +347,16 @@ class User extends Authenticatable
         return $this->hasMany(TaskParticipant::class);
     }
 
+    public function conversationParticipations(): HasMany
+    {
+        return $this->hasMany(ConversationParticipant::class);
+    }
+
+    public function sentMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
     public function futureScheduleEntries(): HasMany
     {
         return $this->scheduleEntries()

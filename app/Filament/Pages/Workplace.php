@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\Tasks\TaskAccessService;
 use App\Support\Dashboard\DashboardWidgetRegistry;
 use App\Support\EmployeeWorkday;
+use App\Services\Messenger\MessengerService;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -356,6 +357,7 @@ class Workplace extends Page
             'workday' => $workday,
             'timeline' => $this->timeline($todayEntries, $workday),
             'tasks' => $this->employeeTasksData($employee),
+            'messages' => $this->employeeMessagesData($employee),
             'calendarDays' => $this->calendarDays($monthStart, $monthEnd, $monthEntries, $today),
             'attentionItems' => $this->attentionItems($employee, $expiringDocuments, $today),
             'requestCounts' => $this->requestCounts($employee),
@@ -370,6 +372,7 @@ class Workplace extends Page
             'urls' => [
                 'calendar' => MyCalendar::getUrl(),
                 'tasks' => Tasks::getUrl(),
+                'messenger' => Messenger::getUrl(),
                 'requests' => EmployeeScheduleRequestResource::getUrl('index'),
                 'createRequest' => EmployeeScheduleRequestResource::getUrl('create'),
                 'documents' => '#employee-documents',
@@ -422,6 +425,23 @@ class Workplace extends Page
                 ->latest()
                 ->take(4)
                 ->get(),
+        ];
+    }
+
+    private function employeeMessagesData(User $employee): array
+    {
+        if (! Schema::hasTable('conversations')) {
+            return [
+                'unreadCount' => 0,
+                'latest' => collect(),
+            ];
+        }
+
+        $latest = app(MessengerService::class)->latestUnreadFor($employee, 3);
+
+        return [
+            'unreadCount' => $latest->sum(fn ($conversation): int => $conversation->unreadCountFor($employee)),
+            'latest' => $latest,
         ];
     }
 

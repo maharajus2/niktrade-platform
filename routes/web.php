@@ -34,6 +34,8 @@ Route::get('/logout', fn () => redirect()->route('catalog.index'));
 Route::middleware('auth')->group(function () {
     Route::get('/admin/employees/{employee}/documents/{document}/download', EmployeeDocumentDownloadController::class)
         ->name('admin.employee-documents.download');
+    Route::get('/admin/messenger/attachments/{attachment}/preview', [MessageAttachmentDownloadController::class, 'preview'])
+        ->name('admin.messenger.attachments.preview');
     Route::get('/admin/messenger/attachments/{attachment}/download', MessageAttachmentDownloadController::class)
         ->name('admin.messenger.attachments.download');
 });

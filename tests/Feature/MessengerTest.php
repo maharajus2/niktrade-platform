@@ -62,4 +62,68 @@ class MessengerTest extends TestCase
             ->get(route('admin.messenger.attachments.download', $attachment))
             ->assertOk();
     }
+
+    public function test_media_attachment_can_be_previewed_by_participant_only(): void
+    {
+        Storage::fake('messenger_attachments');
+
+        $sender = User::factory()->create();
+        $recipient = User::factory()->create();
+        $outsider = User::factory()->create();
+
+        $conversation = app(MessengerService::class)->findOrCreateDirect($sender, $recipient);
+        app(MessengerService::class)->sendMessage(
+            $conversation,
+            $sender,
+            'Photo',
+            UploadedFile::fake()->create('photo.jpg', 64, 'image/jpeg'),
+        );
+
+        $attachment = MessageAttachment::query()->firstOrFail();
+
+        $this->assertTrue($attachment->isImage());
+        $this->assertSame('image', $attachment->kind);
+
+        $this
+            ->actingAs($outsider)
+            ->get(route('admin.messenger.attachments.preview', $attachment))
+            ->assertForbidden();
+
+        $this
+            ->actingAs($recipient)
+            ->get(route('admin.messenger.attachments.preview', $attachment))
+            ->assertOk();
+    }
+
+    public function test_documents_are_downloadable_but_not_inline_previewable(): void
+    {
+        Storage::fake('messenger_attachments');
+
+        $sender = User::factory()->create();
+        $recipient = User::factory()->create();
+
+        $conversation = app(MessengerService::class)->findOrCreateDirect($sender, $recipient);
+        app(MessengerService::class)->sendMessage(
+            $conversation,
+            $sender,
+            'Document',
+            UploadedFile::fake()->create('report.pdf', 64, 'application/pdf'),
+        );
+
+        $attachment = MessageAttachment::query()->firstOrFail();
+
+        $this->assertTrue($attachment->isPdf());
+        $this->assertFalse($attachment->isPreviewable());
+        $this->assertSame('pdf', $attachment->kind);
+
+        $this
+            ->actingAs($recipient)
+            ->get(route('admin.messenger.attachments.preview', $attachment))
+            ->assertNotFound();
+
+        $this
+            ->actingAs($recipient)
+            ->get(route('admin.messenger.attachments.download', $attachment))
+            ->assertOk();
+    }
 }

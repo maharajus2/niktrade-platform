@@ -273,12 +273,13 @@ class Messenger extends Page
         try {
             $this->validate([
                 'messageBody' => ['nullable', 'string', 'max:10000'],
-                'attachmentUpload' => ['nullable', 'file', 'max:20480', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,webp,txt,zip'],
+                'attachmentUpload' => ['nullable', 'file', 'max:20480', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,webp,gif,txt,zip,mp3,wav,ogg,m4a,mp4,mov,webm'],
             ]);
 
             $messenger->sendMessage($conversation, $user, $this->messageBody, $this->attachmentUpload);
             $this->messageBody = '';
             $this->attachmentUpload = null;
+            $this->dispatch('messenger-file-sent');
             $this->dispatch('$refresh');
         } catch (ValidationException $exception) {
             throw $exception;

@@ -323,6 +323,104 @@
                 text-decoration: none;
             }
 
+            .nik-messenger-attachment-card {
+                display: grid;
+                gap: .55rem;
+                margin-top: .65rem;
+            }
+
+            .nik-messenger-media {
+                overflow: hidden;
+                width: min(100%, 360px);
+                border: 1px solid rgba(148, 163, 184, .22);
+                border-radius: 14px;
+                background: rgba(248, 250, 252, .9);
+            }
+
+            .nik-messenger-media img,
+            .nik-messenger-media video {
+                display: block;
+                width: 100%;
+                max-height: 260px;
+                object-fit: contain;
+                background: #0f172a;
+            }
+
+            .nik-messenger-media audio {
+                display: block;
+                width: 100%;
+                min-width: 260px;
+                padding: .5rem;
+            }
+
+            .nik-messenger-file-card,
+            .nik-messenger-upload-preview {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: .75rem;
+                width: min(100%, 360px);
+                border: 1px solid rgba(148, 163, 184, .24);
+                border-radius: 14px;
+                background: rgba(255, 255, 255, .86);
+                padding: .65rem .75rem;
+                text-decoration: none;
+            }
+
+            .nik-messenger-file-main {
+                display: grid;
+                grid-template-columns: 34px minmax(0, 1fr);
+                gap: .6rem;
+                min-width: 0;
+                align-items: center;
+                color: #334155;
+            }
+
+            .nik-messenger-file-main > span:first-child {
+                display: inline-flex;
+                width: 34px;
+                height: 34px;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                background: #e0f2fe;
+                color: #0369a1;
+            }
+
+            .nik-messenger-file-main strong,
+            .nik-messenger-file-main small {
+                overflow: hidden;
+                display: block;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .nik-messenger-file-main strong {
+                color: #0f172a;
+                font-size: .84rem;
+                font-weight: 900;
+            }
+
+            .nik-messenger-file-main small {
+                color: #64748b;
+                font-size: .75rem;
+                font-weight: 700;
+            }
+
+            .nik-messenger-upload-preview {
+                width: 100%;
+                margin-top: .1rem;
+            }
+
+            .nik-messenger-upload-preview button {
+                border: 0;
+                background: transparent;
+                color: #64748b;
+                cursor: pointer;
+                font-size: 1.25rem;
+                line-height: 1;
+            }
+
             .nik-messenger-composer {
                 display: grid;
                 gap: .65rem;
@@ -497,6 +595,11 @@
                     max-width: 88%;
                 }
 
+                .nik-messenger-media,
+                .nik-messenger-file-card {
+                    width: 100%;
+                }
+
                 .nik-messenger-composer {
                     position: sticky;
                     bottom: 0;
@@ -648,10 +751,44 @@
                                 </header>
                                 <p>{{ $message->isDeleted() ? 'Сообщение удалено' : $message->body }}</p>
                                 @foreach ($message->attachments as $attachment)
-                                    <a class="nik-messenger-attachment" href="{{ route('admin.messenger.attachments.download', $attachment) }}">
-                                        <x-work.icon name="file" />
-                                        <span>{{ $attachment->original_filename ?: $attachment->title ?: 'Файл' }}</span>
-                                    </a>
+                                    @php
+                                        $attachmentName = $attachment->original_filename ?: $attachment->title ?: 'Файл';
+                                        $downloadUrl = route('admin.messenger.attachments.download', $attachment);
+                                        $previewUrl = $attachment->isPreviewable() ? route('admin.messenger.attachments.preview', $attachment) : null;
+                                        $attachmentLabel = match ($attachment->kind) {
+                                            'image' => 'Фотография',
+                                            'audio' => 'Музыка',
+                                            'video' => 'Видео',
+                                            'pdf' => 'PDF',
+                                            default => 'Документ',
+                                        };
+                                    @endphp
+                                    <div class="nik-messenger-attachment-card">
+                                        @if ($attachment->isImage() && $previewUrl)
+                                            <a class="nik-messenger-media" href="{{ $downloadUrl }}" title="Скачать {{ $attachmentName }}">
+                                                <img src="{{ $previewUrl }}" alt="{{ $attachmentName }}" loading="lazy">
+                                            </a>
+                                        @elseif ($attachment->isVideo() && $previewUrl)
+                                            <div class="nik-messenger-media">
+                                                <video src="{{ $previewUrl }}" controls preload="metadata"></video>
+                                            </div>
+                                        @elseif ($attachment->isAudio() && $previewUrl)
+                                            <div class="nik-messenger-media">
+                                                <audio src="{{ $previewUrl }}" controls preload="metadata"></audio>
+                                            </div>
+                                        @endif
+
+                                        <a class="nik-messenger-file-card" href="{{ $downloadUrl }}">
+                                            <span class="nik-messenger-file-main">
+                                                <span><x-work.icon :name="$attachment->iconName()" /></span>
+                                                <span>
+                                                    <strong>{{ $attachmentName }}</strong>
+                                                    <small>{{ $attachmentLabel }} @if($attachment->display_size) · {{ $attachment->display_size }} @endif</small>
+                                                </span>
+                                            </span>
+                                            <x-work.icon name="download" />
+                                        </a>
+                                    </div>
                                 @endforeach
                             </article>
                         @empty
@@ -664,7 +801,56 @@
                         @endforelse
                     </section>
 
-                    <form class="nik-messenger-composer" wire:submit.prevent="sendMessage">
+                    <form
+                        class="nik-messenger-composer"
+                        wire:key="messenger-composer-{{ $selectedConversation->id }}-{{ $messages->count() }}"
+                        wire:submit.prevent="sendMessage"
+                        x-data="{
+                            filePreview: null,
+                            clearFilePreview() {
+                                const previewUrl = this.filePreview?.url;
+                                this.filePreview = null;
+                                $refs.attachmentInput.value = '';
+                                $wire.set('attachmentUpload', null);
+                                if (previewUrl) this.$nextTick(() => URL.revokeObjectURL(previewUrl));
+                            },
+                            hideFilePreview() {
+                                const previewUrl = this.filePreview?.url;
+                                this.filePreview = null;
+                                if (previewUrl) this.$nextTick(() => URL.revokeObjectURL(previewUrl));
+                            },
+                            updateFilePreview(event) {
+                                const file = event.target.files?.[0];
+
+                                const previewUrl = this.filePreview?.url;
+                                this.filePreview = null;
+                                if (previewUrl) this.$nextTick(() => URL.revokeObjectURL(previewUrl));
+
+                                if (! file) return;
+
+                                const type = file.type || 'application/octet-stream';
+                                const kind = type.startsWith('image/')
+                                    ? 'image'
+                                    : type.startsWith('audio/')
+                                        ? 'audio'
+                                        : type.startsWith('video/')
+                                            ? 'video'
+                                            : type === 'application/pdf'
+                                                ? 'pdf'
+                                                : 'document';
+
+                                this.filePreview = {
+                                    name: file.name,
+                                    size: new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(file.size / 1024 / 1024) + ' MB',
+                                    type,
+                                    kind,
+                                    label: ({ image: 'Фотография', audio: 'Музыка', video: 'Видео', pdf: 'PDF', document: 'Документ' })[kind],
+                                    url: ['image', 'audio', 'video'].includes(kind) ? URL.createObjectURL(file) : null,
+                                };
+                            },
+                        }"
+                        x-on:messenger-file-sent.window="clearFilePreview()"
+                    >
                         <textarea
                             rows="2"
                             wire:model="messageBody"
@@ -673,19 +859,60 @@
                         ></textarea>
                         @error('messageBody') <span class="nik-messenger-muted">{{ $message }}</span> @enderror
                         @error('attachmentUpload') <span class="nik-messenger-muted">{{ $message }}</span> @enderror
+                        <template x-if="filePreview">
+                            <div class="nik-messenger-upload-preview">
+                                <span class="nik-messenger-file-main">
+                                    <span>
+                                        <template x-if="filePreview.kind === 'image'"><x-work.icon name="image" /></template>
+                                        <template x-if="filePreview.kind === 'audio'"><x-work.icon name="music" /></template>
+                                        <template x-if="filePreview.kind === 'video'"><x-work.icon name="video" /></template>
+                                        <template x-if="filePreview.kind === 'pdf'"><x-work.icon name="file-text" /></template>
+                                        <template x-if="filePreview.kind === 'document'"><x-work.icon name="file" /></template>
+                                    </span>
+                                    <span>
+                                        <strong x-text="filePreview.name"></strong>
+                                        <small x-text="filePreview.label + ' · ' + filePreview.size"></small>
+                                    </span>
+                                </span>
+                                <button type="button" x-on:click="clearFilePreview()" title="Убрать файл">&times;</button>
+                            </div>
+                        </template>
+                        <template x-if="filePreview?.kind === 'image'">
+                            <div class="nik-messenger-media"><img x-bind:src="filePreview.url" alt=""></div>
+                        </template>
+                        <template x-if="filePreview?.kind === 'audio'">
+                            <div class="nik-messenger-media"><audio x-bind:src="filePreview.url" controls></audio></div>
+                        </template>
+                        <template x-if="filePreview?.kind === 'video'">
+                            <div class="nik-messenger-media"><video x-bind:src="filePreview.url" controls></video></div>
+                        </template>
                         <div class="nik-messenger-composer-row">
                             <div class="nik-messenger-actions">
                                 @if ($messengerPage['canAttachFiles'] ?? false)
                                     <label class="nik-messenger-file">
                                         <x-work.icon name="file" />
-                                        <input type="file" wire:model="attachmentUpload">
+                                        <input
+                                            type="file"
+                                            wire:model="attachmentUpload"
+                                            x-ref="attachmentInput"
+                                            x-on:change="updateFilePreview($event)"
+                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.gif,.txt,.zip,.mp3,.wav,.ogg,.m4a,.mp4,.mov,.webm,image/*,audio/*,video/*,application/pdf"
+                                        >
                                     </label>
                                 @endif
                                 <button type="button" disabled title="Скоро">
                                     <x-work.icon name="link" /> Из системы · Скоро
                                 </button>
                             </div>
-                            <button type="submit" class="nik-messenger-btn is-primary"><x-work.icon name="message" /> Отправить</button>
+                            <button
+                                type="submit"
+                                class="nik-messenger-btn is-primary"
+                                wire:loading.attr="disabled"
+                                wire:target="attachmentUpload,sendMessage"
+                                x-on:click="setTimeout(() => hideFilePreview(), 500)"
+                            >
+                                <x-work.icon name="message" /> Отправить
+                            </button>
                         </div>
                     </form>
                 @else

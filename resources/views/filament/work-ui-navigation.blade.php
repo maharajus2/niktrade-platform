@@ -13,6 +13,7 @@
     $customRoutes = [
         'filament.admin.pages.workplace',
         'filament.admin.pages.my-calendar',
+        'filament.admin.pages.messenger',
         'filament.admin.pages.tasks',
         'filament.admin.resources.orders.index',
         'filament.admin.resources.orders.kanban',

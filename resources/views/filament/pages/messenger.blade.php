@@ -717,7 +717,9 @@
             x-on:keydown.escape.window="closeSheet()"
         >
             <x-work.mobile-bottom-sheets />
-            <x-work.mobile-bottom-nav active="messenger" />
+            @unless ($selectedConversation)
+                <x-work.mobile-bottom-nav active="messenger" />
+            @endunless
         </div>
     @endcomponent
 </x-filament-panels::page>

@@ -12,7 +12,7 @@
         'title' => 'Мессенджер',
         'subtitle' => 'Быстрые внутренние чаты, группы и файлы.',
         'active' => 'messenger',
-        'appClass' => 'nik-work-app--messenger nik-messenger',
+        'appClass' => 'nik-work-app--messenger nik-messenger '.($selectedConversation ? 'nik-messenger--chat-active' : ''),
         'user' => $user,
     ])
         <style>
@@ -437,6 +437,26 @@
             }
 
             @media (max-width: 760px) {
+                .nik-work-app.nik-messenger {
+                    margin: 0 !important;
+                }
+
+                .nik-work-app.nik-messenger .nik-work-shell {
+                    padding: 0 !important;
+                }
+
+                .nik-work-app.nik-messenger .nik-work-layout {
+                    display: block !important;
+                }
+
+                .nik-work-app.nik-messenger .nik-work-sidebar {
+                    display: none !important;
+                }
+
+                .nik-work-app.nik-messenger.nik-messenger--chat-active .nik-work-main > .nik-work-header {
+                    display: none !important;
+                }
+
                 .nik-work-app.nik-messenger .nik-work-main {
                     padding-bottom: 0;
                 }

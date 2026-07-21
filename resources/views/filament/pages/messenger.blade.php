@@ -514,6 +514,7 @@
             class="nik-messenger-page {{ $selectedConversation ? 'has-selected' : '' }}"
             wire:poll.7s
             x-data="{ activeSheet: null, openSheet(sheet) { this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); }, closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); } }"
+            x-init="$wire.setBrowserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC')"
             x-on:keydown.escape.window="closeSheet()"
         >
             <aside class="nik-messenger-panel nik-messenger-list">
@@ -605,7 +606,7 @@
                                 <p>{{ $lastMessage?->body ?: ($lastMessage?->attachments?->first()?->original_filename ?? 'Пока нет сообщений') }}</p>
                             </span>
                             <span class="nik-messenger-meta">
-                                <span>{{ $conversation->last_message_at?->format('H:i') }}</span>
+                                <span>{{ $this->formatMessengerTime($conversation->last_message_at, 'H:i') }}</span>
                                 @if ($unread > 0)
                                     <em class="nik-messenger-unread">{{ $unread }}</em>
                                 @endif
@@ -643,7 +644,7 @@
                             <article class="nik-messenger-bubble {{ (int) $message->sender_id === (int) $user->id ? 'is-own' : '' }} {{ $message->isSystem() ? 'is-system' : '' }}">
                                 <header>
                                     <span>{{ $message->isSystem() ? 'Система' : ($message->sender?->name ?? 'Сотрудник') }}</span>
-                                    <time>{{ $message->created_at?->format('d.m.Y H:i') }}</time>
+                                    <time>{{ $this->formatMessengerTime($message->created_at, 'd.m.Y H:i') }}</time>
                                 </header>
                                 <p>{{ $message->isDeleted() ? 'Сообщение удалено' : $message->body }}</p>
                                 @foreach ($message->attachments as $attachment)

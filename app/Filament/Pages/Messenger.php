@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Services\Messenger\MessengerAccessService;
 use App\Services\Messenger\MessengerService;
 use BackedEnum;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\Width;
@@ -50,6 +53,8 @@ class Messenger extends Page
 
     public mixed $attachmentUpload = null;
 
+    public string $browserTimezone = 'UTC';
+
     public bool $showDirectForm = false;
 
     public bool $showGroupForm = false;
@@ -90,6 +95,7 @@ class Messenger extends Page
 
         abort_unless($user instanceof User && $access->canViewMessenger($user), 403);
 
+        $this->browserTimezone = config('app.timezone', 'UTC');
         $this->selectedConversationId = $this->selectedConversationId ?: $this->conversationQuery($user)->value('id');
 
         if ($this->selectedConversationId) {
@@ -107,6 +113,30 @@ class Messenger extends Page
         return [
             'messengerPage' => $this->messengerPageData(),
         ];
+    }
+
+    public function setBrowserTimezone(?string $timezone): void
+    {
+        if (! is_string($timezone) || $timezone === '') {
+            return;
+        }
+
+        if (! in_array($timezone, DateTimeZone::listIdentifiers(), true)) {
+            return;
+        }
+
+        $this->browserTimezone = $timezone;
+    }
+
+    public function formatMessengerTime(mixed $date, string $format): string
+    {
+        if (! $date instanceof DateTimeInterface) {
+            return '';
+        }
+
+        return DateTimeImmutable::createFromInterface($date)
+            ->setTimezone(new DateTimeZone($this->browserTimezone))
+            ->format($format);
     }
 
     public function setFilter(string $filter): void

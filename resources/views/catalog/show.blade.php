@@ -11,41 +11,11 @@
         body {
             min-width: 320px;
             background:
-                radial-gradient(circle at 10% 4%, rgba(10, 132, 255, .24), transparent 25rem),
-                radial-gradient(circle at 88% 10%, rgba(33, 201, 139, .20), transparent 24rem),
-                radial-gradient(circle at 66% 88%, rgba(125, 211, 252, .24), transparent 30rem),
-                linear-gradient(112deg, transparent 0 17%, rgba(255, 255, 255, .52) 30%, transparent 45% 100%),
-                linear-gradient(135deg, #f8fcff 0%, #e9f7ff 44%, #fbfeff 100%);
+                radial-gradient(circle at 8% 2%, rgba(10, 132, 255, .12), transparent 28rem),
+                radial-gradient(circle at 92% 9%, rgba(33, 201, 139, .11), transparent 28rem),
+                linear-gradient(135deg, #fbfdff 0%, #eef8ff 46%, #ffffff 100%);
             background-attachment: fixed;
             color: #10223f;
-        }
-
-        .public-header {
-            position: sticky;
-            top: 0;
-            z-index: 30;
-            border-bottom: 1px solid rgba(255, 255, 255, .72);
-            background:
-                radial-gradient(circle at 20% 0%, rgba(255, 255, 255, .94), transparent 44%),
-                linear-gradient(135deg, rgba(255, 255, 255, .72), rgba(232, 247, 255, .42));
-            box-shadow: 0 18px 46px rgba(20, 82, 148, .10), inset 0 1px 0 rgba(255, 255, 255, .92);
-            backdrop-filter: blur(28px) saturate(180%);
-            -webkit-backdrop-filter: blur(28px) saturate(180%);
-        }
-
-        .public-header__link,
-        .public-header__logout,
-        .public-header__cart {
-            border: 1px solid rgba(255, 255, 255, .58);
-            background:
-                radial-gradient(circle at 22% 0%, rgba(255, 255, 255, .80), transparent 46%),
-                linear-gradient(135deg, rgba(255, 255, 255, .52), rgba(232, 247, 255, .30));
-            color: #10223f;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .78);
-        }
-
-        .public-header__cart {
-            color: #006eea;
         }
 
         .nik-product-page,
@@ -59,47 +29,30 @@
             --liquid-green: #21c98b;
             --liquid-ink: #10223f;
             --liquid-muted: rgba(16, 34, 63, .62);
-            --liquid-border: rgba(255, 255, 255, .78);
-            --liquid-shadow: 0 32px 92px rgba(20, 82, 148, .17), 0 14px 38px rgba(10, 132, 255, .11), 0 1px 0 rgba(255, 255, 255, .70);
+            --liquid-border: rgba(255, 255, 255, .68);
+            --liquid-shadow: 0 20px 54px rgba(20, 82, 148, .10), 0 1px 0 rgba(255, 255, 255, .72);
             position: relative;
             isolation: isolate;
             overflow: hidden;
             min-height: calc(100vh - 64px);
-            padding: 22px 0 56px;
+            padding: 24px 0 72px;
         }
 
-        .nik-product-page::before,
-        .nik-product-page::after {
+        .nik-product-page::before {
             position: fixed;
             inset: 0;
             z-index: -1;
+            background:
+                radial-gradient(circle at 4% 18%, rgba(255, 255, 255, .56) 0 16px, transparent 17px),
+                radial-gradient(circle at 96% 16%, rgba(255, 255, 255, .44) 0 22px, transparent 23px),
+                linear-gradient(118deg, rgba(255, 255, 255, .24), transparent 30%, rgba(33, 201, 139, .05) 70%, transparent);
+            opacity: .72;
             pointer-events: none;
             content: "";
         }
 
-        .nik-product-page::before {
-            background:
-                radial-gradient(circle at 2% 14%, rgba(255, 255, 255, .82) 0 18px, transparent 19px),
-                radial-gradient(circle at 14% 70%, rgba(255, 255, 255, .46) 0 34px, transparent 36px),
-                radial-gradient(circle at 62% 36%, rgba(255, 255, 255, .30) 0 54px, transparent 56px),
-                radial-gradient(circle at 96% 18%, rgba(255, 255, 255, .58) 0 22px, transparent 23px),
-                linear-gradient(118deg, rgba(255, 255, 255, .26), transparent 24%, rgba(33, 201, 139, .08) 64%, transparent),
-                repeating-linear-gradient(105deg, rgba(255, 255, 255, .10) 0 1px, transparent 1px 42px);
-            opacity: .92;
-        }
-
-        .nik-product-page::after {
-            background-image:
-                radial-gradient(ellipse at 23% 20%, rgba(255, 255, 255, .72), transparent 23rem),
-                radial-gradient(ellipse at 78% 27%, rgba(10, 132, 255, .16), transparent 26rem),
-                radial-gradient(ellipse at 58% 64%, rgba(33, 201, 139, .12), transparent 30rem),
-                linear-gradient(120deg, rgba(255, 255, 255, .34), transparent 18%);
-            filter: blur(18px);
-            opacity: .90;
-        }
-
         .nik-product-shell {
-            width: min(1240px, calc(100% - 48px));
+            width: min(1360px, calc(100% - 48px));
             margin: 0 auto;
         }
 
@@ -108,54 +61,24 @@
             overflow: hidden;
             border: 1px solid var(--liquid-border);
             background:
-                radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .50), transparent 35%),
-                radial-gradient(circle at 90% 100%, rgba(10, 132, 255, .18), transparent 42%),
-                radial-gradient(circle at 0% 100%, rgba(33, 201, 139, .11), transparent 34%),
-                linear-gradient(135deg, rgba(255, 255, 255, .36), rgba(226, 246, 255, .18) 48%, rgba(255, 255, 255, .25));
-            background-attachment: fixed;
-            box-shadow:
-                var(--liquid-shadow),
-                0 0 0 1px rgba(255, 255, 255, .22),
-                inset 0 1px 0 rgba(255, 255, 255, .96),
-                inset 1px 0 0 rgba(255, 255, 255, .48),
-                inset 0 -22px 42px rgba(10, 132, 255, .09),
-                inset 0 0 38px rgba(255, 255, 255, .18);
-            backdrop-filter: blur(34px) saturate(195%) contrast(1.06);
-            -webkit-backdrop-filter: blur(34px) saturate(195%) contrast(1.06);
+                linear-gradient(135deg, rgba(255, 255, 255, .62), rgba(236, 249, 255, .34) 56%, rgba(255, 255, 255, .50));
+            box-shadow: var(--liquid-shadow), inset 0 1px 0 rgba(255, 255, 255, .72);
+            backdrop-filter: blur(20px) saturate(145%);
+            -webkit-backdrop-filter: blur(20px) saturate(145%);
             isolation: isolate;
         }
 
-        .nik-product-glass::before,
-        .nik-product-glass::after {
+        .nik-product-glass::before {
             position: absolute;
             inset: 0;
             z-index: 0;
             border-radius: inherit;
+            background:
+                linear-gradient(128deg, rgba(255, 255, 255, .42), transparent 32%),
+                linear-gradient(312deg, rgba(10, 132, 255, .055), transparent 48%);
+            opacity: .68;
             pointer-events: none;
             content: "";
-        }
-
-        .nik-product-glass::before {
-            background:
-                radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .88), transparent 19%),
-                linear-gradient(126deg, rgba(255, 255, 255, .68) 0 7%, rgba(255, 255, 255, .26) 8% 18%, rgba(255, 255, 255, 0) 42%),
-                linear-gradient(112deg, transparent 0 45%, rgba(255, 255, 255, .26) 48%, transparent 56%),
-                linear-gradient(315deg, rgba(10, 132, 255, .11), transparent 44%);
-            mix-blend-mode: screen;
-            opacity: .88;
-        }
-
-        .nik-product-glass::after {
-            inset: 1px;
-            background:
-                radial-gradient(ellipse at 50% 106%, rgba(10, 132, 255, .16), transparent 51%),
-                linear-gradient(to top, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 40%),
-                linear-gradient(90deg, rgba(255, 255, 255, .22), transparent 18%, transparent 82%, rgba(78, 169, 255, .16));
-            box-shadow:
-                inset 0 0 0 1px rgba(255, 255, 255, .20),
-                inset 0 0 32px rgba(255, 255, 255, .22),
-                inset 0 -28px 52px rgba(10, 132, 255, .10);
-            opacity: .82;
         }
 
         .nik-product-glass > * {
@@ -168,10 +91,10 @@
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            margin-bottom: 18px;
-            color: rgba(16, 34, 63, .58);
+            margin-bottom: 20px;
+            color: rgba(16, 34, 63, .48);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .nik-product-breadcrumbs a {
@@ -191,34 +114,36 @@
 
         .nik-product-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1.02fr) minmax(360px, .98fr);
-            gap: 24px;
+            grid-template-columns: minmax(0, 54fr) minmax(420px, 46fr);
+            gap: 28px;
             align-items: start;
         }
 
         .nik-product-gallery {
-            border-radius: 28px;
-            padding: 22px;
+            border-radius: 26px;
+            padding: 20px;
         }
 
         .nik-product-main-image,
         .nik-product-placeholder {
+            position: relative;
             display: grid;
             place-items: center;
-            min-height: 560px;
+            height: clamp(560px, 58vh, 650px);
             overflow: hidden;
             border-radius: 22px;
             background:
-                radial-gradient(circle at 45% 12%, rgba(255, 255, 255, .68), transparent 34%),
-                linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(218, 244, 255, .20));
+                radial-gradient(circle at 50% 18%, rgba(255, 255, 255, .76), transparent 38%),
+                linear-gradient(135deg, rgba(255, 255, 255, .30), rgba(224, 246, 255, .16));
         }
 
         .nik-product-main-image img {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            inset: 28px;
+            width: calc(100% - 56px);
+            height: calc(100% - 56px);
             object-fit: contain;
-            padding: 18px;
-            filter: drop-shadow(0 22px 34px rgba(26, 83, 140, .12));
+            filter: drop-shadow(0 18px 26px rgba(26, 83, 140, .10));
         }
 
         .nik-product-placeholder {
@@ -231,23 +156,21 @@
         }
 
         .nik-product-thumbs {
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            display: flex;
             gap: 10px;
-            margin-top: 14px;
+            margin-top: 12px;
         }
 
         .nik-product-thumb {
             display: grid;
             place-items: center;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, .72);
-            border-radius: 16px;
-            background:
-                radial-gradient(circle at 20% 0%, rgba(255, 255, 255, .80), transparent 46%),
-                linear-gradient(135deg, rgba(255, 255, 255, .48), rgba(231, 247, 255, .26));
-            aspect-ratio: 1;
-            box-shadow: 0 12px 28px rgba(39, 99, 159, .10), inset 0 1px 0 rgba(255, 255, 255, .84);
+            width: 74px;
+            height: 74px;
+            border: 1px solid rgba(255, 255, 255, .70);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .46);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
             text-decoration: none;
             transition: transform .18s ease, border-color .18s ease;
         }
@@ -259,74 +182,79 @@
             transform: translateY(-1px);
         }
 
+        .nik-product-thumb:first-child {
+            border-color: rgba(10, 132, 255, .38);
+        }
+
         .nik-product-thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .nik-product-summary {
-            display: grid;
-            gap: 16px;
-        }
-
         .nik-product-info {
-            border-radius: 28px;
-            padding: 28px;
+            display: grid;
+            gap: 22px;
+            border-radius: 26px;
+            padding: clamp(28px, 3vw, 42px);
         }
 
         .nik-product-brand {
-            margin: 0 0 10px;
+            margin: 0 0 -8px;
             color: var(--liquid-blue-deep);
             font-size: 13px;
-            font-weight: 900;
-            letter-spacing: .08em;
+            font-weight: 800;
+            letter-spacing: .10em;
             text-transform: uppercase;
         }
 
         .nik-product-title {
             margin: 0;
             color: var(--liquid-ink);
-            font-size: clamp(2.15rem, 4vw, 4rem);
-            font-weight: 900;
-            line-height: .98;
+            font-size: clamp(2.45rem, 3.55vw, 3.25rem);
+            font-weight: 700;
+            line-height: 1.06;
             letter-spacing: 0;
         }
 
         .nik-product-intro {
-            margin: 16px 0 0;
+            max-width: 56ch;
+            margin: -6px 0 0;
             color: rgba(16, 34, 63, .70);
-            font-size: 1.02rem;
-            line-height: 1.65;
+            font-size: 1rem;
+            line-height: 1.62;
             white-space: pre-line;
         }
 
         .nik-product-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 18px;
+            gap: 9px 14px;
+            align-items: center;
+            margin-top: -2px;
         }
 
-        .nik-product-chip,
+        .nik-product-chip {
+            color: rgba(16, 34, 63, .58);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
         .nik-product-status {
             display: inline-flex;
-            min-height: 34px;
+            gap: 7px;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, .66);
-            border-radius: 999px;
-            background:
-                radial-gradient(circle at 22% 0%, rgba(255, 255, 255, .82), transparent 46%),
-                linear-gradient(135deg, rgba(255, 255, 255, .50), rgba(232, 247, 255, .30));
-            color: rgba(16, 34, 63, .72);
+            color: #087443;
             font-size: 13px;
-            font-weight: 800;
-            padding: 7px 12px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .76);
+            font-weight: 900;
         }
 
-        .nik-product-status {
-            color: #087443;
+        .nik-product-status::before {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: currentColor;
+            content: "";
         }
 
         .nik-product-status.is-out {
@@ -337,47 +265,17 @@
             color: #b91c1c;
         }
 
-        .nik-product-barcode {
-            display: grid;
-            gap: 7px;
-            width: min(280px, 100%);
-            margin-top: 18px;
-        }
-
-        .barcode-svg {
-            width: 100%;
-            height: 72px;
-            border: 1px solid rgba(255, 255, 255, .76);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, .66);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .90);
-        }
-
-        .nik-product-barcode-value {
-            color: rgba(16, 34, 63, .54);
-            font-size: .78rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-        }
-
-        .nik-product-buy {
-            display: grid;
-            gap: 18px;
-            border-radius: 24px;
-            padding: 22px;
-        }
-
         .nik-product-price {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            align-items: baseline;
+            align-items: center;
         }
 
         .nik-product-current-price {
             color: var(--liquid-blue-deep);
-            font-size: clamp(2rem, 3vw, 2.8rem);
-            font-weight: 900;
+            font-size: clamp(2rem, 3vw, 2.45rem);
+            font-weight: 750;
             line-height: 1;
         }
 
@@ -396,9 +294,9 @@
             background: linear-gradient(180deg, #2a9dff, #006eea);
             color: #fff;
             font-size: .85rem;
-            font-weight: 900;
+            font-weight: 800;
             padding: 5px 10px;
-            box-shadow: 0 12px 28px rgba(0, 112, 235, .26), inset 0 1px 0 rgba(255, 255, 255, .36);
+            box-shadow: 0 8px 20px rgba(0, 112, 235, .16), inset 0 1px 0 rgba(255, 255, 255, .32);
         }
 
         .nik-product-actions {
@@ -426,17 +324,15 @@
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            font-weight: 900;
+            font-weight: 800;
             padding: 12px 18px;
         }
 
         .nik-product-button {
             min-width: 188px;
-            background:
-                radial-gradient(circle at 24% 0%, rgba(255, 255, 255, .46), transparent 34%),
-                linear-gradient(180deg, #2a9dff, #006eea);
+            background: linear-gradient(180deg, #188fff, #006eea);
             color: #fff;
-            box-shadow: 0 18px 38px rgba(0, 112, 235, .30), inset 0 1px 0 rgba(255, 255, 255, .52);
+            box-shadow: 0 12px 24px rgba(0, 112, 235, .22), inset 0 1px 0 rgba(255, 255, 255, .42);
         }
 
         .nik-product-button:disabled {
@@ -450,11 +346,9 @@
 
         .nik-product-cart-link,
         .nik-product-doc-link {
-            background:
-                radial-gradient(circle at 22% 0%, rgba(255, 255, 255, .82), transparent 46%),
-                linear-gradient(135deg, rgba(255, 255, 255, .52), rgba(232, 247, 255, .30));
+            background: rgba(255, 255, 255, .48);
             color: var(--liquid-blue-deep);
-            box-shadow: 0 12px 30px rgba(39, 99, 159, .12), inset 0 1px 0 rgba(255, 255, 255, .86);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .78);
         }
 
         .nik-product-button:not(:disabled):hover,
@@ -462,7 +356,7 @@
         .nik-product-doc-link:hover,
         .nik-product-quantity-button:hover {
             border-color: rgba(10, 132, 255, .36);
-            box-shadow: 0 18px 38px rgba(0, 112, 235, .18), inset 0 1px 0 rgba(255, 255, 255, .88);
+            box-shadow: 0 12px 26px rgba(0, 112, 235, .14), inset 0 1px 0 rgba(255, 255, 255, .88);
             transform: translateY(-1px);
         }
 
@@ -470,12 +364,10 @@
             display: inline-grid;
             grid-template-columns: 46px minmax(52px, auto) 46px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, .68);
+            border: 1px solid rgba(255, 255, 255, .62);
             border-radius: 16px;
-            background:
-                radial-gradient(circle at 22% 0%, rgba(255, 255, 255, .80), transparent 46%),
-                linear-gradient(135deg, rgba(255, 255, 255, .50), rgba(232, 247, 255, .30));
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82);
+            background: rgba(255, 255, 255, .46);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .76);
         }
 
         .nik-product-quantity-form {
@@ -507,11 +399,9 @@
 
         .nik-product-alert {
             width: fit-content;
-            border: 1px solid rgba(255, 255, 255, .68);
+            border: 1px solid rgba(255, 255, 255, .62);
             border-radius: 16px;
-            background:
-                radial-gradient(circle at 18% 0%, rgba(255, 255, 255, .78), transparent 46%),
-                linear-gradient(135deg, rgba(234, 255, 247, .66), rgba(226, 246, 255, .34));
+            background: rgba(234, 255, 247, .58);
             color: #087443;
             font-weight: 800;
             padding: 11px 14px;
@@ -521,19 +411,14 @@
         .nik-product-specs {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            border-radius: 24px;
-            padding: 18px;
+            gap: 18px 22px;
+            margin-top: 2px;
         }
 
         .nik-product-spec {
             min-width: 0;
-            border-top: 1px solid rgba(255, 255, 255, .56);
-            padding: 12px 4px 2px;
-        }
-
-        .nik-product-spec:nth-child(-n + 2) {
-            border-top: 0;
+            padding-top: 14px;
+            border-top: 1px solid rgba(16, 34, 63, .09);
         }
 
         .nik-product-spec-label {
@@ -545,50 +430,114 @@
         .nik-product-spec-value {
             margin-top: 5px;
             color: var(--liquid-ink);
-            font-weight: 900;
+            font-weight: 800;
             overflow-wrap: anywhere;
+        }
+
+        .nik-product-content-nav {
+            display: flex;
+            gap: 8px;
+            margin: 44px 0 28px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .nik-product-content-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nik-product-content-nav a {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            min-height: 40px;
+            border: 1px solid rgba(16, 34, 63, .08);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .52);
+            color: rgba(16, 34, 63, .68);
+            font-size: 14px;
+            font-weight: 800;
+            padding: 9px 14px;
+            text-decoration: none;
         }
 
         .nik-product-sections {
             display: grid;
-            gap: 18px;
-            margin-top: 24px;
+            gap: 48px;
+            max-width: 980px;
+            margin: 0 auto;
         }
 
         .nik-product-section {
-            border-radius: 24px;
-            padding: 24px;
+            scroll-margin-top: 28px;
         }
 
         .nik-product-section h2 {
-            margin: 0 0 12px;
+            margin: 0 0 14px;
             color: var(--liquid-ink);
-            font-size: 1.25rem;
+            font-size: clamp(1.45rem, 2.4vw, 2rem);
+            font-weight: 760;
             line-height: 1.2;
+        }
+
+        .nik-product-section h3 {
+            margin: 28px 0 8px;
+            color: var(--liquid-ink);
+            font-size: 1.05rem;
+            line-height: 1.25;
         }
 
         .nik-product-section p {
             margin: 0;
             color: rgba(16, 34, 63, .70);
-            line-height: 1.7;
+            font-size: 16px;
+            line-height: 1.78;
             white-space: pre-line;
+        }
+
+        .nik-product-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px 34px;
+            margin-top: 18px;
+        }
+
+        .nik-product-detail {
+            min-width: 0;
+            padding-top: 14px;
+            border-top: 1px solid rgba(16, 34, 63, .10);
+        }
+
+        .nik-product-detail-label {
+            color: rgba(16, 34, 63, .52);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .nik-product-detail-value {
+            margin-top: 5px;
+            color: var(--liquid-ink);
+            font-weight: 800;
+            overflow-wrap: anywhere;
         }
 
         .nik-product-docs {
             display: grid;
             gap: 12px;
+            margin-top: 18px;
         }
 
         .nik-product-doc {
             display: grid;
-            gap: 7px;
-            border-top: 1px solid rgba(255, 255, 255, .58);
-            padding-top: 14px;
-        }
-
-        .nik-product-doc:first-child {
-            border-top: 0;
-            padding-top: 0;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px 18px;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, .66);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .48);
+            box-shadow: 0 14px 34px rgba(20, 82, 148, .08), inset 0 1px 0 rgba(255, 255, 255, .78);
+            padding: 16px;
         }
 
         .nik-product-doc-title {
@@ -607,8 +556,9 @@
             width: fit-content;
             min-height: 38px;
             align-items: center;
+            justify-content: center;
             border-radius: 14px;
-            font-weight: 900;
+            font-weight: 800;
             padding: 9px 13px;
         }
 
@@ -632,21 +582,30 @@
                 grid-template-columns: 1fr;
             }
 
+            .nik-product-info {
+                gap: 18px;
+            }
+
             .nik-product-main-image,
             .nik-product-placeholder {
-                min-height: 440px;
+                height: 440px;
             }
         }
 
         @media (max-width: 640px) {
             .public-header__inner {
-                width: min(100% - 24px, 1180px);
+                width: calc(100% - 24px);
+                max-width: 1180px;
+            }
+
+            .public-header__brand,
+            .public-header__nav {
+                width: auto;
+                min-width: 0;
             }
 
             .public-header__nav {
-                gap: 8px;
                 flex-wrap: wrap;
-                overflow: visible;
                 justify-content: flex-start;
             }
 
@@ -657,11 +616,11 @@
             }
 
             .nik-product-page {
-                padding: 16px 0 calc(28px + env(safe-area-inset-bottom));
+                padding: 16px 0 44px;
             }
 
             .nik-product-shell {
-                width: min(100% - 24px, 1240px);
+                width: min(100% - 24px, 1360px);
             }
 
             .nik-product-breadcrumbs {
@@ -675,10 +634,7 @@
             }
 
             .nik-product-gallery,
-            .nik-product-info,
-            .nik-product-buy,
-            .nik-product-specs,
-            .nik-product-section {
+            .nik-product-info {
                 border-radius: 20px;
             }
 
@@ -686,18 +642,13 @@
                 padding: 14px;
             }
 
-            .nik-product-main-image {
-                display: none;
+            .nik-product-main-image,
+            .nik-product-placeholder {
+                height: min(60vh, 420px);
             }
 
             .nik-product-mobile-gallery {
-                display: grid;
-                grid-auto-columns: 100%;
-                grid-auto-flow: column;
-                gap: 12px;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                scrollbar-width: none;
+                display: none;
             }
 
             .nik-product-mobile-gallery::-webkit-scrollbar {
@@ -707,7 +658,7 @@
             .nik-product-mobile-slide {
                 display: grid;
                 place-items: center;
-                min-height: clamp(300px, 68vw, 410px);
+                min-height: min(60vh, 420px);
                 overflow: hidden;
                 border-radius: 18px;
                 background:
@@ -717,10 +668,11 @@
             }
 
             .nik-product-mobile-slide img {
-                width: 100%;
-                height: 100%;
+                position: absolute;
+                inset: 14px;
+                width: calc(100% - 28px);
+                height: calc(100% - 28px);
                 object-fit: contain;
-                padding: 14px;
                 filter: drop-shadow(0 18px 28px rgba(26, 83, 140, .12));
             }
 
@@ -752,18 +704,12 @@
             }
 
             .nik-product-title {
-                font-size: clamp(2rem, 11vw, 3rem);
+                font-size: clamp(2rem, 9.8vw, 2.75rem);
+                line-height: 1.08;
             }
 
             .nik-product-intro {
                 font-size: .98rem;
-            }
-
-            .nik-product-buy {
-                position: sticky;
-                bottom: 12px;
-                z-index: 10;
-                padding: 16px;
             }
 
             .nik-product-actions {
@@ -783,29 +729,47 @@
 
             .nik-product-specs {
                 grid-template-columns: 1fr;
-                padding: 16px;
-            }
-
-            .nik-product-spec:nth-child(-n + 2) {
-                border-top: 1px solid rgba(255, 255, 255, .56);
-            }
-
-            .nik-product-spec:first-child {
-                border-top: 0;
+                gap: 12px;
             }
 
             .nik-product-section {
-                padding: 20px;
+                scroll-margin-top: 18px;
+            }
+
+            .nik-product-content-nav {
+                flex-wrap: wrap;
+                margin: 30px 0 28px;
+                overflow: visible;
+            }
+
+            .nik-product-sections {
+                gap: 38px;
+            }
+
+            .nik-product-section p {
+                font-size: 15px;
+            }
+
+            .nik-product-details-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .nik-product-doc {
+                grid-template-columns: 1fr;
+            }
+
+            .nik-product-doc-link {
+                width: 100%;
             }
         }
 
         @media (max-width: 360px) {
             .nik-product-shell {
-                width: min(100% - 16px, 1240px);
+                width: min(100% - 16px, 1360px);
             }
 
-            .nik-product-info,
-            .nik-product-section {
+            .nik-product-info {
                 padding: 18px;
             }
 
@@ -841,8 +805,6 @@
             $productVolume = \App\Support\ProductDisplayFormatter::formatVolume($product->volume_value, $product->volume_unit);
             $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
             $productShelfLife = \App\Support\ProductDisplayFormatter::formatShelfLife($product->shelf_life_value, $product->shelf_life_unit);
-            $barcodeSvg = \App\Support\ProductDisplayFormatter::formatBarcodeSvg($product->barcode);
-            $primaryPrice = $hasDiscount ? $product->discounted_price : $product->price;
         @endphp
 
         <div class="nik-product-shell">
@@ -925,39 +887,30 @@
                     @endif
                 </div>
 
-                <div class="nik-product-summary">
-                    <section class="nik-product-info nik-product-glass" aria-label="Информация о товаре">
-                        @if ($product->brand)
-                            <p class="nik-product-brand">{{ $product->brand->name }}</p>
+                <section class="nik-product-info nik-product-glass" aria-label="Информация о товаре">
+                    @if ($product->brand)
+                        <p class="nik-product-brand">{{ $product->brand->name }}</p>
+                    @endif
+
+                    <h1 class="nik-product-title">{{ $product->name }}</h1>
+
+                    @if ($product->short_description)
+                        <p class="nik-product-intro">{{ $product->short_description }}</p>
+                    @endif
+
+                    <div class="nik-product-meta">
+                        @if ($product->article)
+                            <span class="nik-product-chip">Артикул {{ $product->article }}</span>
                         @endif
 
-                        <h1 class="nik-product-title">{{ $product->name }}</h1>
-
-                        @if ($product->short_description)
-                            <p class="nik-product-intro">{{ $product->short_description }}</p>
+                        @if ($product->barcode)
+                            <span class="nik-product-chip">Штрихкод {{ $product->barcode }}</span>
                         @endif
 
-                        <div class="nik-product-meta">
-                            @if ($product->article)
-                                <span class="nik-product-chip">Артикул: {{ $product->article }}</span>
-                            @endif
+                        <span class="nik-product-status {{ $availabilityClass }}">{{ $availabilityLabel }}</span>
+                    </div>
 
-                            @if ($directionLabel)
-                                <span class="nik-product-chip">{{ $directionLabel }}</span>
-                            @endif
-
-                            <span class="nik-product-status {{ $availabilityClass }}">{{ $availabilityLabel }}</span>
-                        </div>
-
-                        @if ($barcodeSvg)
-                            <div class="nik-product-barcode">
-                                {!! $barcodeSvg !!}
-                                <div class="nik-product-barcode-value">{{ $product->barcode }}</div>
-                            </div>
-                        @endif
-                    </section>
-
-                    <section class="nik-product-buy nik-product-glass" aria-label="Покупка товара">
+                    <div>
                         <div class="nik-product-price">
                             @if ($hasDiscount)
                                 <span class="nik-product-current-price">{{ number_format((float) $product->discounted_price, 2, ',', ' ') }} ₽</span>
@@ -970,68 +923,63 @@
                                 <span class="nik-product-discount">Скидка {{ number_format((float) $product->discount_percent, 2, ',', ' ') }}%</span>
                             @endif
                         </div>
+                    </div>
 
-                        @if (session('success'))
-                            <div class="nik-product-alert">{{ session('success') }}</div>
-                        @endif
+                    @if (session('success'))
+                        <div class="nik-product-alert">{{ session('success') }}</div>
+                    @endif
 
-                        <div class="nik-product-actions">
-                            @if ($canAddToCart)
-                                @if ($cartProductItem)
-                                    <div class="nik-product-quantity" aria-label="Количество товара в корзине">
-                                        @if ($cartProductQuantity > 1)
-                                            <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
-                                                <button class="nik-product-quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
-                                            </form>
-                                        @else
-                                            <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="nik-product-quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
-                                            </form>
-                                        @endif
-
-                                        <span class="nik-product-quantity-value">{{ $cartProductQuantity }}</span>
-
+                    <div class="nik-product-actions">
+                        @if ($canAddToCart)
+                            @if ($cartProductItem)
+                                <div class="nik-product-quantity" aria-label="Количество товара в корзине">
+                                    @if ($cartProductQuantity > 1)
                                         <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
-                                            <button class="nik-product-quantity-button" type="submit" aria-label="Увеличить количество">+</button>
+                                            <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
+                                            <button class="nik-product-quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
                                         </form>
-                                    </div>
-                                @else
-                                    <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                                    @else
+                                        <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="nik-product-quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
+                                        </form>
+                                    @endif
+
+                                    <span class="nik-product-quantity-value">{{ $cartProductQuantity }}</span>
+
+                                    <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
                                         @csrf
-
-                                        <button class="nik-product-button" type="submit">Добавить в корзину</button>
+                                        @method('PATCH')
+                                        <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
+                                        <button class="nik-product-quantity-button" type="submit" aria-label="Увеличить количество">+</button>
                                     </form>
-                                @endif
+                                </div>
                             @else
-                                <button class="nik-product-button" type="button" disabled>
-                                    {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}
-                                </button>
+                                <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
+                                    @csrf
+
+                                    <button class="nik-product-button" type="submit">Добавить в корзину</button>
+                                </form>
                             @endif
+                        @else
+                            <button class="nik-product-button" type="button" disabled>
+                                {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}
+                            </button>
+                        @endif
 
-                            @if ($cartProductQuantity > 0)
-                                <a class="nik-product-cart-link" href="{{ route('cart.index') }}">Перейти в корзину</a>
-                            @endif
-                        </div>
-                    </section>
+                        @if ($cartProductQuantity > 0)
+                            <a class="nik-product-cart-link" href="{{ route('cart.index') }}">Перейти в корзину</a>
+                        @endif
+                    </div>
 
-                    <section class="nik-product-specs nik-product-glass" aria-label="Характеристики товара">
-                        <div class="nik-product-spec">
-                            <div class="nik-product-spec-label">Статус наличия</div>
-                            <div class="nik-product-spec-value">{{ $availabilityLabel }}</div>
-                        </div>
-
-                        @if ($product->brand)
+                    <div class="nik-product-specs" aria-label="Ключевые характеристики">
+                        @if ($productVolume)
                             <div class="nik-product-spec">
-                                <div class="nik-product-spec-label">Бренд</div>
-                                <div class="nik-product-spec-value">{{ $product->brand->name }}</div>
+                                <div class="nik-product-spec-label">Объем</div>
+                                <div class="nik-product-spec-value">{{ $productVolume }}</div>
                             </div>
                         @endif
 
@@ -1042,31 +990,10 @@
                             </div>
                         @endif
 
-                        @if ($product->productType)
-                            <div class="nik-product-spec">
-                                <div class="nik-product-spec-label">Тип товара</div>
-                                <div class="nik-product-spec-value">{{ $product->productType->name }}</div>
-                            </div>
-                        @endif
-
                         @if ($product->productLine)
                             <div class="nik-product-spec">
                                 <div class="nik-product-spec-label">Линейка</div>
                                 <div class="nik-product-spec-value">{{ $product->productLine->name }}</div>
-                            </div>
-                        @endif
-
-                        @if ($productVolume)
-                            <div class="nik-product-spec">
-                                <div class="nik-product-spec-label">Объем</div>
-                                <div class="nik-product-spec-value">{{ $productVolume }}</div>
-                            </div>
-                        @endif
-
-                        @if ($productWeight)
-                            <div class="nik-product-spec">
-                                <div class="nik-product-spec-label">Вес</div>
-                                <div class="nik-product-spec-value">{{ $productWeight }}</div>
                             </div>
                         @endif
 
@@ -1076,55 +1003,152 @@
                                 <div class="nik-product-spec-value">{{ $productShelfLife }}</div>
                             </div>
                         @endif
-                    </section>
-                </div>
+                    </div>
+                </section>
             </section>
 
-            <div class="nik-product-sections">
-                @if ($product->description)
-                    <section class="nik-product-section nik-product-glass">
-                        <h2>Описание</h2>
-                        <p>{{ $product->description }}</p>
-                    </section>
+            <nav class="nik-product-content-nav" aria-label="Разделы товара">
+                @if ($product->description || $product->composition)
+                    <a href="#description">Описание</a>
                 @endif
 
-                @if ($product->composition)
-                    <section class="nik-product-section nik-product-glass">
-                        <h2>Состав</h2>
-                        <p>{{ $product->composition }}</p>
-                    </section>
-                @endif
+                <a href="#characteristics">Характеристики</a>
 
                 @if ($product->usage_method)
-                    <section class="nik-product-section nik-product-glass">
+                    <a href="#usage">Применение</a>
+                @endif
+
+                @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
+                    <a href="#safety">Безопасность</a>
+                @endif
+
+                @if ($product->certificates->isNotEmpty() || $product->instruction_file_path)
+                    <a href="#documents">Документы</a>
+                @endif
+            </nav>
+
+            <div class="nik-product-sections">
+                @if ($product->description || $product->composition)
+                    <section id="description" class="nik-product-section">
+                        <h2>Описание</h2>
+
+                        @if ($product->description)
+                            <p>{{ $product->description }}</p>
+                        @endif
+
+                        @if ($product->composition)
+                            <h3>Состав</h3>
+                            <p>{{ $product->composition }}</p>
+                        @endif
+                    </section>
+                @endif
+
+                <section id="characteristics" class="nik-product-section">
+                    <h2>Характеристики</h2>
+
+                    <div class="nik-product-details-grid">
+                        @if ($product->article)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Артикул</div>
+                                <div class="nik-product-detail-value">{{ $product->article }}</div>
+                            </div>
+                        @endif
+
+                        @if ($product->barcode)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Штрихкод</div>
+                                <div class="nik-product-detail-value">{{ $product->barcode }}</div>
+                            </div>
+                        @endif
+
+                        @if ($product->brand)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Бренд</div>
+                                <div class="nik-product-detail-value">{{ $product->brand->name }}</div>
+                            </div>
+                        @endif
+
+                        @if ($product->category)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Категория</div>
+                                <div class="nik-product-detail-value">{{ $product->category->name }}</div>
+                            </div>
+                        @endif
+
+                        @if ($directionLabel)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Направление</div>
+                                <div class="nik-product-detail-value">{{ $directionLabel }}</div>
+                            </div>
+                        @endif
+
+                        @if ($product->productType)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Тип товара</div>
+                                <div class="nik-product-detail-value">{{ $product->productType->name }}</div>
+                            </div>
+                        @endif
+
+                        @if ($product->productLine)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Линейка</div>
+                                <div class="nik-product-detail-value">{{ $product->productLine->name }}</div>
+                            </div>
+                        @endif
+
+                        @if ($productVolume)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Объем</div>
+                                <div class="nik-product-detail-value">{{ $productVolume }}</div>
+                            </div>
+                        @endif
+
+                        @if ($productWeight)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Вес</div>
+                                <div class="nik-product-detail-value">{{ $productWeight }}</div>
+                            </div>
+                        @endif
+
+                        @if ($productShelfLife)
+                            <div class="nik-product-detail">
+                                <div class="nik-product-detail-label">Срок годности</div>
+                                <div class="nik-product-detail-value">{{ $productShelfLife }}</div>
+                            </div>
+                        @endif
+                    </div>
+                </section>
+
+                @if ($product->usage_method)
+                    <section id="usage" class="nik-product-section">
                         <h2>Способ применения</h2>
                         <p>{{ $product->usage_method }}</p>
                     </section>
                 @endif
 
-                @if ($product->precautions)
-                    <section class="nik-product-section nik-product-glass">
-                        <h2>Меры предосторожности</h2>
-                        <p>{{ $product->precautions }}</p>
-                    </section>
-                @endif
+                @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
+                    <section id="safety" class="nik-product-section">
+                        <h2>Безопасность и хранение</h2>
 
-                @if ($product->disposal_method)
-                    <section class="nik-product-section nik-product-glass">
-                        <h2>Утилизация</h2>
-                        <p>{{ $product->disposal_method }}</p>
-                    </section>
-                @endif
+                        @if ($product->precautions)
+                            <h3>Меры предосторожности</h3>
+                            <p>{{ $product->precautions }}</p>
+                        @endif
 
-                @if ($product->storage_conditions)
-                    <section class="nik-product-section nik-product-glass">
-                        <h2>Условия хранения</h2>
-                        <p>{{ $product->storage_conditions }}</p>
+                        @if ($product->storage_conditions)
+                            <h3>Условия хранения</h3>
+                            <p>{{ $product->storage_conditions }}</p>
+                        @endif
+
+                        @if ($product->disposal_method)
+                            <h3>Утилизация</h3>
+                            <p>{{ $product->disposal_method }}</p>
+                        @endif
                     </section>
                 @endif
 
                 @if ($product->certificates->isNotEmpty() || $product->instruction_file_path)
-                    <section class="nik-product-section nik-product-glass">
+                    <section id="documents" class="nik-product-section">
                         <h2>Документация</h2>
 
                         <div class="nik-product-docs">

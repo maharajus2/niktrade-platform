@@ -176,7 +176,8 @@
         }
 
         .nik-product-thumb:hover,
-        .nik-product-thumb:focus-visible {
+        .nik-product-thumb:focus-visible,
+        .nik-product-thumb.is-active {
             border-color: rgba(10, 132, 255, .42);
             outline: 0;
             transform: translateY(-1px);
@@ -190,6 +191,40 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .nik-product-image-prompt {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 12px;
+            align-items: center;
+            margin-top: 12px;
+            color: rgba(16, 34, 63, .64);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .nik-product-image-prompt[hidden] {
+            display: none;
+        }
+
+        .nik-product-image-prompt a,
+        .nik-product-image-prompt button {
+            display: inline-flex;
+            min-height: 34px;
+            align-items: center;
+            border: 1px solid rgba(16, 34, 63, .08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .56);
+            color: var(--liquid-blue-deep);
+            font: inherit;
+            font-weight: 800;
+            padding: 7px 10px;
+            text-decoration: none;
+        }
+
+        .nik-product-image-prompt button {
+            cursor: pointer;
         }
 
         .nik-product-info {
@@ -699,6 +734,16 @@
                 border-radius: 14px;
             }
 
+            .nik-product-image-prompt {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .nik-product-image-prompt a,
+            .nik-product-image-prompt button {
+                justify-content: center;
+            }
+
             .nik-product-info {
                 padding: 22px;
             }
@@ -836,10 +881,12 @@
                             target="_blank"
                             rel="noopener"
                             aria-label="Открыть изображение товара"
+                            data-product-main-link
                         >
                             <img
                                 src="{{ Storage::disk('public')->url($mainImage->file_path) }}"
                                 alt="{{ $mainImage->alt ?: $product->name }}"
+                                data-product-main-image
                             >
                         </a>
                     @else
@@ -870,11 +917,15 @@
                         <div class="nik-product-thumbs" aria-label="Миниатюры товара">
                             @foreach ($galleryImages as $image)
                                 <a
-                                    class="nik-product-thumb"
+                                    class="nik-product-thumb @if ($loop->first) is-active @endif"
                                     href="{{ Storage::disk('public')->url($image->file_path) }}"
                                     target="_blank"
                                     rel="noopener"
                                     aria-label="Открыть фотографию товара"
+                                    data-product-thumb
+                                    data-image-src="{{ Storage::disk('public')->url($image->file_path) }}"
+                                    data-image-alt="{{ $image->alt ?: $product->name }}"
+                                    @if ($loop->first) aria-current="true" @endif
                                 >
                                     <img
                                         src="{{ Storage::disk('public')->url($image->file_path) }}"
@@ -883,6 +934,14 @@
                                     >
                                 </a>
                             @endforeach
+                        </div>
+
+                        <div class="nik-product-image-prompt" data-product-image-prompt hidden>
+                            <span>Открыть выбранное изображение на отдельной странице?</span>
+                            <a href="{{ Storage::disk('public')->url($mainImage?->file_path ?? $galleryImages->first()?->file_path) }}" target="_blank" rel="noopener" data-product-image-open>
+                                Открыть
+                            </a>
+                            <button type="button" data-product-image-cancel>Закрыть</button>
                         </div>
                     @endif
                 </div>
@@ -1205,3 +1264,7 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+    @vite('resources/js/product-gallery.js')
+@endpush

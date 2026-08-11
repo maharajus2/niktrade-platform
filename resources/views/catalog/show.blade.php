@@ -150,13 +150,13 @@
             position: absolute;
             z-index: 2;
             display: none;
-            width: 168px;
-            height: 168px;
+            width: 336px;
+            height: 336px;
             border: 1px solid rgba(255, 255, 255, .86);
             border-radius: 999px;
-            background-color: rgba(255, 255, 255, .82);
+            background-color: #ffffff;
             background-repeat: no-repeat;
-            box-shadow: 0 18px 44px rgba(20, 82, 148, .18), inset 0 1px 0 rgba(255, 255, 255, .95);
+            box-shadow: 0 18px 44px rgba(20, 82, 148, .14);
             pointer-events: none;
             transform: translate(-50%, -50%);
         }

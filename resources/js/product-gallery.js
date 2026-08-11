@@ -68,14 +68,44 @@ const setupProductGallery = () => {
     if (zoomLens && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         const zoomScale = 2.25;
 
-        const updateZoom = (event) => {
+        const getContainedImageRect = () => {
             const imageRect = mainImage.getBoundingClientRect();
+            const naturalRatio = mainImage.naturalWidth / mainImage.naturalHeight;
+            const boxRatio = imageRect.width / imageRect.height;
+
+            if (!naturalRatio || !boxRatio) {
+                return imageRect;
+            }
+
+            if (boxRatio > naturalRatio) {
+                const width = imageRect.height * naturalRatio;
+
+                return {
+                    left: imageRect.left + (imageRect.width - width) / 2,
+                    top: imageRect.top,
+                    width,
+                    height: imageRect.height,
+                };
+            }
+
+            const height = imageRect.width / naturalRatio;
+
+            return {
+                left: imageRect.left,
+                top: imageRect.top + (imageRect.height - height) / 2,
+                width: imageRect.width,
+                height,
+            };
+        };
+
+        const updateZoom = (event) => {
+            const imageRect = getContainedImageRect();
             const linkRect = mainLink.getBoundingClientRect();
             const x = Math.min(Math.max(event.clientX - imageRect.left, 0), imageRect.width);
             const y = Math.min(Math.max(event.clientY - imageRect.top, 0), imageRect.height);
             const lensX = event.clientX - linkRect.left;
             const lensY = event.clientY - linkRect.top;
-            const lensRadius = zoomLens.offsetWidth / 2 || 84;
+            const lensRadius = zoomLens.offsetWidth / 2 || 168;
 
             zoomLens.style.left = `${lensX}px`;
             zoomLens.style.top = `${lensY}px`;

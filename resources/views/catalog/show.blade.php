@@ -146,6 +146,35 @@
             filter: drop-shadow(0 18px 26px rgba(26, 83, 140, .10));
         }
 
+        .nik-product-zoom-lens {
+            position: absolute;
+            z-index: 2;
+            display: none;
+            width: 168px;
+            height: 168px;
+            border: 1px solid rgba(255, 255, 255, .86);
+            border-radius: 999px;
+            background-color: rgba(255, 255, 255, .82);
+            background-repeat: no-repeat;
+            box-shadow: 0 18px 44px rgba(20, 82, 148, .18), inset 0 1px 0 rgba(255, 255, 255, .95);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+
+        .nik-product-main-image.is-zooming .nik-product-zoom-lens {
+            display: block;
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            .nik-product-zoom-lens {
+                display: none;
+            }
+
+            .nik-product-main-image.is-zooming .nik-product-zoom-lens {
+                display: none;
+            }
+        }
+
         .nik-product-placeholder {
             color: rgba(16, 34, 63, .48);
             font-weight: 800;
@@ -888,6 +917,7 @@
                                 alt="{{ $mainImage->alt ?: $product->name }}"
                                 data-product-main-image
                             >
+                            <span class="nik-product-zoom-lens" data-product-zoom-lens aria-hidden="true"></span>
                         </a>
                     @else
                         <div class="nik-product-placeholder">Нет изображения</div>

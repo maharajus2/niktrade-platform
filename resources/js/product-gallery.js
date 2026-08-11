@@ -7,6 +7,7 @@ const setupProductGallery = () => {
 
     const mainLink = gallery.querySelector('[data-product-main-link]');
     const mainImage = gallery.querySelector('[data-product-main-image]');
+    const zoomLens = gallery.querySelector('[data-product-zoom-lens]');
     const thumbs = [...gallery.querySelectorAll('[data-product-thumb]')];
     const prompt = gallery.querySelector('[data-product-image-prompt]');
     const openLink = gallery.querySelector('[data-product-image-open]');
@@ -23,6 +24,10 @@ const setupProductGallery = () => {
         mainLink.href = imageSrc;
         mainImage.src = imageSrc;
         mainImage.alt = imageAlt;
+
+        if (zoomLens) {
+            zoomLens.style.backgroundImage = `url("${imageSrc}")`;
+        }
 
         thumbs.forEach((item) => {
             const isActive = item === thumb;
@@ -59,6 +64,35 @@ const setupProductGallery = () => {
             prompt.hidden = true;
         }
     });
+
+    if (zoomLens && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const zoomScale = 2.25;
+
+        const updateZoom = (event) => {
+            const imageRect = mainImage.getBoundingClientRect();
+            const linkRect = mainLink.getBoundingClientRect();
+            const x = Math.min(Math.max(event.clientX - imageRect.left, 0), imageRect.width);
+            const y = Math.min(Math.max(event.clientY - imageRect.top, 0), imageRect.height);
+            const lensX = event.clientX - linkRect.left;
+            const lensY = event.clientY - linkRect.top;
+            const lensRadius = zoomLens.offsetWidth / 2 || 84;
+
+            zoomLens.style.left = `${lensX}px`;
+            zoomLens.style.top = `${lensY}px`;
+            zoomLens.style.backgroundImage = `url("${mainImage.currentSrc || mainImage.src}")`;
+            zoomLens.style.backgroundSize = `${imageRect.width * zoomScale}px ${imageRect.height * zoomScale}px`;
+            zoomLens.style.backgroundPosition = `${lensRadius - x * zoomScale}px ${lensRadius - y * zoomScale}px`;
+        };
+
+        mainLink.addEventListener('mouseenter', (event) => {
+            mainLink.classList.add('is-zooming');
+            updateZoom(event);
+        });
+        mainLink.addEventListener('mousemove', updateZoom);
+        mainLink.addEventListener('mouseleave', () => {
+            mainLink.classList.remove('is-zooming');
+        });
+    }
 };
 
 if (document.readyState === 'loading') {

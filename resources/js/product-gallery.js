@@ -125,8 +125,60 @@ const setupProductGallery = () => {
     }
 };
 
+const setupProductTabs = () => {
+    const tabs = [...document.querySelectorAll('[data-product-tab]')];
+    const panels = [...document.querySelectorAll('[data-product-tab-panel]')];
+
+    if (tabs.length === 0 || panels.length === 0) {
+        return;
+    }
+
+    const activateTab = (tab) => {
+        const target = tab.dataset.productTab;
+
+        tabs.forEach((item) => {
+            const isActive = item === tab;
+
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', String(isActive));
+            item.tabIndex = isActive ? 0 : -1;
+        });
+
+        panels.forEach((panel) => {
+            panel.hidden = panel.dataset.productTabPanel !== target;
+        });
+    };
+
+    tabs.forEach((tab, index) => {
+        tab.tabIndex = tab.classList.contains('is-active') ? 0 : -1;
+
+        tab.addEventListener('click', () => activateTab(tab));
+        tab.addEventListener('keydown', (event) => {
+            if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const nextIndex = {
+                ArrowLeft: (index - 1 + tabs.length) % tabs.length,
+                ArrowRight: (index + 1) % tabs.length,
+                Home: 0,
+                End: tabs.length - 1,
+            }[event.key];
+
+            tabs[nextIndex].focus();
+            activateTab(tabs[nextIndex]);
+        });
+    });
+};
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupProductGallery);
+    document.addEventListener('DOMContentLoaded', () => {
+        setupProductGallery();
+        setupProductTabs();
+    });
 } else {
     setupProductGallery();
+    setupProductTabs();
 }

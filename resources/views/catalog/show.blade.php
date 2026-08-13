@@ -498,7 +498,7 @@
             overflow-wrap: anywhere;
         }
 
-        .nik-product-content-nav {
+        .nik-product-tabs {
             display: flex;
             gap: 8px;
             margin: 44px 0 28px;
@@ -507,11 +507,11 @@
             scrollbar-width: none;
         }
 
-        .nik-product-content-nav::-webkit-scrollbar {
+        .nik-product-tabs::-webkit-scrollbar {
             display: none;
         }
 
-        .nik-product-content-nav a {
+        .nik-product-tab {
             display: inline-flex;
             flex: 0 0 auto;
             align-items: center;
@@ -520,17 +520,39 @@
             border-radius: 999px;
             background: rgba(255, 255, 255, .52);
             color: rgba(16, 34, 63, .68);
+            cursor: pointer;
+            font: inherit;
             font-size: 14px;
             font-weight: 800;
             padding: 9px 14px;
-            text-decoration: none;
         }
 
-        .nik-product-sections {
+        .nik-product-tab.is-active,
+        .nik-product-tab[aria-selected="true"] {
+            border-color: rgba(10, 132, 255, .28);
+            background: rgba(255, 255, 255, .78);
+            color: var(--liquid-blue-deep);
+            box-shadow: 0 10px 26px rgba(20, 82, 148, .08), inset 0 1px 0 rgba(255, 255, 255, .82);
+        }
+
+        .nik-product-tab:focus-visible {
+            outline: 2px solid rgba(10, 132, 255, .42);
+            outline-offset: 2px;
+        }
+
+        .nik-product-tab-panels {
             display: grid;
-            gap: 48px;
             max-width: 980px;
             margin: 0 auto;
+        }
+
+        .nik-product-tab-panel[hidden] {
+            display: none;
+        }
+
+        .nik-product-tab-panel {
+            display: grid;
+            gap: 48px;
         }
 
         .nik-product-section {
@@ -810,13 +832,13 @@
                 scroll-margin-top: 18px;
             }
 
-            .nik-product-content-nav {
+            .nik-product-tabs {
                 flex-wrap: wrap;
                 margin: 30px 0 28px;
                 overflow: visible;
             }
 
-            .nik-product-sections {
+            .nik-product-tab-panel {
                 gap: 38px;
             }
 
@@ -1096,33 +1118,57 @@
                 </section>
             </section>
 
-            <nav class="nik-product-content-nav" aria-label="Разделы товара">
-                @if ($product->description || $product->composition)
-                    <a href="#description">Описание</a>
-                @endif
+            <div class="nik-product-tabs" role="tablist" aria-label="Информация о товаре">
+                <button
+                    id="product-tab-main"
+                    class="nik-product-tab is-active"
+                    type="button"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="product-panel-main"
+                    data-product-tab="main"
+                >
+                    Основная информация
+                </button>
+                <button
+                    id="product-tab-details"
+                    class="nik-product-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="product-panel-details"
+                    data-product-tab="details"
+                >
+                    Подробная информация
+                </button>
+                <button
+                    id="product-tab-documents"
+                    class="nik-product-tab"
+                    type="button"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="product-panel-documents"
+                    data-product-tab="documents"
+                >
+                    Документация
+                </button>
+            </div>
 
-                <a href="#characteristics">Характеристики</a>
-
-                @if ($product->usage_method)
-                    <a href="#usage">Применение</a>
-                @endif
-
-                @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
-                    <a href="#safety">Безопасность</a>
-                @endif
-
-                @if ($product->certificates->isNotEmpty() || $product->instruction_file_path)
-                    <a href="#documents">Документы</a>
-                @endif
-            </nav>
-
-            <div class="nik-product-sections">
-                @if ($product->description || $product->composition)
-                    <section id="description" class="nik-product-section">
+            <div class="nik-product-tab-panels">
+                <div
+                    id="product-panel-main"
+                    class="nik-product-tab-panel"
+                    role="tabpanel"
+                    aria-labelledby="product-tab-main"
+                    data-product-tab-panel="main"
+                >
+                    <section class="nik-product-section">
                         <h2>Описание</h2>
 
                         @if ($product->description)
                             <p>{{ $product->description }}</p>
+                        @else
+                            <p>Описание пока не заполнено.</p>
                         @endif
 
                         @if ($product->composition)
@@ -1130,166 +1176,186 @@
                             <p>{{ $product->composition }}</p>
                         @endif
                     </section>
-                @endif
+                </div>
 
-                <section id="characteristics" class="nik-product-section">
-                    <h2>Характеристики</h2>
+                <div
+                    id="product-panel-details"
+                    class="nik-product-tab-panel"
+                    role="tabpanel"
+                    aria-labelledby="product-tab-details"
+                    data-product-tab-panel="details"
+                    hidden
+                >
+                    <section class="nik-product-section">
+                        <h2>Характеристики</h2>
 
-                    <div class="nik-product-details-grid">
-                        @if ($product->article)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Артикул</div>
-                                <div class="nik-product-detail-value">{{ $product->article }}</div>
-                            </div>
-                        @endif
+                        <div class="nik-product-details-grid">
+                            @if ($product->article)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Артикул</div>
+                                    <div class="nik-product-detail-value">{{ $product->article }}</div>
+                                </div>
+                            @endif
 
-                        @if ($product->barcode)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Штрихкод</div>
-                                <div class="nik-product-detail-value">{{ $product->barcode }}</div>
-                            </div>
-                        @endif
+                            @if ($product->barcode)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Штрихкод</div>
+                                    <div class="nik-product-detail-value">{{ $product->barcode }}</div>
+                                </div>
+                            @endif
 
-                        @if ($product->brand)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Бренд</div>
-                                <div class="nik-product-detail-value">{{ $product->brand->name }}</div>
-                            </div>
-                        @endif
+                            @if ($product->brand)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Бренд</div>
+                                    <div class="nik-product-detail-value">{{ $product->brand->name }}</div>
+                                </div>
+                            @endif
 
-                        @if ($product->category)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Категория</div>
-                                <div class="nik-product-detail-value">{{ $product->category->name }}</div>
-                            </div>
-                        @endif
+                            @if ($product->category)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Категория</div>
+                                    <div class="nik-product-detail-value">{{ $product->category->name }}</div>
+                                </div>
+                            @endif
 
-                        @if ($directionLabel)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Направление</div>
-                                <div class="nik-product-detail-value">{{ $directionLabel }}</div>
-                            </div>
-                        @endif
+                            @if ($directionLabel)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Направление</div>
+                                    <div class="nik-product-detail-value">{{ $directionLabel }}</div>
+                                </div>
+                            @endif
 
-                        @if ($product->productType)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Тип товара</div>
-                                <div class="nik-product-detail-value">{{ $product->productType->name }}</div>
-                            </div>
-                        @endif
+                            @if ($product->productType)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Тип товара</div>
+                                    <div class="nik-product-detail-value">{{ $product->productType->name }}</div>
+                                </div>
+                            @endif
 
-                        @if ($product->productLine)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Линейка</div>
-                                <div class="nik-product-detail-value">{{ $product->productLine->name }}</div>
-                            </div>
-                        @endif
+                            @if ($product->productLine)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Линейка</div>
+                                    <div class="nik-product-detail-value">{{ $product->productLine->name }}</div>
+                                </div>
+                            @endif
 
-                        @if ($productVolume)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Объем</div>
-                                <div class="nik-product-detail-value">{{ $productVolume }}</div>
-                            </div>
-                        @endif
+                            @if ($productVolume)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Объем</div>
+                                    <div class="nik-product-detail-value">{{ $productVolume }}</div>
+                                </div>
+                            @endif
 
-                        @if ($productWeight)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Вес</div>
-                                <div class="nik-product-detail-value">{{ $productWeight }}</div>
-                            </div>
-                        @endif
+                            @if ($productWeight)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Вес</div>
+                                    <div class="nik-product-detail-value">{{ $productWeight }}</div>
+                                </div>
+                            @endif
 
-                        @if ($productShelfLife)
-                            <div class="nik-product-detail">
-                                <div class="nik-product-detail-label">Срок годности</div>
-                                <div class="nik-product-detail-value">{{ $productShelfLife }}</div>
-                            </div>
-                        @endif
-                    </div>
-                </section>
-
-                @if ($product->usage_method)
-                    <section id="usage" class="nik-product-section">
-                        <h2>Способ применения</h2>
-                        <p>{{ $product->usage_method }}</p>
-                    </section>
-                @endif
-
-                @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
-                    <section id="safety" class="nik-product-section">
-                        <h2>Безопасность и хранение</h2>
-
-                        @if ($product->precautions)
-                            <h3>Меры предосторожности</h3>
-                            <p>{{ $product->precautions }}</p>
-                        @endif
-
-                        @if ($product->storage_conditions)
-                            <h3>Условия хранения</h3>
-                            <p>{{ $product->storage_conditions }}</p>
-                        @endif
-
-                        @if ($product->disposal_method)
-                            <h3>Утилизация</h3>
-                            <p>{{ $product->disposal_method }}</p>
-                        @endif
-                    </section>
-                @endif
-
-                @if ($product->certificates->isNotEmpty() || $product->instruction_file_path)
-                    <section id="documents" class="nik-product-section">
-                        <h2>Документация</h2>
-
-                        <div class="nik-product-docs">
-                            @foreach ($product->certificates as $certificate)
-                                @php
-                                    $expiresAt = $certificate->expires_at;
-                                    $isExpired = $expiresAt && $expiresAt->isPast();
-                                    $isSoon = $expiresAt && ! $isExpired && $expiresAt->lte(now()->addDays(30));
-                                    $status = $isExpired ? 'просрочен' : ($isSoon ? 'скоро истекает' : 'действует');
-                                    $statusClass = $isExpired ? 'nik-product-status-expired' : ($isSoon ? 'nik-product-status-soon' : 'nik-product-status-active');
-                                @endphp
-
-                                <article class="nik-product-doc">
-                                    <div class="nik-product-doc-title">{{ $certificate->name }}</div>
-                                    <div class="nik-product-doc-meta">
-                                        @if ($certificate->certificate_type)
-                                            {{ $certificate->certificate_type }}
-                                        @endif
-
-                                        @if ($certificate->number)
-                                            № {{ $certificate->number }}
-                                        @endif
-                                    </div>
-                                    <div class="nik-product-doc-meta">
-                                        Статус: <span class="{{ $statusClass }}">{{ $status }}</span>
-
-                                        @if ($certificate->is_permanent)
-                                            · бессрочно
-                                        @elseif ($expiresAt)
-                                            · до {{ $expiresAt->format('d.m.Y') }}
-                                        @endif
-                                    </div>
-
-                                    @if ($certificate->file_path)
-                                        <a class="nik-product-doc-link" href="{{ Storage::disk('public')->url($certificate->file_path) }}" target="_blank" rel="noopener">
-                                            Открыть PDF
-                                        </a>
-                                    @endif
-                                </article>
-                            @endforeach
-
-                            @if ($product->instruction_file_path)
-                                <article class="nik-product-doc">
-                                    <div class="nik-product-doc-title">Инструкция по применению</div>
-                                    <a class="nik-product-doc-link" href="{{ Storage::disk('public')->url($product->instruction_file_path) }}" target="_blank" rel="noopener">
-                                        Открыть PDF
-                                    </a>
-                                </article>
+                            @if ($productShelfLife)
+                                <div class="nik-product-detail">
+                                    <div class="nik-product-detail-label">Срок годности</div>
+                                    <div class="nik-product-detail-value">{{ $productShelfLife }}</div>
+                                </div>
                             @endif
                         </div>
                     </section>
-                @endif
+
+                    @if ($product->usage_method)
+                        <section class="nik-product-section">
+                            <h2>Способ применения</h2>
+                            <p>{{ $product->usage_method }}</p>
+                        </section>
+                    @endif
+
+                    @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
+                        <section class="nik-product-section">
+                            <h2>Безопасность и хранение</h2>
+
+                            @if ($product->precautions)
+                                <h3>Меры предосторожности</h3>
+                                <p>{{ $product->precautions }}</p>
+                            @endif
+
+                            @if ($product->storage_conditions)
+                                <h3>Условия хранения</h3>
+                                <p>{{ $product->storage_conditions }}</p>
+                            @endif
+
+                            @if ($product->disposal_method)
+                                <h3>Утилизация</h3>
+                                <p>{{ $product->disposal_method }}</p>
+                            @endif
+                        </section>
+                    @endif
+                </div>
+
+                <div
+                    id="product-panel-documents"
+                    class="nik-product-tab-panel"
+                    role="tabpanel"
+                    aria-labelledby="product-tab-documents"
+                    data-product-tab-panel="documents"
+                    hidden
+                >
+                    <section class="nik-product-section">
+                        <h2>Документация</h2>
+
+                        @if ($product->certificates->isNotEmpty() || $product->instruction_file_path)
+                            <div class="nik-product-docs">
+                                @foreach ($product->certificates as $certificate)
+                                    @php
+                                        $expiresAt = $certificate->expires_at;
+                                        $isExpired = $expiresAt && $expiresAt->isPast();
+                                        $isSoon = $expiresAt && ! $isExpired && $expiresAt->lte(now()->addDays(30));
+                                        $status = $isExpired ? 'просрочен' : ($isSoon ? 'скоро истекает' : 'действует');
+                                        $statusClass = $isExpired ? 'nik-product-status-expired' : ($isSoon ? 'nik-product-status-soon' : 'nik-product-status-active');
+                                    @endphp
+
+                                    <article class="nik-product-doc">
+                                        <div class="nik-product-doc-title">{{ $certificate->name }}</div>
+                                        <div class="nik-product-doc-meta">
+                                            @if ($certificate->certificate_type)
+                                                {{ $certificate->certificate_type }}
+                                            @endif
+
+                                            @if ($certificate->number)
+                                                № {{ $certificate->number }}
+                                            @endif
+                                        </div>
+                                        <div class="nik-product-doc-meta">
+                                            Статус: <span class="{{ $statusClass }}">{{ $status }}</span>
+
+                                            @if ($certificate->is_permanent)
+                                                · бессрочно
+                                            @elseif ($expiresAt)
+                                                · до {{ $expiresAt->format('d.m.Y') }}
+                                            @endif
+                                        </div>
+
+                                        @if ($certificate->file_path)
+                                            <a class="nik-product-doc-link" href="{{ Storage::disk('public')->url($certificate->file_path) }}" target="_blank" rel="noopener">
+                                                Открыть PDF
+                                            </a>
+                                        @endif
+                                    </article>
+                                @endforeach
+
+                                @if ($product->instruction_file_path)
+                                    <article class="nik-product-doc">
+                                        <div class="nik-product-doc-title">Инструкция по применению</div>
+                                        <a class="nik-product-doc-link" href="{{ Storage::disk('public')->url($product->instruction_file_path) }}" target="_blank" rel="noopener">
+                                            Открыть PDF
+                                        </a>
+                                    </article>
+                                @endif
+                            </div>
+                        @else
+                            <p>Документы для этого товара пока не добавлены.</p>
+                        @endif
+                    </section>
+                </div>
             </div>
         </div>
     </main>

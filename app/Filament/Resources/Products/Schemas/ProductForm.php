@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Models\Certificate;
 use App\Rules\NoExpiredCertificates;
 use Filament\Forms\Components\FileUpload;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -19,16 +21,30 @@ class ProductForm
     {
         return $schema
             ->components([
+                SchemaView::make('filament.resources.products.components.template-banner')
+                    ->visible(fn ($livewire): bool => $livewire instanceof CreateProduct && $livewire->hasSourceProduct())
+                    ->viewData(fn (CreateProduct $livewire): array => $livewire->getTemplateBannerData())
+                    ->columnSpanFull(),
+
                 Section::make('Основная информация')
                     ->schema([
                         TextInput::make('name')
                             ->label('Название')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->helperText(fn ($livewire): ?string => $livewire instanceof CreateProduct && $livewire->hasSourceProduct()
+                                ? 'Проверьте название — оно скопировано из исходного товара.'
+                                : null)
+                            ->extraInputAttributes(fn ($livewire): array => $livewire instanceof CreateProduct && $livewire->hasSourceProduct()
+                                ? ['class' => 'ring-2 ring-warning-500']
+                                : []),
 
                         TextInput::make('article')
                             ->label('Артикул')
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->helperText(fn ($livewire): ?string => $livewire instanceof CreateProduct && $livewire->hasSourceProduct()
+                                ? 'Укажите артикул нового товара.'
+                                : null),
 
                         TextInput::make('barcode')
                             ->label('Штрихкод')
@@ -292,6 +308,14 @@ class ProductForm
 
                 Section::make('Документация')
                     ->schema([
+                        Toggle::make('copy_source_images')
+                            ->label('Использовать изображения исходного товара')
+                            ->helperText('Изображения будут скопированы только после создания нового товара.')
+                            ->default(true)
+                            ->visible(fn ($livewire): bool => $livewire instanceof CreateProduct && $livewire->hasSourceProduct())
+                            ->dehydrated(fn ($livewire): bool => $livewire instanceof CreateProduct && $livewire->hasSourceProduct())
+                            ->columnSpanFull(),
+
                         Select::make('certificates')
                             ->label('Документация')
                             ->multiple()

@@ -2,9 +2,14 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Filament\Resources\Products\ProductResource;
+use App\Models\Product;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -135,7 +140,13 @@ class ProductsTable
                     ->label('Активен'),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
+                Action::make('createFromExisting')
+                    ->label('Создать на основе')
+                    ->icon(Heroicon::OutlinedDocumentDuplicate)
+                    ->url(fn (Product $record): string => ProductResource::getUrl('create', ['source' => $record]))
+                    ->visible(fn (): bool => ProductResource::canCreate()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

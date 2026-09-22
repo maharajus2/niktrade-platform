@@ -37,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('images/logont.png'))
             ->brandLogoHeight('2rem')
             ->login()
+            ->darkMode(false)
             ->renderHook(
                 PanelsRenderHook::BODY_START,
                 fn () => view('filament.work-ui-navigation'),

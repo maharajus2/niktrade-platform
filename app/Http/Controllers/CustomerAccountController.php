@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Support\UploadLimits;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -73,7 +74,7 @@ class CustomerAccountController extends Controller
     public function updateAvatar(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:'.UploadLimits::IMAGE_MAX_KILOBYTES],
         ]);
 
         $customer = $request->user('customer');

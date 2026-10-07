@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Customers\Schemas;
 
+use App\Support\UploadLimits;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -48,7 +49,7 @@ class CustomerForm
                             ->storeFiles(true)
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(2048)
+                            ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES)
                             ->previewable(true)
                             ->imagePreviewHeight('120')
                             ->openable()

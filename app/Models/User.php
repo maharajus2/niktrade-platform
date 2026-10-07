@@ -3,8 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use App\Support\EmployeeRequiredDocuments;
+use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,7 +61,7 @@ use Spatie\Permission\Traits\HasRoles;
     'dashboard_preference',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
@@ -542,6 +544,11 @@ class User extends Authenticatable
     public function isArchived(): bool
     {
         return $this->archived_at !== null || ($this->employment_status ?? $this->employee_status) === self::STATUS_ARCHIVED;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return ! $this->isArchived();
     }
 
     public function canBeArchived(): bool

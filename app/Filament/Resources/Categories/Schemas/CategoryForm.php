@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use App\Support\UploadLimits;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -26,12 +27,12 @@ class CategoryForm
                     ->storeFiles(true)
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->maxSize(2048)
+                    ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES)
                     ->previewable(true)
                     ->imagePreviewHeight('160')
                     ->openable()
                     ->downloadable()
-                    ->helperText('Используется в карточке категории на главной странице catalog2. Рекомендуемый размер: 480x320 px, WebP/JPG/PNG до 2 МБ.'),
+                    ->helperText('Используется в карточке категории на главной странице catalog2. Рекомендуемый размер: 480x320 px, WebP/JPG/PNG до 15 МБ.'),
 
                 Toggle::make('is_active')
                     ->label('Активна')

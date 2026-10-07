@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\User;
 use App\Support\AdminRoles;
 use App\Support\EmployeeWorkday;
+use App\Support\UploadLimits;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -450,7 +451,7 @@ class UserForm
             ->automaticallyCropImagesToAspectRatio()
             ->imageEditorAspectRatioOptions(['35:45'])
             ->imagePreviewHeight('155')
-            ->maxSize(3072);
+            ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES);
     }
 
     private static function deleteUnusedEmployeePhoto(?string $path, User $record): void

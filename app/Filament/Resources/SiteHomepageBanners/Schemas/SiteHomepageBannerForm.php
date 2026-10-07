@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SiteHomepageBanners\Schemas;
 
 use App\Models\SiteHomepageBanner;
+use App\Support\UploadLimits;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -105,12 +106,12 @@ class SiteHomepageBannerForm
                             ->storeFiles(true)
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(4096)
+                            ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES)
                             ->previewable(true)
                             ->imagePreviewHeight('180')
                             ->openable()
                             ->downloadable()
-                            ->helperText('Размер: 1920x620 px. Формат: WebP, JPG или PNG, до 4 МБ. Изображение заполняет весь баннер фоном. Текст и кнопки сайт накладывает слева, поэтому товар/ключевой визуал размещайте ближе к центру и правой части, без важных деталей у краев.'),
+                            ->helperText('Размер: 1920x620 px. Формат: WebP, JPG или PNG, до 15 МБ. Изображение заполняет весь баннер фоном. Текст и кнопки сайт накладывает слева, поэтому товар/ключевой визуал размещайте ближе к центру и правой части, без важных деталей у краев.'),
 
                         FileUpload::make('mobile_image_path')
                             ->label('Баннер mobile')
@@ -120,12 +121,12 @@ class SiteHomepageBannerForm
                             ->storeFiles(true)
                             ->image()
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(4096)
+                            ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES)
                             ->previewable(true)
                             ->imagePreviewHeight('180')
                             ->openable()
                             ->downloadable()
-                            ->helperText('Размер: 900x1200 px. Формат: WebP, JPG или PNG, до 4 МБ. Изображение заполняет весь мобильный баннер фоном. Текст и кнопки сайт накладывает сверху, поэтому ключевой визуал держите ближе к центру и нижней части, без важных деталей у краев.'),
+                            ->helperText('Размер: 900x1200 px. Формат: WebP, JPG или PNG, до 15 МБ. Изображение заполняет весь мобильный баннер фоном. Текст и кнопки сайт накладывает сверху, поэтому ключевой визуал держите ближе к центру и нижней части, без важных деталей у краев.'),
 
                         Select::make('theme')
                             ->label('Тема')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\RelationManagers;
 
+use App\Support\UploadLimits;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -35,13 +36,13 @@ class ProductImagesRelationManager extends RelationManager
                     ->storeFiles(true)
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                    ->maxSize(2048)
+                    ->maxSize(UploadLimits::IMAGE_MAX_KILOBYTES)
                     ->previewable(true)
                     ->imagePreviewHeight('160')
                     ->openable()
                     ->downloadable()
                     ->required()
-                    ->helperText('Загрузите изображение товара размером 640 × 980 px. Допустимые форматы: JPG, PNG, WebP. Максимальный размер файла — 2 МБ.'),
+                    ->helperText('Загрузите изображение товара размером 640 × 980 px. Допустимые форматы: JPG, PNG, WebP. Максимальный размер файла — 15 МБ.'),
 
                 TextInput::make('alt')
                     ->label('Alt текст')

@@ -1,0 +1,203 @@
+.nik-auth-page {
+    padding: 24px 0 48px;
+}
+
+.nik-auth-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    gap: 24px;
+    align-items: stretch;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.nik-auth-aside,
+.nik-auth-card {
+    border-radius: 28px;
+    padding: 36px;
+}
+
+.nik-auth-aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+}
+
+.nik-auth-aside h2 {
+    margin: 0;
+    font-size: clamp(26px, 2.6vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -.04em;
+}
+
+.nik-auth-aside p {
+    margin: 0;
+    color: #486985;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.nik-auth-benefits {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nik-auth-benefits li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .55);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.nik-auth-benefits li::before {
+    content: '';
+    flex: 0 0 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--liquid-green);
+}
+
+.nik-auth-card {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+}
+
+.nik-auth-title {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -.04em;
+}
+
+.nik-auth-subtitle {
+    margin: -8px 0 0;
+    color: #486985;
+    font-size: 14px;
+}
+
+.nik-auth-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.nik-auth-label {
+    color: #3a5976;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.nik-auth-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 1px solid rgba(84, 151, 211, .25);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .76);
+    color: var(--liquid-ink);
+    font: inherit;
+    font-size: 15px;
+}
+
+.nik-auth-input:focus-visible,
+.nik-auth-page :is(button, a, input):focus-visible {
+    outline: 3px solid rgba(0, 110, 234, .65);
+    outline-offset: 2px;
+}
+
+.nik-auth-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.nik-auth-checkbox {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    color: #3a5976;
+    font-size: 14px;
+}
+
+.nik-auth-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--liquid-blue-deep);
+}
+
+.nik-auth-error {
+    color: #b42318;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.nik-auth-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 48px;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 13px;
+    background: linear-gradient(180deg, #299cff, #006eea);
+    box-shadow: 0 8px 18px rgba(0, 112, 235, .18), inset 0 1px 0 rgba(255, 255, 255, .5);
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.nik-auth-button:hover {
+    background: #0066d6;
+}
+
+.nik-auth-switch {
+    color: #486985;
+    font-size: 14px;
+}
+
+.nik-auth-switch a {
+    color: #0066cc;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .nik-auth-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .nik-auth-aside {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .nik-auth-page {
+        padding-top: 16px;
+    }
+
+    .nik-auth-card {
+        padding: 24px 18px;
+        border-radius: 22px;
+    }
+
+    .nik-auth-row {
+        grid-template-columns: 1fr;
+    }
+
+    .nik-auth-input {
+        font-size: 16px;
+    }
+}

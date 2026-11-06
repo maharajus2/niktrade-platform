@@ -13,7 +13,7 @@
     $storefrontAnchor = fn (string $anchor): string => request()->routeIs('catalog.preview')
         ? '#' . $anchor
         : route('catalog.preview') . '#' . $anchor;
-    $catalogUrl = request()->routeIs('catalog.show') ? route('catalog.index') : '#products';
+    $catalogUrl = request()->routeIs('catalog.preview', 'catalog.index') ? '#products' : route('catalog.index');
 
     $imageUrl = function (?string $path): string {
         return $path ? Storage::disk('public')->url($path) : asset('images/logo-icon.png');

@@ -1,130 +1,86 @@
-@extends('layouts.public')
+@extends('catalog2.index')
 
 @section('title', 'Регистрация')
 
 @push('styles')
-    <style>
-        .auth-page {
-            width: min(520px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 40px 0 56px;
-        }
-
-        .auth-card {
-            display: grid;
-            gap: 18px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-            padding: 22px;
-        }
-
-        .auth-title {
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        .field {
-            display: grid;
-            gap: 6px;
-        }
-
-        .label {
-            color: #4b5563;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .input {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font: inherit;
-            padding: 10px 12px;
-        }
-
-        .error {
-            color: #b91c1c;
-            font-size: 0.85rem;
-        }
-
-        .button {
-            min-height: 42px;
-            border: 0;
-            border-radius: 8px;
-            background: #166534;
-            color: #ffffff;
-            font: inherit;
-            font-weight: 800;
-            padding: 10px 16px;
-            cursor: pointer;
-        }
-
-        .link {
-            color: #166534;
-            font-weight: 700;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/auth-page.css') }}?v={{ filemtime(public_path('css/auth-page.css')) }}">
 @endpush
 
-@section('content')
-    <main class="auth-page">
-        <form class="auth-card" method="POST" action="{{ route('customer.register.store') }}">
-            @csrf
+@section('catalog_results')
+    <main class="nik-auth-page">
+        <div class="nik-auth-layout">
+            <aside class="nik-auth-aside nik-catalog2-glass">
+                <h2>Создайте аккаунт НИКТРЕЙД</h2>
+                <p>Регистрация занимает минуту и делает покупки удобнее.</p>
+                <ul class="nik-auth-benefits">
+                    <li>История и статусы заказов</li>
+                    <li>Сохранённые адреса доставки</li>
+                    <li>Быстрое оформление заказа</li>
+                </ul>
+            </aside>
 
-            <h1 class="auth-title">Регистрация</h1>
+            <form class="nik-auth-card nik-catalog2-glass" method="POST" action="{{ route('customer.register.store') }}">
+                @csrf
 
-            <label class="field">
-                <span class="label">Имя</span>
-                <input class="input" type="text" name="first_name" value="{{ old('first_name') }}" required>
-                @error('first_name')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </label>
+                <h1 class="nik-auth-title">Регистрация</h1>
+                <p class="nik-auth-subtitle">Заполните данные, чтобы создать аккаунт</p>
 
-            <label class="field">
-                <span class="label">Фамилия</span>
-                <input class="input" type="text" name="last_name" value="{{ old('last_name') }}">
-                @error('last_name')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </label>
+                <div class="nik-auth-row">
+                    <label class="nik-auth-field">
+                        <span class="nik-auth-label">Имя</span>
+                        <input class="nik-auth-input" type="text" name="first_name" value="{{ old('first_name') }}" autocomplete="given-name" required>
+                        @error('first_name')
+                            <span class="nik-auth-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-            <label class="field">
-                <span class="label">Email</span>
-                <input class="input" type="email" name="email" value="{{ old('email') }}" required>
-                @error('email')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </label>
+                    <label class="nik-auth-field">
+                        <span class="nik-auth-label">Фамилия</span>
+                        <input class="nik-auth-input" type="text" name="last_name" value="{{ old('last_name') }}" autocomplete="family-name">
+                        @error('last_name')
+                            <span class="nik-auth-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+                </div>
 
-            <label class="field">
-                <span class="label">Телефон</span>
-                <input class="input" type="text" name="phone" value="{{ old('phone') }}" required>
-                @error('phone')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </label>
+                <label class="nik-auth-field">
+                    <span class="nik-auth-label">Email</span>
+                    <input class="nik-auth-input" type="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
+                    @error('email')
+                        <span class="nik-auth-error">{{ $message }}</span>
+                    @enderror
+                </label>
 
-            <label class="field">
-                <span class="label">Пароль</span>
-                <input class="input" type="password" name="password" required>
-                @error('password')
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </label>
+                <label class="nik-auth-field">
+                    <span class="nik-auth-label">Телефон</span>
+                    <input class="nik-auth-input" type="tel" name="phone" value="{{ old('phone') }}" autocomplete="tel" required>
+                    @error('phone')
+                        <span class="nik-auth-error">{{ $message }}</span>
+                    @enderror
+                </label>
 
-            <label class="field">
-                <span class="label">Повторите пароль</span>
-                <input class="input" type="password" name="password_confirmation" required>
-            </label>
+                <div class="nik-auth-row">
+                    <label class="nik-auth-field">
+                        <span class="nik-auth-label">Пароль</span>
+                        <input class="nik-auth-input" type="password" name="password" autocomplete="new-password" required>
+                        @error('password')
+                            <span class="nik-auth-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-            <button class="button" type="submit">Зарегистрироваться</button>
+                    <label class="nik-auth-field">
+                        <span class="nik-auth-label">Повторите пароль</span>
+                        <input class="nik-auth-input" type="password" name="password_confirmation" autocomplete="new-password" required>
+                    </label>
+                </div>
 
-            <div>
-                Уже есть аккаунт?
-                <a class="link" href="{{ route('customer.login') }}">Войти</a>
-            </div>
-        </form>
+                <button class="nik-auth-button" type="submit">Зарегистрироваться</button>
+
+                <div class="nik-auth-switch">
+                    Уже есть аккаунт?
+                    <a href="{{ route('customer.login') }}">Войти</a>
+                </div>
+            </form>
+        </div>
     </main>
 @endsection

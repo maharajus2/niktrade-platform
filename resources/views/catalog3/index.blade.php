@@ -2928,6 +2928,194 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Вариант 3: шапка с поиском и меню каталога */
+        .nik-c3-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+        }
+
+        .nik-c3-catalog {
+            position: static;
+            flex: 0 0 auto;
+        }
+
+        .nik-c3-catalog .nik-catalog2-catalog-btn {
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+        }
+
+        .nik-c3-catalog .nik-catalog2-catalog-btn[aria-expanded="true"] {
+            filter: brightness(.94);
+        }
+
+        .nik-c3-mega {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            z-index: 90;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr 1fr;
+            gap: 28px;
+            width: min(920px, 100%);
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 26px 28px;
+            border: 1px solid rgba(255, 255, 255, .85);
+            border-radius: 26px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, .97), rgba(240, 248, 255, .94));
+            box-shadow: 0 30px 70px rgba(39, 88, 145, .22), inset 0 1px 0 rgba(255, 255, 255, .9);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+        }
+
+        .nik-c3-mega[hidden] {
+            display: none;
+        }
+
+        .nik-c3-mega-col {
+            display: grid;
+            align-content: start;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .nik-c3-mega-col strong {
+            margin-bottom: 8px;
+            color: #287df2;
+            font-size: 12px;
+            font-weight: 950;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .nik-c3-mega-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px 16px;
+        }
+
+        .nik-c3-mega a {
+            display: block;
+            padding: 8px 10px;
+            border-radius: 11px;
+            color: #10223f;
+            font-size: 14px;
+            font-weight: 750;
+            line-height: 1.25;
+        }
+
+        .nik-c3-mega a:hover,
+        .nik-c3-mega a:focus-visible {
+            background: rgba(40, 125, 242, .10);
+            color: #0b60d0;
+        }
+
+        .nik-c3-mega .nik-c3-mega-all {
+            margin-top: 10px;
+            color: #0b60d0;
+            font-weight: 900;
+        }
+
+        .nik-c3-search {
+            position: relative;
+            display: flex;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .nik-c3-search input {
+            width: 100%;
+            min-width: 0;
+            min-height: 48px;
+            padding: 0 54px 0 20px;
+            border: 1px solid rgba(255, 255, 255, .8);
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .86), rgba(232, 247, 255, .6));
+            box-shadow: 0 12px 30px rgba(39, 99, 159, .10), inset 0 1px 0 rgba(255, 255, 255, .9);
+            color: #10223f;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .nik-c3-search input::placeholder {
+            color: #6b86a0;
+            font-weight: 600;
+        }
+
+        .nik-c3-search input:focus-visible {
+            outline: none;
+            border-color: #2f8cf0;
+            box-shadow: 0 0 0 4px rgba(0, 110, 234, .16);
+        }
+
+        .nik-c3-search button {
+            position: absolute;
+            top: 50%;
+            right: 7px;
+            display: inline-flex;
+            width: 36px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #299cff, #006eea);
+            color: #fff;
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+
+        .nik-c3-search button svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+        }
+
+        .nik-c3-search.is-panel {
+            flex: 0 0 auto;
+            align-self: stretch;
+            width: 100%;
+            height: auto;
+        }
+
+        .nik-c3-search.is-panel input {
+            height: 48px;
+        }
+
+        .nik-c3-search button:focus-visible,
+        .nik-c3-catalog .nik-catalog2-catalog-btn:focus-visible,
+        .nik-c3-mega a:focus-visible {
+            outline: 3px solid rgba(0, 110, 234, .65);
+            outline-offset: 2px;
+        }
+
+        /* Плитки категорий: мягкие оттенки палитры НИКТРЕЙД */
+        .nik-catalog2-category-card:nth-child(4n + 1) { background-image: linear-gradient(160deg, rgba(40, 125, 242, .10), rgba(255, 255, 255, 0) 70%); }
+        .nik-catalog2-category-card:nth-child(4n + 2) { background-image: linear-gradient(160deg, rgba(47, 159, 109, .12), rgba(255, 255, 255, 0) 70%); }
+        .nik-catalog2-category-card:nth-child(4n + 3) { background-image: linear-gradient(160deg, rgba(124, 92, 230, .10), rgba(255, 255, 255, 0) 70%); }
+        .nik-catalog2-category-card:nth-child(4n + 4) { background-image: linear-gradient(160deg, rgba(0, 190, 214, .12), rgba(255, 255, 255, 0) 70%); }
+
+        @media (max-width: 1180px) {
+            .nik-c3-mega {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nik-c3-mega-col.is-wide {
+                grid-column: 1 / -1;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -2962,16 +3150,43 @@
                 <span aria-hidden="true"><i></i><i></i><i></i></span>
             </button>
 
-            <nav class="nik-catalog2-nav">
-                <a class="nik-catalog2-catalog-btn" href="{{ $catalogUrl }}">
-                    Каталог
-                    <span aria-hidden="true"><i></i><i></i><i></i></span>
-                </a>
-                <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
-                <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
-                                <a href="{{ $storefrontAnchor('products') }}">Товары</a>
-                <a href="{{ $storefrontAnchor('about') }}">О компании</a>
-                <a href="#footer">Доставка и оплата</a>
+            <nav class="nik-catalog2-nav nik-c3-nav" aria-label="Каталог и поиск">
+                <div class="nik-c3-catalog" data-c3-mega>
+                    <button class="nik-catalog2-catalog-btn" type="button" aria-expanded="false" aria-controls="c3MegaMenu" data-c3-mega-toggle>
+                        Каталог
+                        <span aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <div class="nik-c3-mega" id="c3MegaMenu" hidden>
+                        <div class="nik-c3-mega-col is-wide">
+                            <strong>Категории</strong>
+                            <div class="nik-c3-mega-list">
+                                @foreach ($categories as $category)
+                                    <a href="{{ route('catalog.index', ['category' => $category->id]) }}">{{ $category->name }}</a>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="nik-c3-mega-col">
+                            <strong>Бренды</strong>
+                            @foreach ($brands as $brand)
+                                <a href="{{ route('catalog.index', ['brand' => $brand->id]) }}">{{ $brand->name }}</a>
+                            @endforeach
+                        </div>
+                        <div class="nik-c3-mega-col">
+                            <strong>Направления</strong>
+                            <a href="{{ route('catalog.index', ['direction' => 'home']) }}">Для дома</a>
+                            <a href="{{ route('catalog.index', ['direction' => 'professional']) }}">Для бизнеса</a>
+                            <a class="nik-c3-mega-all" href="{{ route('catalog.index') }}">Весь каталог →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="nik-c3-search" role="search" method="GET" action="{{ route('catalog.index') }}">
+                    <input type="search" name="search" placeholder="Поиск по названию или артикулу" aria-label="Поиск по каталогу" autocomplete="off">
+                    <button type="submit" aria-label="Найти">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    </button>
+                </form>
             </nav>
 
             <div class="nik-catalog2-head-tools">
@@ -3001,6 +3216,13 @@
                     </button>
                 </div>
 
+                <form class="nik-c3-search is-panel" role="search" method="GET" action="{{ route('catalog.index') }}">
+                    <input type="search" name="search" placeholder="Поиск по названию или артикулу" aria-label="Поиск по каталогу" autocomplete="off">
+                    <button type="submit" aria-label="Найти">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    </button>
+                </form>
+
                 <div class="nik-catalog2-menu-service">
                     <span>Ваш город: Москва</span>
                     <span>Доставка по России</span>
@@ -3012,7 +3234,7 @@
                 </div>
 
                 <nav class="nik-catalog2-menu-links" aria-label="Основная навигация">
-                    <a href="{{ $catalogUrl }}">Каталог</a>
+                    <a href="{{ route('catalog.index') }}">Каталог</a>
                     <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
                     <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
                                         <a href="{{ $storefrontAnchor('products') }}">Товары</a>
@@ -3131,7 +3353,7 @@
 
         <section id="products" class="nik-catalog2-products">
             <div class="nik-catalog2-section-head">
-                <h2>Популярные товары</h2>
+                <h2>Рекомендуем</h2>
                 <a href="{{ route('catalog.index') }}">Смотреть все →</a>
             </div>
             <div class="nik-catalog2-product-grid">
@@ -3414,6 +3636,40 @@
             });
 
             zone.addEventListener('mouseleave', () => setIndex(0));
+        });
+    })();
+
+    (() => {
+        const wrap = document.querySelector('[data-c3-mega]');
+        const btn = wrap && wrap.querySelector('[data-c3-mega-toggle]');
+        const panel = document.getElementById('c3MegaMenu');
+
+        if (!wrap || !btn || !panel) {
+            return;
+        }
+
+        const setOpen = (isOpen, returnFocus = false) => {
+            panel.hidden = !isOpen;
+            btn.setAttribute('aria-expanded', String(isOpen));
+
+            if (!isOpen && returnFocus) {
+                btn.focus();
+            }
+        };
+
+        btn.addEventListener('click', () => setOpen(panel.hidden));
+
+        document.addEventListener('click', (event) => {
+            if (!panel.hidden && !wrap.contains(event.target)) {
+                // Клик вне окна закрывает его, но не забирает фокус у того, на что нажали.
+                setOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !panel.hidden) {
+                setOpen(false, true);
+            }
         });
     })();
 </script>

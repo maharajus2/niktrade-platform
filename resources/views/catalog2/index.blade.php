@@ -2800,6 +2800,18 @@
                 width: 38px;
             }
         }
+        @media (min-width: 761px) {
+            .nik-catalog2-nav {
+                padding: 24px 20px 36px;
+                margin: -24px -20px -36px;
+            }
+        }
+
+        @media (min-width: 761px) and (max-width: 1180px) {
+            .nik-catalog2-nav {
+                padding-bottom: 40px;
+            }
+        }
     </style>
     @stack('styles')
 </head>

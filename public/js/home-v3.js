@@ -319,3 +319,71 @@
         if (e.key === 'Escape' && !panel.hidden) setOpen(false, true);
     });
 })();
+
+// Живой поиск: подсказки с допуском опечаток.
+(() => {
+    const form = document.querySelector('[data-v3-search]');
+    if (!form) return;
+    const input = form.querySelector('input[name="search"]');
+    const box = form.querySelector('.v3-suggest');
+    const url = form.dataset.suggestUrl;
+    let timer = null;
+    let ctrl = null;
+    let active = -1;
+
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const items = () => Array.from(box.querySelectorAll('.v3-sg-item'));
+    const close = () => { box.hidden = true; input.setAttribute('aria-expanded', 'false'); active = -1; };
+    const open = () => { box.hidden = false; input.setAttribute('aria-expanded', 'true'); };
+    const highlight = (i) => {
+        const list = items();
+        list.forEach((el, n) => el.classList.toggle('is-active', n === i));
+        active = i;
+        if (list[i]) list[i].scrollIntoView({ block: 'nearest' });
+    };
+
+    const render = (data, q) => {
+        if (!data.items.length) {
+            box.innerHTML = '<div class="v3-sg-empty">Ничего не нашли по запросу «' + esc(q) + '». Проверьте написание или попробуйте другое слово.</div>';
+            open();
+            return;
+        }
+        let html = data.fuzzy ? '<div class="v3-sg-note">Возможно, вы искали:</div>' : '';
+        data.items.forEach((p) => {
+            html += '<a class="v3-sg-item" role="option" href="' + esc(p.url) + '">'
+                + '<span class="v3-sg-pic">' + (p.image ? '<img src="' + esc(p.image) + '" alt="">' : '') + '</span>'
+                + '<span class="v3-sg-txt"><span class="v3-sg-name">' + esc(p.name) + '</span>'
+                + '<span class="v3-sg-meta">' + esc(p.brand) + (p.in_stock ? '' : ' · скоро появится') + '</span></span>'
+                + '<span class="v3-sg-price">' + esc(p.price) + '</span></a>';
+        });
+        html += '<a class="v3-sg-all" href="' + esc(data.all_url) + '">Показать все результаты (' + data.total + ')</a>';
+        box.innerHTML = html;
+        open();
+        active = -1;
+    };
+
+    const search = async () => {
+        const q = input.value.trim();
+        if (q.length < 2) { close(); return; }
+        if (ctrl) ctrl.abort();
+        ctrl = new AbortController();
+        try {
+            const res = await fetch(url + '?q=' + encodeURIComponent(q), { signal: ctrl.signal, headers: { 'Accept': 'application/json' } });
+            if (!res.ok) return;
+            render(await res.json(), q);
+        } catch (e) { /* запрос отменён или сеть недоступна */ }
+    };
+
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 160); });
+    input.addEventListener('focus', () => { if (input.value.trim().length >= 2 && box.innerHTML) open(); });
+
+    input.addEventListener('keydown', (e) => {
+        const list = items();
+        if (e.key === 'ArrowDown' && !box.hidden && list.length) { e.preventDefault(); highlight((active + 1) % list.length); }
+        else if (e.key === 'ArrowUp' && !box.hidden && list.length) { e.preventDefault(); highlight((active - 1 + list.length) % list.length); }
+        else if (e.key === 'Enter' && active >= 0 && list[active]) { e.preventDefault(); location.href = list[active].href; }
+        else if (e.key === 'Escape' && !box.hidden) { close(); }
+    });
+
+    document.addEventListener('click', (e) => { if (!form.contains(e.target)) close(); });
+})();

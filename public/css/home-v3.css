@@ -345,3 +345,27 @@ button.v3-dock-q { z-index: 2; display: inline-flex; align-items: center; justif
 .v3-dock-clear:hover { color: #e5484d; border-color: #f2b8ba; }
 .v3-dock-clear.is-confirm { border-color: #e5484d; background: #e5484d; color: #fff; }
 @media (max-width: 760px) { .v3-dock-clear { min-height: 34px; padding: 0 10px; } }
+
+/* Живой поиск */
+.v3-suggest { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 130; max-height: 70vh; overflow-y: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 18px 40px rgba(16, 23, 47, .22); color: var(--navy); }
+.v3-suggest[hidden] { display: none; }
+.v3-sg-note { padding: 10px 16px 4px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.v3-sg-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: var(--navy); }
+.v3-sg-item:hover, .v3-sg-item.is-active { background: #f1f0ff; }
+.v3-sg-pic { display: flex; flex: 0 0 auto; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 10px; background: var(--lav); }
+.v3-sg-pic img { max-width: 80%; max-height: 80%; object-fit: contain; }
+.v3-sg-txt { display: grid; flex: 1 1 auto; min-width: 0; gap: 2px; }
+.v3-sg-name { overflow: hidden; font-size: 14px; font-weight: 700; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.v3-sg-meta { color: var(--muted); font-size: 12px; font-weight: 600; }
+.v3-sg-price { flex: 0 0 auto; font-size: 14px; font-weight: 800; white-space: nowrap; }
+.v3-sg-all { display: block; padding: 12px 16px; border-top: 1px solid var(--line); color: var(--primary); font-size: 14px; font-weight: 800; text-align: center; }
+.v3-sg-all:hover { background: #f1f0ff; }
+.v3-sg-empty { padding: 18px 16px; color: var(--muted); font-size: 14px; font-weight: 600; line-height: 1.4; }
+
+/* Крестик в кружке: рисуем линиями, чтобы он стоял ровно по центру */
+button.v3-dock-q { padding: 0 5px; line-height: 1; }
+.v3-dock-q .x { position: relative; width: 10px; height: 10px; font-size: 0; line-height: 0; }
+.v3-dock-q .x::before, .v3-dock-q .x::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; border-radius: 1px; background: #fff; }
+.v3-dock-q .x::before { transform: translate(-50%, -50%) rotate(45deg); }
+.v3-dock-q .x::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.v3-dock-q:hover, .v3-dock-item:hover .v3-dock-q, .v3-dock-item.is-active .v3-dock-q { padding: 0; min-width: 20px; }

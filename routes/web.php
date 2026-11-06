@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\CustomerPhoneVerificationController;
 use App\Http\Controllers\CustomerTelegramController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TelegramBotController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/search/suggest', [SearchController::class, 'suggest'])->middleware('throttle:60,1')->name('search.suggest');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog2', [CatalogController::class, 'catalog2'])->name('catalog.preview');
 Route::get('/catalog3', [CatalogController::class, 'catalog3'])->name('catalog.preview3');

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\SiteHomepageBanner;
+use App\Services\Search\ProductSearchService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -135,6 +136,22 @@ class CatalogController extends Controller
         $direction = $request->string('direction')->toString();
         $search = trim($request->string('search')->toString());
 
+        // Если точных совпадений нет, ищем с допуском опечаток и неверной раскладки.
+        $fuzzyIds = null;
+
+        if ($search !== '') {
+            $hasDirectMatch = Product::query()
+                ->where('is_active', true)
+                ->where(fn ($query) => $query
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('article', 'like', "%{$search}%"))
+                ->exists();
+
+            if (! $hasDirectMatch) {
+                $fuzzyIds = app(ProductSearchService::class)->ids($search);
+            }
+        }
+
         $products = Product::query()
             ->where('is_active', true)
             ->with([
@@ -148,7 +165,8 @@ class CatalogController extends Controller
             ->when($brandId, fn ($query) => $query->where('brand_id', $brandId))
             ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
             ->when(in_array($direction, ['home', 'professional'], true), fn ($query) => $query->where('direction', $direction))
-            ->when($search !== '', function ($query) use ($search) {
+            ->when($fuzzyIds !== null, fn ($query) => $query->whereIn('id', $fuzzyIds ?: [0]))
+            ->when($search !== '' && $fuzzyIds === null, function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query
                         ->where('name', 'like', "%{$search}%")

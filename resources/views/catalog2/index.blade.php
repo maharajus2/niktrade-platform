@@ -5,6 +5,12 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage;
 
+    $categoryProducts ??= collect();
+    $brandProducts ??= collect();
+    $storefrontAnchor = fn (string $anchor): string => request()->routeIs('catalog.preview')
+        ? '#' . $anchor
+        : route('catalog.preview') . '#' . $anchor;
+
     $imageUrl = function (?string $path): string {
         return $path ? Storage::disk('public')->url($path) : asset('images/logo-icon.png');
     };
@@ -105,10 +111,10 @@
     $promoImages = $products->filter(fn (Product $product): bool => $product->images->isNotEmpty())->values();
 
     $serviceLinks = [
-        ['label' => 'Новости', 'url' => '#news'],
+        ['label' => 'Новости', 'url' => $storefrontAnchor('news')],
         ['label' => 'Как заказать', 'url' => '#footer'],
-        ['label' => 'Купить оптом', 'url' => '#business'],
-        ['label' => 'Дилерам', 'url' => '#business'],
+        ['label' => 'Купить оптом', 'url' => $storefrontAnchor('business')],
+        ['label' => 'Дилерам', 'url' => $storefrontAnchor('business')],
         ['label' => 'Где купить', 'url' => '#footer'],
     ];
 
@@ -243,8 +249,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог 2 - НИКТРЕЙД</title>
-    <meta name="description" content="Экспериментальный каталог бытовой химии НИКТРЕЙД в стиле Liquid Glass.">
+    <title>@yield('title', 'Каталог 2 - НИКТРЕЙД')</title>
+    <meta name="description" content="@yield('meta_description', 'Экспериментальный каталог бытовой химии НИКТРЕЙД в стиле Liquid Glass.')">
     <style>
         .nik-catalog2,
         .nik-catalog2 * {
@@ -2787,6 +2793,7 @@
             }
         }
     </style>
+    @stack('styles')
 </head>
 <body>
 <div class="nik-catalog2">
@@ -2824,11 +2831,11 @@
                     Каталог
                     <span aria-hidden="true"><i></i><i></i><i></i></span>
                 </a>
-                <a href="#brands">Бренды</a>
-                <a href="#categories">Категории</a>
-                <a href="#promos">Акции</a>
+                <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
+                <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
+                <a href="{{ $storefrontAnchor('promos') }}">Акции</a>
                 <a href="#products">Новинки</a>
-                <a href="#about">О компании</a>
+                <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                 <a href="#footer">Доставка и оплата</a>
             </nav>
 
@@ -2871,11 +2878,11 @@
 
                 <nav class="nik-catalog2-menu-links" aria-label="Основная навигация">
                     <a href="#products">Каталог</a>
-                    <a href="#brands">Бренды</a>
-                    <a href="#categories">Категории</a>
-                    <a href="#promos">Акции</a>
+                    <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
+                    <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
+                    <a href="{{ $storefrontAnchor('promos') }}">Акции</a>
                     <a href="#products">Новинки</a>
-                    <a href="#about">О компании</a>
+                    <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                     <a href="#footer">Доставка и оплата</a>
                 </nav>
 
@@ -2898,6 +2905,9 @@
             </aside>
         </header>
 
+        @hasSection('catalog_results')
+            @yield('catalog_results')
+        @else
         <section class="nik-catalog2-hero-grid">
             <div class="nik-catalog2-hero nik-catalog2-glass nik-catalog2-hero-carousel" data-catalog2-hero-carousel>
                 <span class="nik-catalog2-bubble is-1"></span>
@@ -3196,6 +3206,8 @@
             @endforeach
         </section>
 
+        @endif
+
         <footer id="footer" class="nik-catalog2-footer nik-catalog2-glass">
             <div class="nik-catalog2-contact">
                 <strong>8 (800) 555-35-35</strong>
@@ -3217,8 +3229,8 @@
                 <div>
                     <strong>Каталог</strong>
                     <a href="{{ route('catalog.index') }}">Все товары</a>
-                    <a href="#brands">Бренды</a>
-                    <a href="#categories">Категории</a>
+                    <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
+                    <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
                 </div>
                 <div>
                     <strong>Покупателям</strong>
@@ -3228,8 +3240,8 @@
                 </div>
                 <div>
                     <strong>Компания</strong>
-                    <a href="#about">О компании</a>
-                    <a href="#about">Производство</a>
+                    <a href="{{ $storefrontAnchor('about') }}">О компании</a>
+                    <a href="{{ $storefrontAnchor('about') }}">Производство</a>
                     <a href="#footer">Контакты</a>
                 </div>
             </div>
@@ -3394,5 +3406,6 @@
         });
     })();
 </script>
+@stack('scripts')
 </body>
 </html>

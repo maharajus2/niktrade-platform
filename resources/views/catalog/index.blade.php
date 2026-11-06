@@ -1,421 +1,33 @@
-@extends('layouts.public')
+@extends('catalog2.index')
 
 @section('title', 'Каталог товаров')
+@section('meta_description', 'Каталог бытовой и профессиональной химии НИКТРЕЙД. Подбор товаров по бренду, категории и назначению.')
 
 @push('styles')
-    <style>
-        .page {
-            width: min(1180px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 32px 0 48px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            gap: 24px;
-            align-items: end;
-            margin-bottom: 24px;
-        }
-
-        .title {
-            margin: 0;
-            font-size: 2rem;
-            line-height: 1.1;
-        }
-
-        .count {
-            color: #6b7280;
-            font-size: 0.95rem;
-        }
-
-        .filters-panel {
-            margin-bottom: 18px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-        }
-
-        .filters-toggle {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: center;
-            min-height: 48px;
-            padding: 12px 16px;
-            color: #166534;
-            font-weight: 900;
-            cursor: pointer;
-            list-style: none;
-        }
-
-        .filters-toggle::-webkit-details-marker {
-            display: none;
-        }
-
-        .filters-toggle::after {
-            content: '+';
-            color: #166534;
-            font-size: 1.2rem;
-        }
-
-        .filters-panel[open] .filters-toggle::after {
-            content: '-';
-        }
-
-        .filters-state {
-            color: #6b7280;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
-            gap: 12px;
-            align-items: end;
-            padding: 16px;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .field {
-            display: grid;
-            gap: 6px;
-        }
-
-        .field label {
-            color: #4b5563;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .input,
-        .select {
-            width: 100%;
-            min-height: 42px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: #ffffff;
-            color: #111827;
-            font: inherit;
-            padding: 8px 10px;
-        }
-
-        .button {
-            min-height: 42px;
-            border: 0;
-            border-radius: 8px;
-            background: #166534;
-            color: #ffffff;
-            font: inherit;
-            font-weight: 700;
-            padding: 8px 16px;
-            cursor: pointer;
-        }
-
-        .reset {
-            display: inline-flex;
-            align-items: center;
-            min-height: 42px;
-            color: #4b5563;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .filters-reset {
-            color: #166534;
-            font-weight: 800;
-            text-decoration: none;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .card {
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-            scroll-margin-top: 16px;
-        }
-
-        .image {
-            display: grid;
-            place-items: center;
-            aspect-ratio: 640 / 980;
-            background: #f3f4f6;
-        }
-
-        .image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .placeholder {
-            color: #9ca3af;
-            font-size: 0.9rem;
-        }
-
-        .card-body {
-            display: grid;
-            gap: 8px;
-            padding: 14px;
-        }
-
-        .card-actions {
-            display: grid;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .action-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .cart-button,
-        .cart-link {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 38px;
-            border: 0;
-            border-radius: 8px;
-            font: inherit;
-            font-size: 0.9rem;
-            font-weight: 800;
-            padding: 8px 10px;
-            text-decoration: none;
-        }
-
-        .cart-button {
-            width: 100%;
-            background: #166534;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        .cart-button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        .cart-link {
-            background: #ecfdf5;
-            color: #166534;
-        }
-
-        .quantity-control {
-            display: inline-grid;
-            grid-template-columns: 36px minmax(38px, auto) 36px;
-            overflow: hidden;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            background: #ffffff;
-        }
-
-        .quantity-form {
-            display: contents;
-        }
-
-        .quantity-button,
-        .quantity-value {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 38px;
-        }
-
-        .quantity-button {
-            border: 0;
-            background: #f9fafb;
-            color: #166534;
-            font: inherit;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        .quantity-value {
-            border-inline: 1px solid #d1d5db;
-            color: #111827;
-            font-weight: 800;
-            padding: 0 10px;
-        }
-
-        .name {
-            margin: 0;
-            font-size: 1rem;
-            line-height: 1.3;
-        }
-
-        .meta {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .availability-badge {
-            width: fit-content;
-            border-radius: 999px;
-            background: #f9fafb;
-            color: #111827;
-            font-size: 0.86rem;
-            font-weight: 700;
-            padding: 5px 9px;
-        }
-
-        .price {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: baseline;
-            margin-top: 2px;
-        }
-
-        .current-price {
-            color: #166534;
-            font-size: 1.1rem;
-            font-weight: 800;
-        }
-
-        .old-price {
-            color: #9ca3af;
-            text-decoration: line-through;
-        }
-
-        .empty {
-            padding: 32px;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-            color: #6b7280;
-            text-align: center;
-        }
-
-        .pagination {
-            margin-top: 28px;
-        }
-
-        @media (max-width: 960px) {
-            .filters {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 640px) {
-            .page {
-                width: min(100% - 16px, 1180px);
-                padding-top: 24px;
-            }
-
-            .card {
-                scroll-margin-top: 24px;
-            }
-
-            .header {
-                display: grid;
-            }
-
-            .filters {
-                grid-template-columns: 1fr;
-            }
-
-            .filters-toggle {
-                align-items: flex-start;
-            }
-
-            .grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-            }
-
-            .card-body {
-                gap: 6px;
-                padding: 10px;
-            }
-
-            .name {
-                display: -webkit-box;
-                overflow: hidden;
-                -webkit-box-orient: vertical;
-                -webkit-line-clamp: 2;
-                font-size: 0.9rem;
-            }
-
-            .meta {
-                font-size: 0.8rem;
-            }
-
-            .availability-badge {
-                font-size: 0.75rem;
-                padding: 4px 7px;
-            }
-
-            .current-price {
-                font-size: 1rem;
-            }
-
-            .old-price {
-                font-size: 0.85rem;
-            }
-
-            .cart-button,
-            .cart-link {
-                min-height: 34px;
-                font-size: 0.78rem;
-                padding: 7px 8px;
-            }
-
-            .action-row {
-                display: grid;
-                gap: 6px;
-            }
-
-            .quantity-control {
-                grid-template-columns: 34px minmax(34px, auto) 34px;
-                width: fit-content;
-            }
-
-            .quantity-button,
-            .quantity-value {
-                min-height: 34px;
-            }
-
-            .quantity-value {
-                padding: 0 8px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/catalog-list.css') }}?v={{ filemtime(public_path('css/catalog-list.css')) }}">
 @endpush
 
-@section('content')
-    <main class="page">
-        <header class="header">
+@section('catalog_results')
+    <main class="nik-catalog-list" id="products">
+        <header class="header nik-catalog2-glass">
             <div>
+                <a class="breadcrumb" href="{{ route('catalog.preview') }}">Главная /</a>
                 <h1 class="title">Каталог товаров</h1>
-                <div class="count">Найдено товаров: {{ $products->total() }}</div>
+                <p class="subtitle">Для дома, бизнеса и ежедневной чистоты</p>
             </div>
+            <div class="count">Найдено товаров: <strong>{{ $products->total() }}</strong></div>
         </header>
 
         @php
             $hasActiveFilters = $filters['brand'] || $filters['category'] || $filters['direction'] || $filters['search'];
         @endphp
 
-        <details class="filters-panel" @if ($hasActiveFilters) open @endif>
+        <details class="filters-panel nik-catalog2-glass" id="catalog-filters" @if ($hasActiveFilters) open @endif>
             <summary class="filters-toggle">
                 <span>{{ $hasActiveFilters ? 'Фильтры применены' : 'Показать фильтры' }}</span>
 
                 @if ($hasActiveFilters)
-                    <a class="filters-reset" href="{{ route('catalog.index') }}" onclick="event.stopPropagation()">Сбросить фильтры</a>
+                    <a class="filters-reset" href="{{ route('catalog.index') }}">Сбросить фильтры</a>
                 @else
                     <span class="filters-state">поиск, бренд, категория, направление</span>
                 @endif
@@ -488,9 +100,9 @@
                             && $product->discounted_price < $product->price;
 
                         $availabilityLabels = [
-                            'in_stock' => '🟢 В наличии',
-                            'out_of_stock' => '🟡 Временно отсутствует',
-                            'discontinued' => '🔴 Снят с производства',
+                            'in_stock' => 'В наличии',
+                            'out_of_stock' => 'Временно отсутствует',
+                            'discontinued' => 'Снят с производства',
                         ];
                         $availabilityStatus = $product->availability_status ?? 'in_stock';
                         $availabilityLabel = $availabilityLabels[$availabilityStatus] ?? $availabilityLabels['in_stock'];
@@ -501,7 +113,7 @@
                         $catalogAnchor = 'product-' . $product->id;
                     @endphp
 
-                    <article class="card" id="{{ $catalogAnchor }}">
+                    <article class="card nik-catalog2-glass" id="{{ $catalogAnchor }}">
                         <a class="image" href="{{ route('catalog.show', $product->slug ?: $product->id) }}">
                             @if ($mainImage)
                                 <img
@@ -515,6 +127,7 @@
                         </a>
 
                         <div class="card-body">
+                            <span class="brand">{{ $product->brand?->name }}</span>
                             <h2 class="name">
                                 <a href="{{ route('catalog.show', $product->slug ?: $product->id) }}">{{ $product->name }}</a>
                             </h2>
@@ -533,7 +146,7 @@
                                 <div class="meta">Вес: {{ $productWeight }}</div>
                             @endif
 
-                            <div class="availability-badge">{{ $availabilityLabel }}</div>
+                            <div class="availability-badge is-{{ $availabilityStatus }}">{{ $availabilityLabel }}</div>
 
                             <div class="price">
                                 @if ($hasDiscount)
@@ -599,33 +212,18 @@
             </section>
 
             <div class="pagination">
-                {{ $products->links() }}
+                {{ $products->links('pagination.catalog') }}
             </div>
         @else
-            <div class="empty">По выбранным условиям товары не найдены.</div>
+            <div class="empty nik-catalog2-glass">
+                <h2>По выбранным условиям товары не найдены</h2>
+                <p>Попробуйте изменить запрос или сбросить фильтры.</p>
+                <a class="button" href="{{ route('catalog.index') }}">Все товары</a>
+            </div>
         @endif
     </main>
 @endsection
 
 @push('scripts')
-    <script>
-        (() => {
-            const scrollToHash = () => {
-                if (! window.location.hash) {
-                    return;
-                }
-
-                const target = document.getElementById(window.location.hash.slice(1));
-
-                if (target) {
-                    target.scrollIntoView({ block: 'start' });
-                }
-            };
-
-            window.addEventListener('load', () => {
-                scrollToHash();
-                window.setTimeout(scrollToHash, 100);
-            });
-        })();
-    </script>
+    <script src="{{ asset('js/catalog-list.js') }}?v={{ filemtime(public_path('js/catalog-list.js')) }}" defer></script>
 @endpush

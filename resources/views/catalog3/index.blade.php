@@ -374,6 +374,7 @@
         </div>
         <div class="v3-dock-items" data-v3-dock-items></div>
         <div class="v3-dock-end">
+            <button class="v3-dock-clear" type="button" data-v3-dock-clear>Очистить</button>
             <span class="v3-dock-total" data-v3-dock-total></span>
             <a class="v3-dock-go" href="{{ route('cart.index') }}">Оформить заказ</a>
             <button class="v3-dock-close" type="button" data-v3-dock-close aria-label="Скрыть мини-корзину">×</button>

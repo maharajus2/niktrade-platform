@@ -76,18 +76,23 @@
         list.innerHTML = '';
         let changedEl = null;
         data.items.forEach((item) => {
-            const el = document.createElement('a');
+            const el = document.createElement('div');
             el.className = 'v3-dock-item';
-            el.href = cfg.cartUrl || dock.querySelector('.v3-dock-go').href;
             el.title = item.name;
             el.dataset.productId = item.product_id;
-            const img = document.createElement('img');
-            img.alt = '';
-            img.src = item.image || '';
-            const q = document.createElement('span');
-            q.className = 'v3-dock-q';
-            q.textContent = item.quantity;
-            el.append(img, q);
+            el.dataset.itemId = item.id;
+            el.dataset.qty = item.quantity;
+            el.innerHTML = '<img alt="">'
+                + '<div class="v3-dock-ctl">'
+                + '<button type="button" data-v3-dock-dec aria-label="Уменьшить количество">−</button>'
+                + '<span class="v3-dock-n"></span>'
+                + '<button type="button" data-v3-dock-inc aria-label="Увеличить количество">+</button>'
+                + '</div>'
+                + '<button type="button" class="v3-dock-q" data-v3-dock-remove aria-label="Убрать из корзины">'
+                + '<span class="n"></span><span class="x">×</span></button>';
+            el.querySelector('img').src = item.image || '';
+            el.querySelector('.v3-dock-n').textContent = item.quantity;
+            el.querySelector('.v3-dock-q .n').textContent = item.quantity;
             list.appendChild(el);
             if (item.product_id === changedId) changedEl = el;
         });
@@ -217,6 +222,70 @@
         } else {
             run(async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE')), () => location.reload());
         }
+    });
+
+    // Управление количеством прямо в мини-корзине.
+    const noHover = window.matchMedia('(hover: none)');
+    const activeItems = () => dock ? Array.from(dock.querySelectorAll('.v3-dock-item.is-active')) : [];
+
+    document.addEventListener('click', (e) => {
+        if (!dock) return;
+        const item = e.target.closest('.v3-dock-item');
+        if (!item) { activeItems().forEach((n) => n.classList.remove('is-active')); return; }
+
+        const id = item.dataset.itemId;
+        const qty = Number(item.dataset.qty || 0);
+        const productId = item.dataset.productId;
+        const keepActive = async (fn) => {
+            const wasActive = item.classList.contains('is-active');
+            await fn();
+            if (wasActive) dock.querySelector(`.v3-dock-item[data-product-id="${productId}"]`)?.classList.add('is-active');
+        };
+        const patch = (q) => async () => apply(await request(cfg.updateUrl.replace('__ID__', id), 'PATCH', { quantity: q }));
+        const destroy = async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE'));
+        const reload = () => location.reload();
+
+        if (e.target.closest('[data-v3-dock-remove]')) {
+            if (noHover.matches && !item.classList.contains('is-active')) {
+                activeItems().forEach((n) => n.classList.remove('is-active'));
+                item.classList.add('is-active');
+                return;
+            }
+            run(destroy, reload);
+        } else if (e.target.closest('[data-v3-dock-inc]')) {
+            run(() => keepActive(patch(qty + 1)), reload);
+        } else if (e.target.closest('[data-v3-dock-dec]')) {
+            run(() => keepActive(qty > 1 ? patch(qty - 1) : destroy), reload);
+        } else {
+            const open = !item.classList.contains('is-active');
+            activeItems().forEach((n) => n.classList.remove('is-active'));
+            if (open) item.classList.add('is-active');
+        }
+    });
+
+    // Очистка корзины: два нажатия (второе подтверждает), без системных окон.
+    const clearBtn = dock?.querySelector('[data-v3-dock-clear]');
+    let clearTimer = null;
+    const resetClear = () => {
+        if (!clearBtn) return;
+        clearTimeout(clearTimer);
+        clearBtn.classList.remove('is-confirm');
+        clearBtn.textContent = 'Очистить';
+    };
+    clearBtn?.addEventListener('click', () => {
+        if (!clearBtn.classList.contains('is-confirm')) {
+            clearBtn.classList.add('is-confirm');
+            clearBtn.textContent = 'Точно очистить?';
+            clearTimer = setTimeout(resetClear, 3500);
+            return;
+        }
+        resetClear();
+        const ids = Array.from(dock.querySelectorAll('.v3-dock-item')).map((n) => n.dataset.itemId);
+        run(async () => {
+            let data = null;
+            for (const id of ids) data = await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE');
+            if (data) apply(data);
+        }, () => location.reload());
     });
 
     dock?.querySelector('[data-v3-dock-close]')?.addEventListener('click', () => {

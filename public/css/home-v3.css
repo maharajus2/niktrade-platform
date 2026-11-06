@@ -323,3 +323,25 @@ body.has-dock { padding-bottom: 92px; }
 .v3-bk-back { z-index: 2; }
 .v3-bk-front { z-index: 4; filter: drop-shadow(0 -4px 10px rgba(16, 23, 47, .18)); }
 .v3-bk-img { position: absolute; z-index: 3; margin: 0; max-height: none; object-fit: contain; pointer-events: none; will-change: transform; }
+
+/* Управление количеством в мини-корзине */
+.v3-dock-item { width: 64px; height: 64px; }
+.v3-dock-ctl { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 0 3px; border-radius: 12px; background: rgba(13, 22, 54, .5); color: #fff; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
+.v3-dock-item:hover .v3-dock-ctl, .v3-dock-item.is-active .v3-dock-ctl, .v3-dock-item:focus-within .v3-dock-ctl { opacity: 1; pointer-events: auto; }
+.v3-dock-ctl button { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .22); color: #fff; font: inherit; font-size: 16px; font-weight: 800; line-height: 1; cursor: pointer; }
+.v3-dock-ctl button:hover { background: rgba(255, 255, 255, .45); }
+.v3-dock-n { min-width: 14px; text-align: center; font-size: 14px; font-weight: 800; }
+button.v3-dock-q { z-index: 2; display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer; font-family: inherit; }
+.v3-dock-q .x { display: none; font-size: 14px; line-height: 1; }
+.v3-dock-q:hover, .v3-dock-item.is-active .v3-dock-q { background: #e5484d; }
+.v3-dock-q:hover .n, .v3-dock-item.is-active .v3-dock-q .n { display: none; }
+.v3-dock-q:hover .x, .v3-dock-item.is-active .v3-dock-q .x { display: block; }
+
+/* Крестик сразу при наведении на миниатюру + очистка корзины */
+.v3-dock-item:hover .v3-dock-q { background: #e5484d; }
+.v3-dock-item:hover .v3-dock-q .n { display: none; }
+.v3-dock-item:hover .v3-dock-q .x { display: block; }
+.v3-dock-clear { min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.v3-dock-clear:hover { color: #e5484d; border-color: #f2b8ba; }
+.v3-dock-clear.is-confirm { border-color: #e5484d; background: #e5484d; color: #fff; }
+@media (max-width: 760px) { .v3-dock-clear { min-height: 34px; padding: 0 10px; } }

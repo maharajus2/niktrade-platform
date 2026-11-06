@@ -2886,6 +2886,48 @@
                 border-radius: 22px;
             }
         }
+
+        .nik-catalog2-cart-btn:disabled {
+            cursor: not-allowed;
+            background: linear-gradient(180deg, #c5d3e2, #aebfd1);
+            box-shadow: none;
+            opacity: .75;
+        }
+
+        /* Баннер без слайдера: высота по содержимому, чтобы кнопка не обрезалась */
+        @media (min-width: 761px) {
+            .nik-catalog2-hero-carousel {
+                min-height: 0;
+            }
+
+            .nik-catalog2-hero-track {
+                position: relative;
+                inset: auto;
+            }
+
+            .nik-catalog2-hero-slide {
+                position: relative;
+                inset: auto;
+                min-height: clamp(380px, 30vw, 480px);
+            }
+        }
+
+        /* Подвал на планшете: колонки ссылок не налезают друг на друга */
+        @media (max-width: 1180px) {
+            .nik-catalog2-footer {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .nik-catalog2-footer-links {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nik-catalog2-footer {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -2927,7 +2969,7 @@
                 </a>
                 <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
                 <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
-                                <a href="{{ $storefrontAnchor('products') }}">Новинки</a>
+                                <a href="{{ $storefrontAnchor('products') }}">Товары</a>
                 <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                 <a href="#footer">Доставка и оплата</a>
             </nav>
@@ -2973,7 +3015,7 @@
                     <a href="{{ $catalogUrl }}">Каталог</a>
                     <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
                     <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
-                                        <a href="{{ $storefrontAnchor('products') }}">Новинки</a>
+                                        <a href="{{ $storefrontAnchor('products') }}">Товары</a>
                     <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                     <a href="#footer">Доставка и оплата</a>
                 </nav>
@@ -3145,7 +3187,7 @@
                                 @csrf
                                 <input type="hidden" name="redirect_anchor" value="catalog2-product-{{ $product->id }}">
                                 @php($cartQuantityForProduct = (int) ($cartProductItems->get($product->id)?->quantity ?? 0))
-                                <button class="nik-catalog2-cart-btn {{ $cartQuantityForProduct > 0 ? 'is-in-cart' : '' }}" type="submit" aria-label="Добавить в корзину">
+                                <button class="nik-catalog2-cart-btn {{ $cartQuantityForProduct > 0 ? 'is-in-cart' : '' }}" type="submit" aria-label="{{ $product->availability_status === 'out_of_stock' ? 'Скоро появится' : 'Добавить в корзину' }}" @disabled($product->availability_status === 'out_of_stock')>
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
                                     @if ($cartQuantityForProduct > 0)
                                         <span>{{ $cartQuantityForProduct }}</span>

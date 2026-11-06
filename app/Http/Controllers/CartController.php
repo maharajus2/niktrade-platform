@@ -8,8 +8,10 @@ use App\Models\Product;
 use App\Support\WeightFormatter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CartController extends Controller
 {
@@ -34,7 +36,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function add(Request $request, string $product): RedirectResponse
+    public function add(Request $request, string $product): RedirectResponse|JsonResponse
     {
         $product = Product::query()
             ->where('is_active', true)
@@ -48,6 +50,10 @@ class CartController extends Controller
             ->firstOrFail();
 
         if (($product->availability_status ?? 'in_stock') !== 'in_stock') {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Этот товар сейчас недоступен для заказа.'], 422);
+            }
+
             return back()->withErrors([
                 'cart' => 'Этот товар сейчас недоступен для заказа.',
             ]);
@@ -93,11 +99,15 @@ class CartController extends Controller
             $cart->recalculateTotals()->save();
         });
 
+        if ($request->expectsJson()) {
+            return $this->cartJson($request, $product->id);
+        }
+
         return $this->redirectBackWithOptionalAnchor($request)
             ->with('success', 'Товар добавлен в корзину');
     }
 
-    public function updateItem(Request $request, CartItem $cartItem): RedirectResponse
+    public function updateItem(Request $request, CartItem $cartItem): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'quantity' => ['required', 'integer', 'min:1'],
@@ -116,12 +126,18 @@ class CartController extends Controller
             return $cartItem->quantity;
         });
 
+        if ($request->expectsJson()) {
+            return $this->cartJson($request, $cartItem->product_id);
+        }
+
         return $this->redirectBackWithOptionalAnchor($request)
             ->with('success', $this->formatCartProductQuantityMessage($quantity));
     }
 
-    public function destroyItem(Request $request, CartItem $cartItem): RedirectResponse
+    public function destroyItem(Request $request, CartItem $cartItem): RedirectResponse|JsonResponse
     {
+        $productId = $cartItem->product_id;
+
         DB::transaction(function () use ($request, $cartItem) {
             $this->ensureCartItemBelongsToSession($request, $cartItem);
 
@@ -130,8 +146,50 @@ class CartController extends Controller
             $cart->recalculateTotals()->save();
         });
 
+        if ($request->expectsJson()) {
+            return $this->cartJson($request, $productId);
+        }
+
         return $this->redirectBackWithOptionalAnchor($request)
             ->with('success', 'Товар удалён из корзины');
+    }
+
+    /**
+     * Состояние корзины для AJAX-запросов (мини-корзина и счётчики без перезагрузки).
+     */
+    private function cartJson(Request $request, ?int $changedProductId = null): JsonResponse
+    {
+        $cart = $this->findActiveCart($request);
+        $items = collect();
+
+        if ($cart) {
+            $items = $cart->items()
+                ->with(['product.images' => fn ($query) => $query
+                    ->orderByDesc('is_main')
+                    ->orderBy('sort_order')
+                    ->orderBy('id')])
+                ->orderBy('id')
+                ->get();
+        }
+
+        return response()->json([
+            'count' => (int) $items->sum('quantity'),
+            'total' => (float) $items->sum('line_total'),
+            'total_formatted' => number_format((float) $items->sum('line_total'), 0, ',', ' ') . ' ₽',
+            'changed_product_id' => $changedProductId,
+            'items' => $items->map(function (CartItem $item): array {
+                $path = $item->product?->images->first()?->file_path;
+
+                return [
+                    'id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'name' => (string) $item->product?->name,
+                    'image' => $path ? Storage::disk('public')->url($path) : null,
+                    'quantity' => (int) $item->quantity,
+                    'line_total' => number_format((float) $item->line_total, 0, ',', ' ') . ' ₽',
+                ];
+            })->values(),
+        ]);
     }
 
     private function redirectBackWithOptionalAnchor(Request $request): RedirectResponse

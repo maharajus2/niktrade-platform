@@ -201,12 +201,31 @@ class CatalogController extends Controller
             ])
             ->firstOrFail();
 
+        $relatedProducts = Product::query()
+            ->where('is_active', true)
+            ->where('category_id', $product->category_id)
+            ->whereKeyNot($product->getKey())
+            ->with([
+                'brand',
+                'category',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_main')
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
+            ])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->limit(4)
+            ->get();
+
         return view('catalog.show', [
             'product' => $product,
             'mainImage' => $product->images->first(),
             'galleryImages' => $product->images,
             'cartProductItem' => $cartProductItem = $this->getCartProductItem($request, $product),
             'cartProductQuantity' => (int) ($cartProductItem?->quantity ?? 0),
+            'relatedProducts' => $relatedProducts,
+            'cartProductItems' => $this->getCartProductItems($request, $relatedProducts->modelKeys()),
             'directions' => [
                 'home' => 'Home',
                 'professional' => 'Professional',

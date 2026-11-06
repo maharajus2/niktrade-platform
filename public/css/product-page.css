@@ -1,0 +1,476 @@
+.nik-product-page {
+    padding: 24px 0 36px;
+    color: var(--liquid-ink);
+}
+
+.nik-product-page .nik-product-shell,
+.nik-product-page .nik-product-layout > * {
+    min-width: 0;
+}
+
+.nik-product-page .nik-product-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: color-mix(in srgb, var(--liquid-ink) 70%, transparent);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.nik-product-page .nik-product-breadcrumbs a:hover {
+    color: var(--liquid-blue-deep);
+}
+
+.nik-product-page .nik-product-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.nik-product-page .nik-product-gallery,
+.nik-product-page .nik-product-info,
+.nik-product-page .nik-product-section {
+    border-radius: 24px;
+    padding: 24px;
+}
+
+.nik-product-page .nik-product-main-image,
+.nik-product-page .nik-product-placeholder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: clamp(300px, 34vw, 480px);
+    overflow: hidden;
+    border: 1px solid var(--liquid-border);
+    border-radius: 18px;
+    background: color-mix(in srgb, white 55%, transparent);
+}
+
+.nik-product-page .nik-product-main-image img {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    object-fit: contain;
+}
+
+.nik-product-page .nik-product-zoom-lens {
+    position: absolute;
+    z-index: 3;
+    display: none;
+    width: 256px;
+    height: 256px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 50%;
+    background-color: white;
+    background-repeat: no-repeat;
+    box-shadow: var(--liquid-shadow);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
+
+.nik-product-page .nik-product-main-image.is-zooming .nik-product-zoom-lens {
+    display: block;
+}
+
+.nik-product-page .nik-product-mobile-gallery {
+    display: none;
+}
+
+.nik-product-page .nik-product-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.nik-product-page .nik-product-thumb {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 88px;
+    padding: 6px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 13px;
+    background: color-mix(in srgb, white 55%, transparent);
+}
+
+.nik-product-page .nik-product-thumb:is(:hover, .is-active) {
+    border-color: var(--liquid-blue-deep);
+}
+
+.nik-product-page .nik-product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.nik-product-page .nik-product-image-prompt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.nik-product-page .nik-product-image-prompt button,
+.nik-product-page .nik-product-image-prompt a {
+    padding: 8px 12px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 10px;
+    background: color-mix(in srgb, white 65%, transparent);
+    color: var(--liquid-blue-deep);
+    font: inherit;
+    cursor: pointer;
+}
+
+.nik-product-page .nik-product-info {
+    display: grid;
+    gap: 18px;
+}
+
+.nik-product-page .nik-product-brand {
+    margin: 0;
+    color: color-mix(in srgb, var(--liquid-green) 60%, var(--liquid-ink));
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.nik-product-page .nik-product-title {
+    margin: 0;
+    font-size: clamp(24px, 2.4vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -.03em;
+    overflow-wrap: anywhere;
+}
+
+.nik-product-page .nik-product-intro {
+    margin: 0;
+    color: color-mix(in srgb, var(--liquid-ink) 75%, transparent);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.nik-product-page .nik-product-meta,
+.nik-product-page .nik-product-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.nik-product-page .nik-product-chip,
+.nik-product-page .nik-product-status,
+.nik-product-page .nik-product-discount {
+    padding: 6px 10px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 10px;
+    background: color-mix(in srgb, white 55%, transparent);
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.nik-product-page .nik-product-status,
+.nik-product-page .nik-product-status-active {
+    color: color-mix(in srgb, var(--liquid-green) 60%, var(--liquid-ink));
+}
+
+.nik-product-page .nik-product-status:is(.is-out, .is-discontinued),
+.nik-product-page .nik-product-status-soon,
+.nik-product-page .nik-product-status-expired {
+    color: var(--liquid-ink);
+}
+
+.nik-product-page .nik-product-current-price {
+    font-size: clamp(28px, 2.2vw, 32px);
+    font-weight: 850;
+    letter-spacing: -.03em;
+}
+
+.nik-product-page .nik-product-old-price {
+    color: color-mix(in srgb, var(--liquid-ink) 60%, transparent);
+    font-size: 16px;
+    text-decoration: line-through;
+}
+
+.nik-product-page .nik-product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.nik-product-page .nik-product-button,
+.nik-product-page .nik-product-cart-link,
+.nik-product-page .nik-product-doc-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 13px;
+    background: linear-gradient(180deg, var(--liquid-blue), var(--liquid-blue-deep));
+    box-shadow: var(--liquid-shadow);
+    color: white;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 750;
+    text-align: center;
+    cursor: pointer;
+}
+
+.nik-product-page .nik-product-button:not(:disabled):hover {
+    background: var(--liquid-blue-deep);
+}
+
+.nik-product-page .nik-product-cart-link,
+.nik-product-page .nik-product-doc-link,
+.nik-product-page .nik-product-button:disabled {
+    background: color-mix(in srgb, white 55%, transparent);
+    box-shadow: none;
+    color: var(--liquid-ink);
+}
+
+.nik-product-page .nik-product-button:disabled {
+    cursor: not-allowed;
+}
+
+.nik-product-page .nik-product-quantity {
+    display: inline-grid;
+    grid-template-columns: 44px minmax(40px, auto) 44px;
+    overflow: hidden;
+    border: 1px solid var(--liquid-border);
+    border-radius: 13px;
+    background: color-mix(in srgb, white 60%, transparent);
+}
+
+.nik-product-page .nik-product-quantity-form {
+    display: contents;
+}
+
+.nik-product-page .nik-product-quantity-button,
+.nik-product-page .nik-product-quantity-value {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 0;
+    background: transparent;
+    color: var(--liquid-blue-deep);
+    font: inherit;
+    font-weight: 750;
+}
+
+.nik-product-page .nik-product-quantity-button {
+    cursor: pointer;
+}
+
+.nik-product-page .nik-product-alert {
+    padding: 12px 16px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--liquid-green) 12%, transparent);
+    font-size: 14px;
+}
+
+.nik-product-page .nik-product-specs,
+.nik-product-page .nik-product-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.nik-product-page .nik-product-spec,
+.nik-product-page .nik-product-detail {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, white 45%, transparent);
+    overflow-wrap: anywhere;
+}
+
+.nik-product-page .nik-product-spec-label,
+.nik-product-page .nik-product-detail-label,
+.nik-product-page .nik-product-doc-meta {
+    margin-bottom: 6px;
+    color: color-mix(in srgb, var(--liquid-ink) 70%, transparent);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.nik-product-page .nik-product-spec-value,
+.nik-product-page .nik-product-detail-value,
+.nik-product-page .nik-product-doc-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.nik-product-page .nik-product-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 28px 0 20px;
+}
+
+.nik-product-page .nik-product-tab {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 12px 18px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 13px;
+    background: color-mix(in srgb, white 65%, transparent);
+    color: var(--liquid-ink);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.nik-product-page .nik-product-tab.is-active {
+    background: var(--liquid-blue-deep);
+    color: white;
+}
+
+.nik-product-page :is(a, button):focus-visible {
+    outline: 3px solid var(--liquid-blue-deep);
+    outline-offset: 3px;
+}
+
+.nik-product-page .nik-product-tab-panel {
+    display: grid;
+    gap: 20px;
+}
+
+.nik-product-page .nik-product-tab-panel[hidden],
+.nik-product-page .nik-product-image-prompt[hidden] {
+    display: none;
+}
+
+.nik-product-page .nik-product-section h2,
+.nik-product-page .nik-product-related > h2 {
+    margin: 0 0 18px;
+    font-size: 22px;
+    line-height: 1.3;
+}
+
+.nik-product-page .nik-product-section h3 {
+    margin: 20px 0 10px;
+    font-size: 16px;
+}
+
+.nik-product-page .nik-product-section p,
+.nik-product-page .nik-product-section li {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.nik-product-page .nik-product-docs {
+    display: grid;
+    gap: 14px;
+}
+
+.nik-product-page .nik-product-doc {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--liquid-border);
+    border-radius: 14px;
+    overflow-wrap: anywhere;
+}
+
+.nik-product-page .nik-product-related {
+    margin-top: 32px;
+    padding: 0;
+}
+
+@media (max-width: 900px) {
+    .nik-product-page .nik-product-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .nik-product-page {
+        padding-top: 16px;
+    }
+
+    .nik-product-page .nik-product-gallery,
+    .nik-product-page .nik-product-info,
+    .nik-product-page .nik-product-section {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .nik-product-page .nik-product-main-image,
+    .nik-product-page .nik-product-thumbs {
+        display: none;
+    }
+
+    .nik-product-page .nik-product-mobile-gallery {
+        display: flex;
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+    }
+
+    .nik-product-page .nik-product-mobile-slide {
+        flex: 0 0 100%;
+        min-width: 0;
+        scroll-snap-align: start;
+    }
+
+    .nik-product-page .nik-product-mobile-slide img {
+        display: block;
+        width: 100%;
+        height: 300px;
+        object-fit: contain;
+    }
+
+    .nik-product-page .nik-product-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .nik-product-page .nik-product-actions > form,
+    .nik-product-page .nik-product-button,
+    .nik-product-page .nik-product-cart-link {
+        width: 100%;
+    }
+
+    .nik-product-page .nik-product-quantity {
+        align-self: flex-start;
+    }
+
+    .nik-product-page .nik-product-details-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .nik-product-page .nik-product-tab {
+        flex: 1 1 auto;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .nik-product-page .nik-product-main-image.is-zooming .nik-product-zoom-lens {
+        display: none;
+    }
+}

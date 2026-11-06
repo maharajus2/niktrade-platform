@@ -5,11 +5,15 @@
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage;
 
+    $products ??= collect();
+    $brands ??= collect();
+    $categories ??= collect();
     $categoryProducts ??= collect();
     $brandProducts ??= collect();
     $storefrontAnchor = fn (string $anchor): string => request()->routeIs('catalog.preview')
         ? '#' . $anchor
         : route('catalog.preview') . '#' . $anchor;
+    $catalogUrl = request()->routeIs('catalog.show') ? route('catalog.index') : '#products';
 
     $imageUrl = function (?string $path): string {
         return $path ? Storage::disk('public')->url($path) : asset('images/logo-icon.png');
@@ -250,7 +254,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Каталог 2 - НИКТРЕЙД')</title>
-    <meta name="description" content="@yield('meta_description', 'Экспериментальный каталог бытовой химии НИКТРЕЙД в стиле Liquid Glass.')">
+    @hasSection('meta_description')
+        <meta name="description" content="@yield('meta_description')">
+    @elseif (! request()->routeIs('catalog.show'))
+        <meta name="description" content="Экспериментальный каталог бытовой химии НИКТРЕЙД в стиле Liquid Glass.">
+    @endif
     <style>
         .nik-catalog2,
         .nik-catalog2 * {
@@ -2827,14 +2835,14 @@
             </button>
 
             <nav class="nik-catalog2-nav">
-                <a class="nik-catalog2-catalog-btn" href="#products">
+                <a class="nik-catalog2-catalog-btn" href="{{ $catalogUrl }}">
                     Каталог
                     <span aria-hidden="true"><i></i><i></i><i></i></span>
                 </a>
                 <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
                 <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
                 <a href="{{ $storefrontAnchor('promos') }}">Акции</a>
-                <a href="#products">Новинки</a>
+                <a href="{{ $storefrontAnchor('products') }}">Новинки</a>
                 <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                 <a href="#footer">Доставка и оплата</a>
             </nav>
@@ -2877,11 +2885,11 @@
                 </div>
 
                 <nav class="nik-catalog2-menu-links" aria-label="Основная навигация">
-                    <a href="#products">Каталог</a>
+                    <a href="{{ $catalogUrl }}">Каталог</a>
                     <a href="{{ $storefrontAnchor('brands') }}">Бренды</a>
                     <a href="{{ $storefrontAnchor('categories') }}">Категории</a>
                     <a href="{{ $storefrontAnchor('promos') }}">Акции</a>
-                    <a href="#products">Новинки</a>
+                    <a href="{{ $storefrontAnchor('products') }}">Новинки</a>
                     <a href="{{ $storefrontAnchor('about') }}">О компании</a>
                     <a href="#footer">Доставка и оплата</a>
                 </nav>

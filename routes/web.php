@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog2', [CatalogController::class, 'catalog2'])->name('catalog.preview');
+Route::get('/catalog3', [CatalogController::class, 'catalog3'])->name('catalog.preview3');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');

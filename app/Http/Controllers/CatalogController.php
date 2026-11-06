@@ -105,6 +105,12 @@ class CatalogController extends Controller
         ]);
     }
 
+    public function catalog3(Request $request): View
+    {
+        // Те же данные, что у /catalog2, но упрощённый шаблон главной для сравнения.
+        return view('catalog3.index', $this->catalog2($request)->getData());
+    }
+
     private function withExistingCatalogImages(Collection $products): Collection
     {
         return $products

@@ -72,6 +72,30 @@
         });
     };
 
+    // Стрелки прокрутки ряда значков (десктоп): показываем только когда есть что прокручивать.
+    const stripList = dock?.querySelector('[data-v3-dock-items]');
+    const stripPrev = dock?.querySelector('[data-v3-strip-prev]');
+    const stripNext = dock?.querySelector('[data-v3-strip-next]');
+    const updateStrip = () => {
+        if (!stripList || !stripPrev || !stripNext) return;
+        const max = stripList.scrollWidth - stripList.clientWidth;
+        stripPrev.hidden = !(max > 4 && stripList.scrollLeft > 4);
+        stripNext.hidden = !(max > 4 && stripList.scrollLeft < max - 4);
+    };
+    const stripBy = (dir) => stripList.scrollBy({ left: dir * Math.max(120, stripList.clientWidth * 0.7), behavior: reduce ? 'auto' : 'smooth' });
+    stripPrev?.addEventListener('click', () => stripBy(-1));
+    stripNext?.addEventListener('click', () => stripBy(1));
+    stripList?.addEventListener('scroll', updateStrip, { passive: true });
+    window.addEventListener('resize', updateStrip);
+    if (stripList && 'ResizeObserver' in window) new ResizeObserver(updateStrip).observe(stripList);
+    const revealItem = (el) => {
+        if (!el || !stripList) return;
+        const left = el.offsetLeft - stripList.offsetLeft;
+        const right = left + el.offsetWidth;
+        if (left < stripList.scrollLeft + 8) stripList.scrollTo({ left: Math.max(0, left - 24), behavior: reduce ? 'auto' : 'smooth' });
+        else if (right > stripList.scrollLeft + stripList.clientWidth - 8) stripList.scrollTo({ left: right - stripList.clientWidth + 24, behavior: reduce ? 'auto' : 'smooth' });
+    };
+
     const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     // Развёрнутый список состава корзины: фото, название, объём, артикул, количество.
@@ -129,6 +153,7 @@
         dock.querySelector('[data-v3-dock-total]').textContent = data.total_formatted;
         const show = data.count > 0;
         dock.hidden = !show;
+        requestAnimationFrame(() => { updateStrip(); revealItem(changedEl); });
         document.body.classList.toggle('has-dock', show);
         if (show) requestAnimationFrame(() => dock.classList.add('is-open'));
         else dock.classList.remove('is-open');
@@ -315,7 +340,28 @@
         hideTip();
         if (save) { try { localStorage.setItem(storeKey, on ? '1' : '0'); } catch (e) { /* без хранилища работаем так же */ } }
     };
-    expandBtn?.addEventListener('click', () => setExpanded(!dock.classList.contains('is-expanded'), true));
+    let swiped = false;
+    expandBtn?.addEventListener('click', () => {
+        if (swiped) return;
+        setExpanded(!dock.classList.contains('is-expanded'), true);
+    });
+
+    // Свайп по ручке: вверх — развернуть, вниз — свернуть.
+    if (expandBtn) {
+        let startY = null;
+        const finish = (y) => {
+            if (startY === null) return;
+            const dy = y - startY;
+            startY = null;
+            if (Math.abs(dy) < 28) return;
+            swiped = true;
+            setTimeout(() => { swiped = false; }, 350);
+            setExpanded(dy < 0, true);
+        };
+        expandBtn.addEventListener('pointerdown', (e) => { startY = e.clientY; });
+        expandBtn.addEventListener('pointerup', (e) => finish(e.clientY));
+        expandBtn.addEventListener('pointercancel', (e) => finish(e.clientY));
+    }
 
     const tip = document.createElement('div');
     tip.className = 'v3-dock-tip';

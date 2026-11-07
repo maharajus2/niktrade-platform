@@ -137,7 +137,11 @@
             <strong>Корзина</strong>
             <span data-v3-dock-count></span>
         </div>
-        <div class="v3-dock-items" data-v3-dock-items></div>
+        <div class="v3-dock-strip">
+            <button class="v3-dock-arrow is-prev" type="button" data-v3-strip-prev aria-label="Прокрутить назад" hidden></button>
+            <div class="v3-dock-items" data-v3-dock-items></div>
+            <button class="v3-dock-arrow is-next" type="button" data-v3-strip-next aria-label="Прокрутить вперёд" hidden></button>
+        </div>
         <div class="v3-dock-list" data-v3-dock-list></div>
         <div class="v3-dock-end">
             <button class="v3-dock-clear" type="button" data-v3-dock-clear>Очистить</button>

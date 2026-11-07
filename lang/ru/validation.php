@@ -53,6 +53,12 @@ return [
     'unique' => 'Такое значение поля :attribute уже существует.',
     'url' => 'Поле :attribute имеет ошибочный формат URL.',
     'uploaded' => 'Загрузка файла :attribute не удалась.',
+    'values' => [
+        'fulfillment_method' => [
+            'delivery' => 'доставка',
+            'pickup' => 'самовывоз',
+        ],
+    ],
     'custom' => [],
     'attributes' => [
         'first_name' => 'имя',

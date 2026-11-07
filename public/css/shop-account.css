@@ -1,0 +1,115 @@
+/* НИКТРЕЙД · личный кабинет покупателя (v3). Все правила ограничены .shop-account */
+.shop-account { padding: 4px 0 40px; }
+.shop-account [hidden] { display: none !important; }
+.shop-account .title { margin: 0 0 18px; font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+.shop-account .page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.shop-account .page-header .title { margin: 0; }
+.shop-account .title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.shop-account .account-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.shop-account .account-nav form { display: contents; }
+.shop-account .account-nav__link, .shop-account .account-nav__button, .shop-account .action-link, .shop-account .neutral-button, .shop-account .button, .shop-account .danger-button, .shop-account .primary-button, .shop-account .secondary-button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--navy); font: inherit; font-size: 14px; font-weight: 800; text-decoration: none; cursor: pointer; }
+.shop-account .account-nav__link:hover, .shop-account .account-nav__button:hover, .shop-account .action-link:hover, .shop-account .neutral-button:hover, .shop-account .secondary-button:hover { border-color: #c9c5ff; background: var(--lav); color: var(--primary); }
+.shop-account .account-nav__button { color: var(--muted); }
+.shop-account .account-nav__button:hover { border-color: #f2b8ba; background: #fff; color: var(--red); }
+.shop-account .action-link.primary, .shop-account .button, .shop-account .primary-button { border-color: transparent; background: var(--primary); color: #fff; }
+.shop-account .action-link.primary:hover, .shop-account .button:hover, .shop-account .primary-button:hover { background: var(--primary-dark); color: #fff; }
+.shop-account .danger-button { border-color: transparent; background: #fdeceb; color: #b42318; }
+.shop-account .danger-button:hover { background: #fbd9d6; }
+.shop-account .neutral-button { background: #f5f6fc; }
+.shop-account .card, .shop-account .address, .shop-account .order-row, .shop-account .empty, .shop-account .forbidden-card { border: 1px solid var(--line); border-radius: 18px; background: #fff; padding: 22px; }
+.shop-account .card-title { margin: 0 0 14px; font-size: 19px; font-weight: 800; }
+.shop-account .label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+.shop-account .value { margin-top: 4px; color: var(--ink); font-weight: 800; overflow-wrap: anywhere; }
+.shop-account .muted { color: var(--muted); }
+.shop-account .error { color: var(--red); font-size: 13px; font-weight: 700; }
+.shop-account .message { margin-bottom: 16px; padding: 12px 16px; border-radius: 12px; background: #e9f8f0; color: #17744a; font-weight: 700; }
+.shop-account .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.shop-account .profile-card { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 22px; align-items: start; }
+.shop-account .avatar-block { display: grid; gap: 10px; justify-items: center; }
+.shop-account .avatar-upload { position: relative; display: block; width: 120px; height: 120px; cursor: pointer; }
+.shop-account .avatar { display: grid; overflow: hidden; place-items: center; width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #8a7dff); color: #fff; font-size: 44px; font-weight: 800; }
+.shop-account .avatar img { width: 100%; height: 100%; object-fit: cover; }
+.shop-account .avatar-edit { position: absolute; right: 2px; bottom: 2px; display: grid; place-items: center; width: 34px; height: 34px; border: 3px solid #fff; border-radius: 50%; background: var(--primary); color: #fff; font-size: 15px; font-weight: 800; }
+.shop-account .avatar-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.shop-account .avatar-delete, .shop-account .telegram-delete { width: fit-content; padding: 0; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.shop-account .avatar-delete:hover, .shop-account .telegram-delete:hover { color: var(--red); }
+.shop-account .profile-grid, .shop-account .info-grid, .shop-account .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.shop-account .stats-grid { gap: 14px; }
+.shop-account .stat-value { margin-top: 6px; color: var(--primary); font-size: 26px; font-weight: 800; }
+.shop-account .actions-card { margin-top: 18px; }
+.shop-account .quick-actions, .shop-account .actions, .shop-account .forbidden-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.shop-account .forbidden-actions { justify-content: center; }
+.shop-account .telegram-box { display: grid; gap: 10px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.shop-account .telegram-status, .shop-account .status.ok, .shop-account .badge, .shop-account .status-badge { display: inline-flex; align-items: center; width: fit-content; min-height: 30px; padding: 0 12px; border-radius: 999px; background: #e9f8f0; color: #17744a; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.shop-account .telegram-status.pending, .shop-account .status.pending, .shop-account .status-badge--danger { background: #fdeceb; color: #b42318; }
+.shop-account .status { display: inline-flex; align-items: center; width: fit-content; min-height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 800; }
+.shop-account .telegram-muted { color: var(--muted); font-size: 13px; font-weight: 600; }
+.shop-account .note, .shop-account .archive-note { padding: 14px; border-radius: 12px; background: #f5f6fc; color: var(--ink); font-weight: 600; line-height: 1.5; }
+.shop-account .archive-note { margin-bottom: 16px; }
+.shop-account .form-grid, .shop-account .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.shop-account .form { display: grid; gap: 14px; }
+.shop-account .field { display: grid; gap: 6px; min-width: 0; }
+.shop-account .field.full, .shop-account .checkbox-field, .shop-account .form-actions { grid-column: 1 / -1; }
+.shop-account .input, .shop-account .textarea { width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background-color: #f7f8fd; color: var(--ink); font: inherit; font-size: 15px; }
+.shop-account .textarea { min-height: 90px; padding: 12px 14px; resize: vertical; }
+.shop-account .input:hover, .shop-account .textarea:hover { border-color: #c9c5ff; }
+.shop-account .input:focus, .shop-account .textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(83, 72, 216, .18); }
+.shop-account .checkbox, .shop-account .checkbox-field { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 700; cursor: pointer; }
+.shop-account .checkbox input, .shop-account .checkbox-field input { width: 18px; height: 18px; accent-color: var(--primary); }
+.shop-account .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.shop-account .form-row { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; }
+.shop-account .form-row .field { min-width: min(260px, 100%); }
+.shop-account .addresses { display: grid; gap: 14px; }
+.shop-account .address.is-default { border-color: var(--primary); background: #f7f6ff; }
+.shop-account .address-header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.shop-account .address-title { color: var(--navy); font-weight: 800; }
+.shop-account .address-lines { display: grid; gap: 5px; margin: 12px 0; color: var(--ink); }
+.shop-account .create-card { margin-top: 18px; }
+.shop-account .empty-state { display: grid; justify-items: start; gap: 14px; color: var(--muted); }
+.shop-account .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.shop-account .tab { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--navy); font-size: 14px; font-weight: 800; }
+.shop-account .tab:hover { border-color: #c9c5ff; }
+.shop-account .tab--active { border-color: var(--primary); background: var(--lav); color: var(--primary-dark); }
+.shop-account .orders { display: grid; gap: 12px; }
+.shop-account .order-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr auto; gap: 12px; align-items: center; padding: 16px 20px; }
+.shop-account .archive-badge { display: inline-flex; align-items: center; width: fit-content; margin-top: 7px; padding: 4px 10px; border-radius: 999px; background: #f1f2fb; color: var(--muted); font-size: 12px; font-weight: 800; }
+.shop-account .empty { padding: 28px; color: var(--muted); text-align: center; }
+.shop-account .pagination { margin-top: 18px; }
+.shop-account .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.shop-account .row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--line); }
+.shop-account .row:first-of-type { border-top: 0; }
+.shop-account .items { display: grid; gap: 12px; }
+.shop-account .item { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; }
+.shop-account .product-thumb { display: grid; overflow: hidden; place-items: center; width: 76px; height: 76px; border-radius: 12px; background: var(--lav); color: var(--muted); font-size: 11px; text-align: center; }
+.shop-account .product-thumb img { width: 100%; height: 100%; padding: 6px; object-fit: contain; }
+.shop-account .item-body { display: grid; gap: 7px; min-width: 0; }
+.shop-account .item-name { color: var(--navy); font-weight: 800; overflow-wrap: anywhere; }
+.shop-account .product-link { color: var(--navy); }
+.shop-account .product-link:hover { color: var(--primary); }
+.shop-account .item-meta { color: var(--muted); font-size: 13px; }
+.shop-account .item-summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+.shop-account .line-total { color: var(--navy); font-weight: 800; }
+.shop-account.forbidden-page { display: grid; place-items: center; width: min(680px, 100%); min-height: 60vh; margin: 0 auto; padding: 20px 0 40px; }
+.shop-account .forbidden-card { width: 100%; padding: 36px; text-align: center; }
+.shop-account .forbidden-icon { display: inline-grid; place-items: center; width: 56px; height: 56px; margin-bottom: 18px; border-radius: 50%; background: var(--lav); color: var(--primary); font-size: 26px; }
+.shop-account .forbidden-title { margin: 0 0 16px; font-size: 30px; font-weight: 800; line-height: 1.15; }
+.shop-account .forbidden-text { display: grid; gap: 10px; margin: 0 auto 24px; color: var(--muted); line-height: 1.6; }
+.shop-account .forbidden-text p { margin: 0; }
+
+@media (max-width: 900px) {
+.shop-account .dashboard-grid, .shop-account .grid { grid-template-columns: minmax(0, 1fr); }
+.shop-account .order-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+.shop-account .title { font-size: 28px; }
+.shop-account .page-header { display: grid; }
+.shop-account .card, .shop-account .address, .shop-account .order-row, .shop-account .forbidden-card { padding: 16px; border-radius: 16px; }
+.shop-account .profile-card, .shop-account .profile-grid, .shop-account .info-grid, .shop-account .stats-grid, .shop-account .form-grid, .shop-account .fields { grid-template-columns: minmax(0, 1fr); }
+.shop-account .form-actions { flex-direction: column-reverse; }
+.shop-account .form-actions .button, .shop-account .form-actions .neutral-button, .shop-account .form-row .button { width: 100%; }
+.shop-account .form-row { align-items: stretch; flex-direction: column; }
+.shop-account .forbidden-actions, .shop-account .forbidden-actions .primary-button, .shop-account .forbidden-actions .secondary-button { width: 100%; }
+.shop-account .item { grid-template-columns: 64px minmax(0, 1fr); }
+.shop-account .product-thumb { width: 64px; height: 64px; }
+}

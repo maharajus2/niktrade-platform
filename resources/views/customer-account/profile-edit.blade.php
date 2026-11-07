@@ -1,134 +1,13 @@
-@extends('layouts.public')
+@extends('layouts.shop')
 
 @section('title', 'Редактировать профиль')
 
 @push('styles')
-    <style>
-        .account-page {
-            width: min(860px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 32px 0 48px;
-        }
-
-        .account-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 22px;
-        }
-
-        .account-nav__link,
-        .account-nav__button,
-        .button,
-        .neutral-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 40px;
-            border: 0;
-            border-radius: 8px;
-            background: #ffffff;
-            color: #166534;
-            font: inherit;
-            font-weight: 800;
-            padding: 9px 12px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .title {
-            margin: 0 0 18px;
-            font-size: 2rem;
-        }
-
-        .card {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            background: #ffffff;
-            padding: 20px;
-            box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .field.full,
-        .checkbox-field,
-        .form-actions {
-            grid-column: 1 / -1;
-        }
-
-        .label {
-            display: block;
-            color: #374151;
-            font-size: 0.9rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .input {
-            width: 100%;
-            min-height: 42px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 9px 11px;
-            font: inherit;
-        }
-
-        .checkbox-field {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #374151;
-            font-weight: 800;
-        }
-
-        .error {
-            margin-top: 5px;
-            color: #b91c1c;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .button {
-            background: #166534;
-            color: #ffffff;
-        }
-
-        .neutral-button {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        @media (max-width: 640px) {
-            .account-page {
-                width: min(100% - 24px, 860px);
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                justify-content: stretch;
-                flex-direction: column-reverse;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/shop-account.css') }}?v={{ filemtime(public_path('css/shop-account.css')) }}">
 @endpush
 
 @section('content')
-    <main class="account-page">
+    <div class="account-page shop-account">
         @include('customer-account.partials.nav')
 
         <h1 class="title">Редактировать профиль</h1>
@@ -187,5 +66,5 @@
                 <button class="button" type="submit">Сохранить</button>
             </div>
         </form>
-    </main>
+    </div>
 @endsection

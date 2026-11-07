@@ -395,3 +395,12 @@ button.v3-dock-q { padding: 0 5px; line-height: 1; }
     .v3-dock-items { order: 5; flex: 1 0 100%; padding: 10px 10px 2px; gap: 8px; }
     .v3-dock-item { width: 52px; height: 52px; }
 }
+
+/* Mobile mini-cart: keep the row on one line when "Очистить" asks for confirmation */
+@media (max-width: 760px) {
+    .v3-dock-in { gap: 6px; }
+    .v3-dock-total { font-size: 15px; }
+    .v3-dock-go { min-width: 0; padding: 0 8px; font-size: 14px; }
+    .v3-dock-clear { padding: 0 9px; font-size: 12px; }
+    .v3-dock-clear.is-confirm { padding: 0 8px; }
+}

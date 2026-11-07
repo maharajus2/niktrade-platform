@@ -18,6 +18,13 @@ class ProductSearchService
         ',' => 'б', '.' => 'ю',
     ];
 
+    private const TRANSLIT = [
+        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y',
+        'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u',
+        'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e',
+        'ю' => 'yu', 'я' => 'ya',
+    ];
+
     /**
      * @return array{items: list<array<string, mixed>>, total: int, fuzzy: bool}
      */
@@ -124,6 +131,19 @@ class ProductSearchService
 
             if ($latin !== '' && ! in_array($latin, $variants, true)) {
                 $variants[] = $latin;
+            }
+
+            // Русская запись латинского слова по звучанию («хиберг» -> «hiberg»).
+            $phonetic = '';
+
+            foreach (mb_str_split(mb_strtolower(str_replace('ё', 'е', $query))) as $char) {
+                $phonetic .= $char === ' ' ? ' ' : (self::TRANSLIT[$char] ?? '');
+            }
+
+            $phonetic = $this->normalize($phonetic);
+
+            if ($phonetic !== '' && ! in_array($phonetic, $variants, true)) {
+                $variants[] = $phonetic;
             }
         }
 

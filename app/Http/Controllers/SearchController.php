@@ -22,6 +22,8 @@ class SearchController extends Controller
 
         return response()->json([
             'items' => array_map(fn (array $p): array => [
+                'id' => $p['id'],
+                'add_url' => route('cart.add', $p['slug']),
                 'name' => ProductName::withoutBrand($p['name'], $p['brand'], $p['direction'] ?? null),
                 'brand' => $p['brand'],
                 'direction' => ProductName::directionLabel($p['direction'] ?? null),

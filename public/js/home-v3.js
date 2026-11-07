@@ -204,10 +204,14 @@
         renderDock({ count: Number(cfg.initialCount), total_formatted: cfg.initialTotal, items: cfg.initialItems }, null);
     }
 
+    let currentItems = Array.isArray(cfg.initialItems) ? cfg.initialItems : [];
+
     const apply = (data) => {
+        currentItems = data.items || [];
         renderDock(data, data.changed_product_id);
         updateCards(data);
         updateHeader(data);
+        document.dispatchEvent(new CustomEvent('v3:cart', { detail: data }));
     };
 
     const addToCart = async (card, animate) => {
@@ -225,6 +229,14 @@
         if (busy) return;
         busy = true;
         try { await fn(); } catch (e) { fallback(); } finally { busy = false; }
+    };
+
+    // Небольшой интерфейс для других частей страницы (например, поиска).
+    window.V3Cart = {
+        items: () => currentItems,
+        add: (addUrl) => run(async () => apply(await request(addUrl, 'POST')), () => location.reload()),
+        set: (itemId, qty) => run(async () => apply(await request(cfg.updateUrl.replace('__ID__', itemId), 'PATCH', { quantity: qty })), () => location.reload()),
+        remove: (itemId) => run(async () => apply(await request(cfg.destroyUrl.replace('__ID__', itemId), 'DELETE')), () => location.reload()),
     };
 
     document.addEventListener('submit', (e) => {
@@ -430,17 +442,55 @@
         }
         let html = data.fuzzy ? '<div class="v3-sg-note">Возможно, вы искали:</div>' : '';
         data.items.forEach((p) => {
-            html += '<a class="v3-sg-item" role="option" href="' + esc(p.url) + '">'
+            html += '<div class="v3-sg-item" role="option" data-product-id="' + p.id + '" data-add-url="' + esc(p.add_url) + '" data-in-stock="' + (p.in_stock ? '1' : '0') + '">'
+                + '<a class="v3-sg-link" href="' + esc(p.url) + '">'
                 + '<span class="v3-sg-pic">' + (p.image ? '<img src="' + esc(p.image) + '" alt="">' : '') + '</span>'
                 + '<span class="v3-sg-txt"><span class="v3-sg-name">' + esc(p.name) + '</span>'
                 + '<span class="v3-sg-meta">' + esc(p.brand) + (p.direction ? ' · ' + esc(p.direction) : '') + (p.in_stock ? '' : ' · скоро появится') + '</span></span>'
-                + '<span class="v3-sg-price">' + esc(p.price) + '</span></a>';
+                + '<span class="v3-sg-price">' + esc(p.price) + '</span></a>'
+                + '<span class="v3-sg-buy"></span></div>';
         });
         html += '<a class="v3-sg-all" href="' + esc(data.all_url) + '">Показать все результаты (' + data.total + ')</a>';
         box.innerHTML = html;
+        syncBuy();
         open();
         active = -1;
     };
+
+    const cartIcon = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3.5h2.7l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.1a1.6 1.6 0 0 0 1.6-1.2l1.3-6.8H6.1"/></svg>';
+
+    // Кнопка «в корзину» или степпер в каждой строке подсказок — по текущему составу корзины.
+    function syncBuy() {
+        const cart = window.V3Cart ? window.V3Cart.items() : [];
+        box.querySelectorAll('.v3-sg-item').forEach((row) => {
+            const slot = row.querySelector('.v3-sg-buy');
+            if (!slot) return;
+            const line = cart.find((c) => String(c.product_id) === row.dataset.productId);
+            const inStock = row.dataset.inStock === '1';
+            row.dataset.itemId = line ? line.id : '';
+            row.dataset.qty = line ? line.quantity : 0;
+            if (!inStock) {
+                slot.innerHTML = '<button type="button" class="v3-sg-cartbtn" disabled aria-label="Скоро появится">' + cartIcon + '</button>';
+            } else if (line && line.quantity > 0) {
+                slot.innerHTML = '<span class="v3-sg-qty"><button type="button" data-sg-dec aria-label="Уменьшить количество">−</button>'
+                    + '<span>' + line.quantity + '</span><button type="button" data-sg-inc aria-label="Увеличить количество">+</button></span>';
+            } else {
+                slot.innerHTML = '<button type="button" class="v3-sg-cartbtn" data-sg-add aria-label="Добавить в корзину">' + cartIcon + '</button>';
+            }
+        });
+    }
+
+    document.addEventListener('v3:cart', syncBuy);
+
+    box.addEventListener('click', (e) => {
+        const row = e.target.closest('.v3-sg-item');
+        if (!row || !window.V3Cart) return;
+        const itemId = row.dataset.itemId;
+        const qty = Number(row.dataset.qty || 0);
+        if (e.target.closest('[data-sg-add]')) window.V3Cart.add(row.dataset.addUrl);
+        else if (e.target.closest('[data-sg-inc]')) window.V3Cart.set(itemId, qty + 1);
+        else if (e.target.closest('[data-sg-dec]')) qty > 1 ? window.V3Cart.set(itemId, qty - 1) : window.V3Cart.remove(itemId);
+    });
 
     const search = async () => {
         const q = input.value.trim();
@@ -461,7 +511,7 @@
         const list = items();
         if (e.key === 'ArrowDown' && !box.hidden && list.length) { e.preventDefault(); highlight((active + 1) % list.length); }
         else if (e.key === 'ArrowUp' && !box.hidden && list.length) { e.preventDefault(); highlight((active - 1 + list.length) % list.length); }
-        else if (e.key === 'Enter' && active >= 0 && list[active]) { e.preventDefault(); location.href = list[active].href; }
+        else if (e.key === 'Enter' && active >= 0 && list[active]) { e.preventDefault(); location.href = list[active].querySelector('.v3-sg-link').href; }
         else if (e.key === 'Escape' && !box.hidden) { close(); }
     });
 

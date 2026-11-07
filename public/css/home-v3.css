@@ -37,8 +37,8 @@
 .v3-search { position: relative; display: flex; width: min(100%, 720px); justify-self: center; }
 .v3-search input { width: 100%; min-height: 46px; padding: 0 56px 0 18px; border: 0; border-radius: 12px; background: #fff; color: var(--ink); font: inherit; font-size: 15px; }
 .v3-search input::placeholder { color: #7f88a8; }
-.v3-search button { position: absolute; top: 50%; right: 5px; display: inline-flex; width: 38px; height: 38px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 9px; background: var(--primary); color: #fff; cursor: pointer; transform: translateY(-50%); }
-.v3-search button:hover { background: var(--primary-dark); }
+.v3-search > button { position: absolute; top: 50%; right: 5px; display: inline-flex; width: 38px; height: 38px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 9px; background: var(--primary); color: #fff; cursor: pointer; transform: translateY(-50%); }
+.v3-search > button:hover { background: var(--primary-dark); }
 .v3-tool { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 14px; font-weight: 700; white-space: nowrap; }
 .v3-tool.is-stack { flex-direction: column; gap: 2px; font-size: 12px; font-weight: 600; }
 .v3-tool:hover { color: #cfd0ff; }
@@ -449,3 +449,20 @@ button.v3-dock-q { padding: 0 5px; line-height: 1; }
     body.has-dock-expanded { padding-bottom: 150px; }
 }
 @media (prefers-reduced-motion: reduce) { .v3-dock-handle::before { transition: none; } }
+
+/* ---------- Подсказки поиска: добавить в корзину и менять количество ---------- */
+.v3-sg-item { padding: 0; gap: 0; }
+.v3-sg-link { display: flex; flex: 1 1 auto; min-width: 0; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; color: inherit; }
+.v3-sg-buy { display: flex; flex: 0 0 auto; align-items: center; justify-content: flex-end; min-width: 92px; padding: 0 16px 0 4px; }
+.v3-sg-cartbtn { display: inline-flex; width: 40px; height: 36px; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: var(--primary); color: #fff; cursor: pointer; }
+.v3-sg-cartbtn:hover { background: var(--primary-dark); }
+.v3-sg-cartbtn:disabled { background: #ccd1e3; cursor: not-allowed; }
+.v3-sg-qty { display: inline-flex; align-items: center; overflow: hidden; border-radius: 10px; background: var(--primary); color: #fff; }
+.v3-sg-qty button { width: 30px; height: 36px; border: 0; background: transparent; color: #fff; font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; }
+.v3-sg-qty button:hover { background: var(--primary-dark); }
+.v3-sg-qty > span { min-width: 22px; font-size: 14px; font-weight: 800; text-align: center; }
+@media (max-width: 760px) {
+    .v3-sg-link { gap: 10px; padding-left: 12px; }
+    .v3-sg-pic { width: 40px; height: 40px; }
+    .v3-sg-buy { min-width: 0; padding-right: 12px; }
+}

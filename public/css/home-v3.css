@@ -382,3 +382,16 @@ button.v3-dock-q { padding: 0 5px; line-height: 1; }
 
 /* Скрытые элементы внутри карточек и блока покупки не должны перебиваться display из классов */
 [data-v3-card] [hidden] { display: none !important; }
+
+/* Mobile mini-cart: buttons on the top row, items below, no title row */
+@media (max-width: 760px) {
+    .v3-dock-in { flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px 8px; }
+    .v3-dock-sum { display: none; }
+    .v3-dock-end { display: contents; }
+    .v3-dock-total { order: 1; font-size: 16px; }
+    .v3-dock-go { order: 2; flex: 1 1 auto; justify-content: center; min-height: 40px; padding: 0 12px; }
+    .v3-dock-clear { order: 3; min-height: 40px; padding: 0 12px; }
+    .v3-dock-close { order: 4; flex: 0 0 auto; width: 36px; height: 36px; }
+    .v3-dock-items { order: 5; flex: 1 0 100%; padding: 10px 10px 2px; gap: 8px; }
+    .v3-dock-item { width: 52px; height: 52px; }
+}

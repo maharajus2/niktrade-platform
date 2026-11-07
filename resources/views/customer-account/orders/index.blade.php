@@ -3,6 +3,7 @@
 @section('title', 'Мои заказы')
 
 @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/shop-catalog.css') }}?v={{ filemtime(public_path('css/shop-catalog.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/shop-account.css') }}?v={{ filemtime(public_path('css/shop-account.css')) }}">
 @endpush
 
@@ -61,7 +62,7 @@
             </section>
 
             <div class="pagination">
-                {{ $orders->links() }}
+                {{ $orders->links('pagination.catalog') }}
             </div>
         @else
             <div class="empty">

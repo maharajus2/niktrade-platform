@@ -62,7 +62,7 @@
             </section>
 
             <div class="pagination">
-                {{ $orders->links('pagination.catalog') }}
+                {{ $orders->links('pagination.catalog', ['noun' => 'заказов']) }}
             </div>
         @else
             <div class="empty">

@@ -1,7 +1,7 @@
 @if ($paginator->hasPages())
     <nav class="catalog-pagination" aria-label="Страницы каталога">
         <span class="catalog-pagination-summary">
-            {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }} из {{ $paginator->total() }} товаров
+            {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }} из {{ $paginator->total() }} {{ $noun ?? 'товаров' }}
         </span>
         <div class="catalog-pagination-links">
             @if ($paginator->onFirstPage())

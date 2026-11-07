@@ -106,10 +106,14 @@
 
 /* ---------- категории ---------- */
 .v3-cats { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
-.v3-cat { display: flex; min-height: 96px; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 16px; background: #fff; font-size: 14px; font-weight: 800; line-height: 1.2; transition: border-color .15s ease, box-shadow .15s ease; }
-.v3-cat:hover { border-color: #c9c5ff; box-shadow: 0 10px 22px rgba(83, 72, 216, .12); }
-.v3-cat img { width: 60px; height: 72px; flex: 0 0 auto; object-fit: contain; }
-.v3-cat.is-all { justify-content: center; flex-direction: column; gap: 8px; color: var(--primary-dark); }
+.v3-cat { position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; padding: 14px 10px 0; border: 0; border-radius: 16px; background: #ece9ff; color: var(--ink); text-align: center; font-size: 14px; font-weight: 800; line-height: 1.2; transition: transform .15s ease, box-shadow .15s ease; }
+.v3-cat:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(83, 72, 216, .16); }
+.v3-cat img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.v3-cat > span { position: relative; z-index: 1; display: block; }
+.v3-cat.has-img { color: #fff; }
+.v3-cat.has-img::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(16, 23, 47, .62) 0%, rgba(16, 23, 47, .22) 38%, rgba(16, 23, 47, 0) 62%); pointer-events: none; }
+.v3-cat.has-img > span { text-shadow: 0 1px 6px rgba(16, 23, 47, .45); }
+.v3-cat.is-all { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10px; color: var(--primary-dark); }
 .v3-cat.is-all .i { width: 30px; height: 30px; color: var(--primary); }
 
 /* ---------- преимущества ---------- */
@@ -216,7 +220,7 @@
     .v3-tile { flex-direction: row; align-items: center; }
     .v3-cats { display: flex; overflow-x: auto; margin-right: -12px; padding-right: 12px; scrollbar-width: none; }
     .v3-cats::-webkit-scrollbar { display: none; }
-    .v3-cat { flex: 0 0 156px; }
+    .v3-cat { flex: 0 0 128px; }
     .v3-benefits { grid-template-columns: 1fr 1fr; }
     .v3-benefit { padding: 14px; }
     .v3-benefit:nth-child(n) { border-left: 0; border-top: 0; }
@@ -247,7 +251,6 @@
 .v3-banner-art img:nth-child(2) { max-height: 94%; }
 .v3-banner-art img:nth-child(1), .v3-banner-art img:nth-child(3) { max-height: 74%; }
 
-.v3-cat { border-color: transparent; }
 .v3-cat:nth-child(8n + 1) { background: #ece9ff; }
 .v3-cat:nth-child(8n + 2) { background: #dcf3ee; }
 .v3-cat:nth-child(8n + 3) { background: #fdeede; }
@@ -256,8 +259,6 @@
 .v3-cat:nth-child(8n + 6) { background: #e8f5dc; }
 .v3-cat:nth-child(8n + 7) { background: #efe6fb; }
 .v3-cat:nth-child(8n + 8) { background: #e3f4fb; }
-.v3-cat img { width: 68px; height: 80px; filter: drop-shadow(0 8px 8px rgba(16, 23, 47, .15)); }
-.v3-cat:hover { border-color: transparent; transform: translateY(-2px); }
 
 .v3-benefits { background: linear-gradient(180deg, #fff, #f7f7ff); box-shadow: 0 8px 24px rgba(16, 23, 47, .05); }
 .v3-benefit .i { width: 38px; height: 38px; padding: 7px; box-sizing: content-box; border-radius: 12px; background: var(--lav); }

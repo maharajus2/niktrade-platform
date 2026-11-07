@@ -20,7 +20,7 @@ class CategoryForm
                     ->maxLength(255),
 
                 FileUpload::make('image_path')
-                    ->label('Изображение для главной')
+                    ->label('Фон плитки категории')
                     ->disk('public')
                     ->directory('categories')
                     ->visibility('public')
@@ -32,7 +32,7 @@ class CategoryForm
                     ->imagePreviewHeight('160')
                     ->openable()
                     ->downloadable()
-                    ->helperText('Используется в карточке категории на главной странице catalog2. Рекомендуемый размер: 480x320 px, WebP/JPG/PNG до 15 МБ.'),
+                    ->helperText('Фон вертикальной плитки категории на главной странице. Рекомендуемый размер: 600x800 px (вертикальный формат 3:4), WebP/JPG/PNG до 15 МБ. Название категории выводится сверху, поэтому верх картинки лучше оставить спокойным. Без картинки плитка получит цветной фон.'),
 
                 Toggle::make('is_active')
                     ->label('Активна')

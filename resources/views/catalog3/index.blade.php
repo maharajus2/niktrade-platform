@@ -26,10 +26,10 @@
     $saleProducts = $products->filter(fn (Product $product): bool => $product->discounted_price !== null && (float) $product->discounted_price < (float) $product->price);
     $newProducts = $products->filter(fn (Product $product): bool => (bool) $product->is_new);
 
-    $categoryImage = function ($category) use ($categoryProducts, $imageUrl): string {
+    $categoryImage = function ($category): ?string {
         $path = filled($category->image_path) && Storage::disk('public')->exists($category->image_path) ? $category->image_path : null;
 
-        return $imageUrl($path ?? $categoryProducts->get($category->id)?->images?->first()?->file_path);
+        return $path ? Storage::disk('public')->url($path) : null;
     };
 
     $categoryTiles = $categories->take(7);
@@ -104,8 +104,11 @@
 
         <section class="v3-cats" aria-label="Категории" id="categories">
             @foreach ($categoryTiles as $category)
-                <a class="v3-cat" href="{{ route('catalog.index', ['category' => $category->id]) }}">
-                    <img src="{{ $categoryImage($category) }}" alt="" loading="lazy">
+                @php $categoryPhoto = $categoryImage($category); @endphp
+                <a class="v3-cat{{ $categoryPhoto ? ' has-img' : '' }}" href="{{ route('catalog.index', ['category' => $category->id]) }}">
+                    @if ($categoryPhoto)
+                        <img src="{{ $categoryPhoto }}" alt="" loading="lazy">
+                    @endif
                     <span>{{ $category->name }}</span>
                 </a>
             @endforeach

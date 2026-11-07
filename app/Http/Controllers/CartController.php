@@ -38,6 +38,11 @@ class CartController extends Controller
         ]);
     }
 
+    public function state(Request $request): JsonResponse
+    {
+        return $this->cartJson($request);
+    }
+
     public function add(Request $request, string $product): RedirectResponse|JsonResponse
     {
         $product = Product::query()

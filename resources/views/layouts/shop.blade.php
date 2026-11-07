@@ -172,6 +172,7 @@
     window.V3_CART = {
         updateUrl: @json(route('cart.items.update', '__ID__')),
         destroyUrl: @json(route('cart.items.destroy', '__ID__')),
+        stateUrl: @json(route('cart.state')),
         initialCount: {{ $cartQuantity }},
         initialTotal: @json($formatPrice($cartTotal)),
         initialItems: @json($dockItems),

@@ -26,6 +26,7 @@ Route::get('/catalog2', fn () => redirect()->route('catalog.preview3'))->name('c
 Route::get('/catalog3', [CatalogController::class, 'catalog3'])->name('catalog.preview3');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/cart/state', [CartController::class, 'state'])->name('cart.state');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/items/{cartItem}', [CartController::class, 'updateItem'])->name('cart.items.update');
 Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroyItem'])->name('cart.items.destroy');

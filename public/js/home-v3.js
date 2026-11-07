@@ -5,7 +5,6 @@
     const dock = document.getElementById('v3Dock');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cards = () => Array.from(document.querySelectorAll('[data-v3-card]'));
-    let busy = false;
 
     const request = async (url, method, body) => {
         const res = await fetch(url, {
@@ -189,7 +188,7 @@
 
         const hidden = 'translateY(115%)', shown = 'translateY(16px)';
         const both = (kf, opt) => [back, front].map((n) => n.animate(kf, opt));
-        const up = both([{ transform: hidden }, { transform: shown }], { duration: 320, easing: 'cubic-bezier(.2,1.3,.4,1)', fill: 'forwards' });
+        const up = both([{ transform: hidden }, { transform: shown }], { duration: 160, easing: 'cubic-bezier(.2,1.3,.4,1)', fill: 'forwards' });
 
         // центр рамки корзинки относительно карточки
         const rimY = cr.height - 10 - H + 16 + 14;
@@ -201,7 +200,7 @@
                 { transform: 'translateY(0) scale(1)', opacity: 1, offset: 0 },
                 { transform: `translateY(${toRim * 0.85}px) scale(.62)`, opacity: 1, offset: .7 },
                 { transform: `translateY(${toRim + 46}px) scale(.42)`, opacity: 1, offset: 1 },
-            ], { duration: 520, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
+            ], { duration: 260, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
 
             fall.onfinish = () => {
                 clone.style.visibility = 'hidden';
@@ -211,13 +210,13 @@
                     { transform: shown + ' scale(1.06,.9)', transformOrigin: '50% 100%', offset: .35 },
                     { transform: shown + ' scale(.98,1.04)', transformOrigin: '50% 100%', offset: .7 },
                     { transform: shown + ' scale(1,1)', transformOrigin: '50% 100%' },
-                ], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+                ], { duration: 130, easing: 'ease-out', fill: 'forwards' });
 
                 squash[0].onfinish = async () => {
                     let data;
                     try { data = await gate; } catch (e) { return finish(e); }
                     onDescend(data);
-                    const down = both([{ transform: shown }, { transform: hidden }], { duration: 340, easing: 'ease-in', fill: 'forwards' });
+                    const down = both([{ transform: shown }, { transform: hidden }], { duration: 170, easing: 'ease-in', fill: 'forwards' });
                     down[0].onfinish = () => finish();
                 };
             };
@@ -242,7 +241,7 @@
     const addToCart = async (card, animate) => {
         const req = request(card.dataset.addUrl, 'POST');
         const img = card.querySelector('.v3-card-img img');
-        if (animate && !reduce && img) {
+        if (animate && !reduce && img && !card.classList.contains('is-adding')) {
             req.catch(() => {});
             await basketDrop(card, img, req, apply);
         } else {
@@ -250,18 +249,54 @@
         }
     };
 
-    const run = async (fn, fallback) => {
-        if (busy) return;
-        busy = true;
-        try { await fn(); } catch (e) { fallback(); } finally { busy = false; }
+    // Запросы к корзине идут по очередям: по одному товару — строго по порядку, разные товары — одновременно.
+    // Пока корзины ещё нет (она создаётся первым запросом), всё идёт в одну общую очередь.
+    const chains = new Map();
+    let inflight = 0;
+    let burst = false;
+
+    const reconcile = async () => {
+        if (!cfg.stateUrl) return;
+        try { apply(await request(cfg.stateUrl, 'GET')); } catch (e) { /* следующая операция всё поправит */ }
+    };
+
+    const run = (key, fn, fallback) => {
+        const k = currentItems.length === 0 ? 'all' : String(key);
+        const prev = chains.get(k) || Promise.resolve();
+        inflight += 1;
+        if (inflight > 1) burst = true;
+        const next = prev
+            .then(fn)
+            .catch(() => fallback())
+            .finally(() => {
+                inflight -= 1;
+                if (chains.get(k) === next) chains.delete(k);
+                // После серии быстрых нажатий сверяем итог с сервером, чтобы порядок ответов не имел значения.
+                if (inflight === 0 && burst) { burst = false; reconcile(); }
+            });
+        chains.set(k, next);
+        return next;
+    };
+
+    const lineOf = (productId) => currentItems.find((i) => String(i.product_id) === String(productId));
+    const setQty = async (productId, delta) => {
+        const it = lineOf(productId);
+        if (!it) return;
+        const q = it.quantity + delta;
+        apply(q > 0
+            ? await request(cfg.updateUrl.replace('__ID__', it.id), 'PATCH', { quantity: q })
+            : await request(cfg.destroyUrl.replace('__ID__', it.id), 'DELETE'));
+    };
+    const removeLine = async (productId) => {
+        const it = lineOf(productId);
+        if (it) apply(await request(cfg.destroyUrl.replace('__ID__', it.id), 'DELETE'));
     };
 
     // Небольшой интерфейс для других частей страницы (например, поиска).
     window.V3Cart = {
         items: () => currentItems,
-        add: (addUrl) => run(async () => apply(await request(addUrl, 'POST')), () => location.reload()),
-        set: (itemId, qty) => run(async () => apply(await request(cfg.updateUrl.replace('__ID__', itemId), 'PATCH', { quantity: qty })), () => location.reload()),
-        remove: (itemId) => run(async () => apply(await request(cfg.destroyUrl.replace('__ID__', itemId), 'DELETE')), () => location.reload()),
+        add: (addUrl, productId) => run(productId, async () => apply(await request(addUrl, 'POST')), () => location.reload()),
+        change: (productId, delta) => run(productId, () => setQty(productId, delta), () => location.reload()),
     };
 
     document.addEventListener('submit', (e) => {
@@ -269,7 +304,7 @@
         if (!form) return;
         e.preventDefault();
         const card = form.closest('[data-v3-card]');
-        run(() => addToCart(card, true), () => form.submit());
+        run(card.dataset.productId, () => addToCart(card, true), () => form.submit());
     });
 
     document.addEventListener('click', (e) => {
@@ -277,15 +312,13 @@
         const dec = e.target.closest('[data-v3-dec]');
         if (!inc && !dec) return;
         const card = (inc || dec).closest('[data-v3-card]');
-        const qty = Number(card.dataset.qty || 0);
-        const id = card.dataset.itemId;
+        const pid = card.dataset.productId;
+        const reload = () => location.reload();
         if (inc) {
             // Анимация корзинки только при первом добавлении; дальше просто меняется число.
-            run(() => addToCart(card, qty === 0), () => location.reload());
-        } else if (qty > 1) {
-            run(async () => apply(await request(cfg.updateUrl.replace('__ID__', id), 'PATCH', { quantity: qty - 1 })), () => location.reload());
+            run(pid, () => addToCart(card, !lineOf(pid)), reload);
         } else {
-            run(async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE')), () => location.reload());
+            run(pid, () => setQty(pid, -1), reload);
         }
     });
 
@@ -298,16 +331,12 @@
         const item = e.target.closest('.v3-dock-item');
         if (!item) { activeItems().forEach((n) => n.classList.remove('is-active')); return; }
 
-        const id = item.dataset.itemId;
-        const qty = Number(item.dataset.qty || 0);
         const productId = item.dataset.productId;
         const keepActive = async (fn) => {
             const wasActive = item.classList.contains('is-active');
             await fn();
             if (wasActive) dock.querySelector(`.v3-dock-item[data-product-id="${productId}"]`)?.classList.add('is-active');
         };
-        const patch = (q) => async () => apply(await request(cfg.updateUrl.replace('__ID__', id), 'PATCH', { quantity: q }));
-        const destroy = async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE'));
         const reload = () => location.reload();
 
         if (e.target.closest('[data-v3-dock-remove]')) {
@@ -316,11 +345,11 @@
                 item.classList.add('is-active');
                 return;
             }
-            run(destroy, reload);
+            run(productId, () => removeLine(productId), reload);
         } else if (e.target.closest('[data-v3-dock-inc]')) {
-            run(() => keepActive(patch(qty + 1)), reload);
+            run(productId, () => keepActive(() => setQty(productId, 1)), reload);
         } else if (e.target.closest('[data-v3-dock-dec]')) {
-            run(() => keepActive(qty > 1 ? patch(qty - 1) : destroy), reload);
+            run(productId, () => keepActive(() => setQty(productId, -1)), reload);
         } else {
             const open = !item.classList.contains('is-active');
             activeItems().forEach((n) => n.classList.remove('is-active'));
@@ -392,13 +421,11 @@
     dock?.addEventListener('click', (e) => {
         const row = e.target.closest('.v3-dock-row');
         if (!row) return;
-        const id = row.dataset.itemId;
-        const qty = Number(row.dataset.qty || 0);
-        const patch = (q) => async () => apply(await request(cfg.updateUrl.replace('__ID__', id), 'PATCH', { quantity: q }));
-        const destroy = async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE'));
-        if (e.target.closest('[data-v3-row-remove]')) run(destroy, () => location.reload());
-        else if (e.target.closest('[data-v3-row-inc]')) run(patch(qty + 1), () => location.reload());
-        else if (e.target.closest('[data-v3-row-dec]')) run(qty > 1 ? patch(qty - 1) : destroy, () => location.reload());
+        const pid = row.dataset.productId;
+        const reload = () => location.reload();
+        if (e.target.closest('[data-v3-row-remove]')) run(pid, () => removeLine(pid), reload);
+        else if (e.target.closest('[data-v3-row-inc]')) run(pid, () => setQty(pid, 1), reload);
+        else if (e.target.closest('[data-v3-row-dec]')) run(pid, () => setQty(pid, -1), reload);
     });
 
     // Очистка корзины: два нажатия (второе подтверждает), без системных окон.
@@ -419,7 +446,7 @@
         }
         resetClear();
         const ids = Array.from(dock.querySelectorAll('.v3-dock-item')).map((n) => n.dataset.itemId);
-        run(async () => {
+        run('clear', async () => {
             let data = null;
             for (const id of ids) data = await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE');
             if (data) apply(data);
@@ -530,11 +557,10 @@
     box.addEventListener('click', (e) => {
         const row = e.target.closest('.v3-sg-item');
         if (!row || !window.V3Cart) return;
-        const itemId = row.dataset.itemId;
-        const qty = Number(row.dataset.qty || 0);
-        if (e.target.closest('[data-sg-add]')) window.V3Cart.add(row.dataset.addUrl);
-        else if (e.target.closest('[data-sg-inc]')) window.V3Cart.set(itemId, qty + 1);
-        else if (e.target.closest('[data-sg-dec]')) qty > 1 ? window.V3Cart.set(itemId, qty - 1) : window.V3Cart.remove(itemId);
+        const pid = row.dataset.productId;
+        if (e.target.closest('[data-sg-add]')) window.V3Cart.add(row.dataset.addUrl, pid);
+        else if (e.target.closest('[data-sg-inc]')) window.V3Cart.change(pid, 1);
+        else if (e.target.closest('[data-sg-dec]')) window.V3Cart.change(pid, -1);
     });
 
     const search = async () => {

@@ -6,6 +6,9 @@
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cards = () => Array.from(document.querySelectorAll('[data-v3-card]'));
 
+    let respSeq = 0;
+    let lastSeq = 0;
+
     const request = async (url, method, body) => {
         const res = await fetch(url, {
             method,
@@ -19,7 +22,9 @@
             body: body ? JSON.stringify(body) : undefined,
         });
         if (!res.ok) throw new Error('cart ' + res.status);
-        return res.json();
+        const data = await res.json();
+        data.__seq = ++respSeq;
+        return data;
     };
 
     const plural = (n, f) => {
@@ -231,6 +236,9 @@
     let currentItems = Array.isArray(cfg.initialItems) ? cfg.initialItems : [];
 
     const apply = (data) => {
+        // Ответ, который пришёл раньше уже применённого, устарел — пропускаем.
+        if (data.__seq && data.__seq < lastSeq) return;
+        if (data.__seq) lastSeq = data.__seq;
         currentItems = data.items || [];
         renderDock(data, data.changed_product_id);
         updateCards(data);
@@ -239,7 +247,8 @@
     };
 
     const addToCart = async (card, animate) => {
-        const req = request(card.dataset.addUrl, 'POST');
+        // В очереди только сам запрос; анимации разных карточек идут параллельно.
+        const req = enqueue(card.dataset.productId, () => request(card.dataset.addUrl, 'POST'));
         const img = card.querySelector('.v3-card-img img');
         if (animate && !reduce && img && !card.classList.contains('is-adding')) {
             req.catch(() => {});
@@ -260,23 +269,23 @@
         try { apply(await request(cfg.stateUrl, 'GET')); } catch (e) { /* следующая операция всё поправит */ }
     };
 
-    const run = (key, fn, fallback) => {
+    const enqueue = (key, fn) => {
         const k = currentItems.length === 0 ? 'all' : String(key);
         const prev = chains.get(k) || Promise.resolve();
         inflight += 1;
         if (inflight > 1) burst = true;
-        const next = prev
-            .then(fn)
-            .catch(() => fallback())
-            .finally(() => {
-                inflight -= 1;
-                if (chains.get(k) === next) chains.delete(k);
-                // После серии быстрых нажатий сверяем итог с сервером, чтобы порядок ответов не имел значения.
-                if (inflight === 0 && burst) { burst = false; reconcile(); }
-            });
+        const next = prev.catch(() => {}).then(fn);
         chains.set(k, next);
+        next.catch(() => {}).finally(() => {
+            inflight -= 1;
+            if (chains.get(k) === next) chains.delete(k);
+            // После серии быстрых нажатий сверяем итог с сервером, чтобы порядок ответов не имел значения.
+            if (inflight === 0 && burst) { burst = false; reconcile(); }
+        });
         return next;
     };
+
+    const run = (key, fn, fallback) => enqueue(key, fn).catch(() => fallback());
 
     const lineOf = (productId) => currentItems.find((i) => String(i.product_id) === String(productId));
     const setQty = async (productId, delta) => {
@@ -304,7 +313,7 @@
         if (!form) return;
         e.preventDefault();
         const card = form.closest('[data-v3-card]');
-        run(card.dataset.productId, () => addToCart(card, true), () => form.submit());
+        addToCart(card, true).catch(() => form.submit());
     });
 
     document.addEventListener('click', (e) => {
@@ -316,7 +325,7 @@
         const reload = () => location.reload();
         if (inc) {
             // Анимация корзинки только при первом добавлении; дальше просто меняется число.
-            run(pid, () => addToCart(card, !lineOf(pid)), reload);
+            addToCart(card, !lineOf(pid)).catch(reload);
         } else {
             run(pid, () => setQty(pid, -1), reload);
         }

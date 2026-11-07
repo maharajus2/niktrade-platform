@@ -72,6 +72,30 @@
         });
     };
 
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    // Развёрнутый список состава корзины: фото, название, объём, артикул, количество.
+    const renderRows = (items) => {
+        const box = dock.querySelector('[data-v3-dock-list]');
+        if (!box) return;
+        box.innerHTML = items.map((item) => (
+            '<div class="v3-dock-row" data-item-id="' + item.id + '" data-qty="' + item.quantity + '" data-product-id="' + item.product_id + '">'
+            + '<div class="v3-dock-row-img"><img alt="" src="' + esc(item.image || '') + '"></div>'
+            + '<div class="v3-dock-row-info">'
+            + '<div class="v3-dock-row-name">' + esc(item.display_name || item.name) + '</div>'
+            + (item.meta ? '<div class="v3-dock-row-meta">' + esc(item.meta) + '</div>' : '')
+            + '<div class="v3-dock-row-sum">' + esc(item.line_total || '') + '</div>'
+            + '</div>'
+            + '<div class="v3-dock-row-qty">'
+            + '<button type="button" data-v3-row-dec aria-label="Уменьшить количество">−</button>'
+            + '<span>' + item.quantity + '</span>'
+            + '<button type="button" data-v3-row-inc aria-label="Увеличить количество">+</button>'
+            + '</div>'
+            + '<button type="button" class="v3-dock-row-x" data-v3-row-remove aria-label="Убрать из корзины"></button>'
+            + '</div>'
+        )).join('');
+    };
+
     const renderDock = (data, changedId) => {
         if (!dock) return null;
         const list = dock.querySelector('[data-v3-dock-items]');
@@ -80,7 +104,8 @@
         data.items.forEach((item) => {
             const el = document.createElement('div');
             el.className = 'v3-dock-item';
-            el.title = item.name;
+            el.dataset.name = item.display_name || item.name;
+            el.dataset.meta = item.meta || '';
             el.dataset.productId = item.product_id;
             el.dataset.itemId = item.id;
             el.dataset.qty = item.quantity;
@@ -98,6 +123,7 @@
             list.appendChild(el);
             if (item.product_id === changedId) changedEl = el;
         });
+        renderRows(data.items);
         dock.querySelector('[data-v3-dock-count]').textContent =
             data.count + ' ' + plural(data.count, ['товар', 'товара', 'товаров']);
         dock.querySelector('[data-v3-dock-total]').textContent = data.total_formatted;
@@ -263,6 +289,58 @@
             activeItems().forEach((n) => n.classList.remove('is-active'));
             if (open) item.classList.add('is-active');
         }
+    });
+
+    // Состав корзины: сворачивание/разворачивание и подсказка над значком.
+    const expandBtn = dock?.querySelector('[data-v3-dock-expand]');
+    const storeKey = 'v3.dock.expanded';
+    const setExpanded = (on, save) => {
+        if (!dock) return;
+        dock.classList.toggle('is-expanded', on);
+        expandBtn?.setAttribute('aria-expanded', on ? 'true' : 'false');
+        expandBtn?.setAttribute('aria-label', on ? 'Свернуть состав корзины' : 'Показать состав корзины');
+        document.body.classList.toggle('has-dock-expanded', on);
+        hideTip();
+        if (save) { try { localStorage.setItem(storeKey, on ? '1' : '0'); } catch (e) { /* без хранилища работаем так же */ } }
+    };
+    expandBtn?.addEventListener('click', () => setExpanded(!dock.classList.contains('is-expanded'), true));
+
+    const tip = document.createElement('div');
+    tip.className = 'v3-dock-tip';
+    tip.hidden = true;
+    document.body.appendChild(tip);
+    function hideTip() { tip.hidden = true; }
+    const canHover = window.matchMedia('(hover: hover)');
+    dock?.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.v3-dock-item');
+        if (!item || !canHover.matches || dock.classList.contains('is-expanded')) return;
+        tip.innerHTML = '<strong></strong><span></span>';
+        tip.firstChild.textContent = item.dataset.name || '';
+        tip.lastChild.textContent = item.dataset.meta || '';
+        tip.lastChild.hidden = !item.dataset.meta;
+        tip.hidden = false;
+        const r = item.getBoundingClientRect();
+        const w = tip.offsetWidth;
+        const left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), window.innerWidth - w - 8);
+        tip.style.left = left + 'px';
+        tip.style.top = (r.top - tip.offsetHeight - 10) + 'px';
+    });
+    dock?.addEventListener('mouseout', (e) => { if (e.target.closest('.v3-dock-item')) hideTip(); });
+    dock?.addEventListener('scroll', hideTip, true);
+
+    try { if (localStorage.getItem(storeKey) === '1') setExpanded(true, false); } catch (e) { /* ignore */ }
+
+    // Кнопки в строках списка.
+    dock?.addEventListener('click', (e) => {
+        const row = e.target.closest('.v3-dock-row');
+        if (!row) return;
+        const id = row.dataset.itemId;
+        const qty = Number(row.dataset.qty || 0);
+        const patch = (q) => async () => apply(await request(cfg.updateUrl.replace('__ID__', id), 'PATCH', { quantity: q }));
+        const destroy = async () => apply(await request(cfg.destroyUrl.replace('__ID__', id), 'DELETE'));
+        if (e.target.closest('[data-v3-row-remove]')) run(destroy, () => location.reload());
+        else if (e.target.closest('[data-v3-row-inc]')) run(patch(qty + 1), () => location.reload());
+        else if (e.target.closest('[data-v3-row-dec]')) run(qty > 1 ? patch(qty - 1) : destroy, () => location.reload());
     });
 
     // Очистка корзины: два нажатия (второе подтверждает), без системных окон.

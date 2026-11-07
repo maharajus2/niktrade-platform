@@ -6,7 +6,7 @@ use App\Models\Brand;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Product;
-use App\Support\ProductName;
+use App\Support\CartItemPresenter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -43,13 +43,7 @@ class ShopLayoutComposer
             'shopHasNew' => Product::query()->where('is_active', true)->where('is_new', true)->exists(),
             'cartQuantity' => (int) $items->sum('quantity'),
             'cartTotal' => (float) $items->sum('line_total'),
-            'dockItems' => $items->map(fn (CartItem $item): array => [
-                'id' => $item->id,
-                'product_id' => $item->product_id,
-                'name' => ProductName::withoutBrand($item->product?->name, $item->product?->brand?->name, $item->product?->direction),
-                'image' => ($path = $item->product?->images->first()?->file_path) ? Storage::disk('public')->url($path) : null,
-                'quantity' => (int) $item->quantity,
-            ])->values()->all(),
+            'dockItems' => $items->map(fn (CartItem $item): array => CartItemPresenter::make($item))->values()->all(),
         ]);
     }
 }

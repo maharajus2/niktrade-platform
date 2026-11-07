@@ -404,3 +404,48 @@ button.v3-dock-q { padding: 0 5px; line-height: 1; }
     .v3-dock-clear { padding: 0 9px; font-size: 12px; }
     .v3-dock-clear.is-confirm { padding: 0 8px; }
 }
+
+/* ---------- Мини-корзина: состав (подписи) ---------- */
+.v3-dock-handle { position: absolute; left: 50%; top: -26px; z-index: 2; width: 64px; height: 27px; padding: 0; border: 1px solid var(--line); border-bottom: 0; border-radius: 14px 14px 0 0; background: #fff; cursor: pointer; pointer-events: auto; box-shadow: 0 -8px 18px rgba(16, 23, 47, .08); transform: translateX(-50%); }
+.v3-dock-handle::before { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border-top: 2.5px solid var(--navy); border-left: 2.5px solid var(--navy); border-radius: 2px; transform: translate(-50%, -30%) rotate(45deg); transition: transform .2s ease; }
+.v3-dock.is-expanded .v3-dock-handle::before { transform: translate(-50%, -70%) rotate(225deg); }
+.v3-dock-handle::after { content: ""; position: absolute; inset: -8px -10px 0; }
+.v3-dock-handle:hover::before { border-color: var(--primary); }
+
+.v3-dock-list { display: none; }
+.v3-dock.is-expanded .v3-dock-items { display: none; }
+.v3-dock.is-expanded .v3-dock-in { flex-wrap: wrap; }
+.v3-dock.is-expanded .v3-dock-end { margin-left: auto; }
+.v3-dock.is-expanded .v3-dock-list { order: 5; flex: 1 0 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; max-height: min(46vh, 380px); overflow-y: auto; padding: 4px 2px 2px; border-top: 1px solid var(--line); padding-top: 10px; }
+
+.v3-dock-row { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 6px 8px; border-radius: 12px; background: #f6f6fe; }
+.v3-dock-row-img { display: flex; flex: 0 0 auto; width: 52px; height: 52px; align-items: center; justify-content: center; border-radius: 10px; background: var(--lav); }
+.v3-dock-row-img img { max-width: 82%; max-height: 82%; object-fit: contain; }
+.v3-dock-row-info { flex: 1 1 auto; min-width: 0; }
+.v3-dock-row-name { display: -webkit-box; overflow: hidden; color: var(--navy); font-size: 14px; font-weight: 700; line-height: 1.25; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.v3-dock-row-meta { margin-top: 2px; color: var(--muted); font-size: 12px; }
+.v3-dock-row-sum { margin-top: 2px; color: var(--navy); font-size: 13px; font-weight: 800; }
+.v3-dock-row-qty { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 2px; border-radius: 10px; background: #fff; border: 1px solid var(--line); }
+.v3-dock-row-qty button { width: 30px; height: 32px; border: 0; background: transparent; color: var(--primary); font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; }
+.v3-dock-row-qty span { min-width: 18px; color: var(--navy); font-size: 14px; font-weight: 800; text-align: center; }
+.v3-dock-row-x { position: relative; flex: 0 0 auto; width: 30px; height: 30px; border: 0; border-radius: 50%; background: #eef0fa; cursor: pointer; }
+.v3-dock-row-x::before, .v3-dock-row-x::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; border-radius: 1px; background: var(--navy); }
+.v3-dock-row-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+.v3-dock-row-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.v3-dock-row-x:hover { background: #e5484d; }
+.v3-dock-row-x:hover::before, .v3-dock-row-x:hover::after { background: #fff; }
+
+.v3-dock-tip { position: fixed; z-index: 120; display: grid; gap: 2px; max-width: 280px; padding: 9px 12px; border-radius: 10px; background: var(--navy); color: #fff; font-size: 13px; line-height: 1.3; pointer-events: none; box-shadow: 0 8px 22px rgba(16, 23, 47, .3); }
+.v3-dock-tip[hidden] { display: none; }
+.v3-dock-tip strong { font-size: 13px; }
+.v3-dock-tip span { color: #c9cdf2; font-size: 12px; }
+
+@media (max-width: 760px) {
+    .v3-dock.is-expanded .v3-dock-list { order: 5; grid-template-columns: 1fr; max-height: min(52vh, 420px); }
+    .v3-dock-row { padding: 6px; gap: 8px; }
+    .v3-dock-row-img { width: 46px; height: 46px; }
+    .v3-dock-row-qty button { width: 28px; }
+    .v3-dock-tip { display: none; }
+    body.has-dock-expanded { padding-bottom: 150px; }
+}
+@media (prefers-reduced-motion: reduce) { .v3-dock-handle::before { transition: none; } }

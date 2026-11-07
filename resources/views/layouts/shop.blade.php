@@ -131,12 +131,14 @@
 </footer>
 
 <aside class="v3-dock" id="v3Dock" aria-label="Мини-корзина" hidden>
+    <button class="v3-dock-handle" type="button" data-v3-dock-expand aria-expanded="false" aria-label="Показать состав корзины"></button>
     <div class="v3-dock-in">
         <div class="v3-dock-sum">
             <strong>Корзина</strong>
             <span data-v3-dock-count></span>
         </div>
         <div class="v3-dock-items" data-v3-dock-items></div>
+        <div class="v3-dock-list" data-v3-dock-list></div>
         <div class="v3-dock-end">
             <button class="v3-dock-clear" type="button" data-v3-dock-clear>Очистить</button>
             <span class="v3-dock-total" data-v3-dock-total></span>

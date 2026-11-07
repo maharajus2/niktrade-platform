@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Support\CartItemPresenter;
 use App\Models\Product;
 use App\Support\WeightFormatter;
 use Illuminate\Contracts\View\View;
@@ -164,7 +165,7 @@ class CartController extends Controller
 
         if ($cart) {
             $items = $cart->items()
-                ->with(['product.images' => fn ($query) => $query
+                ->with(['product.brand', 'product.images' => fn ($query) => $query
                     ->orderByDesc('is_main')
                     ->orderBy('sort_order')
                     ->orderBy('id')])
@@ -177,18 +178,7 @@ class CartController extends Controller
             'total' => (float) $items->sum('line_total'),
             'total_formatted' => number_format((float) $items->sum('line_total'), 0, ',', ' ') . ' ₽',
             'changed_product_id' => $changedProductId,
-            'items' => $items->map(function (CartItem $item): array {
-                $path = $item->product?->images->first()?->file_path;
-
-                return [
-                    'id' => $item->id,
-                    'product_id' => $item->product_id,
-                    'name' => (string) $item->product?->name,
-                    'image' => $path ? Storage::disk('public')->url($path) : null,
-                    'quantity' => (int) $item->quantity,
-                    'line_total' => number_format((float) $item->line_total, 0, ',', ' ') . ' ₽',
-                ];
-            })->values(),
+            'items' => $items->map(fn (CartItem $item): array => CartItemPresenter::make($item))->values(),
         ]);
     }
 

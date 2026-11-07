@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Search\ProductSearchService;
+use App\Support\ProductName;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,8 +22,9 @@ class SearchController extends Controller
 
         return response()->json([
             'items' => array_map(fn (array $p): array => [
-                'name' => $p['name'],
+                'name' => ProductName::withoutBrand($p['name'], $p['brand'], $p['direction'] ?? null),
                 'brand' => $p['brand'],
+                'direction' => ProductName::directionLabel($p['direction'] ?? null),
                 'price' => number_format($p['price'], 0, ',', ' ') . ' ₽',
                 'image' => $p['image'] ? Storage::disk('public')->url($p['image']) : null,
                 'url' => route('catalog.show', $p['slug']),

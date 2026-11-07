@@ -1,15 +1,15 @@
-@extends('catalog2.index')
+@extends('layouts.shop')
 
 @section('title', 'Вход')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/auth-page.css') }}?v={{ filemtime(public_path('css/auth-page.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/shop-auth.css') }}?v={{ filemtime(public_path('css/shop-auth.css')) }}">
 @endpush
 
-@section('catalog_results')
-    <main class="nik-auth-page">
+@section('content')
+    <div class="nik-auth-page">
         <div class="nik-auth-layout">
-            <aside class="nik-auth-aside nik-catalog2-glass">
+            <aside class="nik-auth-aside">
                 <h2>Личный кабинет НИКТРЕЙД</h2>
                 <p>Следите за заказами, сохраняйте адреса доставки и оформляйте покупки быстрее.</p>
                 <ul class="nik-auth-benefits">
@@ -19,7 +19,7 @@
                 </ul>
             </aside>
 
-            <form class="nik-auth-card nik-catalog2-glass" method="POST" action="{{ route('customer.login.store') }}">
+            <form class="nik-auth-card" method="POST" action="{{ route('customer.login.store') }}">
                 @csrf
 
                 <h1 class="nik-auth-title">Вход</h1>
@@ -54,5 +54,5 @@
                 </div>
             </form>
         </div>
-    </main>
+    </div>
 @endsection

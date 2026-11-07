@@ -21,7 +21,8 @@ Route::get('/', function () {
 
 Route::get('/search/suggest', [SearchController::class, 'suggest'])->middleware('throttle:60,1')->name('search.suggest');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/catalog2', [CatalogController::class, 'catalog2'])->name('catalog.preview');
+// Старый адрес пробной страницы: ведём на новую главную магазина.
+Route::get('/catalog2', fn () => redirect()->route('catalog.preview3'))->name('catalog.preview');
 Route::get('/catalog3', [CatalogController::class, 'catalog3'])->name('catalog.preview3');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

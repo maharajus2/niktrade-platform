@@ -1,0 +1,58 @@
+/* НИКТРЕЙД · страницы магазина: каталог, фильтры, пагинация, кнопки */
+.shop-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 14px; color: var(--muted); font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.shop-crumbs a:hover { color: var(--primary); }
+.shop-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.shop-head h1 { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.shop-head p { margin: 6px 0 0; color: var(--muted); }
+.shop-count { color: var(--muted); font-weight: 700; white-space: nowrap; }
+.shop-count strong { color: var(--ink); }
+
+.shop-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 22px; border: 0; border-radius: 12px; background: var(--primary); color: #fff; font: inherit; font-size: 15px; font-weight: 800; white-space: nowrap; cursor: pointer; }
+.shop-btn:hover { background: var(--primary-dark); }
+.shop-btn:disabled { background: #ccd1e3; color: #fff; cursor: not-allowed; }
+.shop-btn.is-large { min-height: 52px; padding: 0 28px; font-size: 16px; }
+.shop-reset { color: var(--muted); font-weight: 700; }
+.shop-reset:hover { color: var(--primary); }
+
+.shop-filters { margin-bottom: 20px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.shop-filters > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; font-weight: 800; list-style: none; cursor: pointer; }
+.shop-filters > summary::-webkit-details-marker { display: none; }
+.shop-filters-state { color: var(--muted); font-size: 13px; font-weight: 600; }
+.shop-filters-reset { color: var(--primary); font-size: 14px; font-weight: 800; }
+.shop-filters-body { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 14px; align-items: end; padding: 4px 18px 18px; }
+.shop-field { display: grid; gap: 6px; min-width: 0; }
+.shop-field label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+.shop-input, .shop-select { width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background-color: #f7f8fd; color: var(--ink); font: inherit; font-size: 15px; }
+.shop-select { padding-right: 40px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235b6482' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: right 14px center; background-repeat: no-repeat; cursor: pointer; }
+.shop-input:hover, .shop-select:hover { border-color: #c9c5ff; }
+.shop-input:focus, .shop-select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(83, 72, 216, .18); }
+.shop-filters-actions { display: flex; align-items: center; gap: 14px; }
+
+.v3-products.is-catalog { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); }
+.v3-products.is-related { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.shop-pagination { margin-top: 26px; }
+.catalog-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.catalog-pagination-summary { color: var(--muted); font-size: 14px; font-weight: 700; }
+.catalog-pagination-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.catalog-pagination-links a, .catalog-pagination-links span { display: inline-flex; min-width: 40px; height: 40px; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-weight: 800; }
+.catalog-pagination-links a:hover { border-color: var(--primary); color: var(--primary); }
+.catalog-pagination-links .is-current { border-color: var(--primary); background: var(--primary); color: #fff; }
+.catalog-pagination-links span[aria-disabled="true"]:not(.is-current) { color: #a3aac3; }
+
+.shop-empty { display: grid; justify-items: start; gap: 8px; padding: 28px; border: 1px dashed var(--line); border-radius: 16px; background: #fff; }
+.shop-empty h2 { margin: 0; font-size: 22px; }
+.shop-empty p { margin: 0 0 8px; color: var(--muted); }
+
+@media (max-width: 1180px) {
+    .shop-filters-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .shop-filters-actions { grid-column: 1 / -1; }
+    .v3-products.is-related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+    .shop-head { align-items: flex-start; flex-direction: column; gap: 6px; }
+    .shop-head h1 { font-size: 26px; }
+    .shop-filters-body { grid-template-columns: minmax(0, 1fr); }
+    .v3-products.is-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .catalog-pagination { justify-content: center; }
+}

@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\ProductName;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -23,7 +24,7 @@ class ShopLayoutComposer
                 ->whereHas('cart', fn ($query) => $query
                     ->where('session_id', request()->session()->getId())
                     ->where('status', 'active'))
-                ->with(['product.images' => fn ($query) => $query
+                ->with(['product.brand:id,name', 'product.images' => fn ($query) => $query
                     ->orderByDesc('is_main')
                     ->orderBy('sort_order')
                     ->orderBy('id')])
@@ -45,7 +46,7 @@ class ShopLayoutComposer
             'dockItems' => $items->map(fn (CartItem $item): array => [
                 'id' => $item->id,
                 'product_id' => $item->product_id,
-                'name' => (string) $item->product?->name,
+                'name' => ProductName::withoutBrand($item->product?->name, $item->product?->brand?->name, $item->product?->direction),
                 'image' => ($path = $item->product?->images->first()?->file_path) ? Storage::disk('public')->url($path) : null,
                 'quantity' => (int) $item->quantity,
             ])->values()->all(),

@@ -1,25 +1,26 @@
-@extends('catalog2.index')
+@extends('layouts.shop')
 
 @section('title', $product->seo_title ?: $product->name)
 
-@if ($product->seo_description ?: $product->short_description)
-    @section('meta_description', $product->seo_description ?: $product->short_description)
-@endif
+@section('meta_description', $product->seo_description ?: $product->short_description ?: '')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/catalog-list.css') }}?v={{ filemtime(public_path('css/catalog-list.css')) }}">
-    <link rel="stylesheet" href="{{ asset('css/product-page.css') }}?v={{ filemtime(public_path('css/product-page.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/shop-catalog.css') }}?v={{ filemtime(public_path('css/shop-catalog.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/shop-product.css') }}?v={{ filemtime(public_path('css/shop-product.css')) }}">
 @endpush
 
-@section('catalog_results')
-    <main class="nik-product-page">
+@section('content')
+    <div class="nik-product-page">
         @php
             $hasDiscount = $product->discounted_price !== null
                 && $product->price !== null
                 && $product->discounted_price < $product->price;
 
             $hasDiscountPercent = (float) ($product->discount_percent ?? 0) > 0;
-            $directionLabel = $directions[$product->direction] ?? $product->direction;
+            $directionLabel = \App\Support\ProductName::directionLabel($product->direction) ?? ($directions[$product->direction] ?? $product->direction);
+            $displayName = \App\Support\ProductName::withoutBrand($product->name, $product->brand?->name, $product->direction);
+            $money = fn ($value): string => number_format((float) $value, fmod((float) $value, 1) == 0.0 ? 0 : 2, ',', ' ') . ' ₽';
+            $icon = fn (string $name, string $class = ''): string => \App\Support\ShopIcons::svg($name, $class);
             $availabilityLabels = [
                 'in_stock' => 'В наличии',
                 'out_of_stock' => 'Временно отсутствует',
@@ -41,7 +42,7 @@
 
         <div class="nik-product-shell">
             <nav class="nik-product-breadcrumbs" aria-label="Хлебные крошки">
-                <a href="{{ route('catalog.preview') }}">Главная</a>
+                <a href="{{ route('catalog.preview3') }}">Главная</a>
                 <span>/</span>
                 <a href="{{ route('catalog.index') }}">Каталог</a>
 
@@ -56,11 +57,11 @@
                 @endif
 
                 <span>/</span>
-                <span aria-current="page">{{ $product->name }}</span>
+                <span aria-current="page">{{ $displayName }}</span>
             </nav>
 
             <section class="nik-product-layout">
-                <div class="nik-product-gallery nik-catalog2-glass" aria-label="Галерея товара">
+                <div class="nik-product-gallery shop-panel" aria-label="Галерея товара">
                     @if ($mainImage)
                         <a
                             class="nik-product-main-image"
@@ -134,12 +135,12 @@
                     @endif
                 </div>
 
-                <section class="nik-product-info nik-catalog2-glass" aria-label="Информация о товаре">
+                <section class="nik-product-info shop-panel" aria-label="Информация о товаре">
                     @if ($product->brand)
                         <p class="nik-product-brand">{{ $product->brand->name }}</p>
                     @endif
 
-                    <h1 class="nik-product-title">{{ $product->name }}</h1>
+                    <h1 class="nik-product-title" title="{{ $product->name }}">{{ $displayName }}</h1>
 
                     @if ($product->short_description)
                         <p class="nik-product-intro">{{ $product->short_description }}</p>
@@ -154,16 +155,20 @@
                             <span class="nik-product-chip">Штрихкод {{ $product->barcode }}</span>
                         @endif
 
+                        @if ($directionLabel)
+                            <span class="nik-product-chip">{{ $directionLabel }}</span>
+                        @endif
+
                         <span class="nik-product-status {{ $availabilityClass }}">{{ $availabilityLabel }}</span>
                     </div>
 
                     <div>
                         <div class="nik-product-price">
                             @if ($hasDiscount)
-                                <span class="nik-product-current-price">{{ number_format((float) $product->discounted_price, 2, ',', ' ') }} ₽</span>
-                                <span class="nik-product-old-price">{{ number_format((float) $product->price, 2, ',', ' ') }} ₽</span>
+                                <span class="nik-product-current-price">{{ $money($product->discounted_price) }}</span>
+                                <span class="nik-product-old-price">{{ $money($product->price) }}</span>
                             @elseif ($product->price !== null)
-                                <span class="nik-product-current-price">{{ number_format((float) $product->price, 2, ',', ' ') }} ₽</span>
+                                <span class="nik-product-current-price">{{ $money($product->price) }}</span>
                             @endif
 
                             @if ($hasDiscountPercent)
@@ -176,50 +181,25 @@
                         <div class="nik-product-alert">{{ session('success') }}</div>
                     @endif
 
-                    <div class="nik-product-actions">
+                    <div class="nik-product-actions" data-v3-card data-product-id="{{ $product->id }}" data-item-id="{{ $cartProductItem?->id }}" data-qty="{{ $cartProductQuantity }}" data-add-url="{{ route('cart.add', $product->slug ?: $product->id) }}">
                         @if ($canAddToCart)
-                            @if ($cartProductItem)
-                                <div class="nik-product-quantity" aria-label="Количество товара в корзине">
-                                    @if ($cartProductQuantity > 1)
-                                        <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="quantity" value="{{ $cartProductQuantity - 1 }}">
-                                            <button class="nik-product-quantity-button" type="submit" aria-label="Уменьшить количество">-</button>
-                                        </form>
-                                    @else
-                                        <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.destroy', $cartProductItem) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="nik-product-quantity-button" type="submit" aria-label="Убрать товар из корзины">-</button>
-                                        </form>
-                                    @endif
+                            <div class="v3-qty is-large" role="group" aria-label="Количество товара в корзине" @if ($cartProductQuantity < 1) hidden @endif>
+                                <button class="v3-qty-btn" type="button" data-v3-dec aria-label="Уменьшить количество">−</button>
+                                <span class="v3-qty-num" aria-live="polite" data-v3-num>{{ $cartProductQuantity }}</span>
+                                <button class="v3-qty-btn" type="button" data-v3-inc aria-label="Увеличить количество">+</button>
+                            </div>
 
-                                    <span class="nik-product-quantity-value">{{ $cartProductQuantity }}</span>
-
-                                    <form class="nik-product-quantity-form" method="POST" action="{{ route('cart.items.update', $cartProductItem) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="quantity" value="{{ $cartProductQuantity + 1 }}">
-                                        <button class="nik-product-quantity-button" type="submit" aria-label="Увеличить количество">+</button>
-                                    </form>
-                                </div>
-                            @else
-                                <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}">
-                                    @csrf
-
-                                    <button class="nik-product-button" type="submit">Добавить в корзину</button>
-                                </form>
-                            @endif
+                            <form method="POST" action="{{ route('cart.add', $product->slug ?: $product->id) }}" data-v3-add-form @if ($cartProductQuantity > 0) hidden @endif>
+                                @csrf
+                                <button class="shop-btn is-large" type="submit">{!! $icon('cart') !!} Добавить в корзину</button>
+                            </form>
                         @else
-                            <button class="nik-product-button" type="button" disabled>
+                            <button class="shop-btn is-large" type="button" disabled>
                                 {{ $availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Снят с производства' }}
                             </button>
                         @endif
 
-                        @if ($cartProductQuantity > 0)
-                            <a class="nik-product-cart-link" href="{{ route('cart.index') }}">Перейти в корзину</a>
-                        @endif
+                        <a class="nik-product-cart-link" href="{{ route('cart.index') }}" data-v3-cart-link @if ($cartProductQuantity < 1) hidden @endif>Перейти в корзину</a>
                     </div>
 
                     <div class="nik-product-specs" aria-label="Ключевые характеристики">
@@ -301,14 +281,14 @@
                     data-product-tab-panel="main"
                 >
                     @if (filled($product->description))
-                    <section class="nik-product-section nik-catalog2-glass">
+                    <section class="nik-product-section shop-panel">
                         <h2>Описание</h2>
                         <p>{{ $product->description }}</p>
                     </section>
                     @endif
 
                     @if (filled($product->composition))
-                        <section class="nik-product-section nik-catalog2-glass">
+                        <section class="nik-product-section shop-panel">
                             <h2>Состав</h2>
                             <p>{{ $product->composition }}</p>
                         </section>
@@ -323,7 +303,7 @@
                     data-product-tab-panel="details"
                     hidden
                 >
-                    <section class="nik-product-section nik-catalog2-glass">
+                    <section class="nik-product-section shop-panel">
                         <h2>Характеристики</h2>
 
                         <div class="nik-product-details-grid">
@@ -400,14 +380,14 @@
                     </section>
 
                     @if ($product->usage_method)
-                        <section class="nik-product-section nik-catalog2-glass">
+                        <section class="nik-product-section shop-panel">
                             <h2>Способ применения</h2>
                             <p>{{ $product->usage_method }}</p>
                         </section>
                     @endif
 
                     @if ($product->precautions || $product->storage_conditions || $product->disposal_method)
-                        <section class="nik-product-section nik-catalog2-glass">
+                        <section class="nik-product-section shop-panel">
                             <h2>Безопасность и хранение</h2>
 
                             @if ($product->precautions)
@@ -437,7 +417,7 @@
                     data-product-tab-panel="documents"
                     hidden
                 >
-                    <section class="nik-product-section nik-catalog2-glass">
+                    <section class="nik-product-section shop-panel">
                         <h2>Документация</h2>
 
                             <div class="nik-product-docs">
@@ -494,17 +474,18 @@
             </div>
 
             @if ($relatedProducts->isNotEmpty())
-                <section class="nik-product-related nik-catalog-list" aria-labelledby="related-products-title">
+                <section class="nik-product-related" aria-labelledby="related-products-title">
                     <h2 id="related-products-title">Похожие товары</h2>
-                    <div class="grid">
+                    <div class="v3-products is-related">
                         @foreach ($relatedProducts as $relatedProduct)
-                            @include('catalog.partials.product-card', ['product' => $relatedProduct])
+                            @include('shop.partials.product-card', ['product' => $relatedProduct])
                         @endforeach
                     </div>
                 </section>
+
             @endif
         </div>
-    </main>
+    </div>
 @endsection
 
 @push('scripts')

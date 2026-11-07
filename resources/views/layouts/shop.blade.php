@@ -6,6 +6,7 @@
     $shopHomeUrl = route('catalog.preview3');
     $accountUrl = Auth::guard('customer')->check() ? route('customer.account') : route('customer.login');
     $accountLabel = Auth::guard('customer')->check() ? 'Кабинет' : 'Войти';
+    $defaultMetaDescription = 'НИКТРЕЙД: бытовая и профессиональная химия HIBERG и ARVETERA для дома и бизнеса.';
 @endphp
 <!DOCTYPE html>
 <html lang="ru">
@@ -14,10 +15,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'НИКТРЕЙД')</title>
-    @hasSection('meta_description')
-        <meta name="description" content="@yield('meta_description')">
-    @else
-        <meta name="description" content="НИКТРЕЙД: бытовая и профессиональная химия HIBERG и ARVETERA для дома и бизнеса.">
+    @if (trim($__env->yieldContent('meta_description', $defaultMetaDescription)) !== '')
+        <meta name="description" content="@yield('meta_description', $defaultMetaDescription)">
     @endif
     <link rel="stylesheet" href="{{ asset('css/home-v3.css') }}?v={{ filemtime(public_path('css/home-v3.css')) }}">
     @stack('styles')

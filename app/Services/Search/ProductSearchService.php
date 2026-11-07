@@ -275,6 +275,7 @@ class ProductSearchService
                             'id' => (int) $product->id,
                             'name' => (string) $product->name,
                             'brand' => (string) ($product->brand?->name ?? ''),
+                            'direction' => (string) ($product->direction ?? ''),
                             'article' => (string) $product->article,
                             'slug' => $product->slug ?: (string) $product->id,
                             'price' => (float) $price,

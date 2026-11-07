@@ -59,6 +59,8 @@
             const qty = item ? item.quantity : 0;
             card.dataset.qty = qty;
             card.dataset.itemId = item ? item.id : '';
+            const cartLink = card.querySelector('[data-v3-cart-link]');
+            if (cartLink) cartLink.hidden = qty < 1;
             const stepper = card.querySelector('.v3-qty');
             const form = card.querySelector('[data-v3-add-form]');
             const num = card.querySelector('[data-v3-num]');
@@ -353,7 +355,7 @@
             html += '<a class="v3-sg-item" role="option" href="' + esc(p.url) + '">'
                 + '<span class="v3-sg-pic">' + (p.image ? '<img src="' + esc(p.image) + '" alt="">' : '') + '</span>'
                 + '<span class="v3-sg-txt"><span class="v3-sg-name">' + esc(p.name) + '</span>'
-                + '<span class="v3-sg-meta">' + esc(p.brand) + (p.in_stock ? '' : ' · скоро появится') + '</span></span>'
+                + '<span class="v3-sg-meta">' + esc(p.brand) + (p.direction ? ' · ' + esc(p.direction) : '') + (p.in_stock ? '' : ' · скоро появится') + '</span></span>'
                 + '<span class="v3-sg-price">' + esc(p.price) + '</span></a>';
         });
         html += '<a class="v3-sg-all" href="' + esc(data.all_url) + '">Показать все результаты (' + data.total + ')</a>';

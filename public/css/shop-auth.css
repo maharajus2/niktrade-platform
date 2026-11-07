@@ -1,0 +1,32 @@
+/* НИКТРЕЙД · вход и регистрация */
+.nik-auth-page { padding: 8px 0 40px; }
+.nik-auth-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); gap: 20px; align-items: stretch; max-width: 1040px; margin: 0 auto; }
+.nik-auth-aside, .nik-auth-card { border-radius: 22px; padding: 36px; }
+.nik-auth-aside { display: flex; flex-direction: column; justify-content: center; gap: 20px; background: linear-gradient(130deg, var(--navy), #1d2b86 60%, #4b3fc9); color: #fff; }
+.nik-auth-aside h2 { margin: 0; font-size: clamp(26px, 2.6vw, 36px); font-weight: 800; line-height: 1.15; letter-spacing: -.02em; }
+.nik-auth-aside p { margin: 0; color: #dfe2ff; font-size: 15px; line-height: 1.6; }
+.nik-auth-benefits { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.nik-auth-benefits li { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: rgba(255, 255, 255, .12); font-size: 14px; font-weight: 700; }
+.nik-auth-benefits li::before { content: ""; width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: #b9b1ff; }
+.nik-auth-card { display: grid; align-content: start; gap: 16px; border: 1px solid var(--line); background: #fff; }
+.nik-auth-title { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.nik-auth-subtitle { margin: -8px 0 4px; color: var(--muted); }
+.nik-auth-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.nik-auth-field { display: grid; gap: 6px; min-width: 0; }
+.nik-auth-label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+.nik-auth-input { width: 100%; min-height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: #f7f8fd; color: var(--ink); font: inherit; font-size: 15px; }
+.nik-auth-input:hover { border-color: #c9c5ff; }
+.nik-auth-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(83, 72, 216, .18); }
+.nik-auth-error { color: var(--red); font-size: 13px; font-weight: 700; }
+.nik-auth-checkbox { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+.nik-auth-checkbox input { width: 18px; height: 18px; accent-color: var(--primary); }
+.nik-auth-button { min-height: 50px; border: 0; border-radius: 12px; background: var(--primary); color: #fff; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; }
+.nik-auth-button:hover { background: var(--primary-dark); }
+.nik-auth-switch { color: var(--muted); font-size: 14px; font-weight: 600; text-align: center; }
+.nik-auth-switch a { color: var(--primary); font-weight: 800; }
+@media (max-width: 860px) {
+    .nik-auth-layout { grid-template-columns: minmax(0, 1fr); }
+    .nik-auth-aside, .nik-auth-card { padding: 24px; }
+    .nik-auth-aside { order: 2; }
+    .nik-auth-row { grid-template-columns: minmax(0, 1fr); }
+}

@@ -15,7 +15,12 @@ use Illuminate\Support\Facades\Storage;
 
 class CatalogController extends Controller
 {
-    public function catalog2(Request $request): View
+    /**
+     * Данные для главной страницы магазина (/catalog3).
+     *
+     * @return array<string, mixed>
+     */
+    private function homeData(Request $request): array
     {
         $products = Product::query()
             ->where('is_active', true)
@@ -94,7 +99,7 @@ class CatalogController extends Controller
             ->limit(8)
             ->get();
 
-        return view('catalog2.index', [
+        return [
             'products' => $products,
             'heroProduct' => $products->first(fn (Product $product): bool => $product->images->isNotEmpty()),
             'brands' => $brands,
@@ -103,13 +108,12 @@ class CatalogController extends Controller
             'brandProducts' => $brandProducts,
             'homepageBanners' => $homepageBanners,
             'cartProductItems' => $this->getCartProductItems($request, $products->pluck('id')->all()),
-        ]);
+        ];
     }
 
     public function catalog3(Request $request): View
     {
-        // Те же данные, что у /catalog2, но упрощённый шаблон главной для сравнения.
-        return view('catalog3.index', $this->catalog2($request)->getData());
+        return view('catalog3.index', $this->homeData($request));
     }
 
     private function withExistingCatalogImages(Collection $products): Collection

@@ -460,8 +460,7 @@
 
 // Живой поиск: подсказки с допуском опечаток.
 (() => {
-    const form = document.querySelector('[data-v3-search]');
-    if (!form) return;
+  const initSearch = (form) => {
     const input = form.querySelector('input[name="search"]');
     const box = form.querySelector('.v3-suggest');
     const url = form.dataset.suggestUrl;
@@ -562,4 +561,54 @@
     });
 
     document.addEventListener('click', (e) => { if (!form.contains(e.target)) close(); });
+  };
+  document.querySelectorAll('[data-v3-search]').forEach(initSearch);
+})();
+
+// Липкая полоса: поиск и кнопка «наверх». На десктопе видна, пока основной поиск ушёл за экран;
+// на телефоне появляется при прокрутке вверх.
+(() => {
+    const bar = document.querySelector('[data-v3-sticky]');
+    const anchor = document.querySelector('.v3-top .v3-search');
+    if (!bar || !anchor) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const phone = window.matchMedia('(max-width: 760px)');
+    let lastY = window.scrollY;
+    let shown = false;
+
+    const setShown = (on) => {
+        if (on === shown) return;
+        shown = on;
+        bar.classList.toggle('is-on', on);
+        bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+        bar.querySelectorAll('a, button, input').forEach((el) => { el.tabIndex = on ? 0 : -1; });
+        if (!on) {
+            const box = bar.querySelector('.v3-suggest');
+            if (box) box.hidden = true;
+            bar.querySelector('input')?.blur();
+        }
+    };
+
+    const update = () => {
+        const y = window.scrollY;
+        const away = anchor.getBoundingClientRect().bottom < 0;
+        if (!away) setShown(false);
+        else if (!phone.matches) setShown(true);
+        else if (y < lastY - 4) setShown(true);
+        else if (y > lastY + 4) setShown(false);
+        lastY = y;
+    };
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => { ticking = false; update(); });
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+
+    bar.querySelector('[data-v3-up]')?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
 })();

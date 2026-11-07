@@ -95,6 +95,22 @@
     </div>
 </header>
 
+<div class="v3-sticky" data-v3-sticky aria-hidden="true">
+    <div class="v3-container v3-sticky-row">
+        <a class="v3-sticky-logo" href="{{ route('catalog.index') }}" aria-label="НИКТРЕЙД, главная" tabindex="-1">
+            <img src="{{ asset('images/logont.png') }}" alt="НИКТРЕЙД">
+        </a>
+
+        <form class="v3-search" role="search" method="GET" action="{{ route('catalog.index') }}" data-v3-search data-suggest-url="{{ route('search.suggest') }}">
+            <input type="search" name="search" placeholder="Поиск по названию или артикулу" aria-label="Поиск по каталогу" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="v3SuggestSticky" aria-autocomplete="list" tabindex="-1">
+            <button type="submit" aria-label="Найти" tabindex="-1">{!! $icon('search') !!}</button>
+            <div class="v3-suggest" id="v3SuggestSticky" role="listbox" hidden></div>
+        </form>
+
+        <button class="v3-up" type="button" data-v3-up aria-label="Наверх" tabindex="-1"></button>
+    </div>
+</div>
+
 <main class="v3-main">
     <div class="v3-container">
         @yield('content')

@@ -490,3 +490,30 @@ button.v3-dock-q { padding: 0 5px; line-height: 1; }
     .v3-dock-arrow { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) { .v3-dock.is-expanded .v3-dock-list { animation: none; } }
+
+/* ---------- Липкая полоса: поиск и «наверх» ---------- */
+.v3-sticky { position: fixed; top: 0; right: 0; left: 0; z-index: 140; background: linear-gradient(90deg, var(--navy), var(--navy-2)); box-shadow: 0 8px 22px rgba(16, 23, 47, .28); color: #fff; transform: translateY(-110%); visibility: hidden; transition: transform .25s ease, visibility 0s linear .25s; }
+.v3-sticky.is-on { transform: none; visibility: visible; transition-delay: 0s; }
+.v3-sticky-row { display: flex; align-items: center; gap: 14px; min-height: 58px; padding: 8px 0; }
+.v3-sticky-logo { display: inline-flex; flex: 0 0 auto; align-items: center; padding: 5px 12px; border-radius: 10px; background: #fff; }
+.v3-sticky-logo img { display: block; width: 112px; height: auto; }
+.v3-sticky .v3-search { flex: 1 1 720px; width: auto; max-width: 720px; margin: 0 auto; }
+.v3-up { position: relative; flex: 0 0 auto; width: 42px; height: 42px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .16); color: #fff; cursor: pointer; transition: background-color .15s ease; }
+.v3-up:hover { background: var(--primary); }
+.v3-up::before { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-top: 2.5px solid #fff; border-left: 2.5px solid #fff; border-radius: 2px; transform: translate(-50%, -30%) rotate(45deg); }
+@media (max-width: 760px) {
+    .v3-sticky-row { gap: 10px; min-height: 54px; padding: 7px 0; }
+    .v3-sticky-logo { padding: 4px 9px; }
+    .v3-sticky-logo img { width: 76px; }
+    .v3-sticky .v3-search { flex: 1 1 auto; max-width: none; margin: 0; }
+    .v3-up { width: 40px; height: 40px; }
+    .v3-sticky .v3-search input { min-height: 40px; }
+    .v3-sticky .v3-search > button { width: 34px; height: 34px; }
+    /* подсказки на всю ширину экрана, а не по ширине узкого поля поиска */
+    .v3-sticky .v3-suggest { position: fixed; top: 58px; right: 12px; left: 12px; max-height: calc(100vh - 140px); }
+}
+/* Длинные названия в подсказках на телефоне — в две строки, а не с многоточием */
+@media (max-width: 760px) {
+    .v3-sg-name { display: -webkit-box; overflow: hidden; white-space: normal; text-overflow: clip; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .v3-sticky { transition: none; } }

@@ -22,6 +22,7 @@ class CartController extends Controller
 
         if ($cart) {
             $cart->load([
+                'items.product.brand',
                 'items.product.images' => fn ($query) => $query
                     ->orderByDesc('is_main')
                     ->orderBy('sort_order')

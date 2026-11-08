@@ -163,8 +163,15 @@
             <button class="v3-dock-clear" type="button" data-v3-dock-clear>Очистить</button>
             <span class="v3-dock-total" data-v3-dock-total></span>
             <a class="v3-dock-go" href="{{ route('cart.index') }}">Оформить заказ</a>
-            <button class="v3-dock-close" type="button" data-v3-dock-close aria-label="Скрыть мини-корзину">×</button>
+            <button class="v3-dock-close" type="button" data-v3-dock-min aria-label="Свернуть корзину" title="Свернуть"></button>
         </div>
+    </div>
+    <div class="v3-dock-mini" data-v3-dock-mini role="button" tabindex="0" aria-label="Развернуть корзину">
+        <strong>Корзина</strong>
+        <span class="v3-dock-mini-count" data-v3-mini-count></span>
+        <span class="v3-dock-mini-total" data-v3-mini-total></span>
+        <a class="v3-dock-mini-go" href="{{ route('cart.index') }}">Оформить заказ</a>
+        <span class="v3-dock-mini-arrow" aria-hidden="true"></span>
     </div>
 </aside>
 

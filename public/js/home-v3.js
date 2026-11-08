@@ -124,6 +124,8 @@
         )).join('');
     };
 
+    const miniApi = { reset: () => {} };
+
     const renderDock = (data, changedId) => {
         if (!dock) return null;
         const list = dock.querySelector('[data-v3-dock-items]');
@@ -152,15 +154,30 @@
             if (item.product_id === changedId) changedEl = el;
         });
         renderRows(data.items);
-        dock.querySelector('[data-v3-dock-count]').textContent =
-            data.count + ' ' + plural(data.count, ['товар', 'товара', 'товаров']);
+        const countText = data.count + ' ' + plural(data.count, ['товар', 'товара', 'товаров']);
+        dock.querySelector('[data-v3-dock-count]').textContent = countText;
         dock.querySelector('[data-v3-dock-total]').textContent = data.total_formatted;
+        const miniCount = dock.querySelector('[data-v3-mini-count]');
+        const miniTotal = dock.querySelector('[data-v3-mini-total]');
+        if (miniCount && miniTotal) {
+            const changedMini = miniCount.textContent !== countText || miniTotal.textContent !== data.total_formatted;
+            miniCount.textContent = countText;
+            miniTotal.textContent = data.total_formatted;
+            // В свёрнутом виде корзина не раскрывается сама: полоса вспыхивает сиреневым контуром и подпрыгивает.
+            if (changedMini && !reduce && dock.classList.contains('is-min')) {
+                const miniBar = dock.querySelector('[data-v3-dock-mini]');
+                [miniCount, miniBar].forEach((n) => n && n.classList.remove('is-bump', 'is-pulse'));
+                void dock.offsetWidth;
+                miniCount.classList.add('is-bump');
+                miniBar?.classList.add('is-pulse');
+            }
+        }
         const show = data.count > 0;
         dock.hidden = !show;
         requestAnimationFrame(() => { updateStrip(); revealItem(changedEl); });
         document.body.classList.toggle('has-dock', show);
         if (show) requestAnimationFrame(() => dock.classList.add('is-open'));
-        else dock.classList.remove('is-open');
+        else { dock.classList.remove('is-open'); miniApi.reset(); }
         return changedEl;
     };
 
@@ -378,6 +395,20 @@
         hideTip();
         if (save) { try { localStorage.setItem(storeKey, on ? '1' : '0'); } catch (e) { /* без хранилища работаем так же */ } }
     };
+    // Свёрнутая полоса: «Корзина», количество, сумма. Состояние запоминаем между страницами.
+    const minKey = 'v3.dock.min';
+    const miniEl = dock?.querySelector('[data-v3-dock-mini]');
+    const setMin = (on, save) => {
+        if (!dock) return;
+        if (on) setExpanded(false, true);
+        dock.classList.toggle('is-min', on);
+        document.body.classList.toggle('has-dock-min', on);
+        miniEl?.setAttribute('aria-expanded', on ? 'false' : 'true');
+        hideTip();
+        if (!on) requestAnimationFrame(updateStrip);
+        if (save) { try { localStorage.setItem(minKey, on ? '1' : '0'); } catch (e) { /* без хранилища работаем так же */ } }
+    };
+    miniApi.reset = () => setMin(false, true);
     let swiped = false;
     expandBtn?.addEventListener('click', () => {
         if (swiped) return;
@@ -394,7 +425,8 @@
             if (Math.abs(dy) < 28) return;
             swiped = true;
             setTimeout(() => { swiped = false; }, 350);
-            setExpanded(dy < 0, true);
+            if (dy > 0 && !dock.classList.contains('is-expanded')) setMin(true, true);
+            else setExpanded(dy < 0, true);
         };
         expandBtn.addEventListener('pointerdown', (e) => { startY = e.clientY; });
         expandBtn.addEventListener('pointerup', (e) => finish(e.clientY));
@@ -425,6 +457,7 @@
     dock?.addEventListener('scroll', hideTip, true);
 
     try { if (localStorage.getItem(storeKey) === '1') setExpanded(true, false); } catch (e) { /* ignore */ }
+    try { if (localStorage.getItem(minKey) === '1') setMin(true, false); } catch (e) { /* ignore */ }
 
     // Кнопки в строках списка.
     dock?.addEventListener('click', (e) => {
@@ -462,11 +495,31 @@
         }, () => location.reload());
     });
 
-    dock?.querySelector('[data-v3-dock-close]')?.addEventListener('click', () => {
-        dock.classList.remove('is-open');
-        dock.hidden = true;
-        document.body.classList.remove('has-dock');
-    });
+    dock?.querySelector('[data-v3-dock-min]')?.addEventListener('click', () => setMin(true, true));
+
+    if (miniEl) {
+        let miniY = null;
+        const miniFinish = (y) => {
+            if (miniY === null) return;
+            const dy = y - miniY;
+            miniY = null;
+            if (dy > -28) return;
+            swiped = true;
+            setTimeout(() => { swiped = false; }, 350);
+            setMin(false, true);
+        };
+        miniEl.addEventListener('pointerdown', (e) => { miniY = e.clientY; });
+        miniEl.addEventListener('pointerup', (e) => miniFinish(e.clientY));
+        miniEl.addEventListener('pointercancel', () => { miniY = null; });
+        miniEl.addEventListener('click', (e) => {
+            if (swiped || e.target.closest('.v3-dock-mini-go')) return;
+            setMin(false, true);
+        });
+        miniEl.addEventListener('keydown', (e) => {
+            if (e.target !== miniEl) return; // Enter на ссылке «Оформить заказ» работает как обычно
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setMin(false, true); }
+        });
+    }
 
     // Переход на страницу «Назад» из кэша: актуализируем состояние.
     window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });

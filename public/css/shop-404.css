@@ -1,0 +1,17 @@
+.shop-404 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 32px; margin: 8px 0 48px; padding: 40px; border-radius: 24px; background: linear-gradient(135deg, #f1efff, #fff 60%); box-shadow: 0 8px 24px rgba(16, 23, 47, .05); }
+.shop-404-code { margin-bottom: 4px; color: var(--primary); font-size: clamp(64px, 11vw, 120px); font-weight: 800; line-height: 1; letter-spacing: -2px; }
+.shop-404 h1 { margin: 0 0 14px; font-size: clamp(26px, 4vw, 38px); line-height: 1.12; }
+.shop-404 blockquote { margin: 0 0 14px; padding-left: 14px; border-left: 4px solid var(--primary); color: var(--ink); font-size: 18px; font-weight: 600; line-height: 1.4; }
+.shop-404 p { max-width: 520px; margin: 0 0 24px; color: var(--muted); font-size: 16px; line-height: 1.5; }
+.shop-404-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.shop-404-link { color: var(--primary-dark); font-weight: 800; }
+.shop-404-link:hover { text-decoration: underline; }
+.shop-404-art svg { display: block; width: 100%; height: auto; max-height: 360px; }
+.shop-404-sign { transform-box: fill-box; transform-origin: 50% 100%; animation: shop404-wobble 3.2s ease-in-out infinite; }
+@keyframes shop404-wobble { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
+@media (max-width: 860px) {
+    .shop-404 { grid-template-columns: 1fr; padding: 24px 20px; gap: 16px; }
+    .shop-404-art { order: -1; }
+    .shop-404-art svg { max-height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) { .shop-404-sign { animation: none; } }

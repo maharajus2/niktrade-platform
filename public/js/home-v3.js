@@ -193,7 +193,7 @@
 
         const hidden = 'translateY(115%)', shown = 'translateY(16px)';
         const both = (kf, opt) => [back, front].map((n) => n.animate(kf, opt));
-        const up = both([{ transform: hidden }, { transform: shown }], { duration: 200, easing: 'cubic-bezier(.2,1.3,.4,1)', fill: 'forwards' });
+        const up = both([{ transform: hidden }, { transform: shown }], { duration: 288, easing: 'cubic-bezier(.2,1.3,.4,1)', fill: 'forwards' });
 
         // центр рамки корзинки относительно карточки
         const rimY = cr.height - 10 - H + 16 + 14;
@@ -205,7 +205,7 @@
                 { transform: 'translateY(0) scale(1)', opacity: 1, offset: 0 },
                 { transform: `translateY(${toRim * 0.85}px) scale(.62)`, opacity: 1, offset: .7 },
                 { transform: `translateY(${toRim + 46}px) scale(.42)`, opacity: 1, offset: 1 },
-            ], { duration: 325, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
+            ], { duration: 468, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
 
             fall.onfinish = () => {
                 clone.style.visibility = 'hidden';
@@ -215,13 +215,13 @@
                     { transform: shown + ' scale(1.06,.9)', transformOrigin: '50% 100%', offset: .35 },
                     { transform: shown + ' scale(.98,1.04)', transformOrigin: '50% 100%', offset: .7 },
                     { transform: shown + ' scale(1,1)', transformOrigin: '50% 100%' },
-                ], { duration: 163, easing: 'ease-out', fill: 'forwards' });
+                ], { duration: 234, easing: 'ease-out', fill: 'forwards' });
 
                 squash[0].onfinish = async () => {
                     let data;
                     try { data = await gate; } catch (e) { return finish(e); }
                     onDescend(data);
-                    const down = both([{ transform: shown }, { transform: hidden }], { duration: 213, easing: 'ease-in', fill: 'forwards' });
+                    const down = both([{ transform: shown }, { transform: hidden }], { duration: 306, easing: 'ease-in', fill: 'forwards' });
                     down[0].onfinish = () => finish();
                 };
             };

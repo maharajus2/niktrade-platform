@@ -10,6 +10,7 @@ use App\Filament\Resources\AdminUsers\UserResource;
 use App\Filament\Resources\Brands\BrandResource;
 use App\Filament\Resources\Categories\CategoryResource;
 use App\Filament\Resources\Certificates\CertificateResource;
+use App\Filament\Resources\Contractors\ContractorResource;
 use App\Filament\Resources\Customers\CustomerResource;
 use App\Filament\Resources\Departments\DepartmentResource;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
@@ -46,6 +47,7 @@ class WorkNavigation
             'Продажи' => [
                 self::resourceItem('orders', 'Заказы', 'package', OrderResource::class, $active),
                 self::resourceItem('customers', 'Покупатели', 'users', CustomerResource::class, $active),
+                self::resourceItem('contractors', 'Контрагенты', 'building', ContractorResource::class, $active),
             ],
             'Каталог' => [
                 self::resourceItem('products', 'Товары', 'package', ProductResource::class, $active),

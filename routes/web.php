@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\EmployeeDocumentDownloadController;
 use App\Http\Controllers\Admin\MessageAttachmentDownloadController;
+use App\Http\Controllers\BusinessAuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerAccountController;
@@ -35,6 +36,16 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::post('/telegram/webhook', [TelegramBotController::class, 'webhook'])->name('telegram.webhook');
 Route::get('/logout', fn () => redirect()->route('catalog.index'));
+
+Route::prefix('business')->name('business.')->group(function () {
+    Route::get('/', [BusinessAuthController::class, 'home'])->name('home');
+    Route::post('/login', [BusinessAuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
+    Route::post('/register', [BusinessAuthController::class, 'register'])->middleware('throttle:10,1')->name('register');
+    Route::middleware('auth:business')->group(function () {
+        Route::post('/logout', [BusinessAuthController::class, 'logout'])->name('logout');
+        Route::get('/account', [BusinessAuthController::class, 'account'])->name('account');
+    });
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/employees/{employee}/documents/{document}/download', EmployeeDocumentDownloadController::class)

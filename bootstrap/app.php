@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(function (Request $request): ?string {
+            if ($request->is('business') || $request->is('business/*')) {
+                return route('business.home');
+            }
+
             if ($request->is('account') || $request->is('account/*')) {
                 return route('customer.login');
             }

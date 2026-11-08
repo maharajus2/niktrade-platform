@@ -38,6 +38,7 @@
         Str::contains($routeName, '.resources.product-types.') => 'product_types',
         Str::contains($routeName, '.resources.certificates.') => 'certificates',
         Str::contains($routeName, '.resources.customers.') => 'customers',
+        Str::contains($routeName, '.resources.contractors.') => 'contractors',
         Str::contains($routeName, '.resources.orders.') => 'orders',
         Str::contains($routeName, '.resources.warehouses.') => 'warehouses',
         Str::contains($routeName, '.resources.admin-users.') => 'employees',

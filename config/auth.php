@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Contractor;
 use App\Models\Customer;
 use App\Models\User;
 
@@ -48,6 +49,10 @@ return [
             'driver' => 'session',
             'provider' => 'customers',
         ],
+        'business' => [
+            'driver' => 'session',
+            'provider' => 'contractors',
+        ],
     ],
 
     /*
@@ -76,6 +81,10 @@ return [
         'customers' => [
             'driver' => 'eloquent',
             'model' => Customer::class,
+        ],
+        'contractors' => [
+            'driver' => 'eloquent',
+            'model' => Contractor::class,
         ],
 
         // 'users' => [

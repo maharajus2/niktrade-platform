@@ -58,7 +58,7 @@
                             </div>
                             <div class="v3-qty" role="group" aria-label="Количество" data-biz-qty>
                                 <button class="v3-qty-btn" type="button" data-biz-dec aria-label="Уменьшить количество">−</button>
-                                <span class="v3-qty-num" aria-live="polite" data-biz-num>{{ $row['quantity'] }}</span>
+                                <input class="biz-qty-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Количество" data-biz-num value="{{ $row['quantity'] }}">
                                 <button class="v3-qty-btn" type="button" data-biz-inc aria-label="Увеличить количество">+</button>
                             </div>
                             <div class="biz-row-sum" data-biz-line>{{ $row['line_total'] !== null ? $money($row['line_total']) : '—' }}</div>

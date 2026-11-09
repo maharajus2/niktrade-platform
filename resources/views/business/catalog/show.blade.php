@@ -193,7 +193,7 @@
                         @if ($canOrder)
                             <div class="v3-qty is-large" role="group" aria-label="Количество в заявке" data-biz-qty @if ($bizProductQty < 1) hidden @endif>
                                 <button class="v3-qty-btn" type="button" data-biz-dec aria-label="Уменьшить количество">−</button>
-                                <span class="v3-qty-num" aria-live="polite" data-biz-num>{{ $bizProductQty }}</span>
+                                <input class="biz-qty-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Количество" data-biz-num value="{{ $bizProductQty }}">
                                 <button class="v3-qty-btn" type="button" data-biz-inc aria-label="Увеличить количество">+</button>
                             </div>
 

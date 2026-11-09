@@ -41,19 +41,19 @@
                 <div class="biz-price-label">Цена по запросу</div>
             @endif
         </div>
-        @if ($canOrder)
-            <div class="v3-buy-slot biz-buy-slot">
+        <div class="v3-buy-slot biz-buy-slot">
+            @if ($canOrder)
                 <div class="v3-qty" role="group" aria-label="Количество в заявке" data-biz-qty @if ($inRequest < 1) hidden @endif>
                     <button class="v3-qty-btn" type="button" data-biz-dec aria-label="Уменьшить количество">−</button>
-                    <span class="v3-qty-num" aria-live="polite" data-biz-num>{{ $inRequest }}</span>
+                    <input class="biz-qty-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="Количество" data-biz-num value="{{ $inRequest }}">
                     <button class="v3-qty-btn" type="button" data-biz-inc aria-label="Увеличить количество">+</button>
                 </div>
                 <form method="POST" action="{{ route('business.cart.add') }}" data-biz-add-form data-biz-add-wrap @if ($inRequest > 0) hidden @endif>
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button class="v3-add" type="submit" data-biz-add aria-label="Добавить в заявку">{!! $icon('cart') !!}</button>
+                    <button class="v3-add" type="submit" data-biz-add aria-label="Добавить в заявку">{!! $icon('cart') !!}<span>В заявку</span></button>
                 </form>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 </article>

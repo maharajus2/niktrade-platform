@@ -76,13 +76,13 @@
 
     function setQty(item, qty) {
         item.dataset.qty = String(qty);
-        item.querySelectorAll('[data-biz-num]').forEach((el) => { el.textContent = qty; });
+        item.querySelectorAll('[data-biz-num]').forEach((el) => { if ('value' in el) el.value = qty; else el.textContent = qty; });
         item.querySelectorAll('[data-biz-qty]').forEach((el) => { el.hidden = qty < 1; });
         item.querySelectorAll('[data-biz-add-wrap]').forEach((el) => { el.hidden = qty >= 1; });
         item.querySelectorAll('[data-biz-cart-link]').forEach((el) => { el.hidden = qty < 1; });
     }
 
-    async function change(item, action) {
+    async function change(item, action, value) {
         if (item.dataset.busy === '1') return;
         const productId = item.dataset.productId;
         const current = Number(item.dataset.qty || 0);
@@ -93,7 +93,7 @@
             if (action === 'add') {
                 data = await call('POST', item.dataset.addUrl, { product_id: Number(productId), quantity: 1 });
             } else {
-                const next = action === 'inc' ? current + 1 : action === 'remove' ? 0 : current - 1;
+                const next = action === 'set' ? value : action === 'inc' ? current + 1 : action === 'remove' ? 0 : current - 1;
                 data = await call('PATCH', item.dataset.updateUrl, { quantity: Math.max(0, next) });
             }
             const qty = data.item ? data.item.quantity : 0;
@@ -109,7 +109,7 @@
             applySummary(data.summary);
             if (item.matches('[data-biz-row]')) await refreshCartPrices();
         } catch (error) {
-            if (error.message !== 'reload') toast(error.message);
+            if (error.message !== 'reload') { toast(error.message); setQty(item, current); }
         } finally {
             item.dataset.busy = '0';
             item.classList.remove('is-busy');
@@ -126,6 +126,31 @@
             : control.hasAttribute('data-biz-inc') ? 'inc'
             : control.hasAttribute('data-biz-remove') ? 'remove' : 'dec';
         change(item, action);
+    });
+
+    // Ручной ввод количества: только цифры, 1..9999, применяется по Enter или при выходе из поля.
+    document.addEventListener('input', (event) => {
+        const input = event.target.closest('input[data-biz-num]');
+        if (input) input.value = input.value.replace(/\D+/g, '').slice(0, 4);
+    });
+    document.addEventListener('focusin', (event) => {
+        const input = event.target.closest('input[data-biz-num]');
+        if (input) input.select();
+    });
+    document.addEventListener('keydown', (event) => {
+        const input = event.target.closest('input[data-biz-num]');
+        if (input && event.key === 'Enter') { event.preventDefault(); input.blur(); }
+    });
+    document.addEventListener('change', (event) => {
+        const input = event.target.closest('input[data-biz-num]');
+        const item = input?.closest('[data-biz-item]');
+        if (!item) return;
+        const current = Number(item.dataset.qty || 0);
+        const typed = parseInt(input.value, 10);
+        if (!typed || typed < 1) { input.value = current; return; }
+        const next = Math.min(typed, 9999);
+        input.value = next;
+        if (next !== current) change(item, 'set', next);
     });
 
     // Форма «В заявку» без JS отправляется обычным POST; с JS перехватываем.

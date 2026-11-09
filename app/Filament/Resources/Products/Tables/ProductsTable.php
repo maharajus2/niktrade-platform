@@ -56,6 +56,12 @@ class ProductsTable
                     ->money('RUB')
                     ->toggleable(),
 
+                TextColumn::make('business_price')
+                    ->label('Цена для бизнеса')
+                    ->money('RUB')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('discount_percent')
                     ->label('Скидка (%)')
                     ->toggleable(),
@@ -64,7 +70,7 @@ class ProductsTable
                     ->label('Метка')
                     ->state(function ($record): string {
                         if ($record->discount_percent > 0) {
-                            return 'Скидка ' . round($record->discount_percent, 1) . '%';
+                            return 'Скидка '.round($record->discount_percent, 1).'%';
                         }
 
                         if (\filled($record->discounted_price) && $record->price > 0 && $record->discounted_price < $record->price) {

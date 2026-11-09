@@ -45,6 +45,7 @@
             </article>
         </div>
 
-        <p class="biz-soon">Каталог с ценами и оформление заявок появятся на следующем этапе. Вы зарегистрированы, вход работает.</p>
+        <p class="biz-soon">Оформление заявок появится на следующем этапе.</p>
+        <p><a class="biz-btn" href="{{ route('business.catalog') }}">Открыть каталог</a></p>
     </section>
 @endsection

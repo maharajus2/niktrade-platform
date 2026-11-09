@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\EmployeeDocumentDownloadController;
 use App\Http\Controllers\Admin\MessageAttachmentDownloadController;
 use App\Http\Controllers\BusinessAuthController;
+use App\Http\Controllers\BusinessCatalogController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerAccountController;
@@ -44,6 +45,8 @@ Route::prefix('business')->name('business.')->group(function () {
     Route::middleware('auth:business')->group(function () {
         Route::post('/logout', [BusinessAuthController::class, 'logout'])->name('logout');
         Route::get('/account', [BusinessAuthController::class, 'account'])->name('account');
+        Route::get('/catalog', [BusinessCatalogController::class, 'index'])->name('catalog');
+        Route::get('/catalog/{product}', [BusinessCatalogController::class, 'show'])->name('product');
     });
 });
 

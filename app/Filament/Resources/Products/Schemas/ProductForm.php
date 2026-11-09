@@ -122,6 +122,14 @@ class ProductForm
                                 }
                             }),
 
+                        TextInput::make('business_price')
+                            ->label('Цена для бизнеса, ₽')
+                            ->numeric()
+                            ->step(0.01)
+                            ->minValue(0)
+                            ->dehydrateStateUsing(fn ($state) => filled($state) ? $state : null)
+                            ->helperText('Пока равна розничной цене. Если не заполнено, используется розничная'),
+
                         TextInput::make('discount_percent')
                             ->label('Скидка (%)')
                             ->numeric()
@@ -325,7 +333,7 @@ class ProductForm
                                 modifyQueryUsing: fn ($query) => $query->orderBy('name'),
                             )
                             ->getOptionLabelFromRecordUsing(fn (Certificate $record): string => self::formatCertificateOptionLabel($record))
-                            ->rules([new NoExpiredCertificates()])
+                            ->rules([new NoExpiredCertificates])
                             ->searchable()
                             ->preload()
                             ->columnSpanFull(),

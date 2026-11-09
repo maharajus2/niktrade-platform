@@ -4,14 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Brand;
-use App\Models\Certificate;
-use App\Models\ProductImage;
-use App\Models\ProductLine;
-use App\Models\ProductType;
-use App\Models\Category;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -38,6 +32,7 @@ class Product extends Model
         'weight_value',
         'weight_unit',
         'price',
+        'business_price',
         'discount_percent',
         'discounted_price',
         'direction',
@@ -58,6 +53,7 @@ class Product extends Model
         'weight_value' => 'decimal:3',
         'discount_percent' => 'float',
         'price' => 'decimal:2',
+        'business_price' => 'decimal:2',
         'discounted_price' => 'decimal:2',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
@@ -68,6 +64,12 @@ class Product extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (Product $product): void {
+            if ($product->business_price === null) {
+                $product->business_price = $product->price;
+            }
+        });
+
         static::saving(function (Product $product) {
             if ($product->price !== null) {
                 if ($product->discount_percent !== null && $product->discounted_price === null) {
@@ -90,6 +92,13 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function businessListPrice(): ?float
+    {
+        $price = $this->business_price ?? $this->price;
+
+        return $price === null ? null : (float) $price;
     }
 
     public function productLine(): BelongsTo

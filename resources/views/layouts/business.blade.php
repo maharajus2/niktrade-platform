@@ -47,6 +47,7 @@
                 <a class="v3-nav-link" href="{{ route('business.home') }}#terms">{!! $icon('percent') !!} Условия</a>
                 <a class="v3-nav-link" href="#footer">Контакты</a>
                 @if ($contractor)
+                    <a class="v3-nav-link" href="{{ route('business.catalog') }}">{!! $icon('grid') !!} Каталог</a>
                     <a class="v3-nav-link is-account" href="{{ route('business.account') }}">{!! $icon('briefcase') !!} Кабинет компании</a>
                 @endif
             </nav>
@@ -73,6 +74,7 @@
                 <a href="{{ route('business.home') }}#how">Как это работает</a>
                 <a href="{{ route('business.home') }}#terms">Условия сотрудничества</a>
                 @if ($contractor)
+                    <a href="{{ route('business.catalog') }}">Каталог</a>
                     <a href="{{ route('business.account') }}">Кабинет компании</a>
                 @else
                     <a href="{{ route('business.home') }}#auth">Вход и регистрация</a>

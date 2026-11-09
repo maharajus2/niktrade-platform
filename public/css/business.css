@@ -109,3 +109,21 @@
     .biz-steps, .biz-cards, .biz-terms { grid-template-columns: 1fr; }
     .biz-account-head { flex-direction: column; align-items: stretch; }
 }
+
+/* --- A2: каталог для бизнеса --- */
+.v3.biz :is(.shop-input, .shop-select) { background-color: var(--bg); }
+.v3.biz :is(.shop-input, .shop-select):hover { border-color: var(--primary); }
+.v3.biz :is(.shop-input, .shop-select):focus { box-shadow: 0 0 0 3px rgba(201, 162, 74, .18); }
+.v3.biz :is(.nik-product-chip, .nik-product-thumb, .nik-product-spec, .nik-product-detail, .nik-product-image-prompt a, .nik-product-image-prompt button) { background: var(--lav); }
+.v3.biz .nik-product-doc-link:hover { background: var(--lav); }
+.biz-pcard .biz-card-buy { display: block; }
+.biz-pcard .biz-price { display: block; font-size: 20px; font-weight: 800; color: var(--ink); }
+.biz-pcard .biz-price del { margin-left: 8px; font-size: 14px; font-weight: 500; color: var(--muted); }
+.biz-price-label { margin-top: 2px; font-size: 13px; color: var(--muted); }
+.biz-pcard .biz-price-label { color: #7a5c14; font-weight: 600; }
+.biz-product-price { margin: 12px 0 4px; }
+.biz-price-rows { display: grid; gap: 6px; margin-top: 12px; max-width: 420px; }
+.biz-price-rows div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--mint); font-size: 14px; color: var(--muted); }
+.biz-price-rows strong { color: var(--ink); }
+.biz-request-note { display: grid; gap: 4px; margin: 14px 0; padding: 14px 16px; border: 1px dashed var(--primary); border-radius: 12px; background: var(--mint); color: var(--ink); font-size: 14px; }
+.biz-request-note span { color: var(--muted); }

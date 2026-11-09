@@ -37,6 +37,9 @@
             $productVolume = \App\Support\ProductDisplayFormatter::formatVolume($product->volume_value, $product->volume_unit);
             $productWeight = \App\Support\ProductDisplayFormatter::formatWeight($product->weight_value, $product->weight_unit);
             $productShelfLife = \App\Support\ProductDisplayFormatter::formatShelfLife($product->shelf_life_value, $product->shelf_life_unit);
+            $bizQty = $contractor->cartItems()->pluck('quantity', 'product_id');
+            $bizProductQty = (int) ($bizQty->get($product->id) ?? 0);
+            $canOrder = $canAddToCart && $product->business_pricing['price'] !== null;
             $hasDocuments = $product->certificates->isNotEmpty() || filled($product->instruction_file_path);
         @endphp
 
@@ -186,10 +189,28 @@
                         <div class="nik-product-alert">{{ session('success') }}</div>
                     @endif
 
-                    <div class="biz-request-note">
-                        <strong>Оформление заявки появится на следующем этапе.</strong>
-                        <span>Минимальная сумма заявки — от 5 000 ₽. Счёт выставит ваш менеджер.</span>
+                    <div class="nik-product-actions biz-actions" data-biz-item data-product-id="{{ $product->id }}" data-qty="{{ $bizProductQty }}" data-add-url="{{ route('business.cart.add') }}" data-update-url="{{ route('business.cart.update', $product->id) }}">
+                        @if ($canOrder)
+                            <div class="v3-qty is-large" role="group" aria-label="Количество в заявке" data-biz-qty @if ($bizProductQty < 1) hidden @endif>
+                                <button class="v3-qty-btn" type="button" data-biz-dec aria-label="Уменьшить количество">−</button>
+                                <span class="v3-qty-num" aria-live="polite" data-biz-num>{{ $bizProductQty }}</span>
+                                <button class="v3-qty-btn" type="button" data-biz-inc aria-label="Увеличить количество">+</button>
+                            </div>
+
+                            <form method="POST" action="{{ route('business.cart.add') }}" data-biz-add-form data-biz-add-wrap @if ($bizProductQty > 0) hidden @endif>
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button class="shop-btn is-large" type="submit" data-biz-add>{!! $icon('cart') !!} Добавить в заявку</button>
+                            </form>
+                        @else
+                            <button class="shop-btn is-large" type="button" disabled>
+                                {{ $availabilityStatus === 'discontinued' ? 'Снят с производства' : ($availabilityStatus === 'out_of_stock' ? 'Временно отсутствует' : 'Цена по запросу') }}
+                            </button>
+                        @endif
+
+                        <a class="nik-product-cart-link" href="{{ route('business.cart') }}" data-biz-cart-link @if ($bizProductQty < 1) hidden @endif>Перейти к заявке</a>
                     </div>
+                    <p class="biz-min-hint">Минимальная сумма заявки — от 5&nbsp;000&nbsp;₽. Счёт выставит ваш менеджер.</p>
 
                     <div class="nik-product-specs" aria-label="Ключевые характеристики">
                         @if ($productVolume)
@@ -467,7 +488,7 @@
                     <h2 id="related-products-title">Похожие товары</h2>
                     <div class="v3-products is-related">
                         @foreach ($relatedProducts as $relatedProduct)
-                            @include('business.partials.product-card', ['product' => $relatedProduct])
+                            @include('business.partials.product-card', ['product' => $relatedProduct, 'bizQty' => $bizQty])
                         @endforeach
                     </div>
                 </section>

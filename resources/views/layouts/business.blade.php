@@ -33,6 +33,7 @@
 
             @if ($contractor)
                 <a class="v3-tool is-stack is-user" href="{{ route('business.account') }}">{!! $icon('user') !!}<span>{{ \Illuminate\Support\Str::limit($contractor->company_name, 22) }}</span></a>
+                <a class="v3-tool is-stack biz-cart-link" href="{{ route('business.cart') }}" aria-label="Заявка">{!! $icon('cart') !!}<span>Заявка</span><b class="biz-cart-badge" data-biz-cart-count @if (($bizCartCount ?? 0) < 1) hidden @endif>{{ $bizCartCount ?? 0 }}</b></a>
             @else
                 <a class="v3-tool is-stack is-user" href="{{ route('business.home') }}#auth">{!! $icon('user') !!}<span>Войти</span></a>
             @endif
@@ -48,6 +49,7 @@
                 <a class="v3-nav-link" href="#footer">Контакты</a>
                 @if ($contractor)
                     <a class="v3-nav-link" href="{{ route('business.catalog') }}">{!! $icon('grid') !!} Каталог</a>
+                    <a class="v3-nav-link" href="{{ route('business.requests.index') }}">{!! $icon('box') !!} Мои заявки</a>
                     <a class="v3-nav-link is-account" href="{{ route('business.account') }}">{!! $icon('briefcase') !!} Кабинет компании</a>
                 @endif
             </nav>
@@ -57,6 +59,12 @@
 
 <main class="v3-main">
     <div class="v3-container">
+        @if (session('success'))
+            <div class="biz-flash" role="status">{{ session('success') }}</div>
+        @endif
+        @if ($errors->has('product_id') || $errors->has('quantity'))
+            <div class="biz-flash is-error" role="alert">{{ $errors->first('product_id') ?: $errors->first('quantity') }}</div>
+        @endif
         @yield('content')
     </div>
 </main>
@@ -91,6 +99,19 @@
     </div>
 </footer>
 
+@if ($contractor)
+    @php $bizMissing = max(0, (float) config('business.min_request_amount', 5000) - (float) ($bizCartTotal ?? 0)); @endphp
+    @unless (request()->routeIs('business.cart'))
+        <div class="biz-bar" data-biz-bar @if (($bizCartCount ?? 0) < 1) hidden @endif>
+            <div class="biz-bar-inner">
+                <div class="biz-bar-sum"><span>Ваша заявка</span><strong data-biz-cart-total>{{ number_format((float) ($bizCartTotal ?? 0), fmod((float) ($bizCartTotal ?? 0), 1) == 0.0 ? 0 : 2, ',', ' ') }}&nbsp;₽</strong></div>
+                <span class="biz-bar-note @if ($bizMissing <= 0) is-ok @endif" data-biz-min-note>{{ $bizMissing > 0 ? 'До минимума ещё '.number_format($bizMissing, fmod($bizMissing, 1) == 0.0 ? 0 : 2, ',', ' ').' ₽' : 'Можно отправлять заявку' }}</span>
+                <a class="biz-btn" href="{{ route('business.cart') }}">Перейти к заявке</a>
+            </div>
+        </div>
+    @endunless
+    <script src="{{ asset('js/biz-cart.js') }}?v={{ filemtime(public_path('js/biz-cart.js')) }}" defer></script>
+@endif
 @stack('scripts')
 </body>
 </html>

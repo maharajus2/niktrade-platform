@@ -9,6 +9,7 @@
 
 @section('content')
     @php
+        $bizQty = $contractor->cartItems()->pluck('quantity', 'product_id');
         $hasActiveFilters = $filters['brand'] || $filters['category'] || $filters['direction'] || $filters['search'];
     @endphp
 
@@ -85,7 +86,7 @@
     @if ($products->isNotEmpty())
         <section class="v3-products is-catalog" aria-label="Список товаров">
             @foreach ($products as $product)
-                @include('business.partials.product-card', ['product' => $product])
+                @include('business.partials.product-card', ['product' => $product, 'bizQty' => $bizQty])
             @endforeach
         </section>
 

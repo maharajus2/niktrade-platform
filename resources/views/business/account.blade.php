@@ -45,7 +45,10 @@
             </article>
         </div>
 
-        <p class="biz-soon">Оформление заявок появится на следующем этапе.</p>
-        <p><a class="biz-btn" href="{{ route('business.catalog') }}">Открыть каталог</a></p>
+        <div class="biz-account-actions">
+            <a class="biz-btn" href="{{ route('business.catalog') }}">Открыть каталог</a>
+            <a class="biz-btn is-ghost" href="{{ route('business.cart') }}">Текущая заявка@if (($bizCartCount ?? 0) > 0) ({{ $bizCartCount }})@endif</a>
+            <a class="biz-btn is-ghost" href="{{ route('business.requests.index') }}">Мои заявки</a>
+        </div>
     </section>
 @endsection

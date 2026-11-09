@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Order;
 use App\Observers\OrderObserver;
+use App\View\Composers\BusinessLayoutComposer;
 use App\View\Composers\ShopLayoutComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
 
         View::composer('layouts.shop', ShopLayoutComposer::class);
+        View::composer('layouts.business', BusinessLayoutComposer::class);
     }
 }

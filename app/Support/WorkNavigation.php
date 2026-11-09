@@ -2,12 +2,13 @@
 
 namespace App\Support;
 
-use App\Filament\Pages\MyCalendar;
 use App\Filament\Pages\Messenger;
+use App\Filament\Pages\MyCalendar;
 use App\Filament\Pages\Tasks;
 use App\Filament\Pages\Workplace;
 use App\Filament\Resources\AdminUsers\UserResource;
 use App\Filament\Resources\Brands\BrandResource;
+use App\Filament\Resources\BusinessRequests\BusinessRequestResource;
 use App\Filament\Resources\Categories\CategoryResource;
 use App\Filament\Resources\Certificates\CertificateResource;
 use App\Filament\Resources\Contractors\ContractorResource;
@@ -48,6 +49,7 @@ class WorkNavigation
                 self::resourceItem('orders', 'Заказы', 'package', OrderResource::class, $active),
                 self::resourceItem('customers', 'Покупатели', 'users', CustomerResource::class, $active),
                 self::resourceItem('contractors', 'Контрагенты', 'building', ContractorResource::class, $active),
+                self::resourceItem('business_requests', 'Заявки', 'file', BusinessRequestResource::class, $active),
             ],
             'Каталог' => [
                 self::resourceItem('products', 'Товары', 'package', ProductResource::class, $active),
@@ -71,7 +73,7 @@ class WorkNavigation
     }
 
     /**
-     * @param array<string, list<array<string, mixed>>> $groups
+     * @param  array<string, list<array<string, mixed>>>  $groups
      * @return array<string, list<array<string, mixed>>>
      */
     public static function mergeMenuGroups(array $groups, ?User $user = null, ?string $active = null): array
@@ -99,7 +101,7 @@ class WorkNavigation
     }
 
     /**
-     * @param class-string $page
+     * @param  class-string  $page
      * @return array<string, mixed>|null
      */
     private static function pageItem(string $key, string $label, string $icon, string $page, ?string $active): ?array
@@ -122,7 +124,7 @@ class WorkNavigation
     }
 
     /**
-     * @param class-string $resource
+     * @param  class-string  $resource
      * @return array<string, mixed>|null
      */
     private static function resourceItem(string $key, string $label, string $icon, string $resource, ?string $active): ?array
@@ -145,7 +147,7 @@ class WorkNavigation
     }
 
     /**
-     * @param array<string, list<array<string, mixed>|null>> $groups
+     * @param  array<string, list<array<string, mixed>|null>>  $groups
      * @return array<string, list<array<string, mixed>>>
      */
     private static function filterGroups(array $groups): array
@@ -164,7 +166,7 @@ class WorkNavigation
     }
 
     /**
-     * @param list<array<string, mixed>> $items
+     * @param  list<array<string, mixed>>  $items
      */
     private static function containsItem(array $items, array $needle): bool
     {

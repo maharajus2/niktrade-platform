@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Contractor extends Authenticatable
@@ -25,6 +26,16 @@ class Contractor extends Authenticatable
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function requests(): HasMany
+    {
+        return $this->hasMany(BusinessRequest::class);
+    }
+
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(BusinessCartItem::class);
     }
 
     public function isSoleProprietor(): bool

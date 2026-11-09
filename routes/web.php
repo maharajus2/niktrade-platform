@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\EmployeeDocumentDownloadController;
 use App\Http\Controllers\Admin\MessageAttachmentDownloadController;
 use App\Http\Controllers\BusinessAuthController;
+use App\Http\Controllers\BusinessCartController;
 use App\Http\Controllers\BusinessCatalogController;
+use App\Http\Controllers\BusinessRequestController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
@@ -47,6 +49,14 @@ Route::prefix('business')->name('business.')->group(function () {
         Route::get('/account', [BusinessAuthController::class, 'account'])->name('account');
         Route::get('/catalog', [BusinessCatalogController::class, 'index'])->name('catalog');
         Route::get('/catalog/{product}', [BusinessCatalogController::class, 'show'])->name('product');
+        Route::get('/cart', [BusinessCartController::class, 'index'])->name('cart');
+        Route::post('/cart/items', [BusinessCartController::class, 'add'])->name('cart.add');
+        Route::patch('/cart/items/{product}', [BusinessCartController::class, 'update'])->name('cart.update');
+        Route::delete('/cart/items/{product}', [BusinessCartController::class, 'remove'])->name('cart.remove');
+        Route::post('/requests', [BusinessRequestController::class, 'store'])->name('requests.store');
+        Route::get('/requests', [BusinessRequestController::class, 'index'])->name('requests.index');
+        Route::get('/requests/{number}', [BusinessRequestController::class, 'show'])->name('requests.show');
+        Route::get('/requests/{number}/invoice', [BusinessRequestController::class, 'invoice'])->name('requests.invoice');
     });
 });
 

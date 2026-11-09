@@ -19,6 +19,7 @@
         <meta name="description" content="@yield('meta_description', $defaultMetaDescription)">
     @endif
     <link rel="stylesheet" href="{{ asset('css/home-v3.css') }}?v={{ filemtime(public_path('css/home-v3.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/biz-gate.css') }}?v={{ filemtime(public_path('css/biz-gate.css')) }}">
     @stack('styles')
 </head>
 <body class="v3 @yield('body_class')">
@@ -63,7 +64,7 @@
                 @if ($shopHasNew)
                     <a class="v3-nav-link" href="{{ $shopHomeUrl }}#products">{!! $icon('star') !!} Новинки</a>
                 @endif
-                <a class="v3-nav-link" href="{{ $shopHomeUrl }}#business">{!! $icon('briefcase') !!} Для бизнеса (B2B)</a>
+                <a class="v3-nav-link" href="{{ route('business.home') }}" data-biz-link>{!! $icon('briefcase') !!} Для бизнеса (B2B)</a>
                 <a class="v3-nav-link" href="{{ $shopHomeUrl }}#brands">{!! $icon('tag') !!} Бренды</a>
                 <a class="v3-nav-link" href="#footer">Доставка и оплата</a>
                 <a class="v3-nav-link" href="#footer">Контакты</a>
@@ -138,7 +139,7 @@
             </div>
             <div>
                 <strong class="t">Бизнесу</strong>
-                <a href="{{ $shopHomeUrl }}#business">Оптовые поставки</a>
+                <a href="{{ route('business.home') }}" data-biz-link>Портал для бизнеса</a>
                 <a href="{{ route('catalog.index', ['direction' => 'professional']) }}">Профессиональная химия</a>
             </div>
         </div>
@@ -175,6 +176,18 @@
     </div>
 </aside>
 
+<div class="biz-gate" id="bizGate" role="dialog" aria-modal="true" aria-labelledby="bizGateTitle" hidden>
+    <div class="biz-gate-box">
+        <span class="biz-gate-eyebrow">Портал для бизнеса</span>
+        <h2 id="bizGateTitle">Вы переходите в портал корпоративных клиентов</h2>
+        <p>Это отдельный раздел для компаний: вход и регистрация по ИНН, заявки вместо заказов и счёт от менеджера. Хотите продолжить?</p>
+        <div class="biz-gate-actions">
+            <button class="biz-gate-go" type="button" data-biz-gate-go>Продолжить</button>
+            <button class="biz-gate-stay" type="button" data-biz-gate-stay>Остаться в магазине</button>
+        </div>
+    </div>
+</div>
+
 <script>
     window.V3_CART = {
         updateUrl: @json(route('cart.items.update', '__ID__')),
@@ -186,6 +199,7 @@
     };
 </script>
 <script src="{{ asset('js/home-v3.js') }}?v={{ filemtime(public_path('js/home-v3.js')) }}" defer></script>
+<script src="{{ asset('js/biz-gate.js') }}?v={{ filemtime(public_path('js/biz-gate.js')) }}" defer></script>
 @stack('scripts')
 </body>
 </html>

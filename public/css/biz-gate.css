@@ -1,0 +1,16 @@
+/* Предупреждение при переходе из розничного магазина в портал корпоративных клиентов */
+.biz-gate { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(8, 8, 12, .66); backdrop-filter: blur(3px); }
+.biz-gate[hidden] { display: none; }
+.biz-gate-box { width: min(460px, 100%); padding: 28px 26px 24px; border: 1px solid rgba(201, 162, 74, .6); border-radius: 22px; background: linear-gradient(160deg, #1c1b24, #0c0c10); color: #f3eddb; box-shadow: 0 30px 80px rgba(0, 0, 0, .55); font-family: "Manrope", "Inter", "Segoe UI", system-ui, Arial, sans-serif; animation: biz-gate-in .22s ease-out; }
+.biz-gate-eyebrow { display: block; margin-bottom: 8px; color: #c9a24a; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.biz-gate-box h2 { margin: 0 0 10px; color: #fff; font-size: 22px; font-weight: 800; line-height: 1.2; }
+.biz-gate-box p { margin: 0 0 22px; color: #d8d1bb; font-size: 15px; line-height: 1.5; }
+.biz-gate-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.biz-gate-go, .biz-gate-stay { display: inline-flex; flex: 1 1 140px; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 800; cursor: pointer; }
+.biz-gate-go { border: 0; background: linear-gradient(180deg, #e8cc7d, #c9a24a); color: #17130a; }
+.biz-gate-go:hover { filter: brightness(1.06); }
+.biz-gate-stay { border: 1px solid rgba(201, 162, 74, .6); background: transparent; color: #e8cc7d; }
+.biz-gate-stay:hover { background: rgba(201, 162, 74, .12); }
+.biz-gate :is(button):focus-visible { outline: 3px solid rgba(232, 204, 125, .8); outline-offset: 2px; }
+@keyframes biz-gate-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .biz-gate-box { animation: none; } }

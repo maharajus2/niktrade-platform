@@ -95,7 +95,7 @@
                     <span class="v3-tile-ico">{!! $icon('box') !!}</span>
                     <span><strong>Доставка по России</strong><span class="sub">Условия и сроки {!! $icon('arrow') !!}</span></span>
                 </a>
-                <a class="v3-tile is-mint" href="#business">
+                <a class="v3-tile is-mint" href="{{ route('business.home') }}" data-biz-link>
                     <span class="v3-tile-ico">{!! $icon('building') !!}</span>
                     <span><strong>Для бизнеса (B2B)</strong><span class="sub">Оптовые поставки {!! $icon('arrow') !!}</span></span>
                 </a>
@@ -160,9 +160,9 @@
                 <div>
                     <span class="k">Для бизнеса</span>
                     <h2>Поставки для склада, клининга, HoReCa и автомойки</h2>
-                    <p>Подберём линейку, объём и условия поставки под ваши задачи.</p>
+                    <p>Портал для компаний: заявки по общему прайсу, персональная скидка и счёт от менеджера.</p>
                 </div>
-                <a class="v3-btn" href="{{ route('catalog.index', ['direction' => 'professional']) }}">Профессиональные товары {!! $icon('arrow') !!}</a>
+                <a class="v3-btn" href="{{ route('business.home') }}" data-biz-link>Перейти в портал {!! $icon('arrow') !!}</a>
             </div>
         </section>
 @endsection

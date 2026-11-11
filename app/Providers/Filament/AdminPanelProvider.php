@@ -7,6 +7,7 @@ use App\Filament\Pages\Messenger;
 use App\Filament\Pages\Workplace;
 use App\Filament\Resources\AdminUsers\Pages\EditUser;
 use App\Http\Middleware\UseRussianLocale;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -31,6 +32,8 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->font('Manrope', url: asset('fonts/manrope/index.css'), provider: LocalFontProvider::class)
             ->homeUrl(fn (): string => Workplace::getUrl())
             ->sidebarWidth('16rem')
             // ->brandLogo(fn () => view('filament.brand'))
@@ -53,7 +56,7 @@ class AdminPanelProvider extends PanelProvider
                 scopes: EditUser::class,
             )
             ->colors([
-                'primary' => Color::Sky,
+                'primary' => Color::hex('#5348d8'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

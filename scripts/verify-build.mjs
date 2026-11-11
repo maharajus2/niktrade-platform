@@ -9,7 +9,7 @@ if (!directory || !/^[a-f0-9]{40}$/.test(commit ?? '')) {
 const hash = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const manifestPath = path.join(directory, 'manifest.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-for (const entry of ['resources/css/app.css', 'resources/js/app.js', 'resources/js/product-gallery.js']) {
+for (const entry of ['resources/css/app.css', 'resources/js/app.js', 'resources/js/product-gallery.js', 'resources/css/filament/admin/theme.css']) {
     if (!manifest[entry]?.isEntry) throw new Error(`Missing Vite entry: ${entry}`);
 }
 for (const entry of Object.values(manifest)) {

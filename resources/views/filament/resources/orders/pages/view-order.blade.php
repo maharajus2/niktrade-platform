@@ -303,7 +303,7 @@
                     <section class="nik-order-detail-card">
                         <div class="nik-order-detail-section-head">
                             <div>
-                                <span>SLA и обработка</span>
+                                <span>Сроки и обработка</span>
                                 <h2>{{ $order->getSlaTimingLabel() }}</h2>
                             </div>
                         </div>

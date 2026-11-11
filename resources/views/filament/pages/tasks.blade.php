@@ -22,7 +22,7 @@
 
     @component('layouts.work', [
         'title' => 'Задачи',
-        'subtitle' => 'Личные задачи, поручения руководителя, участники, комментарии и HOLD.',
+        'subtitle' => 'Личные задачи, поручения руководителя, участники, комментарии и паузы.',
         'active' => 'tasks',
         'appClass' => 'nik-work-app--tasks nik-tasks',
         'user' => $user,
@@ -116,7 +116,7 @@
                         </label>
 
                         <label class="nik-tasks-field">
-                            <span>SLA, минут</span>
+                            <span>Срок выполнения, минут</span>
                             <input type="number" min="1" step="1" wire:model="taskForm.sla_minutes" placeholder="Например 240">
                         </label>
 
@@ -315,13 +315,13 @@
 
                             <div class="nik-tasks-hold-box">
                                 <label>
-                                    <span>{{ $selectedTask->status === \App\Models\Task::STATUS_ON_HOLD ? 'Комментарий снятия HOLD' : 'Причина HOLD' }}</span>
+                                    <span>{{ $selectedTask->status === \App\Models\Task::STATUS_ON_HOLD ? 'Комментарий возобновления' : 'Причина паузы' }}</span>
                                     <textarea rows="2" wire:model="holdReason"></textarea>
                                 </label>
                                 @if ($selectedTask->status === \App\Models\Task::STATUS_ON_HOLD)
-                                    <button type="button" wire:click="resumeTask({{ $selectedTask->id }})">Снять HOLD</button>
+                                    <button type="button" wire:click="resumeTask({{ $selectedTask->id }})">Возобновить</button>
                                 @else
-                                    <button type="button" wire:click="putTaskOnHold({{ $selectedTask->id }})">Поставить HOLD</button>
+                                    <button type="button" wire:click="putTaskOnHold({{ $selectedTask->id }})">Поставить на паузу</button>
                                 @endif
                             </div>
 
@@ -369,7 +369,7 @@
                         <section class="nik-tasks-side-empty">
                             <x-work.icon name="check-square" />
                             <strong>Выберите задачу</strong>
-                            <span>Здесь появятся участники, комментарии, история и HOLD.</span>
+                            <span>Здесь появятся участники, комментарии, история и паузы.</span>
                         </section>
                     @endif
                 </aside>

@@ -110,7 +110,7 @@ class Task extends Model
             self::STATUS_REVIEW => 'На проверке',
             self::STATUS_COMPLETED => 'Готово',
             self::STATUS_CANCELLED => 'Отменена',
-            self::STATUS_ON_HOLD => 'HOLD',
+            self::STATUS_ON_HOLD => 'На паузе',
             self::STATUS_ARCHIVED => 'Архив',
         ];
     }

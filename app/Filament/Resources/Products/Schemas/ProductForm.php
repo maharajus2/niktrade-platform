@@ -52,7 +52,7 @@ class ProductForm
                             ->helperText('Введите цифры штрихкода. Изображение штрихкода будет генерироваться автоматически.'),
 
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label('Адрес страницы')
                             ->maxLength(255),
                     ])
                     ->columns(2),
@@ -89,8 +89,8 @@ class ProductForm
                         Select::make('direction')
                             ->label('Направление')
                             ->options([
-                                'home' => 'Home',
-                                'professional' => 'Professional',
+                                'home' => 'Для дома',
+                                'professional' => 'Профессиональная',
                             ])
                             ->searchable(),
                     ])
@@ -357,12 +357,12 @@ class ProductForm
                 Section::make('SEO')
                     ->schema([
                         TextInput::make('seo_title')
-                            ->label('SEO Title')
+                            ->label('Заголовок для поиска')
                             ->maxLength(255)
                             ->helperText('Заголовок для поисковых систем'),
 
                         Textarea::make('seo_description')
-                            ->label('SEO Description')
+                            ->label('Описание для поиска')
                             ->rows(3)
                             ->helperText('Описание для поисковых систем')
                             ->columnSpanFull(),

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Tables;
 
 use App\Filament\Resources\Products\ProductResource;
 use App\Models\Product;
+use App\Support\ProductDisplayFormatter;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -92,8 +93,8 @@ class ProductsTable
                 TextColumn::make('direction')
                     ->label('Направление')
                     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                        'home' => 'Home',
-                        'professional' => 'Professional',
+                        'home' => 'Для дома',
+                        'professional' => 'Профессиональная',
                         default => '—',
                     })
                     ->toggleable(),
@@ -101,7 +102,7 @@ class ProductsTable
                 TextColumn::make('volume_value')
                     ->label('Объем')
                     ->formatStateUsing(fn ($record): string => filled($record->volume_value)
-                        ? "{$record->volume_value} {$record->volume_unit}"
+                        ? ProductDisplayFormatter::formatVolume($record->volume_value, $record->volume_unit)
                         : '—'
                     )
                     ->toggleable(),
@@ -111,7 +112,7 @@ class ProductsTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('seo_title')
-                    ->label('SEO Title')
+                    ->label('Заголовок для поиска')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 

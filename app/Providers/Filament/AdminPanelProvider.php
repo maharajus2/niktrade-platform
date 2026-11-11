@@ -2,25 +2,26 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\Messenger;
+use App\Filament\Pages\Workplace;
+use App\Filament\Resources\AdminUsers\Pages\EditUser;
+use App\Http\Middleware\UseRussianLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use App\Filament\Pages\Dashboard;
-use App\Filament\Resources\AdminUsers\Pages\EditUser;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Pages\Messenger;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,9 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->homeUrl(fn (): string => \App\Filament\Pages\Workplace::getUrl())
+            ->homeUrl(fn (): string => Workplace::getUrl())
             ->sidebarWidth('16rem')
-            //->brandLogo(fn () => view('filament.brand'))
+            // ->brandLogo(fn () => view('filament.brand'))
             ->brandName('Никтрейд')
             ->brandLogo(asset('images/logont.png'))
             ->brandLogoHeight('2rem')
@@ -63,7 +64,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                
+
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -76,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->middleware([UseRussianLocale::class], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ]);

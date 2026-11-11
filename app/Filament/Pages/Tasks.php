@@ -306,7 +306,7 @@ class Tasks extends Page
     {
         $reason = trim($this->holdReason);
 
-        $this->runTaskAction($taskId, fn (Task $task, User $user) => $engine->putOnHold($task, $user, $reason), 'Задача поставлена на HOLD');
+        $this->runTaskAction($taskId, fn (Task $task, User $user) => $engine->putOnHold($task, $user, $reason), 'Задача поставлена на паузу');
         $this->holdReason = '';
     }
 
@@ -481,13 +481,13 @@ class Tasks extends Page
         return [
             ['label' => 'Назначено мне', 'value' => (clone $active)->where('assignee_id', $user->id)->count(), 'tone' => 'blue', 'icon' => 'check-square'],
             ['label' => 'В работе', 'value' => (clone $active)->where('status', Task::STATUS_IN_PROGRESS)->count(), 'tone' => 'green', 'icon' => 'clock'],
-            ['label' => 'На HOLD', 'value' => (clone $active)->where('status', Task::STATUS_ON_HOLD)->count(), 'tone' => 'amber', 'icon' => 'alert'],
+            ['label' => 'На паузе', 'value' => (clone $active)->where('status', Task::STATUS_ON_HOLD)->count(), 'tone' => 'amber', 'icon' => 'alert'],
             ['label' => 'Просрочено', 'value' => (clone $active)->whereNotNull('due_at')->where('due_at', '<', now())->whereNotIn('status', [Task::STATUS_COMPLETED, Task::STATUS_ARCHIVED])->count(), 'tone' => 'red', 'icon' => 'calendar'],
         ];
     }
 
     /**
-     * @param callable(Task, User): mixed $action
+     * @param  callable(Task, User): mixed  $action
      */
     private function runTaskAction(int $taskId, callable $action, string $successTitle): void
     {

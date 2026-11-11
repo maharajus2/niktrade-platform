@@ -18,16 +18,6 @@
 
 @once
     <style>
-        {!! collect(file(resource_path('css/work.css')))
-            ->reject(function (string $line): bool {
-                $line = ltrim($line);
-
-                return str_starts_with($line, '@import')
-                    || str_starts_with($line, '@source');
-            })
-            ->implode('') !!}
-    </style>
-    <style>
         {!! file_get_contents(resource_path('css/work-liquid.css')) !!}
     </style>
 @endonce

@@ -39,6 +39,21 @@ php artisan optimize:clear
 
 The build must generate `public/build/manifest.json`, including the Work UI CSS entry.
 
+### Reviewed deployments
+
+Run `Deploy.bat FULL_COMMIT REMOTE_BRANCH` only after review and an explicit deployment decision.
+It targets `5.63.152.207`; it does not commit or push. `scripts/deploy.sh` runs as `niktrade`,
+fetches the requested remote branch, checks that the exact commit is a fast-forward, then runs
+`npm ci --include=dev` and `npm run build` on the server (Node.js 22+). The lockfile is authoritative.
+The server already has Node.js 22; building there avoids transferring a Windows-built asset tree.
+
+The application stays in maintenance mode while code and assets are switched together. Assets
+are built in an isolated staging directory, validated before publication, and stamped in
+`public/build/build-meta.json` with the full commit, manifest hash, lockfile hash and Node version.
+The previous code/assets are restored on failure; backup directories remain under `storage/app`.
+This script does not run database migrations. Keep `public/build` out of Git. Build artifacts must
+be regenerated for each reviewed commit; never copy an older manifest into a new deployment.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

@@ -7,18 +7,12 @@ echo NIKTRADE DEPLOY
 echo ==========================
 echo.
 
-git add .
-
-set /p msg=Commit message: 
-
-git commit -m "%msg%"
-
-if errorlevel 1 (
-    echo.
-    echo Commit skipped or failed.
+if "%~1"=="" (
+    echo Usage: Deploy.bat FULL_COMMIT REMOTE_BRANCH
+    echo Commit and push reviewed changes separately before deploying.
+    exit /b 1
 )
-
-git push
+if "%~2"=="" exit /b 1
 
 echo.
 echo ==========================
@@ -26,7 +20,10 @@ echo CONNECTING TO SERVER
 echo ==========================
 echo.
 
-ssh root@2.26.104.37 "cd /opt/niktrade-platform && git pull && php artisan optimize:clear"
+scp scripts/deploy.sh root@5.63.152.207:/tmp/niktrade-deploy.sh
+if errorlevel 1 exit /b 1
+ssh root@5.63.152.207 "bash /tmp/niktrade-deploy.sh %~1 %~2"
+if errorlevel 1 exit /b 1
 
 echo.
 echo ==========================

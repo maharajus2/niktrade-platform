@@ -505,14 +505,15 @@ body.fi-panel-admin .nik-work-brand-mark {
 
     html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-sidebar {
         width: 76px;
+        row-gap: 0;
     }
 
     html.fi body.fi-body.fi-panel-admin .nik-work-brand-mark {
         position: absolute;
         inset: 0;
         display: block;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         margin: auto;
         object-fit: contain;
         opacity: 0;
@@ -520,9 +521,9 @@ body.fi-panel-admin .nik-work-brand-mark {
     }
 
     html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-logo {
-        width: 52px;
-        height: 52px;
-        min-height: 52px;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
         margin-inline: auto;
         padding: 6px !important;
         border: 0;
@@ -540,10 +541,17 @@ body.fi-panel-admin .nik-work-brand-mark {
 
     /* Symmetric scrollbar gutters keep the icons on the sidebar centerline. */
     html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-nav {
-        width: calc(100% + 12px);
-        margin-inline: -6px;
+        width: calc(100% + 20px);
+        margin-top: 16px;
+        margin-inline: -10px;
         padding-inline: 0 !important;
+        border: 0;
         scrollbar-gutter: stable both-edges;
+        scrollbar-color: transparent transparent;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-nav:is(:hover, :focus-within) {
+        scrollbar-color: #a49def transparent;
     }
 
     html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-nav-link {

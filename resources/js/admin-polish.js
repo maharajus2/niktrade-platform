@@ -56,3 +56,34 @@ const localizeSelectLabels = () => {
 
 localizeSelectLabels();
 document.addEventListener('livewire:navigated', localizeSelectLabels);
+
+// Keep collapsed navigation hints below the page header, including the taller
+// HR header. Delegation also covers links replaced during Livewire navigation.
+const positionSidebarTooltip = (event) => {
+    const link = event.target.closest('.nik-work-nav-link');
+
+    if (!link?._tippy) {
+        return;
+    }
+
+    link._tippy.setProps({
+        zIndex: 130,
+        offset: ({ reference, popper, placement }) => {
+            if (!link.closest('.is-sidebar-collapsed') || !placement.startsWith('right')) {
+                return [0, 12];
+            }
+
+            const headers = document.querySelectorAll('.nik-work-header, .nik-directory-head, .nik-work-legacy-actions');
+            const bottom = Math.max(0, ...Array.from(headers, (header) => {
+                const rect = header.getBoundingClientRect();
+
+                return rect.width && rect.height ? rect.bottom : 0;
+            }));
+
+            return [Math.max(0, bottom + 8 - reference.y - (reference.height - popper.height) / 2), 12];
+        },
+    });
+};
+
+document.addEventListener('pointerover', positionSidebarTooltip, true);
+document.addEventListener('focus', positionSidebarTooltip, true);

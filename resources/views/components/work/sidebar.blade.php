@@ -11,7 +11,7 @@
 <aside class="nik-work-sidebar" aria-label="Рабочая навигация">
     <a href="{{ \App\Filament\Pages\Workplace::getUrl() }}" class="nik-work-logo">
         <img class="nik-work-brand-logo" src="{{ asset('images/logont.png') }}" alt="Никтрейд" />
-        <svg class="nik-work-brand-mark" viewBox="0 -10 310 310" width="40" height="40" aria-hidden="true" focusable="false">
+        <svg class="nik-work-brand-mark" viewBox="0 -10 310 310" width="32" height="32" aria-hidden="true" focusable="false">
             <image href="{{ asset('images/logont.png') }}" width="1187" height="290" />
         </svg>
     </a>

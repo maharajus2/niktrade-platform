@@ -6,6 +6,7 @@ use App\Filament\Resources\Products\ProductResource;
 use App\Models\Product;
 use App\Support\ProductDisplayFormatter;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,29 +22,36 @@ class ProductsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->extraAttributes(['class' => 'nik-products-table'])
             ->columns([
                 TextColumn::make('name')
                     ->label('Название')
+                    ->wrap()
+                    ->width('36%')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('brand.name')
                     ->label('Бренд')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('productLine.name')
                     ->label('Линейка')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('productType.name')
-                    ->label('Тип продукта')
+                    ->label('Тип')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('category.name')
                     ->label('Категория')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
                     ->sortable(),
 
@@ -61,11 +69,22 @@ class ProductsTable
                     ->label('Цена для бизнеса')
                     ->money('RUB')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
+
+                TextColumn::make('availability_status')
+                    ->label('Наличие')
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'in_stock' => 'В наличии',
+                        'out_of_stock' => 'Временно отсутствует',
+                        'discontinued' => 'Снят с производства',
+                        default => '—',
+                    })
+                    ->wrap()
+                    ->toggleable(),
 
                 TextColumn::make('discount_percent')
                     ->label('Скидка (%)')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('discount_label')
                     ->label('Метка')
@@ -88,7 +107,7 @@ class ProductsTable
 
                         return 'gray';
                     })
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('direction')
                     ->label('Направление')
@@ -97,7 +116,7 @@ class ProductsTable
                         'professional' => 'Профессиональная',
                         default => '—',
                     })
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('volume_value')
                     ->label('Объем')
@@ -105,7 +124,7 @@ class ProductsTable
                         ? ProductDisplayFormatter::formatVolume($record->volume_value, $record->volume_unit)
                         : '—'
                     )
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('barcode')
                     ->label('Штрихкод')
@@ -122,19 +141,23 @@ class ProductsTable
 
                 IconColumn::make('is_featured')
                     ->label('Выгодно')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_new')
                     ->label('Новинка')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_best_seller')
                     ->label('Хит продаж')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('sort_order')
                     ->label('Порядок')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Создан')
@@ -147,13 +170,15 @@ class ProductsTable
                     ->label('Активен'),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                Action::make('createFromExisting')
-                    ->label('Создать на основе')
-                    ->icon(Heroicon::OutlinedDocumentDuplicate)
-                    ->url(fn (Product $record): string => ProductResource::getUrl('create', ['source' => $record]))
-                    ->visible(fn (): bool => ProductResource::canCreate()),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    Action::make('createFromExisting')
+                        ->label('Создать на основе')
+                        ->icon(Heroicon::OutlinedDocumentDuplicate)
+                        ->url(fn (Product $record): string => ProductResource::getUrl('create', ['source' => $record]))
+                        ->visible(fn (): bool => ProductResource::canCreate()),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

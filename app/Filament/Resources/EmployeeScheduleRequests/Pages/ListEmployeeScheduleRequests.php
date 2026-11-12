@@ -14,7 +14,7 @@ class ListEmployeeScheduleRequests extends ListRecords
 
     public function getTitle(): string
     {
-        return EmployeeScheduleRequestResource::canReviewAny() ? 'Заявки сотрудников' : 'Мои заявки';
+        return 'Заявки сотрудников';
     }
 
     protected function getHeaderActions(): array

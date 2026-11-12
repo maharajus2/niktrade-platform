@@ -22,6 +22,6 @@
     </a>
     <button type="button" x-bind:class="{ 'is-active': activeSheet === 'requests' }" x-on:click="openSheet('requests')">
         <x-work.icon name="file" />
-        <span>Заявки</span>
+        <span>Заявки сотрудников</span>
     </button>
 </nav>

@@ -10,6 +10,16 @@ class ListProducts extends ListRecords
 {
     protected static string $resource = ProductResource::class;
 
+    public function getTableColumnsSessionKey(): string
+    {
+        return parent::getTableColumnsSessionKey().'_compact_v1';
+    }
+
+    public function getHasReorderedTableColumnsSessionKey(): string
+    {
+        return parent::getHasReorderedTableColumnsSessionKey().'_compact_v1';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -14,7 +14,7 @@
                 ['label' => 'Задачи', 'icon' => 'check-square', 'url' => \App\Filament\Pages\Tasks::getUrl(), 'active' => true],
             ],
             'Рабочие инструменты' => [
-                ['label' => 'Заявки', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
+                ['label' => 'Заявки сотрудников', 'icon' => 'link', 'url' => \App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource::getUrl('index')],
                 ['label' => 'Сообщения', 'icon' => 'message', 'url' => \App\Filament\Pages\Messenger::getUrl()],
             ],
         ];

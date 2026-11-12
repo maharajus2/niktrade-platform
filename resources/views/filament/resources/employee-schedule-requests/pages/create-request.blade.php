@@ -14,11 +14,11 @@
         'Главное' => [
             ['label' => 'Рабочее пространство', 'icon' => 'grid', 'url' => Workplace::getUrl()],
             ['label' => 'Календарь', 'icon' => 'calendar', 'url' => MyCalendar::getUrl()],
-            ['label' => 'Заявки', 'icon' => 'link', 'url' => EmployeeScheduleRequestResource::getUrl('index'), 'active' => true],
+            ['label' => 'Заявки сотрудников', 'icon' => 'link', 'url' => EmployeeScheduleRequestResource::getUrl('index'), 'active' => true],
         ],
-        'Заявки' => [
+        'Заявки сотрудников' => [
             ['label' => 'Создать заявку', 'icon' => 'plus', 'url' => EmployeeScheduleRequestResource::getUrl('create'), 'active' => true],
-            ['label' => 'Мои заявки', 'icon' => 'file', 'url' => EmployeeScheduleRequestResource::getUrl('index')],
+            ['label' => 'Заявки сотрудников', 'icon' => 'file', 'url' => EmployeeScheduleRequestResource::getUrl('index')],
         ],
         'Компания' => array_values(array_filter([
             UserResource::canAccess()

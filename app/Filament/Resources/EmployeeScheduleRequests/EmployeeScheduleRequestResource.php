@@ -30,11 +30,13 @@ class EmployeeScheduleRequestResource extends Resource
 {
     protected static ?string $model = EmployeeScheduleRequest::class;
 
-    protected static ?string $navigationLabel = 'Мои заявки';
+    protected static ?string $navigationLabel = 'Заявки сотрудников';
 
-    protected static ?string $modelLabel = 'Заявка на график';
+    protected static ?string $modelLabel = 'Заявка сотрудника';
 
-    protected static ?string $pluralModelLabel = 'Заявки на график';
+    protected static ?string $pluralModelLabel = 'Заявки сотрудников';
+
+    protected static bool $hasTitleCaseModelLabel = false;
 
     protected static string|\UnitEnum|null $navigationGroup = '🏢 Организация';
 
@@ -44,7 +46,7 @@ class EmployeeScheduleRequestResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return static::canReviewAny() ? 'Заявки сотрудников' : 'Мои заявки';
+        return 'Заявки сотрудников';
     }
 
     public static function form(Schema $schema): Schema

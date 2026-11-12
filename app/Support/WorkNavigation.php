@@ -43,13 +43,13 @@ class WorkNavigation
                 self::pageItem('calendar', 'Календарь', 'calendar', MyCalendar::class, $active),
                 self::pageItem('messenger', 'Мессенджер', 'message', Messenger::class, $active),
                 self::pageItem('tasks', 'Задачи', 'check-square', Tasks::class, $active),
-                self::resourceItem('requests', 'Заявки', 'link', EmployeeScheduleRequestResource::class, $active),
+                self::resourceItem('requests', 'Заявки сотрудников', 'link', EmployeeScheduleRequestResource::class, $active),
             ],
             'Продажи' => [
                 self::resourceItem('orders', 'Заказы', 'package', OrderResource::class, $active),
                 self::resourceItem('customers', 'Покупатели', 'users', CustomerResource::class, $active),
                 self::resourceItem('contractors', 'Контрагенты', 'building', ContractorResource::class, $active),
-                self::resourceItem('business_requests', 'Заявки', 'file', BusinessRequestResource::class, $active),
+                self::resourceItem('business_requests', 'Заявки бизнеса', 'file', BusinessRequestResource::class, $active),
             ],
             'Каталог' => [
                 self::resourceItem('products', 'Товары', 'package', ProductResource::class, $active),

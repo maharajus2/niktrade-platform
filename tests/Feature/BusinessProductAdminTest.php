@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
+use App\Filament\Resources\Products\Pages\ListProducts;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -68,5 +69,19 @@ class BusinessProductAdminTest extends TestCase
         Livewire::test(EditProduct::class, ['record' => $product->id])->fillForm(['business_price' => -1])
             ->call('save')->assertHasFormErrors(['business_price']);
         $this->assertSame('100.00', $product->fresh()->business_price);
+    }
+
+    public function test_product_list_defaults_to_compact_columns_and_keeps_optional_columns_available(): void
+    {
+        $page = Livewire::test(ListProducts::class)->instance();
+        $columns = $page->getTable()->getColumns();
+        $visible = array_keys(array_filter($columns, fn ($column): bool => ! $page->isTableColumnToggledHidden($column->getName())));
+
+        $this->assertSame(['name', 'article', 'price', 'business_price', 'availability_status', 'is_active'], $visible);
+        foreach (['brand.name', 'productLine.name', 'productType.name', 'category.name'] as $name) {
+            $this->assertTrue($columns[$name]->isToggleable());
+            $this->assertTrue($page->isTableColumnToggledHidden($name));
+        }
+        $this->assertStringEndsWith('_compact_v1', $page->getTableColumnsSessionKey());
     }
 }

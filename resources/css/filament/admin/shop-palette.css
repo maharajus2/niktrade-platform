@@ -486,3 +486,104 @@ html.fi body.fi-body.fi-panel-admin :is(.nik-work-search, .nik-work-legacy-searc
 html.fi body.fi-body.fi-panel-admin .nik-work-task-placeholder {
     color: var(--admin-muted);
 }
+
+/* Native resource pages share the content edges with the Work UI header. */
+html.fi body.fi-body.fi-panel-admin .nik-work-legacy-tools {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-legacy-title {
+    min-width: 0;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-legacy-search {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar > button:last-child span {
+    white-space: normal;
+    font-size: 10px;
+    line-height: 1.1;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-products-table .fi-ta-cell-name {
+    max-width: 26rem;
+    white-space: normal;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-products-table .fi-ta-cell-name .fi-ta-text {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin .nik-products-table :is(.fi-ta-cell-name, .fi-ta-header-cell-name) {
+        min-width: 14rem;
+    }
+}
+
+@media (min-width: 901px) {
+    body.fi-panel-admin:has(.nik-work-legacy-nav) {
+        --admin-content-offset: 256px;
+    }
+
+    body.fi-panel-admin:has(.nik-work-legacy-nav.is-sidebar-collapsed) {
+        --admin-content-offset: 116px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-legacy-actions {
+        left: calc(var(--admin-content-offset) + clamp(24px, 2vw, 34px));
+        right: clamp(24px, 2vw, 34px);
+        min-height: 84px;
+        padding: 16px;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-main {
+        width: calc(100% - var(--admin-content-offset));
+        min-width: 0;
+        padding-top: 132px;
+    }
+
+    /* Only the link list scrolls; logo and collapse control stay in normal flex flow. */
+    html.fi body.fi-body.fi-panel-admin .nik-work-sidebar {
+        display: flex !important;
+        flex-direction: column;
+        height: calc(100dvh - 48px) !important;
+        max-height: calc(100dvh - 48px);
+        min-height: 0 !important;
+        overflow: hidden;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-sidebar .nik-work-logo {
+        flex: 0 0 auto;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-sidebar .nik-work-nav {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin;
+        scrollbar-color: #a49def transparent;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-nav > * {
+        flex-shrink: 0;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-sidebar .nik-work-sidebar-toggle {
+        position: static !important;
+        inset: auto;
+        flex: 0 0 auto;
+        width: 100%;
+        min-height: 44px;
+        margin-top: 12px;
+    }
+}

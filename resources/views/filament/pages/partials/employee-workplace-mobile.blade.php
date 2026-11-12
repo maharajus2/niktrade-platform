@@ -555,7 +555,7 @@
         <header class="nik-work-mobile-sheet-head">
             <div>
                 <span>Кадровые заявки</span>
-                <h2>Заявки</h2>
+                <h2>Заявки сотрудников</h2>
             </div>
             <button type="button" x-on:click="closeSheet()" aria-label="Закрыть">
                 <x-work.icon name="plus" />

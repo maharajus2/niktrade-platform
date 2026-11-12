@@ -37,11 +37,13 @@ class BusinessRequestResource extends Resource
 
     protected static ?string $model = BusinessRequest::class;
 
-    protected static ?string $navigationLabel = 'Заявки';
+    protected static ?string $navigationLabel = 'Заявки бизнеса';
 
-    protected static ?string $modelLabel = 'Заявка для бизнеса';
+    protected static ?string $modelLabel = 'Заявка бизнеса';
 
-    protected static ?string $pluralModelLabel = 'Заявки для бизнеса';
+    protected static ?string $pluralModelLabel = 'Заявки бизнеса';
+
+    protected static bool $hasTitleCaseModelLabel = false;
 
     protected static string|\UnitEnum|null $navigationGroup = 'Продажи';
 

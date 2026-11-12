@@ -56,6 +56,8 @@
         'returned' => 0,
     ];
     $recentRequests = collect();
+    $menuGroups = $shouldRender ? WorkNavigation::groups($active, $user) : [];
+    $activeLabel = collect($menuGroups)->collapse()->firstWhere('key', $active)['label'] ?? 'Рабочее пространство';
 
     if ($shouldRender) {
         $baseRequests = EmployeeScheduleRequest::query()
@@ -98,17 +100,20 @@
     >
         <x-work.sidebar :active="$active" :user="$user" />
 
-        <div class="nik-work-legacy-actions" aria-label="Панель действий">
-            <label class="nik-work-legacy-search">
-                <x-work.icon name="search" />
-                <input type="search" placeholder="Поиск..." />
-            </label>
-            <button type="button" class="nik-work-legacy-icon-button has-badge" aria-label="Уведомления">
-                <x-work.icon name="bell" />
-                <span>3</span>
-            </button>
-            <x-work.user-menu :user="$user" button-class="nik-work-legacy-avatar" />
-        </div>
+        <header class="nik-work-legacy-actions" aria-label="Панель действий">
+            <strong class="nik-work-legacy-title">{{ $activeLabel }}</strong>
+            <div class="nik-work-legacy-tools">
+                <label class="nik-work-legacy-search">
+                    <x-work.icon name="search" />
+                    <input type="search" placeholder="Поиск..." />
+                </label>
+                <button type="button" class="nik-work-legacy-icon-button has-badge" aria-label="Уведомления">
+                    <x-work.icon name="bell" />
+                    <span>3</span>
+                </button>
+                <x-work.user-menu :user="$user" button-class="nik-work-legacy-avatar" />
+            </div>
+        </header>
 
         <header class="nik-work-legacy-mobile-head">
             <a href="{{ Workplace::getUrl() }}" class="nik-work-legacy-mobile-logo" aria-label="Никтрейд">
@@ -127,7 +132,7 @@
         </header>
 
         <x-work.mobile-bottom-sheets
-            :menu-groups="WorkNavigation::groups($active, $user)"
+            :menu-groups="$menuGroups"
             :request-counts="$requestCounts"
             :recent-requests="$recentRequests"
             :create-request-url="EmployeeScheduleRequestResource::getUrl('create')"

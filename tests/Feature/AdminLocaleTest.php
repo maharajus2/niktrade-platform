@@ -2,11 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\BusinessRequests\BusinessRequestResource;
+use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class AdminLocaleTest extends TestCase
 {
+    public function test_request_breadcrumbs_distinguish_business_and_employee_requests(): void
+    {
+        $this->assertSame('Заявки бизнеса', BusinessRequestResource::getBreadcrumb());
+        $this->assertSame('Заявки сотрудников', EmployeeScheduleRequestResource::getBreadcrumb());
+    }
+
     public function test_admin_login_is_russian_even_if_the_application_locale_was_english(): void
     {
         config(['app.locale' => 'en']);

@@ -21,7 +21,7 @@
             <div class="nik-work-nav-section">{{ $group }}</div>
 
             @foreach ($items as $item)
-                <a href="{{ $item['url'] }}" class="nik-work-nav-link {{ ($item['active'] ?? false) ? 'is-active' : '' }}" title="{{ $item['label'] }}">
+                <a href="{{ $item['url'] }}" class="nik-work-nav-link {{ ($item['active'] ?? false) ? 'is-active' : '' }}" title="{{ $item['label'] }}" aria-label="{{ $item['label'] }}" x-tooltip="{ content: @js($item['label']), placement: 'right', trigger: 'mouseenter focus', theme: 'admin' }">
                     <span class="nik-work-nav-icon"><x-work.icon :name="$item['icon']" /></span>
                     <span class="nik-work-nav-label">{{ $item['label'] }}</span>
                     @if (isset($item['badge']))

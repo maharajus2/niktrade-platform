@@ -29,6 +29,8 @@ class ProductLineResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Линейки продуктов';
 
+    protected static bool $hasTitleCaseModelLabel = false;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
 
     protected static ?int $navigationSort = 4;

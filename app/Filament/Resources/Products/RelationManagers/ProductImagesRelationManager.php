@@ -45,7 +45,7 @@ class ProductImagesRelationManager extends RelationManager
                     ->helperText('Загрузите изображение товара размером 640 × 980 px. Допустимые форматы: JPG, PNG, WebP. Максимальный размер файла — 15 МБ.'),
 
                 TextInput::make('alt')
-                    ->label('Alt текст')
+                    ->label('Альтернативный текст')
                     ->maxLength(255),
 
                 TextInput::make('sort_order')
@@ -62,6 +62,10 @@ class ProductImagesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel('изображение')
+            ->pluralModelLabel('изображения')
+            ->emptyStateHeading('Изображений пока нет')
+            ->emptyStateDescription('Добавьте первое изображение кнопкой «Создать».')
             ->columns([
                 ImageColumn::make('file_path')
                     ->label('Изображение')
@@ -70,7 +74,7 @@ class ProductImagesRelationManager extends RelationManager
                     ->square(),
 
                 TextColumn::make('alt')
-                    ->label('Alt текст')
+                    ->label('Альтернативный текст')
                     ->searchable()
                     ->toggleable(),
 
@@ -89,11 +93,14 @@ class ProductImagesRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->modalHeading('Добавить изображение'),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->modalHeading('Изменить изображение'),
+                DeleteAction::make()
+                    ->modalHeading('Удалить изображение'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

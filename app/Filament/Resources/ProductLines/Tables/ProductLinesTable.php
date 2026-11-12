@@ -26,7 +26,7 @@ class ProductLinesTable
                     ->sortable(),
 
                 TextColumn::make('slug')
-                    ->label('Slug')
+                    ->label('Код в URL')
                     ->toggleable(),
 
                 IconColumn::make('is_active')

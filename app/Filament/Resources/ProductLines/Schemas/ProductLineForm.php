@@ -27,7 +27,7 @@ class ProductLineForm
                     ->maxLength(255),
 
                 TextInput::make('slug')
-                    ->label('Slug')
+                    ->label('Код в URL')
                     ->maxLength(255),
 
                 Textarea::make('description')

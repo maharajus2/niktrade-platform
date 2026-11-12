@@ -47,6 +47,10 @@ class AdminPanelProvider extends PanelProvider
                 fn () => view('filament.work-ui-navigation'),
             )
             ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => view('filament.admin-polish-scripts'),
+            )
+            ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
                 fn () => view('filament.work-ui-styles'),
             )
@@ -57,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
             )
             ->colors([
                 'primary' => Color::hex('#5348d8'),
+                'info' => Color::hex('#5348d8'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

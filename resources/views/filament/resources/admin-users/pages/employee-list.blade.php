@@ -246,8 +246,8 @@
 
     <div class="nik-work-mobile nik-directory-mobile nik-employee-list-mobile" x-data="{ activeSheet: null, openSheet(sheet) { this.activeSheet = sheet; document.documentElement.classList.add('nik-work-mobile-sheet-open'); }, closeSheet() { this.activeSheet = null; document.documentElement.classList.remove('nik-work-mobile-sheet-open'); } }">
         <header class="nik-directory-mobile-top">
-            <a href="{{ Workplace::getUrl() }}"><img src="{{ asset('images/logo-icon.png') }}" alt="Никтрейд"><strong>Сотрудники</strong></a>
-            <div><button><x-work.icon name="search" /></button><button><x-work.icon name="bell" /></button></div>
+            <a href="{{ Workplace::getUrl() }}" aria-label="Никтрейд"><img src="{{ asset('images/logont.png') }}" alt="Никтрейд"></a>
+            <div><button type="button" aria-label="Поиск"><x-work.icon name="search" /></button><button type="button" aria-label="Уведомления"><x-work.icon name="bell" /></button></div>
         </header>
         <h1>Сотрудники</h1>
         <section class="nik-directory-mobile-kpis">

@@ -1,4 +1,385 @@
 /* Admin-only corrections over the legacy Work UI hooks. */
+/* Work UI navigation uses layers 60–65; native dialogs must cover it. */
+body.fi-panel-admin .fi-modal > .fi-modal-close-overlay {
+    z-index: 80;
+}
+
+body.fi-panel-admin .fi-modal > .fi-modal-window-ctn {
+    z-index: 90;
+}
+
+html.fi body.fi-body.fi-panel-admin .fi-modal.fi-modal-open ~ .fi-modal.fi-modal-open > .fi-modal-close-overlay {
+    z-index: 100;
+}
+
+html.fi body.fi-body.fi-panel-admin .fi-modal.fi-modal-open ~ .fi-modal.fi-modal-open > .fi-modal-window-ctn {
+    z-index: 110;
+}
+
+body.fi-panel-admin .fi-no {
+    z-index: 120;
+}
+
+/* Filament normally draws these boundaries with a ring shadow. Preserve a
+ * real border after removing the legacy blue shadows. */
+html.fi body.fi-body.fi-panel-admin :is(.fi-input-wrp, .fi-fo-textarea) {
+    border: 1px solid var(--admin-line);
+    border-radius: 12px;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-input-wrp, .fi-fo-textarea):focus-within {
+    border-color: var(--admin-primary);
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-input-wrp, .fi-fo-textarea).fi-invalid {
+    border-color: #b91c1c;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.orders-work-view-switch, .orders-work-list > header) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .orders-work-view-switch button:not(.is-active) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .orders-work-order-actions button {
+    min-height: 38px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--admin-primary) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin .orders-work-order-actions :is(a, button) {
+        min-height: 44px;
+    }
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-ta-header-cell-price, .fi-ta-header-cell-business-price, .fi-ta-header-cell-total) {
+    text-align: right;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(input, textarea)::placeholder {
+    color: var(--admin-muted);
+    opacity: 1;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-messenger-file {
+    position: relative;
+    display: inline-flex;
+    min-height: 44px;
+    padding: 8px 12px;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--admin-line);
+    border-radius: 12px;
+    background: var(--admin-surface);
+    color: var(--admin-primary-dark);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-messenger-file input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 44px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-user-menu > button {
+    min-width: 44px;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-messenger-file:focus-within {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+}
+
+/* Classless children of legacy cards also contain glass backgrounds. Keep
+ * functional checkbox/radio images and restore only the navigation gradient. */
+html.fi body.fi-body.fi-panel-admin .nik-work-app :where(*):not(:where([type="checkbox"], [type="radio"])) {
+    background-image: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-app :is(
+    .nik-work-sidebar, .nik-work-header, .nik-work-mobile-top,
+    .nik-work-mobile-head, .nik-work-hr-mobile-top, .orders-work-mobile-head,
+    .nik-directory-mobile-top, .nik-directory-head, .nik-work-mobile-bottom-bar
+) {
+    background-image: linear-gradient(135deg, var(--admin-navy), var(--admin-navy-2)) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-employee-mobile-quick > *, .nik-employee-mobile-facts > *,
+    .nik-work-mobile-quick-grid > *, .nik-work-hr-mobile-action-grid > *
+) {
+    background: var(--admin-surface) !important;
+    border-color: var(--admin-line) !important;
+    box-shadow: 0 4px 18px rgb(13 22 54 / 5%) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-employee-mobile-back, .nik-employee-mobile-quick a,
+    .nik-employee-profile-actions a
+) {
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-employee-profile-actions .is-disabled, .nik-employee-mobile-actions button,
+    .nik-employee-profile-fields dt, .nik-messenger-bubble > header
+) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-app .nik-messenger-card.is-active {
+    background: var(--admin-tint) !important;
+    color: var(--admin-ink) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+}
+
+html.fi body.fi-body.fi-panel-admin .fi-input-wrp:focus-within {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 1px;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-nav-link:focus-visible {
+    background: var(--admin-primary) !important;
+    outline-color: #fff;
+    outline-offset: -3px;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-btn, .nik-tasks-btn, .nik-messenger-btn):not(:disabled):hover {
+    filter: brightness(.95);
+}
+
+body.fi-panel-admin :is(button, input, select, textarea):disabled {
+    cursor: not-allowed;
+}
+
+body.fi-panel-admin .tippy-box[data-theme~="admin"] {
+    border-radius: 8px;
+    background: var(--admin-navy);
+    color: #fff;
+    font: 600 13px/1.4 'Manrope', sans-serif;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-schedule-request-back, .nik-employee-profile-back, .nik-calendar-back,
+    .nik-directory-side-link, .nik-calendar-view-switch button,
+    .nik-work-mobile-link, .nik-work-hr-mobile-card-head a
+) {
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-schedule-request-empty, .nik-schedule-request-eyebrow,
+    .nik-schedule-request-section-head, .nik-schedule-request-facts,
+    .nik-schedule-request-comments, .nik-employee-disabled-state,
+    .nik-employee-summary-list, .nik-employee-profile-list,
+    .nik-employee-profile-meta, .nik-messenger-meta, .nik-messenger-muted,
+    .nik-messenger-chat-head small, .nik-messenger-bubble time,
+    .nik-tasks-side-empty, .nik-tasks-empty, .nt-calendar-holiday-label
+) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-schedule-request-action:first-child {
+    background: var(--admin-primary) !important;
+    color: #fff !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-schedule-request-badge.is-blue, .nik-order-detail-badge.is-status,
+    .nik-messenger-conversation.is-active, .nik-messenger-bubble.is-own
+) {
+    background: var(--admin-tint) !important;
+    color: var(--admin-ink) !important;
+    border-color: var(--admin-line) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-calendar-legend i, .nik-calendar-mobile-strip b) {
+    background: var(--admin-primary) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-in-placeholder, .fi-ta-placeholder, .fi-sc-text) {
+    color: var(--admin-muted);
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-modal-window, .fi-dropdown-panel, .fi-fo-date-time-picker-panel, .fi-no-notification) {
+    max-width: calc(100vw - 24px);
+    border-color: var(--admin-line);
+    border-radius: 12px;
+    background: var(--admin-surface);
+    box-shadow: 0 12px 32px rgb(13 22 54 / 12%);
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-ta-cell-price, .fi-ta-cell-business-price, .fi-ta-cell-total, .fi-ta-cell-quantity, .fi-ta-cell-sort-order) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-ta-cell-price, .fi-ta-cell-business-price, .fi-ta-cell-total, .fi-ta-cell-quantity, .fi-ta-cell-sort-order) .fi-ta-text {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-ta-cell-price, .fi-ta-cell-business-price, .fi-ta-cell-total, .fi-ta-cell-quantity, .fi-ta-cell-sort-order) > .fi-ta-col {
+    justify-content: flex-end;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .fi-ta-cell-unit-price, .fi-ta-cell-discounted-unit-price, .fi-ta-cell-line-total,
+    .fi-ta-cell-discount-percent, .fi-ta-cell-weight-snapshot-value, .fi-ta-cell-line-weight-grams
+) :is(.fi-ta-col, .fi-ta-text) {
+    justify-content: flex-end;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .fi-ta-header-cell-unit-price, .fi-ta-header-cell-discounted-unit-price, .fi-ta-header-cell-line-total,
+    .fi-ta-header-cell-discount-percent, .fi-ta-header-cell-weight-snapshot-value, .fi-ta-header-cell-line-weight-grams
+) {
+    text-align: right;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-mobile-sheet-head > span, .nik-work-mobile-menu-groups h3) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-mobile-menu-list a > span {
+    background: var(--admin-tint) !important;
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-mobile-menu-list a.is-active > span {
+    background: var(--admin-primary) !important;
+    color: #fff !important;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin :is(
+        button:not(.fi-toggle), .fi-icon-btn, a.fi-btn, a.fi-link,
+        input:not(:where([type="checkbox"], [type="radio"], [type="hidden"], [type="file"])),
+        .fi-input, .fi-select-input, .fi-select-input-btn,
+        .fi-fo-date-time-picker-trigger, .fi-fo-date-time-picker-display-text-input,
+        .filepond--drop-label, .nik-messenger-field input, .nik-messenger-field select,
+        .nik-calendar input, .nik-calendar select, .nik-schedule-request input,
+        .nik-schedule-request select, .nik-work-user-menu > button
+    ) {
+        min-height: 44px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-messenger-mobile-back {
+        min-width: 44px;
+        padding-inline: 0;
+        flex-shrink: 0;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-messenger-chat-head {
+        flex-wrap: wrap;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.fi-icon-btn, .fi-badge-delete-btn, .fi-select-input-value-remove-btn) {
+        min-width: 44px;
+    }
+
+    /* Transparent borders enlarge the native checkbox hit area without
+     * replacing its checked/indeterminate SVG or changing its input behavior. */
+    html.fi body.fi-body.fi-panel-admin input[type="checkbox"].fi-checkbox-input {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 12px solid transparent;
+        border-radius: 16px;
+        background-clip: padding-box;
+        background-origin: padding-box;
+        background-position: center;
+        background-size: 20px;
+        background-repeat: no-repeat;
+        box-shadow: none;
+        outline: 1px solid var(--admin-line);
+        outline-offset: -13px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin input[type="checkbox"].fi-checkbox-input:checked {
+        outline-color: var(--admin-primary);
+    }
+
+    html.fi body.fi-body.fi-panel-admin input[type="checkbox"].fi-checkbox-input:focus-visible {
+        outline: 2px solid var(--admin-primary);
+        outline-offset: 0;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .fi-toggle {
+        height: 44px;
+        align-items: center;
+        background: transparent;
+        isolation: isolate;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .fi-toggle::before {
+        position: absolute;
+        z-index: -1;
+        inset: 8px -2px;
+        border-radius: 999px;
+        background: var(--admin-line);
+        content: '';
+    }
+
+    html.fi body.fi-body.fi-panel-admin .fi-toggle.fi-toggle-on::before {
+        background: var(--admin-primary);
+    }
+
+    html.fi body.fi-body.fi-panel-admin .fi-ta-header-toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    body.fi-panel-admin .fi-ta-header-toolbar > div,
+    body.fi-panel-admin .fi-ta-search-field {
+        min-width: 0;
+    }
+
+    body.fi-panel-admin .fi-ta-search-field {
+        flex: 1 1 140px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-hr-mobile-row {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 8px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-hr-mobile-row em {
+        grid-column: 2 / -1;
+        justify-self: start;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-hr-mobile-row :is(strong, small) {
+        overflow: visible;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
 html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .nt-workplace, .fi-modal-window, .fi-dropdown-panel, .fi-no-notification) {
     font-family: 'Manrope', sans-serif;
 }
@@ -8,7 +389,7 @@ body.fi-panel-admin :is(button, input, select, textarea) {
 }
 
 html.fi body.fi-body.fi-panel-admin :is(
-    .fi-btn, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
+    .fi-btn, a.nt-pill, a.nik-work-card-link, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
     .nik-directory-primary, .nik-directory-filter-button,
     .nik-calendar-filter-button, .nik-calendar-add, .nik-calendar-view-switch button,
     .nik-work-action, .nik-work-card-head > a, .nt-action-link,
@@ -29,7 +410,7 @@ html.fi body.fi-body.fi-panel-admin :is(
 }
 
 html.fi body.fi-body.fi-panel-admin :is(
-    .nik-messenger-btn, .nik-tasks-btn, .nik-directory-filter-button,
+    a.nt-pill, a.nik-work-card-link, .nik-messenger-btn, .nik-tasks-btn, .nik-directory-filter-button,
     .nik-calendar-filter-button, .nik-work-action, .nik-work-card-head > a,
     .nt-action-link, .nt-hr-card__head > a, .orders-work-tool-button
 ):not(.is-primary):not(.nt-action-link--primary) {
@@ -78,7 +459,7 @@ html.fi body.fi-body.fi-panel-admin :is(.nik-work-hr-desktop-kpis, .nik-work-hr-
 
 @media (max-width: 900px) {
     html.fi body.fi-body.fi-panel-admin :is(
-        .fi-btn, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
+        .fi-btn, a.nt-pill, a.nik-work-card-link, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
         .nik-directory-primary, .nik-directory-filter-button,
         .nik-calendar-filter-button, .nik-calendar-add, .nik-calendar-view-switch button,
         .nik-work-action, .nik-work-card-head > a, .nt-action-link,
@@ -179,6 +560,7 @@ html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header-heading
 html.fi body.fi-body.fi-panel-admin {
     min-height: 100dvh;
     background-color: var(--admin-bg) !important;
+    background-image: none !important;
 }
 
 html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi-main, .fi-modal, .fi-dropdown) :where(*) {
@@ -191,7 +573,7 @@ html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi
     [class*="filters"], [class*="avatar"], [class*="row"], [class*="action"],
     [class*="item"], [class*="shift"], [class*="navigation"], [class*="tabs"],
     [class*="switch"], [class*="legend"], [class*="state"]
-):not(.nik-work-legacy-actions) {
+):not(:where(.nik-work-legacy-actions, [type="checkbox"], [type="radio"])) {
     background-image: none !important;
 }
 
@@ -258,6 +640,16 @@ html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-page {
     gap: 16px;
 }
 
+html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-page-header-main-ctn {
+    padding-block: 0;
+    row-gap: 16px;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-tasks-tabs > button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
 body.fi-panel-admin .nik-work-legacy-title {
     margin: 0;
     line-height: 1.25;
@@ -298,5 +690,259 @@ body.fi-panel-admin .nik-work-legacy-title {
 
     body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-breadcrumbs {
         display: block;
+    }
+}
+
+/* Neutralize legacy blue rings and shadows after all bridge rules. Native
+ * checkbox/radio images and toggle tracks retain their own interaction styles. */
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav) :where(*):not(:where([type="checkbox"], [type="radio"], .fi-toggle)) {
+    border-color: var(--admin-line) !important;
+    box-shadow: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-app :is(
+    article, .nik-work-card, .nik-work-mobile-card, .nt-hr-card,
+    .nik-work-hr-mobile-card, .nik-calendar-main-card, .nik-tasks-board-wrap,
+    .nik-messenger-panel, .nik-employee-card, .nik-employee-glass-card,
+    .nik-directory-panel, .nik-order-detail-card
+) {
+    box-shadow: 0 4px 18px rgb(13 22 54 / 5%) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-app :is(
+    .nik-work-sidebar, .nik-work-header, .nik-work-mobile-top,
+    .nik-work-hr-mobile-top, .orders-work-mobile-head,
+    .nik-directory-mobile-top, .nik-directory-head, .nik-work-mobile-bottom-bar
+) {
+    border-color: var(--admin-navy-2) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .fi-select-input, .fi-input-wrp, .fi-pagination, .fi-breadcrumbs-item-label
+) {
+    border-color: var(--admin-line);
+    box-shadow: none;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .fi-breadcrumbs-item-label, .nik-tasks-column-empty,
+    .nik-directory-table-head, .nik-work-calendar-weekday
+) {
+    color: var(--admin-muted) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-employee-card-head a, .nik-employee-mobile-quick strong) {
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.orders-work-type, .nik-employee-doc-progress > span) {
+    background: var(--admin-tint) !important;
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-toolbar-divider {
+    background: var(--admin-line);
+}
+
+html.fi body.fi-body.fi-panel-admin .fi-main [style*="gradient"] {
+    background-image: none !important;
+    background-color: var(--admin-surface) !important;
+    box-shadow: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.fi-btn:disabled, .nik-work-app button:disabled, .nik-work-legacy-nav button:disabled) {
+    border-color: var(--admin-line) !important;
+    background: var(--admin-surface) !important;
+    color: var(--admin-muted) !important;
+    opacity: 1;
+    filter: none;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin button {
+        min-width: 44px;
+    }
+}
+
+/* The schedule editor is appended to body rather than the Work UI root. */
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal {
+    color: var(--admin-ink);
+    font-family: 'Manrope', sans-serif;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__panel {
+    max-width: min(720px, calc(100vw - 24px));
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    border: 1px solid var(--admin-line);
+    border-radius: 12px;
+    background: var(--admin-surface) !important;
+    box-shadow: 0 12px 32px rgb(13 22 54 / 14%) !important;
+    backdrop-filter: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__panel::before,
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__panel::after {
+    background: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal :is(input:not(:where([type="checkbox"])), select, textarea, button) {
+    min-height: 38px;
+    border-color: var(--admin-line);
+    border-radius: 12px;
+    background: var(--admin-surface);
+    color: var(--admin-ink);
+    font-family: inherit;
+    box-shadow: none;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal :is(button[type="submit"], .nt-schedule-button--primary) {
+    border-color: var(--admin-primary);
+    background: var(--admin-primary);
+    color: #fff;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__header p {
+    color: var(--admin-muted);
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__hint {
+    border-color: var(--admin-line);
+    background: var(--admin-tint);
+    color: var(--admin-primary-dark);
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal__error {
+    color: #b42332;
+}
+
+html.fi body.fi-body.fi-panel-admin .nt-schedule-modal .nt-schedule-button--danger {
+    background: #fff1f2;
+    color: #b42332;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-title, .nik-work-legacy-title, .nik-directory-head h1,
+    .nik-schedule-request-hero h1, .nik-calendar-hero h1
+) {
+    font-size: 28px !important;
+    line-height: 1.25;
+    font-weight: 800;
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-work-legacy-search {
+    width: clamp(160px, 18vw, 280px);
+    min-width: 0;
+}
+
+@media (min-width: 901px) {
+    html.fi body.fi-body.fi-panel-admin .nik-work-app:not(.is-sidebar-collapsed) .nik-work-layout {
+        grid-template-columns: 210px minmax(0, 1fr) !important;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-app:not(.is-sidebar-collapsed) .nik-work-sidebar {
+        width: 210px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav):not(.is-sidebar-collapsed) .nik-work-nav-link {
+        grid-template-columns: 24px minmax(0, 1fr) auto;
+        gap: 6px;
+        padding-inline: 10px;
+    }
+
+    body.fi-panel-admin .nik-work-nav-trailing {
+        display: none;
+    }
+
+    body.fi-panel-admin .nik-work-nav-label {
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav):not(.is-sidebar-collapsed) .nik-work-sidebar-toggle {
+        gap: 8px;
+        padding-inline: 8px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin a[href] {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-app--generic .nik-work-sidebar .nik-work-nav-link {
+        min-height: 44px !important;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-app--generic .nik-work-header-tools {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 44px 44px;
+        gap: 8px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-app--generic .nik-work-search {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    body.fi-panel-admin .nik-work-app--generic .nik-work-toolbar-divider {
+        display: none;
+    }
+
+    body.fi-panel-admin .nik-work-app--generic .nik-work-header-actions .fi-btn {
+        width: 100%;
+    }
+
+    html.fi body.fi-body.fi-panel-admin [role="option"] {
+        min-height: 44px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(
+        .nik-work-title, .nik-work-legacy-title, .nik-directory-mobile > h1,
+        .nik-work-hr-mobile-hero h1, .nik-work-mobile-hero h1,
+        .orders-work-mobile-head h1, .nik-employee-mobile-hero h1,
+        .nik-schedule-request-hero h1, .nik-calendar-hero h1
+    ) {
+        font-size: 22px !important;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-hr-mobile-calendar-strip {
+        grid-template-columns: repeat(7, minmax(44px, 1fr));
+        gap: 0;
+    }
+
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-app) .nik-work-app .nik-work-main {
+        padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-directory-mobile-top > a {
+        width: 148px;
+        padding: 8px;
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-directory-mobile-top > a img {
+        width: 132px;
+        height: auto;
+        padding: 0;
+        object-fit: contain;
+    }
+}
+
+html.fi body.fi-body.fi-panel-admin .nik-calendar-quick-actions > :is(a, span) > :is(small, p) {
+    grid-column: 2;
+    min-width: 0;
+    white-space: normal;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin .nt-schedule-modal :is(input, select, button) {
+        min-height: 44px;
     }
 }

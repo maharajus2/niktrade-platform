@@ -92,6 +92,10 @@ class CustomerAddressesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel('адрес доставки')
+            ->pluralModelLabel('адреса доставки')
+            ->emptyStateHeading('Адресов доставки пока нет')
+            ->emptyStateDescription('Добавьте первый адрес кнопкой «Создать».')
             ->columns([
                 TextColumn::make('title')
                     ->label('Название')
@@ -122,11 +126,14 @@ class CustomerAddressesRelationManager extends RelationManager
                     ->boolean(),
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->modalHeading('Добавить адрес доставки'),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->modalHeading('Изменить адрес доставки'),
+                DeleteAction::make()
+                    ->modalHeading('Удалить адрес доставки'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

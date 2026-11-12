@@ -590,7 +590,7 @@
                         </div>
 
                         <label class="nt-schedule-checkbox">
-                            <input type="checkbox" name="is_all_day">
+                            <input type="checkbox" class="fi-checkbox-input" name="is_all_day">
                             <span>Весь день</span>
                         </label>
 

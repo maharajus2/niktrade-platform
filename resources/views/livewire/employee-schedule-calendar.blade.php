@@ -83,7 +83,7 @@
                     <span>Фильтры</span>
                 </button>
                 @if ($canUpdate)
-                    <button type="button" class="nik-calendar-add" data-nt-calendar-add>
+                    <button type="button" class="nik-calendar-add" data-nt-calendar-add aria-label="Добавить событие">
                         <x-work.icon name="plus" />
                         <span>Добавить событие</span>
                     </button>

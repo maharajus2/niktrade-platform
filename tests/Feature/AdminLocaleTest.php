@@ -9,6 +9,15 @@ use Tests\TestCase;
 
 class AdminLocaleTest extends TestCase
 {
+    public function test_messenger_participants_use_russian_plural_forms(): void
+    {
+        app()->setLocale('ru');
+
+        foreach ([1 => '1 участник', 2 => '2 участника', 5 => '5 участников', 11 => '11 участников', 21 => '21 участник', 22 => '22 участника', 25 => '25 участников'] as $count => $label) {
+            $this->assertSame($label, trans_choice('admin.messenger.participants', $count));
+        }
+    }
+
     public function test_request_breadcrumbs_distinguish_business_and_employee_requests(): void
     {
         $this->assertSame('Заявки бизнеса', BusinessRequestResource::getBreadcrumb());

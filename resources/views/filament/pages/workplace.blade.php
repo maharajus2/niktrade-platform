@@ -215,7 +215,7 @@
         'user' => auth()->user(),
         'active' => 'workplace',
         'showSidebar' => true,
-        'appClass' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'nik-work-app--hr' : '',
+        'appClass' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? 'nik-work-app--hr' : 'nik-work-app--generic',
         'actions' => \App\Support\Dashboard\DashboardWidgetRegistry::canChooseDashboard(auth()->user()) ? $this->getAction('chooseDashboard') : null,
         'greetingName' => $this->getContextKey() === \App\Support\Dashboard\DashboardWidgetRegistry::CONTEXT_HR ? null : auth()->user()->greeting_name,
         'renderedLocalDate' => $hrWorkspace['localDate'] ?? null,

@@ -705,7 +705,7 @@
                         >
                             <span class="nik-messenger-avatar">{{ mb_substr($title, 0, 1) }}</span>
                             <span>
-                                <strong>{{ $isPinned ? 'Pin · ' : '' }}{{ $title }}</strong>
+                                <strong>{{ $isPinned ? 'Закреплено · ' : '' }}{{ $title }}</strong>
                                 <p>{{ $lastMessage?->body ?: ($lastMessage?->attachments?->first()?->original_filename ?? 'Пока нет сообщений') }}</p>
                             </span>
                             <span class="nik-messenger-meta">
@@ -730,14 +730,14 @@
                 @if ($selectedConversation)
                     <header class="nik-messenger-chat-head">
                         <div>
-                            <button type="button" class="nik-messenger-btn nik-messenger-mobile-back" wire:click="$set('selectedConversationId', null)">
+                            <button type="button" class="nik-messenger-btn nik-messenger-mobile-back" wire:click="$set('selectedConversationId', null)" aria-label="Назад к чатам">
                                 <x-work.icon name="chevron-left" />
                             </button>
                             <strong class="nik-messenger-chat-title">{{ $selectedConversation->displayTitleFor($user) }}</strong>
-                            <small>{{ $selectedConversation->participants->count() }} участник(а) · {{ $selectedConversation->type }}</small>
+                            <small>{{ trans_choice('admin.messenger.participants', $selectedConversation->participants->count()) }} · {{ __('admin.messenger.types.'.$selectedConversation->type) }}</small>
                         </div>
                         <div class="nik-messenger-actions">
-                            <button type="button" wire:click="togglePin"><x-work.icon name="check-circle" /> Pin</button>
+                            <button type="button" wire:click="togglePin" aria-pressed="{{ $selectedConversation->participants->firstWhere('user_id', $user->id)?->is_pinned ? 'true' : 'false' }}"><x-work.icon name="check-circle" /> {{ $selectedConversation->participants->firstWhere('user_id', $user->id)?->is_pinned ? 'Открепить' : 'Закрепить' }}</button>
                             <button type="button" wire:click="archiveSelected"><x-work.icon name="archive" /> Архив</button>
                         </div>
                     </header>
@@ -891,8 +891,10 @@
                                 @if ($messengerPage['canAttachFiles'] ?? false)
                                     <label class="nik-messenger-file">
                                         <x-work.icon name="file" />
+                                        <span>Прикрепить файл</span>
                                         <input
                                             type="file"
+                                            aria-label="Прикрепить файл"
                                             wire:model="attachmentUpload"
                                             x-ref="attachmentInput"
                                             x-on:change="updateFilePreview($event)"
@@ -934,7 +936,7 @@
                                 <span class="nik-messenger-avatar">{{ $participant->user?->initials ?: 'N' }}</span>
                                 <div>
                                     <strong>{{ $participant->user?->name }}</strong>
-                                    <small>{{ $participant->role }} @if($participant->user?->department) · {{ $participant->user->department->name }} @endif</small>
+                                    <small>{{ __('admin.messenger.roles.'.$participant->role) }} @if($participant->user?->department) · {{ $participant->user->department->name }} @endif</small>
                                 </div>
                             </div>
                         @endforeach

@@ -29,6 +29,8 @@ class ProductTypeResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Типы продуктов';
 
+    protected static bool $hasTitleCaseModelLabel = false;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
 
     protected static ?int $navigationSort = 5;

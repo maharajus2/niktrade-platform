@@ -17,6 +17,10 @@ class OrderItemsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel('позиция заказа')
+            ->pluralModelLabel('позиции заказа')
+            ->emptyStateHeading('Состав заказа пуст')
+            ->emptyStateDescription('В этом заказе ещё нет товарных позиций.')
             ->columns([
                 TextColumn::make('product_name')
                     ->label('Товар')

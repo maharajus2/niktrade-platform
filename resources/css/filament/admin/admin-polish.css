@@ -1,4 +1,81 @@
 /* Admin-only corrections over the legacy Work UI hooks. */
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar {
+        inset: auto 12px calc(12px + env(safe-area-inset-bottom));
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        align-items: center;
+        gap: 2px;
+        height: 72px;
+        min-height: 72px;
+        padding: 6px;
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgb(13 22 54 / 14%);
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar > :is(a, button) {
+        position: relative;
+        inset: auto;
+        display: flex !important;
+        width: auto;
+        min-width: 0;
+        height: 56px;
+        min-height: 56px !important;
+        margin: 0;
+        padding: 4px 0;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 12px;
+        transform: none;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar > :is(a, button) span {
+        font-size: 10.5px;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-menu strong {
+        display: flex;
+        width: 24px;
+        height: 24px;
+        min-height: 24px;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 0;
+        background: transparent !important;
+        box-shadow: none !important;
+        transform: none;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar .nik-work-svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar::before,
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-menu::before,
+    html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-menu::after {
+        display: none;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-main,
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-main {
+        padding-bottom: calc(112px + env(safe-area-inset-bottom));
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-mobile, .nik-work-hr-mobile) {
+        padding-bottom: 24px;
+    }
+}
+
 html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header-heading {
     display: none;
 }

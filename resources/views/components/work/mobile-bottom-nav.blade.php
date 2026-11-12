@@ -8,9 +8,9 @@
         <x-work.icon name="home" />
         <span>Главная</span>
     </a>
-    <a href="{{ \App\Filament\Pages\Messenger::getUrl() }}" class="{{ $active === 'messenger' ? 'is-active' : '' }}">
+    <a href="{{ \App\Filament\Pages\Messenger::getUrl() }}" class="{{ $active === 'messenger' ? 'is-active' : '' }}" aria-label="Мессенджер">
         <x-work.icon name="message" />
-        <span>Мессенджер</span>
+        <span>Сообщения</span>
     </a>
     <button type="button" class="nik-work-mobile-bottom-menu" x-bind:class="{ 'is-active': activeSheet === 'menu' }" x-on:click="openSheet('menu')">
         <strong><x-work.icon name="grid" /></strong>
@@ -20,8 +20,8 @@
         <x-work.icon name="check-square" />
         <span>Задачи</span>
     </a>
-    <button type="button" x-bind:class="{ 'is-active': activeSheet === 'requests' }" x-on:click="openSheet('requests')">
+    <button type="button" aria-label="Заявки сотрудников" x-bind:class="{ 'is-active': activeSheet === 'requests' }" x-on:click="openSheet('requests')">
         <x-work.icon name="file" />
-        <span>Заявки сотрудников</span>
+        <span>Заявки</span>
     </button>
 </nav>

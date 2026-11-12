@@ -3,6 +3,80 @@ html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header-heading
     display: none;
 }
 
+/* Solid surfaces replace the remaining mobile glass layers. These overrides
+ * match legacy !important declarations; navigation keeps its navy gradient. */
+html.fi body.fi-body.fi-panel-admin {
+    min-height: 100dvh;
+    background-color: var(--admin-bg) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi-main, .fi-modal, .fi-dropdown) :where(*) {
+    backdrop-filter: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi-main) :where(
+    article, section, button, input, select, textarea,
+    [class*="card"], [class*="panel"], [class*="kpi"], [class*="empty"],
+    [class*="filters"], [class*="avatar"], [class*="row"], [class*="action"],
+    [class*="item"], [class*="shift"], [class*="navigation"], [class*="tabs"],
+    [class*="switch"], [class*="legend"], [class*="state"]
+):not(.nik-work-legacy-actions) {
+    background-image: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi-main) :where(
+    article, [class*="card"], [class*="panel"], [class*="widget"], [class*="kpi"],
+    .fi-section, .fi-ta-ctn, .fi-header
+)::before,
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .fi-main) :where(
+    article, [class*="card"], [class*="panel"], [class*="widget"], [class*="kpi"],
+    .fi-section, .fi-ta-ctn, .fi-header
+)::after {
+    background: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-shift-card, .nik-work-designed-empty, .nik-work-task-placeholder,
+    .nik-work-mobile-shift, .nik-work-mobile-row, .nik-work-mobile-quick-grid a,
+    .nik-work-hr-mobile-kpis article, .nt-kpi, .nt-empty, .nt-alert-row,
+    .nik-calendar-filters, .nik-calendar-navigation, .nik-calendar-legend,
+    .nik-schedule-request-hero, .nik-schedule-request-card,
+    .nik-order-detail-item, .nik-order-detail-address, .nik-employee-disabled-state,
+    .nik-work-user-menu-panel, .fi-no-notification, .fi-fo-date-time-picker-panel
+) {
+    background: var(--admin-surface) !important;
+    border-color: var(--admin-line) !important;
+    border-radius: var(--admin-radius);
+    box-shadow: 0 4px 18px rgb(13 22 54 / 5%) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-card, .nt-hr-card, .nik-directory-mobile-card,
+    .nik-work-hr-mobile-card, .nik-employee-card, .nik-employee-glass-card,
+    .nik-task-card, .orders-work-order, .orders-work-analytics article
+):hover {
+    background: var(--admin-surface) !important;
+    box-shadow: 0 6px 20px rgb(13 22 54 / 8%) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-mobile-brand, .nik-work-hr-mobile-brand) {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    padding: 8px;
+    border-radius: 12px;
+    background: #fff;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-mobile-brand, .nik-work-hr-mobile-brand) img {
+    display: block;
+    width: 136px;
+    height: auto;
+    object-fit: contain;
+}
+
 html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header {
     align-items: center;
     gap: 12px;

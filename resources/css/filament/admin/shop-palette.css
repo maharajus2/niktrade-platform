@@ -1,12 +1,17 @@
 /* Admin only. A separate bridge over legacy Work UI; layout and hooks stay intact.
  * !important below is restricted to properties already forced by work-liquid.css.
  */
+html.fi:has(body.fi-panel-admin) {
+    --admin-bg: #e7eaf5;
+    min-height: 100%;
+    background: var(--admin-bg);
+}
+
 body.fi-panel-admin {
     --admin-navy: #0d1636;
     --admin-navy-2: #16225a;
     --admin-primary: #5348d8;
     --admin-primary-dark: #4339bb;
-    --admin-bg: #e7eaf5;
     --admin-surface: #fff;
     --admin-ink: #10172f;
     --admin-muted: #5b6482;

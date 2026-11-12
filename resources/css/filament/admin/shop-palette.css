@@ -487,6 +487,75 @@ html.fi body.fi-body.fi-panel-admin .nik-work-task-placeholder {
     color: var(--admin-muted);
 }
 
+/* Reuse the original logo pixels; the SVG viewport shows only the emblem. */
+body.fi-panel-admin .nik-work-brand-mark {
+    display: none;
+}
+
+@media (min-width: 901px) {
+    html.fi body.fi-body.fi-panel-admin .nik-work-sidebar .nik-work-logo {
+        position: relative;
+        overflow: hidden;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-sidebar {
+        width: 76px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-brand-mark {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 40px;
+        height: 40px;
+        margin: auto;
+        object-fit: contain;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-logo {
+        width: 52px;
+        height: 52px;
+        min-height: 52px;
+        margin-inline: auto;
+        padding: 6px !important;
+        border: 0;
+        border-radius: 12px;
+        pointer-events: auto;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-brand-logo {
+        visibility: hidden;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-brand-mark {
+        opacity: 1;
+    }
+
+    /* Symmetric scrollbar gutters keep the icons on the sidebar centerline. */
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-nav {
+        width: calc(100% + 12px);
+        margin-inline: -6px;
+        padding-inline: 0 !important;
+        scrollbar-gutter: stable both-edges;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-nav-link {
+        width: 48px;
+        min-height: 48px;
+        margin-inline: auto;
+        padding-inline: 0;
+    }
+
+    html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav).is-sidebar-collapsed .nik-work-sidebar-toggle {
+        width: 48px !important;
+        align-self: center;
+        justify-content: center;
+        padding-inline: 0;
+    }
+}
+
 /* Native resource pages share the content edges with the Work UI header. */
 html.fi body.fi-body.fi-panel-admin .nik-work-legacy-tools {
     display: flex;

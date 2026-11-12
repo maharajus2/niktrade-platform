@@ -3,16 +3,17 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Resources\AdminUsers\UserResource;
+use App\Filament\Resources\Departments\DepartmentResource;
 use App\Filament\Resources\EmployeeScheduleRequests\EmployeeScheduleRequestResource;
 use App\Models\EmployeeDocument;
 use App\Models\EmployeeScheduleEntry;
 use App\Models\EmployeeScheduleRequest;
 use App\Models\Task;
 use App\Models\User;
+use App\Services\Messenger\MessengerService;
 use App\Services\Tasks\TaskAccessService;
 use App\Support\Dashboard\DashboardWidgetRegistry;
 use App\Support\EmployeeWorkday;
-use App\Services\Messenger\MessengerService;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -235,12 +236,12 @@ class Workplace extends Page
             'localDate' => $today->toDateString(),
             'today' => $today,
             'kpis' => [
-                ['label' => 'Сотрудники', 'value' => $employeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'blue', 'icon' => 'users'],
-                ['label' => 'Новые', 'value' => $newEmployeesCount, 'delta' => '+'.$newEmployeesCount, 'tone' => 'cyan', 'icon' => 'plus'],
-                ['label' => 'Отпуска', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_VACATION)->count(), 'delta' => '+0', 'tone' => 'amber', 'icon' => 'calendar'],
-                ['label' => 'Больничные', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_SICK_LEAVE)->count(), 'delta' => '-0', 'tone' => 'red', 'icon' => 'alert'],
-                ['label' => 'Заявки', 'value' => $pendingRequestsCount, 'delta' => '+0', 'tone' => 'violet', 'icon' => 'link'],
-                ['label' => 'Документы', 'value' => $expiringDocumentsCount, 'delta' => '!', 'tone' => 'rose', 'icon' => 'file'],
+                ['label' => 'Сотрудники', 'value' => $employeesCount, 'delta' => '+'.$newEmployeesCount.' за месяц', 'tone' => 'blue', 'icon' => 'users'],
+                ['label' => 'Новые', 'value' => $newEmployeesCount, 'delta' => 'за текущий месяц', 'tone' => 'cyan', 'icon' => 'plus'],
+                ['label' => 'Отпуска', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_VACATION)->count(), 'delta' => 'сегодня', 'tone' => 'amber', 'icon' => 'calendar'],
+                ['label' => 'Больничные', 'value' => $todayEntries->where('type', EmployeeScheduleEntry::TYPE_SICK_LEAVE)->count(), 'delta' => 'сегодня', 'tone' => 'red', 'icon' => 'alert'],
+                ['label' => 'Заявки', 'value' => $pendingRequestsCount, 'delta' => 'на рассмотрении', 'tone' => 'violet', 'icon' => 'link'],
+                ['label' => 'Документы', 'value' => $expiringDocumentsCount, 'delta' => 'истекают за 30 дней', 'tone' => 'rose', 'icon' => 'file'],
             ],
             'requests' => $requests,
             'upcomingEvents' => $upcomingEvents,
@@ -251,7 +252,7 @@ class Workplace extends Page
                 'calendar' => MyCalendar::getUrl(),
                 'requests' => EmployeeScheduleRequestResource::getUrl('index'),
                 'createRequest' => EmployeeScheduleRequestResource::getUrl('create'),
-                'departments' => \App\Filament\Resources\Departments\DepartmentResource::getUrl('index'),
+                'departments' => DepartmentResource::getUrl('index'),
             ],
         ];
     }

@@ -1,4 +1,98 @@
 /* Admin-only corrections over the legacy Work UI hooks. */
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-app, .nik-work-legacy-nav, .nt-workplace, .fi-modal-window, .fi-dropdown-panel, .fi-no-notification) {
+    font-family: 'Manrope', sans-serif;
+}
+
+body.fi-panel-admin :is(button, input, select, textarea) {
+    font-family: inherit;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .fi-btn, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
+    .nik-directory-primary, .nik-directory-filter-button,
+    .nik-calendar-filter-button, .nik-calendar-add, .nik-calendar-view-switch button,
+    .nik-work-action, .nik-work-card-head > a, .nt-action-link,
+    .nt-hr-card__head > a, .nik-order-detail-action, .orders-work-tool-button
+) {
+    display: inline-flex;
+    min-height: 38px;
+    padding: 8px 12px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-decoration: none;
+    box-shadow: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-messenger-btn, .nik-tasks-btn, .nik-directory-filter-button,
+    .nik-calendar-filter-button, .nik-work-action, .nik-work-card-head > a,
+    .nt-action-link, .nt-hr-card__head > a, .orders-work-tool-button
+):not(.is-primary):not(.nt-action-link--primary) {
+    border: 1px solid var(--admin-line);
+    background: var(--admin-surface) !important;
+    color: var(--admin-primary-dark) !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-action.is-primary, .nt-action-link--primary,
+    .nik-messenger-btn.is-primary, .nik-tasks-btn.is-primary, .nik-task-primary
+) {
+    background: var(--admin-primary) !important;
+    color: #fff !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-mobile-icon-button, .nik-work-hr-mobile-actions > button,
+    .nik-work-icon-button, .nik-work-legacy-icon-button,
+    .orders-work-mobile-head button, .nik-directory-mobile-top button
+) {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    background: var(--admin-tint) !important;
+    color: var(--admin-primary-dark) !important;
+    border-color: var(--admin-line) !important;
+    box-shadow: none !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(
+    .nik-work-mobile-icon-button, .nik-work-hr-mobile-actions > button,
+    .nik-work-icon-button, .nik-work-legacy-icon-button
+) .nik-work-svg {
+    color: inherit !important;
+}
+
+html.fi body.fi-body.fi-panel-admin :is(.nik-work-hr-desktop-kpis, .nik-work-hr-mobile-kpis) article em {
+    color: var(--admin-muted) !important;
+    font-size: 11px;
+    font-style: normal;
+    line-height: 1.4;
+    white-space: normal;
+}
+
+@media (max-width: 900px) {
+    html.fi body.fi-body.fi-panel-admin :is(
+        .fi-btn, .nik-messenger-btn, .nik-tasks-btn, .nik-task-primary,
+        .nik-directory-primary, .nik-directory-filter-button,
+        .nik-calendar-filter-button, .nik-calendar-add, .nik-calendar-view-switch button,
+        .nik-work-action, .nik-work-card-head > a, .nt-action-link,
+        .nt-hr-card__head > a, .nik-order-detail-action, .orders-work-tool-button,
+        .nik-work-hr-mobile-card-head > a, .nik-work-mobile-card-head > a
+    ) {
+        min-height: 44px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-hr-mobile-kpis article {
+        min-height: 142px;
+    }
+}
+
 @media (max-width: 900px) {
     html.fi body.fi-body.fi-panel-admin .nik-work-mobile-bottom-bar {
         inset: auto 12px calc(12px + env(safe-area-inset-bottom));

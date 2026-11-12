@@ -5,3 +5,4 @@
 @source '../../../../resources/views/components/work/**/*';
 
 @import './shop-palette.css';
+@import './admin-polish.css';

@@ -1,0 +1,57 @@
+/* Admin-only corrections over the legacy Work UI hooks. */
+html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header-heading {
+    display: none;
+}
+
+html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header {
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+}
+
+html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-page {
+    gap: 16px;
+}
+
+body.fi-panel-admin .nik-work-legacy-title {
+    margin: 0;
+    line-height: 1.25;
+}
+
+@media (min-width: 901px) {
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-main {
+        padding-top: 126px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* The saved desktop collapse state must never offset the mobile content. */
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-main {
+        width: 100%;
+        min-width: 0;
+        margin-inline: 0;
+        padding-top: calc(148px + env(safe-area-inset-top));
+    }
+
+    html.fi body.fi-body.fi-panel-admin .nik-work-legacy-mobile-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        height: auto;
+        border-radius: 0 0 12px 12px;
+    }
+
+    body.fi-panel-admin .nik-work-legacy-mobile-head .nik-work-legacy-title {
+        grid-column: 1 / -1;
+        color: #fff;
+        font-size: 22px;
+    }
+
+    html.fi body.fi-body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-header {
+        padding: 12px 16px;
+    }
+
+    body.fi-panel-admin:has(.nik-work-legacy-nav) .fi-breadcrumbs {
+        display: block;
+    }
+}

@@ -101,7 +101,7 @@
         <x-work.sidebar :active="$active" :user="$user" />
 
         <header class="nik-work-legacy-actions" aria-label="Панель действий">
-            <strong class="nik-work-legacy-title">{{ $activeLabel }}</strong>
+            <h1 class="nik-work-legacy-title">{{ $activeLabel }}</h1>
             <div class="nik-work-legacy-tools">
                 <label class="nik-work-legacy-search">
                     <x-work.icon name="search" />
@@ -129,6 +129,7 @@
                 </button>
                 <x-work.user-menu :user="$user" button-class="nik-work-legacy-avatar" :show-chevron="false" />
             </div>
+            <h1 class="nik-work-legacy-title">{{ $activeLabel }}</h1>
         </header>
 
         <x-work.mobile-bottom-sheets

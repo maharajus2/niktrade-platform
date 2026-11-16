@@ -91,10 +91,13 @@
 
 .nik-product-page .nik-product-thumb {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     place-items: center;
     width: 76px;
     height: 88px;
     padding: 6px;
+    overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 13px;
     background: #f7f8fd;

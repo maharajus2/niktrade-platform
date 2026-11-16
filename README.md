@@ -54,6 +54,17 @@ The previous code/assets are restored on failure; backup directories remain unde
 This script does not run database migrations. Keep `public/build` out of Git. Build artifacts must
 be regenerated for each reviewed commit; never copy an older manifest into a new deployment.
 
+### Upload storage permissions
+
+PHP-FPM runs as `www-data`; deployment runs as `niktrade`. Both users need write access to upload directories.
+After imports or restoring files, run `sudo bash scripts/repair-upload-permissions.sh` on the server. It backs up
+existing ACLs and repairs only `storage/app/public` and `storage/app/private`; it does not publish private files.
+Restore a permission backup with `sudo setfacl --restore=/opt/niktrade-platform/storage/app/upload-permissions-TIMESTAMP/acls.restore`.
+
+Local disks throw on failed writes. Uploads verify that the stored file exists before persisting its path;
+Filament, customer avatars and Messenger show a validation error if saving fails. Directory modes preserve
+inherited write ACLs for both application users; newly created private files/directories have no access for other users.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

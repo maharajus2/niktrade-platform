@@ -34,8 +34,14 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/private'),
             'serve' => true,
-            'throw' => false,
-            'report' => false,
+            'visibility' => 'private',
+            'directory_visibility' => 'private',
+            'permissions' => [
+                'file' => ['public' => 0660, 'private' => 0660],
+                'dir' => ['public' => 0770, 'private' => 0770],
+            ],
+            'throw' => true,
+            'report' => true,
         ],
 
         'public' => [
@@ -43,24 +49,39 @@ return [
             'root' => storage_path('app/public'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
-            'throw' => false,
-            'report' => false,
+            'directory_visibility' => 'public',
+            'permissions' => [
+                'file' => ['public' => 0664, 'private' => 0660],
+                'dir' => ['public' => 0775, 'private' => 0770],
+            ],
+            'throw' => true,
+            'report' => true,
         ],
 
         'employee_documents' => [
             'driver' => 'local',
             'root' => storage_path('app/private/employee-documents'),
             'visibility' => 'private',
-            'throw' => false,
-            'report' => false,
+            'directory_visibility' => 'private',
+            'permissions' => [
+                'file' => ['public' => 0660, 'private' => 0660],
+                'dir' => ['public' => 0770, 'private' => 0770],
+            ],
+            'throw' => true,
+            'report' => true,
         ],
 
         'messenger_attachments' => [
             'driver' => 'local',
             'root' => storage_path('app/private/messenger-attachments'),
             'visibility' => 'private',
-            'throw' => false,
-            'report' => false,
+            'directory_visibility' => 'private',
+            'permissions' => [
+                'file' => ['public' => 0660, 'private' => 0660],
+                'dir' => ['public' => 0770, 'private' => 0770],
+            ],
+            'throw' => true,
+            'report' => true,
         ],
 
         's3' => [

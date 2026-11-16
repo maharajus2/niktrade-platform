@@ -7,6 +7,7 @@ use App\Models\ConversationParticipant;
 use App\Models\Message;
 use App\Models\MessageAttachment;
 use App\Models\User;
+use App\Services\Uploads\UploadStorage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,8 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class MessengerService
 {
+    public function __construct(private readonly UploadStorage $uploads) {}
+
     public function findOrCreateDirect(User $actor, User $recipient, ?string $firstMessage = null): Conversation
     {
         if ((int) $actor->id === (int) $recipient->id) {
@@ -57,7 +60,7 @@ class MessengerService
     }
 
     /**
-     * @param list<int> $participantIds
+     * @param  list<int>  $participantIds
      */
     public function createGroup(User $actor, string $title, array $participantIds, ?string $description = null): Conversation
     {
@@ -181,7 +184,7 @@ class MessengerService
             throw ValidationException::withMessages(['attachmentUpload' => 'Некорректный файл.']);
         }
 
-        $path = $upload->store(date('Y/m'), 'messenger_attachments');
+        $path = $this->uploads->store($upload, date('Y/m'), 'messenger_attachments', 'attachmentUpload');
 
         return $message->attachments()->create([
             'uploaded_by' => $sender->id,

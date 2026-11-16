@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\Uploads\UploadStorage;
 use App\Support\UploadLimits;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -71,7 +72,7 @@ class CustomerAccountController extends Controller
             ->with('success', 'Профиль обновлён.');
     }
 
-    public function updateAvatar(Request $request): RedirectResponse
+    public function updateAvatar(Request $request, UploadStorage $uploads): RedirectResponse
     {
         $data = $request->validate([
             'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:'.UploadLimits::IMAGE_MAX_KILOBYTES],
@@ -79,7 +80,7 @@ class CustomerAccountController extends Controller
 
         $customer = $request->user('customer');
         $oldAvatarPath = $customer->avatar_path;
-        $avatarPath = $data['avatar']->store('customer-avatars', 'public');
+        $avatarPath = $uploads->store($data['avatar'], 'customer-avatars', 'public', 'avatar');
 
         $customer->update([
             'avatar_path' => $avatarPath,

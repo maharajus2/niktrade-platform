@@ -112,6 +112,7 @@
     @endunless
     <script src="{{ asset('js/biz-cart.js') }}?v={{ filemtime(public_path('js/biz-cart.js')) }}" defer></script>
 @endif
+@vite('resources/js/product-card-images.js')
 @stack('scripts')
 </body>
 </html>

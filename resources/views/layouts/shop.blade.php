@@ -200,6 +200,7 @@
 </script>
 <script src="{{ asset('js/home-v3.js') }}?v={{ filemtime(public_path('js/home-v3.js')) }}" defer></script>
 <script src="{{ asset('js/biz-gate.js') }}?v={{ filemtime(public_path('js/biz-gate.js')) }}" defer></script>
+@vite('resources/js/product-card-images.js')
 @stack('scripts')
 </body>
 </html>

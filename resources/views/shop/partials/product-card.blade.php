@@ -30,7 +30,7 @@
         <span class="v3-dir is-{{ $product->direction }}">{{ $directionLabel }}</span>
     @endif
     <a class="v3-card-img" href="{{ $productUrl($product) }}" tabindex="-1" aria-hidden="true">
-        <img src="{{ $imageUrl($photo) }}" alt="" loading="lazy">
+        <span class="v3-card-photo"><img src="{{ $imageUrl($photo) }}" alt="" loading="lazy"></span>
     </a>
     <div class="v3-card-brand">{{ $product->brand?->name ?: 'НИКТРЕЙД' }}</div>
     <a class="v3-card-name" href="{{ $productUrl($product) }}" title="{{ $product->name }}">{{ \App\Support\ProductName::withoutBrand($product->name, $product->brand?->name, $product->direction) }}</a>
